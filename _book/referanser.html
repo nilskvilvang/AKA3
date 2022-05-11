@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Referanser | A Minimal Book Example</title>
+<meta name="author" content="John Doe">
+<meta name="description" content="Allaire, J., Yihui Xie, J. McPherson, J. Luraschi, K. Ushey, A. Atkins, Hadley Wickham, J. Cheng, W. Chang, and R. Iannone. 2022. “Rmarkdown: Dynamic Documents for R.”  Anderson, Theodore W., and...">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Referanser | A Minimal Book Example">
+<meta property="og:type" content="book">
+<meta property="og:description" content="Allaire, J., Yihui Xie, J. McPherson, J. Luraschi, K. Ushey, A. Atkins, Hadley Wickham, J. Cheng, W. Chang, and R. Iannone. 2022. “Rmarkdown: Dynamic Documents for R.”  Anderson, Theodore W., and...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Referanser | A Minimal Book Example">
+<meta name="twitter:description" content="Allaire, J., Yihui Xie, J. McPherson, J. Luraschi, K. Ushey, A. Atkins, Hadley Wickham, J. Cheng, W. Chang, and R. Iannone. 2022. “Rmarkdown: Dynamic Documents for R.”  Anderson, Theodore W., and...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/tabwid-1.0.0/tabwid.css" rel="stylesheet">
+<link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="libs/plotly-binding-4.10.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script><link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">A Minimal Book Example</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html"><span class="header-section-number">1</span> About</a></li>
+<li><a class="" href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></li>
+<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">2</span> Regresjonsanalyse - OLS</a></li>
+<li><a class="" href="iv-regresjon.html"><span class="header-section-number">3</span> IV regresjon</a></li>
+<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">4</span> Logistisk regresjon</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">5</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="active" href="referanser.html">Referanser</a></li>
+<li><a class="" href="vedlegg-x---session-info.html">Vedlegg X - Session Info</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/nilskvilvang/AKA3">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="referanser" class="section level1 unnumbered">
+<h1>Referanser<a class="anchor" aria-label="anchor" href="#referanser"><i class="fas fa-link"></i></a>
+</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-allaireRmarkdownDynamicDocuments2022" class="csl-entry">
+Allaire, J., Yihui Xie, J. McPherson, J. Luraschi, K. Ushey, A. Atkins, Hadley Wickham, J. Cheng, W. Chang, and R. Iannone. 2022. <span>“Rmarkdown: <span>Dynamic Documents</span> for <span>R</span>.”</span>
+</div>
+<div id="ref-andersonTestGoodnessFit1954" class="csl-entry">
+Anderson, Theodore W., and D. A. Darling. 1954. <span>“A <span>Test</span> of <span>Goodness</span> of <span>Fit</span>.”</span> <em>Journal of the American Statistical Association</em> 49 (268): 765–65. <a href="https://doi.org/10.2307/2281537">https://doi.org/10.2307/2281537</a>.
+</div>
+<div id="ref-andersonAsymptoticTheoryCertain1952b" class="csl-entry">
+Anderson, Theodore W., and Donald A. Darling. 1952. <span>“Asymptotic Theory of Certain "Goodness of Fit" Criteria Based on Stochastic Processes.”</span> <em>The Annals of Mathematical Statistics</em> 23 (2): 193–212.
+</div>
+<div id="ref-andrianoCausalEffectMaternal2019" class="csl-entry">
+Andriano, Liliana, and Christiaan W. S. Monden. 2019. <span>“The <span>Causal Effect</span> of <span>Maternal Education</span> on <span>Child Mortality</span>: <span>Evidence From</span> a <span>Quasi-Experiment</span> in <span>Malawi</span> and <span>Uganda</span>.”</span> <em>Demography</em> 56 (5): 1765–90. <a href="https://doi.org/10.1007/s13524-019-00812-3">https://doi.org/10.1007/s13524-019-00812-3</a>.
+</div>
+<div id="ref-arrindellEmpiricalTestUtility1985" class="csl-entry">
+Arrindell, Willem A., and Jan van der Ende. 1985. <span>“An <span>Empirical Test</span> of the <span>Utility</span> of the <span>Observations-To-Variables Ratio</span> in <span>Factor</span> and <span>Components Analysis</span>.”</span> <em>Applied Psychological Measurement</em> 9 (2): 165–78. <a href="https://doi.org/10.1177/014662168500900205">https://doi.org/10.1177/014662168500900205</a>.
+</div>
+<div id="ref-bastosExploratoryFactorAnalysis2021" class="csl-entry">
+Bastos, Rafael Valdece Sousa. 2021. <span>“Exploratory <span>Factor Analysis</span> Vs <span>Principal Components</span>: From Concept to Application.”</span> <em>Medium</em>. https://towardsdatascience.com/exploratory-factor-analysis-vs-principal-components-from-concept-to-application-b67bbbdb82c4.
+</div>
+<div id="ref-beckerECLR2021" class="csl-entry">
+Becker, Ralf, and James Lincoln. 2021. <span>“R - <span>ECLR</span>.”</span> http://eclr.humanities.manchester.ac.uk/index.php/R#Data_Sets.
+</div>
+<div id="ref-belsleyRegressionDiagnosticsIdentifying1980" class="csl-entry">
+Belsley, D. A., E. Kuh, and R. E. Welsch. 1980. <em>Regression <span>Diagnostics</span>: <span>Identifying Influential Data</span> and <span>Sources</span> of <span>Collinearity</span></em>. <span>New York</span>: <span>John Wiley &amp; Sons</span>.
+</div>
+<div id="ref-berryUnderstandingRegressionAssumptions1993" class="csl-entry">
+Berry, William D. 1993. <em>Understanding Regression Assumptions</em>. <span>Newbury Park, CA</span>: <span>Sage Publications</span>.
+</div>
+<div id="ref-bjerkanFaktoranalyse2007b" class="csl-entry">
+Bjerkan, Anne Mette. 2007. <span>“Faktoranalyse.”</span> In <em>Kvantitativ Analyse Med <span>SPSS</span></em>, edited by Terje Andreas Eikemo and Tommy Høyvarde, 220–34. <span>Trondheim</span>: <span>Tapir Akademisk Forlag</span>.
+</div>
+<div id="ref-bowermanLinearStatisticalModels1990" class="csl-entry">
+Bowerman, Bruce L., and Richard T. O’Connell. 1990. <em>Linear Statistical Models: <span>An</span> Applied Approach</em>. Second. <span>Belmont, CA</span>: <span>Duxbury</span>.
+</div>
+<div id="ref-cattellScreeTestNumber1966" class="csl-entry">
+Cattell, Raymond B. 1966. <span>“The Scree Test for the Number of Factors.”</span> <em>Multivariate Behavioral Research</em> 1: 245–76. <a href="https://doi.org/10.1207/s15327906mbr0102_10">https://doi.org/10.1207/s15327906mbr0102_10</a>.
+</div>
+<div id="ref-cookResidualsInfluenceRegression1982" class="csl-entry">
+Cook, R. Dennis, and Sanford Weisberg. 1982. <em>Residuals and <span>Influence</span> in <span>Regression</span></em>. <span>New York</span>: <span>Chapman and Hall</span>.
+</div>
+<div id="ref-cummingIntroductionNewStatistics2017" class="csl-entry">
+Cumming, Geoff, and Robert Calin-Jageman. 2017. <em>Introduction to the New Statistics: <span>Estimation</span>, Open Science, &amp; Beyond</em>. <span>New York</span>: <span>Routledge</span>.
+</div>
+<div id="ref-datavizHowMakeScree2020" class="csl-entry">
+DataViz. 2020. <span>“How <span>To Make Scree Plot</span> in <span>R</span> with Ggplot2.”</span> <em>Data Viz with Python and R</em>.
+</div>
+<div id="ref-dipreteGeneticInstrumentalVariable2018" class="csl-entry">
+DiPrete, Thomas A., Casper A. P. Burik, and Philipp D. Koellinger. 2018. <span>“Genetic Instrumental Variable Regression: <span>Explaining</span> Socioeconomic and Health Outcomes in Nonexperimental Data.”</span> <em>Proceedings of the National Academy of Sciences</em> 115 (22). <a href="https://doi.org/10.1073/pnas.1707388115">https://doi.org/10.1073/pnas.1707388115</a>.
+</div>
+<div id="ref-durbinTestingSerialCorrelation1951" class="csl-entry">
+Durbin, J., and G. S. Watson. 1951. <span>“Testing for <span>Serial Correlation</span> in <span>Least Squares Regression</span>. <span>II</span>.”</span> <em>Biometrika</em> 38 (1/2): 159–77. <a href="https://doi.org/10.2307/2332325">https://doi.org/10.2307/2332325</a>.
+</div>
+<div id="ref-eikemoKvantitativAnalyseMed2007" class="csl-entry">
+Eikemo, Terje Andreas, and Tommy Høyvarde Clausen, eds. 2007. <em>Kvantitativ Analyse Med <span>SPSS</span>. <span>En</span> Praktisk Innføring i Kvantitative Analyseteknikker.</em> <span>Trondheim</span>: <span>Tapir Akademisk Forlag</span>.
+</div>
+<div id="ref-fabrigarEvaluatingUseExploratory1999" class="csl-entry">
+Fabrigar, Leandre R., Duane T. Wegener, Robert C. MacCallum, and Erin J. Strahan. 1999. <span>“Evaluating the Use of Exploratory Factor Analysis in Psychological Research.”</span> <em>Psychological Methods</em> 4 (3): 272–72.
+</div>
+<div id="ref-fieldDiscoveringStatisticsUsing2009" class="csl-entry">
+Field, Andy. 2009. <em>Discovering <span>Statistics Using SPSS</span></em>. Third. <span>London</span>: <span>SAGE Publications Ltd</span>.
+</div>
+<div id="ref-fieldDiscoveringStatisticsUsing2012" class="csl-entry">
+Field, Andy, Jeremy Miles, and Zoë Field. 2012. <em>Discovering <span>Statistics Using R</span></em>. <span>London</span>: <span>SAGE Publications</span>.
+</div>
+<div id="ref-finchUsingFitStatistic2020" class="csl-entry">
+Finch, W. Holmes. 2020. <span>“Using <span>Fit Statistic Differences</span> to <span>Determine</span> the <span>Optimal Number</span> of <span>Factors</span> to <span>Retain</span> in an <span>Exploratory Factor Analysis</span>.”</span> <em>Educational and Psychological Measurement</em> 80 (2): 217–41. <a href="https://doi.org/10.1177/0013164419865769">https://doi.org/10.1177/0013164419865769</a>.
+</div>
+<div id="ref-foxRegressionDiagnosticsIntroduction2020" class="csl-entry">
+Fox, John. 2020. <em>Regression <span>Diagnostics</span>: <span>An Introduction</span>.</em> Second. <span>Los Angeles</span>: <span>Sage</span>.
+</div>
+<div id="ref-foxCompanionAppliedRegression2019" class="csl-entry">
+Fox, John, and Sanford Weisberg. 2019. <em>An <span>R Companion</span> to <span>Applied Regression</span></em>. Third. <span>Thousand Oaks</span>: <span>SAGE</span>.
+</div>
+<div id="ref-frostHowInterpretAdjusted2022" class="csl-entry">
+Frost, Jim. 2022. <span>“How to <span>Interpret Adjusted R-Squared</span> and <span>Predicted R-Squared</span> in <span>Regression Analysis</span>.”</span> <em>Statistics By Jim</em>.
+</div>
+<div id="ref-galarnykUnderstandingBoxplots2018" class="csl-entry">
+Galarnyk, Michael. 2018. <span>“Understanding <span>Boxplots</span>.”</span> <em>Towards Data Science</em>.
+</div>
+<div id="ref-galianiEffectAidGrowth2017" class="csl-entry">
+Galiani, Sebastian, Stephen Knack, Lixin Colin Xu, and Ben Zou. 2017. <span>“The Effect of Aid on Growth: Evidence from a <span class="nocase">Quasi-experiment</span>.”</span> <em>Journal of Economic Growth</em> 22 (1): 1–33. <a href="https://doi.org/10.1007/s10887-016-9137-4">https://doi.org/10.1007/s10887-016-9137-4</a>.
+</div>
+<div id="ref-greenHowManySubjects1991" class="csl-entry">
+Green, Samuel B. 1991. <span>“How <span>Many Subjects Does It Take To Do A Regression Analysis</span>.”</span> <em>Multivariate Behavioral Research</em> 26 (3): 499–510. <a href="https://doi.org/10.1207/s15327906mbr2603_7">https://doi.org/10.1207/s15327906mbr2603_7</a>.
+</div>
+<div id="ref-guadagnoliRelationSampleSize1988" class="csl-entry">
+Guadagnoli, Edward, and Wayne F. Velicer. 1988. <span>“Relation of <span>Sample Size</span> to the <span>Stability</span> of <span>Component Patterns</span>.”</span> <em>Psychological Bulletin</em> 103 (2): 265–75.
+</div>
+<div id="ref-hairjr.MultivariateDataAnalysis2010" class="csl-entry">
+Hair Jr., Joseph H., William C. Black, Barry J. Babin, and Rolph E. Anderson. 2010. <em>Multivariate <span>Data Analysis</span>: <span>A Global Perspective</span></em>. Seventh. <span>Upper Saddle River, NJ</span>: <span>Pearson</span>.
+</div>
+<div id="ref-harrisPrimerMultivariateStatistics2013" class="csl-entry">
+Harris, Richard J. 2013. <em>A <span>Primer</span> of <span>Multivariate Statistics</span></em>. Third. <span>New York</span>: <span>Psychology Press</span>.
+</div>
+<div id="ref-hartmannELearningProjectSOGA2018" class="csl-entry">
+Hartmann, K., J. Krois, and B. Waske. 2018. <span>“E-<span>Learning Project SOGA</span>: <span>Statistics</span> and <span>Geospatial Data Analysis</span>.”</span>
+</div>
+<div id="ref-hendersonBuildingMultipleRegression1981" class="csl-entry">
+Henderson, Harold V., and Paul F. Velleman. 1981. <span>“Building Multiple Regression Models Interactively.”</span> <em>Biometrics</em>, 391–411.
+</div>
+<div id="ref-hinkleAppliedStatisticsBehavioral2003" class="csl-entry">
+Hinkle, Dennis E, William Wiersma, and Stephen G Jurs. 2003. <em>Applied Statistics for the Behavioral Sciences</em>. Fifth. <span>Belmont, CA</span>: <span>Wadsworth, Cengagae Learning</span>.
+</div>
+<div id="ref-hogartyQualityFactorSolutions2005" class="csl-entry">
+Hogarty, Kristine Y., Constance V. Hines, Jeffrey D. Kromrey, John M. Ferron, and Karen R. Mumford. 2005. <span>“The Quality of Factor Solutions in Exploratory Factor Analysis: <span>The</span> Influence of Sample Size, Communality, and Overdetermination.”</span> <em>Educational and Psychological Measurement</em> 65 (2): 202–26.
+</div>
+<div id="ref-hornRationaleTestNumber1965" class="csl-entry">
+Horn, John L. 1965. <span>“A Rationale and Test for the Number of Factors in Factor Analysis.”</span> <em>Psychometrika</em> 30 (2): 179–85. <a href="https://doi.org/10.1007/BF02289447">https://doi.org/10.1007/BF02289447</a>.
+</div>
+<div id="ref-hoyleConfirmatoryFactorAnalysis2000" class="csl-entry">
+Hoyle, Rick H. 2000. <span>“Confirmatory <span>Factor Analysis</span>.”</span> In <em>Handbook of <span>Applied Multivariate Statistics</span> and <span>Mathematical Modeling</span></em>, edited by Howard E A Tinsley and Steven D B T - Handbook of Applied Multivariate Statistics and Mathematical Modeling Brown, 3:465–97. <span>San Diego</span>: <span>Academic Press</span>. <a href="https://doi.org/10.1016/B978-012691360-6/50017-3">https://doi.org/10.1016/B978-012691360-6/50017-3</a>.
+</div>
+<div id="ref-huCutoffCriteriaFit1999" class="csl-entry">
+Hu, Li-tze, and Peter M. Bentler. 1999. <span>“Cutoff Criteria for Fit Indexes in Covariance Structure Analysis: <span>Conventional</span> Criteria Versus New Alternatives.”</span> <em>Structural Equation Modeling: A Multidisciplinary Journal</em> 6 (1): 1–55. <a href="https://doi.org/10.1080/10705519909540118">https://doi.org/10.1080/10705519909540118</a>.
+</div>
+<div id="ref-huberRobustStatistics1981" class="csl-entry">
+Huber, P. J. 1981. <em>Robust <span>Statistics</span></em>. <span>New York</span>: <span>Wiley</span>.
+</div>
+<div id="ref-hurleyExploratoryConfirmatoryFactor1997" class="csl-entry">
+Hurley, Amy E., Terri A. Scandura, Chester A. Schriesheim, Michael T. Brannick, Anson Seers, Robert J. Vandenberg, and Larry J. Williams. 1997. <span>“Exploratory and Confirmatory Factor Analysis: Guidelines, Issues, and Alternatives.”</span> <em>Journal of Organizational Behavior</em> 18 (6): 667–83. <a href="https://doi.org/10.1002/(SICI)1099-1379(199711)18:6&lt;667::AID-JOB874&gt;3.0.CO;2-T">https://doi.org/10.1002/(SICI)1099-1379(199711)18:6&lt;667::AID-JOB874&gt;3.0.CO;2-T</a>.
+</div>
+<div id="ref-joreskogkarlg.MultivariateAnalysisLISREL2016" class="csl-entry">
+Jöreskog, Karl G., Ulf H. Olsson, and Fan Y. Wallentin. 2016. <em>Multivariate <span>Analysis</span> with <span>LISREL</span></em>. Springer <span>Series</span> in <span>Statistics</span>. <span>Springer</span>.
+</div>
+<div id="ref-kaiserApplicationElectronicComputers1960" class="csl-entry">
+Kaiser, Henry F. 1960. <span>“The Application of Electronic Computers to Factor Analysis.”</span> <em>Educational and Psychological Measurement</em> 20: 141–51.
+</div>
+<div id="ref-kaiserIndexFactorialSimplicity1974" class="csl-entry">
+———. 1974. <span>“An <span>Index</span> of <span>Factorial Simplicity</span>.”</span> <em>Psychometrika</em> 39 (1): 31–36. <a href="https://doi.org/10.1007/BF02291575">https://doi.org/10.1007/BF02291575</a>.
+</div>
+<div id="ref-kennairFemfaktormodellen2021" class="csl-entry">
+Kennair, Leif Edward Ottesen. 2021. <span>“<span>Femfaktormodellen</span>.”</span> <em>Store Norske Leksikon</em>, May.
+</div>
+<div id="ref-kristensenAvhengigeMalefeilObservasjonsstudier2005" class="csl-entry">
+Kristensen, Petter. 2005. <span>“Avhengige Målefeil i Observasjonsstudier.”</span> <em>Tidsskr Nor Lægeforen</em> 125: 173175–75.
+</div>
+<div id="ref-lomaxStatisticalConceptsSecond2012" class="csl-entry">
+Lomax, Richard G., and Debbie L. Hahs-Vaughn. 2012. <em>Statistical <span>Concepts</span>. <span>A Second Course</span>.</em> Fourth. <span>New York</span>: <span>Routledge</span>.
+</div>
+<div id="ref-longPrincipalComponentAnalysis2010" class="csl-entry">
+Long, J. D. 2010. <span>“Principal <span>Component Analysis</span> (<span>PCA</span>) Vs <span>Ordinary Least Squares</span> (<span>OLS</span>): <span>A Visual Explanation</span>.”</span> <em>Cerebral Mastication</em>. https://cerebralmastication.com/2010/09/principal-component-analysis-pca-vs-ordinary-least-squares-ols-a-visual-explination/.
+</div>
+<div id="ref-lovasStatistikkUniversiteterOg2013" class="csl-entry">
+Løvås, Gunnar G. 2013. <em>Statistikk for Universiteter Og Høgskoler</em>. Third. <span>Oslo</span>: <span>Universitetsforlaget</span>.
+</div>
+<div id="ref-maccallumSampleSizeFactor1999" class="csl-entry">
+MacCallum, Robert C, Keith F Widaman, Shaobo Zhang, and Sehee Hong. 1999. <span>“Sample Size in Factor Analysis.”</span> <em>Psychological Methods</em> 4 (1): 84–84.
+</div>
+<div id="ref-macmahonBloodPressureStroke1990" class="csl-entry">
+MacMahon, S, R Peto, R Collins, J Godwin, S MacMahon, J Cutler, P Sorlie, et al. 1990. <span>“Blood Pressure, Stroke, and Coronary Heart Disease: <span>Part</span> 1, Prolonged Differences in Blood Pressure: Prospective Observational Studies Corrected for the Regression Dilution Bias.”</span> <em>Originally Published as Volume 1, Issue 8692</em> 335 (8692): 765–74. <a href="https://doi.org/10.1016/0140-6736(90)90878-9">https://doi.org/10.1016/0140-6736(90)90878-9</a>.
+</div>
+<div id="ref-mastenCausalInferenceBootcamp2015" class="csl-entry">
+Masten, Matt. 2015. <span>“Causal <span>Inference Bootcamp</span>.”</span> https://mattmasten.github.io/bootcamp/.
+</div>
+<div id="ref-mccraeIntroductionFiveFactorModel1992" class="csl-entry">
+McCrae, Robert R., and Oliver P. John. 1992. <span>“An <span>Introduction</span> to the <span>Five-Factor Model</span> and <span>Its Applications</span>.”</span> <em>Journal of Personality</em> 60 (2): 175–215. <a href="https://doi.org/10.1111/j.1467-6494.1992.tb00970.x">https://doi.org/10.1111/j.1467-6494.1992.tb00970.x</a>.
+</div>
+<div id="ref-mehmetogluInnforingStatistiskeDataanalyser2020" class="csl-entry">
+Mehmetoglu, Mehmet, and Matthias Mittner. 2020. <em>Innføring i <span>R</span> for Statistiske Dataanalyser</em>. <span>Oslo</span>: <span>Universitetsforlaget</span>.
+</div>
+<div id="ref-milesApplyingRegressionCorrelation2001" class="csl-entry">
+Miles, Jeremy, and Mark Shevlin. 2001. <em>Applying <span>Regression</span> &amp; <span>Correlation</span>: <span>A Guide</span> for <span>Students</span> and <span>Researchers</span></em>. <span>London</span>: <span>Sage</span>.
+</div>
+<div id="ref-mostellerDataAnalysisRegression1977" class="csl-entry">
+Mosteller, Frederick, and John Wilder Tukey. 1977. <span>“Data Analysis and Regression: A Second Course in Statistics.”</span> <em>Addison-Wesley Series in Behavioral Science: Quantitative Methods</em>.
+</div>
+<div id="ref-myersClassicalModernRegression1990" class="csl-entry">
+Myers, R. 1990. <em>Classical and Modern Regression with Applications</em>. Second. <span>Boston, MA</span>: <span>Duxbury</span>.
+</div>
+<div id="ref-navarroLearningStatisticsJamovi2019a" class="csl-entry">
+Navarro, D. J., and D. R: Foxcroft. 2019. <em>Learning Statistics with Jamovi: A Tutorial for Psychology Students and Other Beginners.</em> 0.70 ed. <a href="https://doi.org/10.24384/hgc3-7p15">https://doi.org/10.24384/hgc3-7p15</a>.
+</div>
+<div id="ref-nunallyPsychometricTheory1978" class="csl-entry">
+Nunally, J. 1978. <em>Psychometric <span>Theory</span></em>. Second. <span>New York</span>: <span>McGraw-Hill</span>.
+</div>
+<div id="ref-pallantDevelopmentValidationScale2000" class="csl-entry">
+Pallant, Julie. 2000. <span>“Development and <span>Validation</span> of a <span>Scale</span> to <span>Measure Perceived Control</span> of <span>Internal States</span>.”</span> <em>Journal of Personality Assessment</em> 75 (2): 308–37. <a href="https://doi.org/10.1207/S15327752JPA7502_10">https://doi.org/10.1207/S15327752JPA7502_10</a>.
+</div>
+<div id="ref-pallantSPSSSurvivalManual2010" class="csl-entry">
+———. 2010. <em><span>SPSS Survival Manual</span></em>. Fourth. <span>Maidenhead, England</span>: <span>McGraw-Hill</span>.
+</div>
+<div id="ref-pittardPrincipalComponentsAnalysis2012" class="csl-entry">
+Pittard. 2012. <span>“Principal <span>Components Analysis Using R</span>.”</span>
+</div>
+<div id="ref-preissTestingLevelSocial2015" class="csl-entry">
+Preiss, Marek, Tereza Mejzlíková, Adéla Rudá, David Krámský, and Jindra Pitáková. 2015. <span>“Testing the <span>Level</span> of <span>Social Desirability During Job Interview</span> on <span>White-Collar Profession</span>.”</span> <em>Frontiers in Psychology</em> 6 (December). <a href="https://doi.org/10.3389/fpsyg.2015.01886">https://doi.org/10.3389/fpsyg.2015.01886</a>.
+</div>
+<div id="ref-rcoreteamLanguageEnvironmentStatistical2021" class="csl-entry">
+R Core Team. 2021. <span>“R: <span>A</span> Language and Environment for Statistical Computing.”</span> <span>Vienna</span>: R Foundation for Statistical Computing.
+</div>
+<div id="ref-razaliPowerComparisonsShapiroWilk2011" class="csl-entry">
+Razali, Nornadiah Mohd, and Yap Bee Wah. 2011. <span>“Power Comparisons of <span>Shapiro-Wilk</span>, <span>Kolmogorov-Smirnov</span>, <span>Lilliefors</span> and <span>Anderson-Darling</span> Tests.”</span> <em>Journal of Statistical Modeling and Analytics</em> 2 (1): 21–33.
+</div>
+<div id="ref-ringdalEnhetOgMangfold2007" class="csl-entry">
+Ringdal, Kristen. 2007. <em>Enhet Og Mangfold: Samfunnsvitenskapelig Forskning Og Kvantitativ Metode</em>. <span>Bergen</span>: <span>Fagbokforl.</span>
+</div>
+<div id="ref-rstudioteamRStudioIntegratedDevelopment2022" class="csl-entry">
+RStudio Team. 2022. <span>“<span>RStudio</span>: <span>Integrated Development</span> <span>Environment</span> for <span>R</span>.”</span> <span>Boston</span>: RStudio.
+</div>
+<div id="ref-schmidtRelativeEfficiencyRegression1971" class="csl-entry">
+Schmidt, Frank L. 1971. <span>“The <span>Relative Efficiency</span> of <span>Regression</span> and <span>Simple Unit Predictor Weights</span> in <span>Applied Differential Psychology</span>.”</span> <em>Educational and Psychological Measurement</em> 31 (3): 699–714. <a href="https://doi.org/10.1177/001316447103100310">https://doi.org/10.1177/001316447103100310</a>.
+</div>
+<div id="ref-singerAppliedLongitudinalData2003" class="csl-entry">
+Singer, Judith D., and John B. Willett. 2003. <em>Applied <span>Longitudinal Data Analysis</span>. <span>Modeling Change</span> and <span>Event Occurence</span>.</em> <span>Oxford</span>: <span>Oxford University Press</span>.
+</div>
+<div id="ref-smithTutorialPrincipalComponents2002" class="csl-entry">
+Smith, Lindsay I. 2002. <span>“A Tutorial on <span>Principal Components Analysis</span>.”</span> <span>Otago</span>.
+</div>
+<div id="ref-starmerStatQuestPrincipalComponent2018" class="csl-entry">
+Starmer, Josh. 2018. <span>“<span>StatQuest</span>: <span>Principal Component Analysis</span> (<span>PCA</span>), <span class="nocase">Step-by-Step</span>.”</span>
+</div>
+<div id="ref-stevensAppliedMultivariateStatistics1996" class="csl-entry">
+Stevens, J. P. 1996. <em>Applied Multivariate Statistics for the Social Sciences</em>. Third. <span>Mahwah, NJ</span>: <span>Lawrence Erlbaum</span>.
+</div>
+<div id="ref-stevensAppliedMultivariateStatistics2002" class="csl-entry">
+———. 2002. <em>Applied <span>Multivariate Statistics</span> for the <span>Social Sciences</span></em>. Edited by 5. <span>Routledge</span>.
+</div>
+<div id="ref-stockWhoInventedInstrumental2003a" class="csl-entry">
+Stock, James H., and Francesco Trebbi. 2003. <span>“Who <span>Invented Instrumental Variable Regression</span>?”</span> <em>Journal of Economic Perspectives</em> 17 (3): 177–94.
+</div>
+<div id="ref-szczesnaPrincipalComponentAnalysis2022" class="csl-entry">
+Szczęsna, Karolina. 2022. <span>“Principal <span>Component Analysis</span> (<span>PCA</span>).”</span> <em>RPubs</em>. https://rpubs.com/KarolinaSzczesna/862710.
+</div>
+<div id="ref-tabachnikUsingMultivariateStatistics2007" class="csl-entry">
+Tabachnik, B G, and L S Fidell. 2007. <em>Using Multivariate Statistics</em>. Fifth. <span>Boston</span>: <span>Pearson Education</span>.
+</div>
+<div id="ref-thomasAdditiveAssumptionMultiple2017" class="csl-entry">
+Thomas, Darrin. 2017. <span>“Additive <span>Assumption</span> and <span>Multiple Regression</span>.”</span> <em>Educational Research Technique</em>, November.
+</div>
+<div id="ref-thoresenMalefeilRegresjonsanalyse2003" class="csl-entry">
+Thoresen, Magne. 2003. <span>“Målefeil i Regresjonsanalyse.”</span> <em>Norsk Epidemiologi</em> 13 (2): 257–63.
+</div>
+<div id="ref-thraneAppliedRegressionAnalysis2019" class="csl-entry">
+Thrane, Christer. 2019. <em>Applied <span>Regression Analysis</span>. <span>Doing</span>, <span>Interpreting</span> and <span>Reporting</span></em>. <span>London</span>: <span>Routledge</span>.
+</div>
+<div id="ref-tinsleyUsesFactorAnalysis1987" class="csl-entry">
+Tinsley, Howard E. A., and Diane J. Tinsley. 1987. <span>“Uses of Factor Analysis in Counseling Psychology Research.”</span> <em>Journal of Counseling Psychology</em> 34 (4): 414–24. <a href="https://doi.org/10.1037/0022-0167.34.4.414">https://doi.org/10.1037/0022-0167.34.4.414</a>.
+</div>
+<div id="ref-tukeyExploratoryDataAnalysis1977" class="csl-entry">
+Tukey, John Wilder. 1977. <em>Exploratory <span>Data Analysis</span></em>. <span>Reading, MA</span>: <span>Addison-Wesley</span>.
+</div>
+<div id="ref-uboeStatistikkOkonomifag2014" class="csl-entry">
+Ubøe, Jan. 2014. <em>Statistikk for Økonomifag</em>. Fourth. <span>Oslo</span>: <span>Gyldendal Akademisk</span>.
+</div>
+<div id="ref-unkelSimultaneousParameterEstimation2010" class="csl-entry">
+Unkel, Steffen, and Nickolay T. Trendafilov. 2010. <span>“Simultaneous <span>Parameter Estimation</span> in <span>Exploratory Factor Analysis</span>: <span>An Expository Review</span>: <span>Simultaneous Parameter Estimation</span> in <span>EFA</span>.”</span> <em>International Statistical Review</em> 78 (3): 363–82. <a href="https://doi.org/10.1111/j.1751-5823.2010.00120.x">https://doi.org/10.1111/j.1751-5823.2010.00120.x</a>.
+</div>
+<div id="ref-vandenbergStepwiseRegressionSPSS2018" class="csl-entry">
+van den Berg, Ruben Geert. 2018. <span>“Stepwise <span>Regression</span> in <span>SPSS</span>.”</span> <em>SPSS Tutorials</em>.
+</div>
+<div id="ref-welschLinearRegressionDiagnostics1977" class="csl-entry">
+Welsch, Roy, and Edwin Kuh. 1977. <span>“Linear <span>Regression Diagnostics</span>.”</span> w0173. <span>Cambridge, MA</span>: <span>National Bureau of Economic Research</span>. <a href="https://doi.org/10.3386/w0173">https://doi.org/10.3386/w0173</a>.
+</div>
+<div id="ref-wilkinsonStatisticalMethodsPsychology1999" class="csl-entry">
+Wilkinson, Leyland, and the Task Force on Statistical Inference. 1999. <span>“Statistical <span>Methods</span> in <span>Psychology Journals</span>. <span>Guidelines</span> and <span>Explanations</span>.”</span> <em>American Psychologist</em>, no. August: 594–604.
+</div>
+<div id="ref-wooldridgeIntroductoryEconometricsModern2016" class="csl-entry">
+Wooldridge, Jeffrey M. 2016. <em>Introductory <span>Econometrics</span>. <span>A Modern Approach</span></em>. Sixth. <span>Boston</span>: <span>Cengage Learning</span>.
+</div>
+<div id="ref-zachHowIdentifyInfluential2019" class="csl-entry">
+Zach. 2019. <span>“How to <span>Identify Influential Data Points Using Cook</span>’s <span>Distance</span>.”</span> <em>Statology</em>.
+</div>
+</div>
+
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">5</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></div>
+<div class="next"><a href="vedlegg-x---session-info.html">Vedlegg X - Session Info</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav"><li><a class="nav-link" href="#referanser">Referanser</a></li></ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/XX_Vedlegg_A_Referanser.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/XX_Vedlegg_A_Referanser.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>A Minimal Book Example</strong>" was written by John Doe. It was last built on 2022-05-11.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
