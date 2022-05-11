@@ -1,60 +1,37 @@
 --- 
-title: "A Minimal Book Example"
-author: "John Doe"
-date: "`r Sys.Date()`"
+title: "Anvendt kvantitativ analyse"
+author: ""
+date: "Siste endring `r format(Sys.time(), '%d %B, %Y')`"
 site: bookdown::bookdown_site
-documentclass: book
-bibliography: [book.bib, packages.bib]
-# url: your book url like https://bookdown.org/yihui/bookdown
-# cover-image: path to the social sharing image like images/cover.jpg
-description: |
-  This is a minimal example of using the bookdown package to write a book.
-  The HTML output format for this example is bookdown::bs4_book,
-  set in the _output.yml file.
-biblio-style: apalike
-csl: chicago-fullnote-bibliography.csl
+bibliography: bibliografi.bib
+csl: chicago-author-date.csl
 ---
 
-# About
-
-This is a _sample_ book written in **Markdown**. You can use anything that Pandoc's Markdown supports; for example, a math equation $a^2 + b^2 = c^2$.
-
-## Usage 
-
-Each **bookdown** chapter is an .Rmd file, and each .Rmd file can contain one (and only one) chapter. A chapter *must* start with a first-level heading: `# A good chapter`, and can contain one (and only one) first-level heading.
-
-Use second-level and higher headings within chapters like: `## A short section` or `### An even shorter section`.
-
-The `index.Rmd` file is required, and is also your first book chapter. It will be the homepage when you render the book.
-
-## Render book
-
-You can render the HTML version of this example book without changing anything:
-
-1. Find the **Build** pane in the RStudio IDE, and
-
-1. Click on **Build Book**, then select your output format, or select "All formats" if you'd like to use multiple formats from the same book source files.
-
-Or build the book from the R console:
-
-```{r, eval=FALSE}
-bookdown::render_book()
+```{r codefolder, echo=FALSE, results='asis'}
+codefolder::bookdown(init = "hide")
 ```
 
-To render this example to PDF as a `bookdown::pdf_book`, you'll need to install XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <https://yihui.org/tinytex/>.
+# Introduksjon {.unnumbered}
 
-## Preview book
+Dette notatet gir en introduksjon til anvendt kvantitativ analyse rettet mot samfunnsvitenskapene. 
 
-As you work, you may start a local server to live preview this HTML book. This preview will update as you edit the book when you save individual .Rmd files. You can start the server in a work session by using the RStudio add-in "Preview book", or from the R console:
+Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilbakemeldinger og innspill bes gitt til [Nils Kvilvang](mailto:nils.kvilvang@inn.no).
 
-```{r eval=FALSE}
-bookdown::serve_book()
+![Bilde: Ukjent opphav](Doubleblind.png)
+
+## Versjoner {.unnumbered}
+
+```{r echo = FALSE}
+
+pacman::p_load(kableExtra)
+
+versjon <- data.frame(Dato = c("22.apr 2022", "22.apr 2022", "23.apr 2022", "01.mai 2022", "01.mai 2022", "07.mai 2022", "09.mai 2022", "10.mai 2022"),
+                            Endring = c("Grunnversjon", "Lagt til kapittel om regresjonsanalyse", "Oppdatert kode embedding av filer. Korrektur. Endret på rekkefølge to delkapitler.", "Lagt til PCA.", "Oppdatert regresjonskapittel med flere analyser av uteliggere.", "Lagt til delkapittel om Exploratory Factor Analysis", "Rettet div. skrivefeil. Lagt til IV regresjon.", "Eksempel på IV regresjon"))
+
+kbl(versjon) %>%
+  kable_classic(full_width = F, html_font = "Cambria", font_size = 12) %>%
+  column_spec(1, width = "8em") %>%
+  column_spec(2, width = "40em")
+
 ```
 
-
-```{r include=FALSE}
-# automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
-```

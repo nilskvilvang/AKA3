@@ -4,16 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kapittel 4 Logistisk regresjon | A Minimal Book Example</title>
-<meta name="author" content="John Doe">
-<meta name="description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
+<title>Kapittel 3 Logistisk regresjon | Anvendt kvantitativ analyse</title>
 <meta name="generator" content="bookdown 0.26 with bs4_book()">
-<meta property="og:title" content="Kapittel 4 Logistisk regresjon | A Minimal Book Example">
+<meta property="og:title" content="Kapittel 3 Logistisk regresjon | Anvendt kvantitativ analyse">
 <meta property="og:type" content="book">
-<meta property="og:description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kapittel 4 Logistisk regresjon | A Minimal Book Example">
-<meta name="twitter:description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
+<meta name="twitter:title" content="Kapittel 3 Logistisk regresjon | Anvendt kvantitativ analyse">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -49,6 +45,9 @@
     }
   </style>
 <link rel="stylesheet" href="style.css">
+<meta name="description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
+<meta property="og:description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
+<meta name="twitter:description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -58,7 +57,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">A Minimal Book Example</a>
+        <a href="index.html" title="">Anvendt kvantitativ analyse</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -70,12 +69,12 @@
 
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
         <ul class="book-toc list-unstyled">
-<li><a class="" href="index.html"><span class="header-section-number">1</span> About</a></li>
+<li><a class="" href="index.html">Introduksjon</a></li>
 <li><a class="" href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></li>
-<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">2</span> Regresjonsanalyse - OLS</a></li>
-<li><a class="" href="iv-regresjon.html"><span class="header-section-number">3</span> IV regresjon</a></li>
-<li><a class="active" href="logistisk-regresjon.html"><span class="header-section-number">4</span> Logistisk regresjon</a></li>
-<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">5</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">1</span> Regresjonsanalyse - OLS</a></li>
+<li><a class="" href="iv-regresjon.html"><span class="header-section-number">2</span> IV regresjon</a></li>
+<li><a class="active" href="logistisk-regresjon.html"><span class="header-section-number">3</span> Logistisk regresjon</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">4</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-x---session-info.html">Vedlegg X - Session Info</a></li>
 </ul>
@@ -85,20 +84,20 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="logistisk-regresjon" class="section level1" number="4">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="logistisk-regresjon" class="section level1" number="3">
 <h1>
-<span class="header-section-number">Kapittel 4</span> Logistisk regresjon<a class="anchor" aria-label="anchor" href="#logistisk-regresjon"><i class="fas fa-link"></i></a>
+<span class="header-section-number">Kapittel 3</span> Logistisk regresjon<a class="anchor" aria-label="anchor" href="#logistisk-regresjon"><i class="fas fa-link"></i></a>
 </h1>
 
-<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">readxl</span>, <span class="va">car</span>, <span class="va">rgl</span>, <span class="va">flextable</span>, <span class="va">plotly</span>, <span class="va">latex2exp</span>, <span class="va">ggfortify</span>, <span class="va">gridExtra</span>, <span class="va">factoextra</span>, <span class="va">corrplot</span>, <span class="va">Directional</span>, <span class="va">tidyverse</span>, <span class="va">palmerpenguins</span>, <span class="va">psych</span>, <span class="va">paran</span>, <span class="va">kableExtra</span>, <span class="va">multiUS</span>, <span class="va">xtable</span>, <span class="va">GPArotation</span>, <span class="va">EFAtools</span>, <span class="va">nFactors</span>, <span class="va">rstatix</span>, <span class="va">calibrate</span>, <span class="va">Matrix</span>, <span class="va">codefolder</span><span class="op">)</span></code></pre></div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="iv-regresjon.html"><span class="header-section-number">3</span> IV regresjon</a></div>
-<div class="next"><a href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">5</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></div>
+<div class="prev"><a href="iv-regresjon.html"><span class="header-section-number">2</span> IV regresjon</a></div>
+<div class="next"><a href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">4</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav"><li><a class="nav-link" href="#logistisk-regresjon"><span class="header-section-number">4</span> Logistisk regresjon</a></li></ul>
+      <ul class="nav navbar-nav"><li><a class="nav-link" href="#logistisk-regresjon"><span class="header-section-number">3</span> Logistisk regresjon</a></li></ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
@@ -115,7 +114,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>A Minimal Book Example</strong>" was written by John Doe. It was last built on 2022-05-11.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by . It was last built on Siste endring 11 mai, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
