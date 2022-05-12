@@ -4,7 +4,7 @@ csl: chicago-author-date.csl
 ---
 
 ```{r echo=FALSE}
-pacman::p_load(haven, tidyverse, readxl, AER, lmtest)
+pacman::p_load(haven, tidyverse, readxl, AER, lmtest, jtools, summarytools)
 ```
 
 # IV regresjon
@@ -31,6 +31,9 @@ options(scipen=999)
 
 IVregrdata1 <- read_sav("IVregrdata1.sav")
 
+# Bruker pakken: summarytools
+summarytools::descr(IVregrdata1, stats = "common")
+
 IVregrdata1$Inntekt <- round(IVregrdata1$Inntekt, digits = 0)
 
 test <- ggplot(IVregrdata1, aes(Utdanning, Inntekt)) +
@@ -46,6 +49,9 @@ En forklaring kan være at denne sammenhengen skyldes en uobservert variabel som
 
 ```{r echo = FALSE}
 IVregrdata2 <- read_excel("IVregrdata2.xlsx")
+
+# Bruker pakken: summarytools
+summarytools::descr(IVregrdata2, stats = "common")
 
 test2 <- ggplot(IVregrdata2, aes(IQ, Utdanning)) +
     geom_point()
@@ -114,7 +120,9 @@ Vi ser at avstand og inntekt korrelerer. Vi kan dermed si at korrelasjonen mello
 I datasettet har vi en rekke variabler:
 ```{r}
 data("CigarettesSW")
-summary(CigarettesSW)
+
+# Bruker pakken: summarytools
+summarytools::descr(CigarettesSW, stats = "common")
 ```
 
 Vi skal her se på sammenhengen mellom "packs" (= y -> antall sigarettpakker per capita)som avhengig variabel, "price" (= x -> gjennomsnittlig pris pr år inkl skatter og avgifter) som uavhengig variabel, og "taxs" (= z -> gjennomsnittlig skatt pr år) som instrumentvariabel.

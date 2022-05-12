@@ -3,11 +3,11 @@ bibliography: bibliografi.bib
 csl: chicago-author-date.csl
 ---
 
-# Regresjonsanalyse - OLS
-
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
-pacman::p_load(car, readxl, effects, ggplot2, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, flextable, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, sjPlot, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, codefolder)
+pacman::p_load(car, readxl, effects, ggplot2, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, flextable, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, sjPlot, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, summarytools)
 ```
+
+# Regresjonsanalyse - OLS
 
 ## Innledning
 
@@ -140,7 +140,8 @@ Vi skal i det følgende gå gjennom disse stegene i en regresjonsanalyse.
 
 ## Enkel, lineær regresjonsanalyse
 
-Dette eksempelet bygger på @fieldDiscoveringStatisticsUsing2009.
+Dette eksempelet bygger på @fieldDiscoveringStatisticsUsing2009. Hvis vi ønsker å se på i hvilken grad vi kan predikere salgstall gjennom hvor mye vi bruker på reklame før lansering kan vi gjøre en lineær regresjonsanalyse med salg som avhengig variabel og reklame (adverts) som uavhengig variabel. 
+
 Du kan laste ned datasettet i ulike formater her:
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
@@ -166,13 +167,13 @@ Vi skal nå gå gjennom våre anbefalte steg i analysen, og starter med en analy
 
 "As soon as you have collected your data, before you compute any statistics, look at your data. Data screening is not data snooping. It is not an opportunity to discard data or change values to favor your hypotheses. However, if you assess hypotheses without examining your data, you risk publishing nonsense" [@wilkinsonStatisticalMethodsPsychology1999].
 
-Vi ser på datasettet.
+Vi ser på datasettet og noen nøkkeltall for datasettet.
 
-```{r}
+```{r results='asis'}
 # Bruker pakken: readxl
 Field_OLS_data <- read_excel("Field_datasett_OLS.xlsx")
-# Bruker pakken: car
-brief(Field_OLS_data)
+# Bruker pakken: summarytools
+summarytools::descr(Field_OLS_data)
 ```
 
 Vi kan se at datasettet består av 200 obervasjoner av 4 variabler. Hver av observasjonene er en CD:
@@ -180,16 +181,7 @@ Vi kan se at datasettet består av 200 obervasjoner av 4 variabler. Hver av obse
 * Adverts: Dette er summen brukt på reklame før lanseringsdato
 * Sales: Dette er salgtall per uke
 * Airplay: Antall ganger et spor fra CDen ble spilt på radio i uka før lanseringsdato
-* Image: En rating på hvor attraktiv (positivt image) gruppen/artisten har
-
-Hvis vi ønsker å se på i hvilken grad vi kan predikere salgstall gjennom hvor mye vi bruker på reklame før lansering kan vi gjøre en lineær regresjonsanalyse med salg som avhengig variabel og reklame (adverts) som uavhengig variabel. 
-
-I en analyse av dataene kan vi for eksempel være interessert i noen nøkkeltall:
-
-```{r}
-# base R
-summary(Field_OLS_data)
-```
+* Image: En rating på hvor attraktiv gruppen/artisten (positivt image) 
 
 Ofte er det imidlertid mer hensiktsmessig å se på dataene grafisk i en utforskende hensikt [@tukeyExploratoryDataAnalysis1977]. 
 
@@ -478,11 +470,19 @@ options(scipen=999)
 addata5 <- as_tibble(read_excel("Anderson-Darling_raw.xlsx"))
 # Base R
 ks.test(addata5, "pnorm")
+```
+
+```{r}
 # Base R
 shapiro.test(addata5$Values)
+```
+
+```{r}
 # bruker pakken: nortest
 cvm.test(addata$Values)
 ```
+
+
 
 Tolkning Kolmogorov-Smirnov: Hvis p-verdien er under valgte signifikansnivå (f.eks. 0.05) skal vi anta at datasettet ikke er normalfordelt. Her vil testen peke på at datasettet *ikke* er normalfordelt.
 
@@ -496,6 +496,9 @@ Som et siste eksempel på en statistisk test for normalitet kan vi bruke Jarque-
 addata6 <- as_tibble(read_excel("Anderson-Darling_raw.xlsx"))
 # Bruker pakken: tseries
 jarque.bera.test(addata6$Values)
+```
+
+```{r}
 # Bruker pakken: normtest
 ajb.norm.test(addata6$Values, nrepl=2000)
 ```
@@ -522,7 +525,7 @@ Et boxplott forteller oss mye om dataenes distribusjon.
 
 @galarnykUnderstandingBoxplots2018 illustrerer boxplott slik:
 
-![](Boxplott.png)
+![](Boxplott.png){width=50%}
 
 #### Scatterplott
 
@@ -549,9 +552,10 @@ Dette er ikke relevant i en enkel lineær regresjonsanalyse. Når vi skal gjøre
 Vi lager en korrelasjonstabell for de tre uavhengige og den avhengige variabelen (Sales, Adverts, Airplay, Image):
 
 ```{r}
-# Base R
-cor(Field_OLS_data, method = "pearson")
+# Bruker pakken: sjPlot
+tab_corr(Field_OLS_data, triangle = "lower")
 ```
+p < .0001**** , p < .001*** , p < .01**, p < .05*
 
 I standard multippel regresjonsanalyse legger vi alle de uavhengige variablene inn samtidig. Dersom vi skal gjøre en stegvis regresjonsanalyse vil vi legge de uavhengige variablene inn en og en ut fra statistiske kriterier - som hvor stor korrelasjonen er. Den uavhengige variabelen med størst korrelasjon legges inn først og så videre. For det eksempelet vi har ser vi at Sales korrelerer høyest med Airplay, og nesten like mye med Adverts. Korrelasjonen med Image er noe lavere. 
 
@@ -563,11 +567,6 @@ Vi ønsker å se om Adverts kan predikere Sales. Grafisk kan vi vise dette:
 
 ```{r}
 # Base R
-lm(formula = Sales ~ Adverts, data = Field_OLS_data)
-```
-
-```{r}
-# Base R
 FieldOLS_reg <- lm(formula = Sales ~ Adverts, data = Field_OLS_data)
 ```
 
@@ -575,7 +574,7 @@ FieldOLS_reg <- lm(formula = Sales ~ Adverts, data = Field_OLS_data)
 
 ```{r}
 # Base R
-summary(FieldOLS_reg)
+summ(FieldOLS_reg)
 ```
 
 #### Hvor mye forklarer modellen vår?
@@ -704,17 +703,19 @@ La oss se på et annet eksempel for å vise interaksjonsvariabel og -effekt base
 ```{r}
 # Bruker pakken: ISLR
 data(Carseats)
-head(Carseats)
+# Bruker pakken: summarytools
+summarytools::descr(Carseats, stats = "common")
 ```
-Datasettet inneholder ni variabler i tillegg til det vi vil bruke som avhengig variabel: Sales. Vi vil altså se om vi kan bruke de ni variablene til å predikere salg.
+Datasettet inneholder ti variabler i tillegg til det vi vil bruke som avhengig variabel: Sales. Vi vil altså se om vi kan bruke de ni variablene til å predikere salg.
 
 ```{r}
 # Base R
 saleslm <- lm(Sales~. ,Carseats)
-summary(saleslm)
+# Bruker pakken: jtools
+summ(saleslm)
 ```
 
-Denne modellen kan altså forklare 87.3 % av variansen i Sales. 
+Denne modellen kan altså forklare 87 % av variansen i Sales. 
 Vi kan imidlertid mistenke at det kan være en interaksjon mellom variablene Income og Population - jo større befolkning, jo større inntekt tilgjengelig. 
 
 ```{r}
@@ -724,7 +725,7 @@ saleslm1<-lm(Sales~.+Population*Income, Carseats)
 compareCoefs(saleslm, saleslm1)
 ```
 
-Forskjellen mellom modellene ligger altså i den nederste koeffisienten (Population * Income) som da er den kombinerte og samtidige effekten av de to variablene. Vi ser at effekten er veldig liten, men grafisk kan vi også se interaksjonseffekten:
+Forskjellen mellom modellene ligger altså i den nederste koeffisienten (Income:Population) som da er den kombinerte og samtidige effekten av de to variablene. Vi ser at effekten er veldig liten, men grafisk kan vi også se interaksjonseffekten:
 
 ```{r}
 # Bruker pakken: ggplot2
@@ -1139,16 +1140,18 @@ xfun::embed_file('Pallant_survey.dta')
 # Base R
 # Bruker pakken: readxl
 Pallant_survey <- as.data.frame(read_excel("Pallant_survey.xlsx"))
-brief(Pallant_survey)
 ```
 
-Vi skal bruke to uavhengige variabler - tmast (Control of external events) og tpcioss (Control of internal states) mot den avhengige variabelen tpstress (Perceived stress). Vi ønsker altså å se om en gruppe studenters (N = 439) egenrapporterte oppfattelse av sin kontroll over eksterne forhold som kan skape stress og deres evne til å kontrollere deres følelser, tanker og fysiske reaksjoner [@pallantDevelopmentValidationScale2000]. Vi kan derfor se nærmere på variablene.
+Datasettet er for stort til å vises fram i sin helhet, men vi skal bruke to uavhengige variabler - tmast (Control of external events) og tpcioss (Control of internal states) mot den avhengige variabelen tpstress (Perceived stress).
+
+Vi ønsker altså å se om en gruppe studenters (N = 439) egenrapporterte oppfattelse av sin kontroll over eksterne forhold som kan skape stress og deres evne til å kontrollere deres følelser, tanker og fysiske reaksjoner [@pallantDevelopmentValidationScale2000]. Vi kan derfor se nærmere på variablene.
 
 ```{r}
 # Base R
 Pallant_survey2 <- select(Pallant_survey, tmast, tpcoiss, tpstress)
 Pallant_survey2 <- na.omit(Pallant_survey2) 
-summary(Pallant_survey2)
+# Bruker pakken: summarytools
+summarytools::descr(Pallant_survey2, stats = "common")
 ```
 
 ```{r}
@@ -1201,7 +1204,9 @@ Vi skal illustrere overfitting basert på et eksempel fra @frostHowInterpretAdju
 ```{r}
 # Base R
 PresidentRanking <- read.csv("PresidentRanking.csv")
-head(PresidentRanking)
+
+# Bruker pakken: summarytools
+summarytools::descr(PresidentRanking)
 ```
 
 Datasettet inneholder to variabler: Hvordan historikere rangerer amerikanske presidenter (Historians.rank) og hvor stor generell støtte presidenter har hatt i befolkningen (Approval.High). 
@@ -1211,7 +1216,7 @@ Datasettet inneholder to variabler: Hvordan historikere rangerer amerikanske pre
 presidentlm <- lm(formula = Historians.rank ~ Approval.High, data = PresidentRanking)
 plot(Historians.rank ~ Approval.High, data = PresidentRanking)
 abline(presidentlm, lwd = 2, col = "red")
-S(presidentlm)
+summ(presidentlm)
 ```
 
 Vi ser at R-squared er $0.0068$ - hvilket vi vil tolke som at det i praksis ikke er noen sammenheng mellom variablene. 
@@ -1225,10 +1230,10 @@ presidentlm2 <- lm(Historians.rank ~ poly(Approval.High, degree=3), data=Preside
 ggplot(data=PresidentRanking, aes(Approval.High,Historians.rank)) +
     geom_point() + 
     geom_smooth(method="lm", formula=y~I(x^3)+I(x^2))
-S(presidentlm2)
+summ(presidentlm2)
 ```
 
-Vi har nå en R-squared på $0.664$ for denne modellen mot $0.0068$ for den lineære modellen. Dette betyr at den polynomiske regresjonsmodellen forklarer drøye 66% av variansen i den avhengige variabelen. Modellen vår er ut fra dette en god modell for våre data.
+Vi har nå en R-squared på $0.66$ for denne modellen mot $0.0068$ for den lineære modellen. Dette betyr at den polynomiske regresjonsmodellen forklarer drøye 66% av variansen i den avhengige variabelen. Modellen vår er ut fra dette en god modell for våre data.
 Imidlertid gir en analyse av Predicted R-square oss et annet bilde av modellen:
 
 ```{r}
@@ -1239,9 +1244,9 @@ ols_pred_rsq(presidentlm2)
 I realiteten forteller både verdien på predicted r-square på 0, og forskjellen mellom R-square ($0.664$) og predicted R-square $0$, at vi har en seriøs overfitting. Vi har med andre ord funnet en modell som beskriver dataene våre veldig godt, men som ikke kan brukes på andre data enn de vi har (vel, den kan jo brukes, men vil ikke kunne gi oss noe av verdi). Vi kan altså ikke predikere noe ut fra modellen.
 
 ```{r}
-# Bruker pakken: olsrr
-PallantOLS_reg <- ols_regress(tpstress ~ tmast + tpcoiss, data = Pallant_survey2)
-PallantOLS_reg
+# Bruker pakken: summarytools
+PallantOLS_reg <- lm(tpstress ~ tmast + tpcoiss, data = Pallant_survey2)
+summ(PallantOLS_reg)
 ```
 
 Vi ser at $R^2 = 0.466$. Modellen kan altså forklare $46.6%$ av variansen i den avhengige variabelen. Vi ser at vi får en noe lavere verdi for «Adjusted R Squared» i forhold til «R Squared».  Når vi legger til en uavhengig variabel i en regresjonsanalyse er det lite sannsynlig at korrelasjonen mellom den nye uavhengige variabelen og den avhengige variabelen vil være nøyaktig 0. Den vil i stedet fluktuere rundt 0. Pga. denne tilfeldige fluktuasjonen rundt 0 vil $R^2$ alltid øke litt når man legger til en ny uavhengig variabel. Adjusted $R^2$ søker å kompensere for dette å få fram en mer korrekt verdi. Jo større antall uavhengige variabler, jo større forskjell vil man se mellom $R^2$ og Adjusted $R^2$. Det samme vil være tilfelle ved mindre utvalgsstørrelser fordi variasjonen rundt 0 vil være større i mindre utvalg. 
@@ -1558,10 +1563,18 @@ xfun::embed_file('Pallant_survey.dta')
 # Base R
 # Bruker pakken: readxl
 Pallant_survey <- as.data.frame(read_excel("Pallant_survey.xlsx"))
-brief(Pallant_survey)
+
 ```
 
-I tillegg til de to uavhengige variabler - tmast (Control of external events) og tpcioss (Control of internal states) vil vi bruke variablene alder (age) og "social desirability" (tmarlow) som kontrollvariabler. "Social desirability bias" er et kjent fenomen der respondenter har en tendens til å ønske å framstå i et bedre lys heller enn i et sant/reelt lys [@preissTestingLevelSocial2015]. Respondenter kan f.eks. ønske å framstå som mer ærlige enn de i realiteten er, og vil derfor også svare deretter på spørsmål. I tillegg kan man anta at alder kan ha påvirkning på opplevelsen av totalt stressnivå. 
+I tillegg til de to uavhengige variabler - tmast (Control of external events) og tpcioss (Control of internal states) vil vi bruke variablene alder (age) og "social desirability" (tmarlow) som kontrollvariabler. 
+
+```{r}
+Pallant_subset <- Pallant_survey[c("age", "tmarlow", "tmast", "tpcoiss", "tpstress")]
+# Bruker pakken: summarytools
+summarytools::descr(Pallant_subset, stats = "common")
+```
+
+"Social desirability bias" er et kjent fenomen der respondenter har en tendens til å ønske å framstå i et bedre lys heller enn i et sant/reelt lys [@preissTestingLevelSocial2015]. Respondenter kan f.eks. ønske å framstå som mer ærlige enn de i realiteten er, og vil derfor også svare deretter på spørsmål. I tillegg kan man anta at alder kan ha påvirkning på opplevelsen av totalt stressnivå. 
 
 Vi velger å lage et nytt datasett der vi trekker ut de relevante variablene, og fjerne observasjoner med NA (ingen verdi).
 
@@ -1569,7 +1582,7 @@ Vi velger å lage et nytt datasett der vi trekker ut de relevante variablene, og
 # Base R
 Pallant_survey3 <- select(Pallant_survey, age, tmarlow, tmast, tpcoiss, tpstress)
 Pallant_survey3 <- na.omit(Pallant_survey3)
-brief(Pallant_survey3)
+summarytools::descr(Pallant_survey3, stats = "common")
 ```
 
 I denne hierarkiske multipple regresjonsanalysen ønsker vi derfor å bruke alder og sosial ønskverdighet som kontrollvariabler. Vi legger i første blokk inn de variablene vi ønsker å kontrollere for, før vi i blokk to legger inn de samme uavhengige variablene som i forrige eksempel. Hensikten med dette er at vi ønsker å fjerne mulige effekter av de to "kontrollvariablene".
@@ -1587,7 +1600,7 @@ Vi gjør ingen analyse av dette da vi har valgt to kontrollvariabler og to uavhe
 
 ### Lage modell (kjøre regresjonsanalysen)
 
-![](PallantOLShier.png)
+![](PallantOLShier.png){width=50%}
 
 Her lager vi tre modeller: Modell 0 inneholder kun Intercept (som en referansemodell). Modell 1 inneholder kun age og tmarlow, modell 2 inneholder i tillegg tmast og tpcoiss.
 
@@ -1602,8 +1615,8 @@ modell2 <- lm(tpstress ~ age + tmarlow + tmast + tpcoiss, data = Pallant_survey3
 
 ```{r}
 # Base R
-summary(modell1)
-summary(modell2)
+summ(modell1)
+summ(modell2)
 ```
 
 Den første modellen er modellen med kun alder og social desirability som forklarer 5,9 % av variansen. Den andre modellen, som består av både kontrollvariablene og de to tidligere uavhengige variablene forklarer til sammen 47 %.
@@ -1919,7 +1932,8 @@ Vi skal i gå gjennom et eksempel på stegvis multippel regresjonsanalyse, ved �
 ```{r}
 # Base R
 magazine_data <- as.data.frame(read_excel("magazine_reg.xlsx"))
-brief(magazine_data)
+# Bruker pakken: summarytools
+summarytools::descr(magazine_data, stats = "common")
 ```
 
 ```{r}
@@ -1940,7 +1954,7 @@ histtsat9 <- with(magazine_data, hist(sat9))
 
 Hvilke av de 9 uavhengige variablene (sat1...sat9), som er ulike mål på kunders oppfatning av produktet, bidrar signifikant til å forklare variansen i hvordan kundene totalt sett skårer produktet (magasinet) («How would you rate our magazine altogether?»). De ulike målene er f.eks. grundighet, objektivitet, lesbarhet og pålitelighet. Spørsmålet er hvilke aspekter (sat1...sat9) har størst innflytelse på kundetilfredsheten?
 
-![](stepwise.png)
+![](stepwise.png){width=50%}
 
 ```{r}
 # Base R

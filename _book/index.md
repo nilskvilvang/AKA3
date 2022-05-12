@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
-author: ""
-date: "Siste endring 11 mai, 2022"
+author: "Nils Kvilvang"
+date: "12 mai, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -87,6 +87,10 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   <tr>
    <td style="text-align:left;width: 8em; "> 10.mai 2022 </td>
    <td style="text-align:left;width: 40em; "> Eksempel på IV regresjon </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 12.mai 2022 </td>
+   <td style="text-align:left;width: 40em; "> Endret til summarytools for beskrivende statistikk </td>
   </tr>
 </tbody>
 </table>

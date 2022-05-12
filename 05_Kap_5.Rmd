@@ -4,7 +4,7 @@ csl: chicago-author-date.csl
 ---
 
 ```{r}
-pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable, GPArotation, EFAtools, nFactors, rstatix, calibrate, Matrix, codefolder)
+pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable, GPArotation, EFAtools, nFactors, rstatix, calibrate, Matrix, summarytools)
 ```
 
 # Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)
@@ -26,7 +26,7 @@ Strengt tatt er ikke PCA en faktoranalyse, men omtales (dessverre noe forvirrend
 
 Grafisk kan forskjellene vises slik:
 
-![](PCA-FA.png)
+![](PCA-FA.png){width=60%}
 
 I venstre del (PCA) kombineres fire målte variabler ($X_1...X_4$) til en komponent ($C$). Pilene indikerer at det er variablene som bidrar til å skape komponenten, og de kan gjøre det med ulike styrke (vekt), som er vist med $w_1...w_4$. Variablene $X_1...X_4$ utgjør altså ulike størrelser på bidraget til komponenten $C$. 
 
@@ -34,7 +34,7 @@ I figurens høyre del ser vi en faktor $F$ som skaper de fire målte variablene 
 
 Som illustrert i figuren under består variansen til variabelen X av tre deler: felles varians med andre variabler, unik varians for selve variabel X og målefeil. PCA søker å forklare all varians for variabel X som en komponent (derav komponentanalyse), mens faktoranalyse kun søker å forklare den delen av den totale variansen som er felles (eller med andre ord: korrelasjonen mellom variablene).   
 
-![Modifisert fra @bjerkanFaktoranalyse2007b, s. 225, fig. 10.1](PCA-EFA-CFA.png)
+![Modifisert fra @bjerkanFaktoranalyse2007b, s. 225, fig. 10.1](PCA-EFA-CFA.png){width=70%}
 
 Matematisk er forskjellen mellom faktoranalyse og PCA altså hvordan varians blir analysert – i PCA blir all varians analysert, i faktoranalyse blir kun delt varians («shared variance») analysert. Eller med andre ord: PCA analyserer all varians (felles varians, unik varians og målefeil), FA analyserer kovarians (variabelens felles varians med andre variabler).
 
@@ -42,7 +42,7 @@ Teoretisk er forskjellen mellom de to at i FA ses faktoren som årsaker til vari
 
 En annen måte å illustrere forskjellen mellom PCA og EFA er gitt av @bastosExploratoryFactorAnalysis2021. 
 
-![Fra @bastosExploratoryFactorAnalysis2021](PCA-EFA.png){width=50%}
+![Fra @bastosExploratoryFactorAnalysis2021](PCA-EFA.png){width=60%}
 
 I figuren over representerer A'ene spesifikk varians, B'ene felles varians og C'ene feilvarians (jfr. figuren fra @bjerkanFaktoranalyse2007b lenger opp). Mens vi i PCA vil bruke all varians (A, B og C) bruker vi kun B i EFA. 
 
@@ -523,7 +523,7 @@ xfun::embed_file('Pallant_survey_PANAS.dta')
 # Bruker pakken: readxl
 Pallant_survey_PANAS <- as.data.frame(read_excel("Pallant_survey_PANAS.xlsx"))
 Pallant_survey_PANAS <- na.omit(Pallant_survey_PANAS)
-brief(Pallant_survey_PANAS)
+summarytools::descr(Pallant_survey_PANAS)
 ```
 
 Datasettet består av 20 spørsmål som utgjør PANAS skalaen ("the Positive and Negative Affect Schedule"). 
@@ -769,7 +769,7 @@ xfun::embed_file('fa_spm.dta')
 # Base R
 # Bruker pakken: readxl
 fa_spm <- as.data.frame(read_excel("fa_spm.xlsx"))
-brief(fa_spm)
+summarytools::descr(fa_spm)
 ```
 
 Vi kan se for oss at vi har stilt en rekke mennesker 9 spørsmål der de har svart på en skala fra 1-4. Det vi ønsker å se er om disse spørsmålene kan si noe om en eller flere latente variabler. De 9 spørsmålene er altså direkte målt, og vi vil se om vi kan si noe om latente variabler ut fra dette. 
