@@ -1,6 +1,7 @@
 ---
 bibliography: bibliografi.bib  
 csl: chicago-author-date.csl
+always_allow_html: true
 ---
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
@@ -188,10 +189,30 @@ Ofte er det imidlertid mer hensiktsmessig å se på dataene grafisk i en utforsk
 #### Histogram
 
 ```{r}
-# base R
-par(mfrow=(c(1,2)))
-histSales <- with(Field_OLS_data, hist(Sales))
-histAdverts <- with(Field_OLS_data, hist(Adverts))
+# Bruker pakkene: ggplot2 og gridExtra
+
+annotations <- data.frame(
+  x = c(round(min(Field_OLS_data$Adverts), 2), round(mean(Field_OLS_data$Adverts), 2), round(max(Field_OLS_data$Adverts), 2)),
+  y = c(4, 52, 5),
+  label = c("Min:", "Gjennomsnitt:", "Maks:"))
+  
+plott1 <- ggplot(Field_OLS_data, aes(Adverts)) + 
+  geom_histogram(bins = 10, color = "#000000", fill = "#0099F8") + 
+    geom_vline(aes(xintercept = mean(Adverts)), color = "#000000", size = 0.5, linetype = "dashed") + 
+ geom_text(data = annotations, aes(x = x, y = y, label = paste(label, x)), size = 2, fontface = "bold") +
+      theme_classic()
+
+annotations2 <- data.frame(
+  x = c(round(min(Field_OLS_data$Sales), 2), round(mean(Field_OLS_data$Sales), 2), round(max(Field_OLS_data$Sales), 2)),
+  y = c(4, 52, 5),
+  label = c("Min:", "Gjennomsnitt:", "Maks:"))
+
+plott2 <- ggplot(Field_OLS_data, aes(Sales)) + 
+  geom_histogram(bins = 10, color = "#000000", fill = "#0099F8") + 
+    geom_vline(aes(xintercept = mean(Sales)), color = "#000000", size = 0.5, linetype = "dashed") + 
+ geom_text(data = annotations2, aes(x = x, y = y, label = paste(label, x)), size = 2, fontface = "bold") +
+      theme_classic()
+grid.arrange(plott1, plott2, ncol=2)
 ```
 
 Det kan se ut som at salgstallene er rimelig normalfordelte, mens reklamevariabelen er klart skjev. 
@@ -482,8 +503,6 @@ shapiro.test(addata5$Values)
 cvm.test(addata$Values)
 ```
 
-
-
 Tolkning Kolmogorov-Smirnov: Hvis p-verdien er under valgte signifikansnivå (f.eks. 0.05) skal vi anta at datasettet ikke er normalfordelt. Her vil testen peke på at datasettet *ikke* er normalfordelt.
 
 Tolkning av Shapiro-Wilks og Cramer-von Mieses test er lik som for Kolmogorov-Smirnov. 
@@ -530,8 +549,9 @@ Et boxplott forteller oss mye om dataenes distribusjon.
 #### Scatterplott
 
 ```{r}
-# Base R
-scatterField <- with(Field_OLS_data, plot(Sales, Adverts))
+# Bruker pakken: ggplot2
+ggplot(Field_OLS_data, aes(x = Adverts, y = Sales)) +
+  geom_point(colour = 4)
 ```
 
 Et scatterplott viser oss på en god visuell måte hvordan de to variablene forholder seg til hverandre (vi plotter hver enkelt observasjon gjennom verdiene de har på de to variablene). Mønsteret kan derfor si oss mye om sammenhengen mellom de to. 
@@ -563,18 +583,18 @@ I standard multippel regresjonsanalyse legger vi alle de uavhengige variablene i
 
 Vi ønsker å se om Adverts kan predikere Sales. Grafisk kan vi vise dette:
 
-![](OLS1.png)
+![](OLS1.png){width=50%}
 
 ```{r}
-# Base R
-FieldOLS_reg <- lm(formula = Sales ~ Adverts, data = Field_OLS_data)
+# Bruker pakken: olsrr
+FieldOLS_reg <- ols_regress(Sales ~ Adverts, data = Field_OLS_data)
 ```
 
 ### Steg 4: Analyse av resultatene (diagnostikk)
 
 ```{r}
-# Base R
-summ(FieldOLS_reg)
+# Bruker pakken: olsrr
+FieldOLS_reg
 ```
 
 #### Hvor mye forklarer modellen vår?
@@ -611,6 +631,7 @@ Til slutt vil vi se på konfidensintervallet:
 
 ```{r}
 # Bruker pakken: car
+FieldOLS_reg <- lm(Sales ~ Adverts, Field_OLS_data)
 Confint(FieldOLS_reg)
 ```
 
@@ -709,10 +730,9 @@ summarytools::descr(Carseats, stats = "common")
 Datasettet inneholder ti variabler i tillegg til det vi vil bruke som avhengig variabel: Sales. Vi vil altså se om vi kan bruke de ni variablene til å predikere salg.
 
 ```{r}
-# Base R
-saleslm <- lm(Sales~. ,Carseats)
-# Bruker pakken: jtools
-summ(saleslm)
+# Bruker pakken: olsrr
+saleslm <- ols_regress(Sales~. ,data = Carseats)
+saleslm
 ```
 
 Denne modellen kan altså forklare 87 % av variansen i Sales. 
@@ -720,9 +740,10 @@ Vi kan imidlertid mistenke at det kan være en interaksjon mellom variablene Inc
 
 ```{r}
 # Base R
-saleslm1<-lm(Sales~.+Population*Income, Carseats)
+saleslm2 <- lm(Sales~. ,Carseats)
+saleslm1 <- lm(Sales~.+Population*Income, Carseats)
 # Bruker pakken: car
-compareCoefs(saleslm, saleslm1)
+compareCoefs(saleslm2, saleslm1)
 ```
 
 Forskjellen mellom modellene ligger altså i den nederste koeffisienten (Income:Population) som da er den kombinerte og samtidige effekten av de to variablene. Vi ser at effekten er veldig liten, men grafisk kan vi også se interaksjonseffekten:
@@ -780,7 +801,19 @@ Residualene lagres altså i modellen og vi kan plotte ut disse:
 
 ```{r}
 # Base R
+
+FieldOLS_reg <- lm(Sales ~ Adverts, Field_OLS_data)
+
 hist(FieldOLS_reg$residuals)
+
+FieldOLSresid <- FieldOLS_reg$residuals
+
+plott3 <- ggplot(data = FieldOLS_reg, aes(FieldOLS_reg$residuals)) + 
+  geom_histogram(bins = 10, color = "#000000", fill = "#0099F8") +
+    theme_classic() +
+    labs(title = 'Histogram av residualer', x = 'Residualer', y = 'Antall')
+
+plott3
 ```
 
 Vi kan også se på et Q-Q plott og hente ut testverdier for ulike normalitetstester:

@@ -1,42 +1,12 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "12 mai, 2022"
+date: "16 mai, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
+always_allow_html: true
 ---
-
-
-```{=html}
-<input onclick="codefolder(&#39;pre.sourceCode&#39;);" type="button" value="Hide Code" id="codefolder-button" style="position: absolute; right: 8%; z-index: 200"/>
-<script>
-  function codefolder(query) {
-
-    var x = document.querySelectorAll(query);
-    if (x.length === 0) return;
-
-    function toggle_vis(o) {
-      var d = o.style.display;
-      o.style.display = (d === 'block' || d === '') ? 'none':'block';
-    }
-
-    for (i = 0; i < x.length; i++) {
-      var y = x[i];
-      toggle_vis(y);
-    }
-
-    var elem = document.getElementById("codefolder-button");
-    if (elem.value === "Hide Code") elem.value = "Show Code";
-    else elem.value = "Hide Code";
-  }
-</script>
-<script>
-  window.addEventListener('load', function () {
-    codefolder('pre.sourceCode');
-  });
-</script>
-```
 
 # Introduksjon {.unnumbered}
 
@@ -91,6 +61,10 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   <tr>
    <td style="text-align:left;width: 8em; "> 12.mai 2022 </td>
    <td style="text-align:left;width: 40em; "> Endret til summarytools for beskrivende statistikk </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 16.mai </td>
+   <td style="text-align:left;width: 40em; "> Oppdatert histogrammer med ggplot2 </td>
   </tr>
 </tbody>
 </table>
