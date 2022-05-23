@@ -69,7 +69,16 @@
 </form>
 
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
-        <ul class="book-toc list-unstyled"><li><a class="active" href="index.html">Introduksjon</a></li></ul>
+        <ul class="book-toc list-unstyled">
+<li><a class="active" href="index.html">Introduksjon</a></li>
+<li><a class="" href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></li>
+<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">1</span> Regresjonsanalyse - OLS</a></li>
+<li><a class="" href="iv-regresjon.html"><span class="header-section-number">2</span> IV regresjon</a></li>
+<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">3</span> Logistisk regresjon</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">4</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="" href="referanser.html">Referanser</a></li>
+<li><a class="" href="vedlegg-x---session-info.html">Vedlegg X - Session Info</a></li>
+</ul>
 
         <div class="book-extra">
           <p><a id="book-repo" href="https://github.com/nilskvilvang/AKA3">View book source <i class="fab fa-github"></i></a></p>
@@ -191,7 +200,7 @@ Lagt til delkapittel om CFA
 </div>
   <div class="chapter-nav">
 <div class="empty"></div>
-<div class="empty"></div>
+<div class="next"><a href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
@@ -201,7 +210,8 @@ Lagt til delkapittel om CFA
 
       <div class="book-extra">
         <ul class="list-unstyled">
-          
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/index.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/index.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -221,6 +231,34 @@ Lagt til delkapittel om CFA
   </div>
 
 </div></div>
-</footer>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
 </body>
 </html>

@@ -170,5 +170,3 @@ hvor-god-er-modellen-vår-model-fit-statistics
 kjikvadrattest
 approximate-fit-index---rmsea-cfi-og-tli
 kryssvalidering-cross-validation
-variablene-er-uten-målefeil-2
-sphericity---er-datasettet-faktoriserbart
