@@ -6,6 +6,8 @@ fig:unnamed-chunk-22
 fig:unnamed-chunk-25
 fig:unnamed-chunk-28
 tab:unnamed-chunk-45
+tab:unnamed-chunk-78
+tab:unnamed-chunk-82
 regresjonsanalyse---ols
 innledning
 teori
@@ -158,3 +160,15 @@ analyse
 model-fit
 sammenlikning-uten-rotasjon-med-ortogonal-varimax-og-oblikk-promax-rotasjon
 konfirmerende-faktoranalyse-cfa
+gjennomgang-av-teori-med-eksempel
+fra-lineær-regresjon-til-faktoranalyse
+frihetsgrader
+kjøring-av-modell
+full-modell-på-datasettet
+tolkning-av-resultatene
+hvor-god-er-modellen-vår-model-fit-statistics
+kjikvadrattest
+approximate-fit-index---rmsea-cfi-og-tli
+kryssvalidering-cross-validation
+variablene-er-uten-målefeil-2
+sphericity---er-datasettet-faktoriserbart

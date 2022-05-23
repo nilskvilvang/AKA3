@@ -25,7 +25,7 @@
 #>   methods_4.1.2   R6_2.5.1        rappdirs_0.3.3 
 #>   rlang_1.0.2     rmarkdown_2.14  rprojroot_2.0.3
 #>   rstudioapi_0.13 sass_0.4.1      stats_4.1.2    
-#>   stringi_1.7.6   stringr_1.4.0   tinytex_0.38   
+#>   stringi_1.7.6   stringr_1.4.0   tinytex_0.39   
 #>   tools_4.1.2     utils_4.1.2     vctrs_0.4.1    
 #>   xfun_0.30       xml2_1.3.3      yaml_2.3.5
 ```

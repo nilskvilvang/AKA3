@@ -69,16 +69,7 @@
 </form>
 
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
-        <ul class="book-toc list-unstyled">
-<li><a class="active" href="index.html">Introduksjon</a></li>
-<li><a class="" href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></li>
-<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">1</span> Regresjonsanalyse - OLS</a></li>
-<li><a class="" href="iv-regresjon.html"><span class="header-section-number">2</span> IV regresjon</a></li>
-<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">3</span> Logistisk regresjon</a></li>
-<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">4</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
-<li><a class="" href="referanser.html">Referanser</a></li>
-<li><a class="" href="vedlegg-x---session-info.html">Vedlegg X - Session Info</a></li>
-</ul>
+        <ul class="book-toc list-unstyled"><li><a class="active" href="index.html">Introduksjon</a></li></ul>
 
         <div class="book-extra">
           <p><a id="book-repo" href="https://github.com/nilskvilvang/AKA3">View book source <i class="fab fa-github"></i></a></p>
@@ -91,7 +82,7 @@
 <p>Dette notatet gir en introduksjon til anvendt kvantitativ analyse rettet mot samfunnsvitenskapene.</p>
 <p>Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilbakemeldinger og innspill bes gitt til <a href="mailto:nils.kvilvang@inn.no">Nils Kvilvang</a>.</p>
 <div class="figure">
-<img src="Doubleblind.png" alt=""><p class="caption">Bilde: Ukjent opphav</p>
+<img src="Doubleblind.png" style="width:80.0%" alt=""><p class="caption">Bilde: Ukjent opphav</p>
 </div>
 <div id="versjoner" class="section level2 unnumbered">
 <h2>Versjoner<a class="anchor" aria-label="anchor" href="#versjoner"><i class="fas fa-link"></i></a>
@@ -180,10 +171,18 @@ Endret til summarytools for beskrivende statistikk
 </tr>
 <tr>
 <td style="text-align:left;width: 8em; ">
-16.mai
+16.mai 2022
 </td>
 <td style="text-align:left;width: 40em; ">
 Oppdatert histogrammer med ggplot2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8em; ">
+23.mai 2022
+</td>
+<td style="text-align:left;width: 40em; ">
+Lagt til delkapittel om CFA
 </td>
 </tr>
 </tbody>
@@ -192,7 +191,7 @@ Oppdatert histogrammer med ggplot2
 </div>
   <div class="chapter-nav">
 <div class="empty"></div>
-<div class="next"><a href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></div>
+<div class="empty"></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
@@ -202,8 +201,7 @@ Oppdatert histogrammer med ggplot2
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/index.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/index.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+          
         </ul>
 </div>
     </nav>
@@ -215,7 +213,7 @@ Oppdatert histogrammer med ggplot2
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 16 mai, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 23 mai, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -223,34 +221,6 @@ Oppdatert histogrammer med ggplot2
   </div>
 
 </div></div>
-</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
-for (let popover of popovers) {
-  const div = document.createElement('div');
-  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
-  div.innerHTML = popover.getAttribute('data-content');
-
-  var has_math = div.querySelector("span.math");
-  if (has_math) {
-    document.body.appendChild(div);
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
-    MathJax.Hub.Queue(function() {
-      popover.setAttribute('data-content', div.innerHTML);
-      document.body.removeChild(div);
-    })
-  }
-}
-</script>
+</footer>
 </body>
 </html>

@@ -1,11 +1,10 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "16 mai, 2022"
+date: "23 mai, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
-always_allow_html: true
 ---
 
 # Introduksjon {.unnumbered}
@@ -14,7 +13,7 @@ Dette notatet gir en introduksjon til anvendt kvantitativ analyse rettet mot sam
 
 Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilbakemeldinger og innspill bes gitt til [Nils Kvilvang](mailto:nils.kvilvang@inn.no).
 
-![Bilde: Ukjent opphav](Doubleblind.png)
+![Bilde: Ukjent opphav](Doubleblind.png){width=80%}
 
 ## Versjoner {.unnumbered}
 
@@ -63,8 +62,12 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
    <td style="text-align:left;width: 40em; "> Endret til summarytools for beskrivende statistikk </td>
   </tr>
   <tr>
-   <td style="text-align:left;width: 8em; "> 16.mai </td>
+   <td style="text-align:left;width: 8em; "> 16.mai 2022 </td>
    <td style="text-align:left;width: 40em; "> Oppdatert histogrammer med ggplot2 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 23.mai 2022 </td>
+   <td style="text-align:left;width: 40em; "> Lagt til delkapittel om CFA </td>
   </tr>
 </tbody>
 </table>

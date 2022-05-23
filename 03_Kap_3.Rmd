@@ -1,7 +1,6 @@
 ---
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
-always_allow_html: true
 ---
 
 ```{r echo=FALSE}

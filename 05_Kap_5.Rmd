@@ -1,11 +1,10 @@
 ---
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
-always_allow_html: true
 ---
 
 ```{r}
-pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable, GPArotation, EFAtools, nFactors, rstatix, calibrate, Matrix, summarytools)
+pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable, GPArotation, EFAtools, nFactors, rstatix, calibrate, Matrix, summarytools, lavaan, lavaanPlot, haven, skimr, psycho, semPlot, gridExtra, kfa)
 ```
 
 # Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)
@@ -14,7 +13,7 @@ pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridEx
 
 "En faktoranalyse er en analyseteknikk som brukes for å forstå korrelasjonsstrukturen i et sett av observerte variabler" [@bjerkanFaktoranalyse2007b, s.221]. I følge @mehmetogluInnforingStatistiskeDataanalyser2020 brukes disse statistiske teknikkene i praksis som metoder som reduserer et større antall variabler til et mindre antall variabler uten å miste vesentlig informasjon om dataene i prosessen. De omtales derfor ofte som datareduksjonsteknikker ("data reduction" eller "dimension reduction"). Ofte vil vi bruke faktoranalyse for å kunne si noe om såkalte latente (eller skjulte) variabler i samfunnsvitenskapene -  forhold vi ikke kan måle direkte, men som vi kan uttrykke gjennom å måle/observere en rekke andre forhold/variabler som vi så "samler" i en konstruert variabel gjennom nettopp faktoranalyse. Målet med faktoranalysen er da i følge @tinsleyUsesFactorAnalysis1987 "to achieve parsimony by using the smallest number of explanatory concepts to explain the maximum amount of common variance in a correlation matrix". Det vi ønsker å finne er variabler som er korrelerte med hverandre, men relativt ukorrelerte med andre grupper/subset av variabler (som igjen er interkorrelerte i egen gruppe/subset) [@tabachnikUsingMultivariateStatistics2007]. Den grunnleggende utfordringen er at vi ønsker å representere et stort antall variabler på en enklere måte, men hvis vi velger for få faktorer mister vi informasjon (noe som går ut over påliteligheten) og hvis vi velger for mange kan vi ende opp med en modell som er komplisert og vanskelig å tolke. 
 
-Innledningsvis er det nødvendig å gjøre en grunnleggende begrepsavklaring rundt begrepet faktoranalyse da det i mange sammenhenger framstår som om begreper blandes sammen og det kan være uklart hva man egentlig snakker om. Begrepene faktoranalyse og komponentanalyse ("Factor Analysis" - FA - og "Principal Component Analysis" - PCA) brukes ofte om hverandre og noen ganger er det uklart hva som er hva (eller i hvert fall hva forfatteren mener). En klargjørende framstilling kan man f.eks. finne i @joreskogkarlg.MultivariateAnalysisLISREL2016. Vi vil i det følgende skille mellom faktoranalyse (EFA og CFA, og komponentanalyse (PCA).
+Innledningsvis er det nødvendig å gjøre en grunnleggende begrepsavklaring rundt begrepet faktoranalyse da det i mange sammenhenger framstår som om begreper blandes sammen og det kan være uklart hva man egentlig snakker om. Begrepene faktoranalyse og komponentanalyse ("Factor Analysis" - FA - og "Principal Component Analysis" - PCA) brukes ofte om hverandre og noen ganger er det uklart hva som er hva (eller i hvert fall hva forfatteren mener). En klargjørende framstilling kan man f.eks. finne i @joreskogkarlg.MultivariateAnalysisLISREL2016. Vi vil i det følgende skille mellom faktoranalyse (EFA og CFA), og komponentanalyse (PCA).
 
 Felles for begge er:
 
@@ -23,7 +22,7 @@ Felles for begge er:
 * de er metodikker for å identifisere mønstre i korrelasjonen mellom variabler. 
 
 En grunnleggende forskjell er at PCA er en deskriptiv teknikk mens faktoranalyse er modelleringsteknikker [@unkelSimultaneousParameterEstimation2010]. PCA blir dermed "en empirisk oppsummering av datamaterialet" [@bjerkanFaktoranalyse2007b, s.225].
-Strengt tatt er ikke PCA en faktoranalyse, men omtales (dessverre noe forvirrende) som sagt ofte som en faktoranalyse. I SPSS heter f.eks. menypunktet «Data reduction» og man velger «Factor» i neste valg uansett hvilken av metodene (PCA/EFA/CFA) man skal bruke.
+Strengt tatt er ikke PCA en faktoranalyse, men omtales (dessverre noe forvirrende) som sagt ofte som en faktoranalyse. I SPSS heter f.eks. menypunktet «Data reduction» og man velger «Factor» i neste valg hvilket innebærer en EFA. SPSS er begrenset til EFA, og man trenger AMOS i SPSS som strengt tatt er et SEM-program (SEM = Structural Equation Modelling - en relatert metodikk til CFA som vi behandler i et senere kapittel).
 
 Grafisk kan forskjellene vises slik:
 
@@ -931,9 +930,398 @@ abline(h = 0, v = 0)
 
 ```
 
-
 ### Konfirmerende faktoranalyse (CFA)
 
+Gjennomgangen av Confirmatory Factor Analysis (CFA) er basert på [@linConfirmatoryFactorAnalysis2021]. Vi håper vår gjennomgang kan framstå som like god som Lins original. 
 
+I forrige del beskrev vi forskjellen på EFA og CFA på følgende måte:
+
+* Eksplorerende faktoranalyse som søker å gruppere variabler i et datasett ut fra korrelasjon uten spesifikke hypoteser på forhånd om hvordan strukturen ser ut. Denne tilnærmingen er således induktiv og i mindre grad drevet av teori - "one can always subject a data set to an EFA but not necessarily a CFA" [Schriesheim i @hurleyExploratoryConfirmatoryFactor1997, s.672].
+* Konfirmerende faktoranalyse starter i andre enden - med hypoteser om dataene og strukturen. Her ønsker vi å bekrefte (konfirmere) en antatt datastruktur i vårt datasett, f.eks. ut fra teoretiske forventninger og tidligere undersøkelser. 
+
+#### Gjennomgang av teori med eksempel
+
+Data i eksempelet er hentet fra [@fieldDiscoveringStatisticsUsing2009] (dataene er konstruerte).
+
+Du kan laste ned datasettet i SPSS-format [her](http://www.discoveringstatistics.com/docs/ds_data_files/SPSS%20Data%20Files/) - fila heter SAQ.sav.
+
+```{r}
+SAQ <- read_sav("SAQ.sav")
+SAQ2 <- select(SAQ, -c(Question_09:FAC4_2))
+SAQ2 <- rename(SAQ2, Spm1 = Question_01, Spm2 = Question_02, Spm3 = Question_03, Spm4 = Question_04, Spm5 = Question_05, Spm6 = Question_06, Spm7 = Question_07, Spm8 = Question_08)
+write_sav(SAQ2, "SAQ2.sav")
+```
+
+Vi har modifisert datasettet ved å ta vekk noen unødvendige variabler for vårt formål og gitt variablene nye navn, og kalt denne fila SAQ2.sav:
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('SAQ2.sav')
+```
+
+Det grunnleggende ved faktoranalyse er at det ser på korrelasjoner mellom spørsmål/enheter. I vårt datasett - SAQ2 - har vi denne korrelasjonsmatrisen:
+
+```{r}
+SAQ2cor<-round(cor(SAQ2[,1:8]),2)
+upper <- SAQ2cor
+upper[upper.tri(SAQ2cor)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+I CFA (og SEM) bruker vi imidlertid kovariansmatrise, ikke korrelasjonsmatrise. 
+
+```{r}
+SAQ2cov <- round(cov(SAQ2[,1:8]),2)
+upper <- SAQ2cov
+upper[upper.tri(SAQ2cov)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+Vi kan legge merke til at diagonalen i korrelasjonsmatrisen er 1 (en variabel korrelerer alltid perfekt (1) med seg selv). I en kovariansmatrise er diagnoalen ikke 1. Korrelasjon viser hvordan to variabler er relatert til hverandre, kovarians viser hvordan to variabler er ulike (korrelasjon er standardisert kovarians ved at kovariansen deles på standardavviket for hver variabel).
+
+#### Fra lineær regresjon til faktoranalyse
+
+Fra kapittelet om regresjonsanalyse kjenner vi til:
+
+$y=b_0 + b_1x + e$
+
+der
+
+$y=den\ avhengige\ variabelen$ 
+
+$b_0=intercept$
+
+$b_1=stigningstallet\ (slope)$
+
+$x=uavhengig\ observert\ variabel/prediktor$
+
+$e=feilledd/residual$
+
+I faktoranalyse har vi tilsvarende:
+
+$y_1 = \tau_1 + \lambda_1\eta_1 + e_1$
+
+der
+
+$y_1 = "enheten"/spørsmålet$
+
+$\tau_1 = intercept\ (= "tau")$
+
+$\lambda_1 = koeffisient\ (= lambda\ , på\ en\ måte\ som\ slope\ i\ lineær\ regresjon,\ men\ som\ i\ CFA\ kalles\ "loading")$
+
+$\eta_1=faktoren\ (=eta\ ,uobservert/latent,\ i\ motsetning\ til\ en\ prediktor\ i\ lineær\ regresjon)$
+
+$e_1=feilleddet/residualen$
+
+En distinkt forskjell mellom OLS og CFA er dermed at i OLS er prediktoren observert, mens i CFA er faktoren uobservert.
+
+Vi har altså:
+$$y_1 = \tau_1 + \lambda_1\eta_1 + e_1$$
+
+$$y_2 = \tau_2 + \lambda_2\eta_1 + e_2$$
+
+$$y_3 = \tau_3 + \lambda_3\eta_1 + e_3$$
+
+Disse tre likningene (som kan være de tre første spørsmålene i vårt datasett) er dermed tre separate regresjonslikninger. 
+Som vi kan skrive slik på matriseform:
+
+$$\begin{pmatrix}y_1\\y_2\\y_3\end{pmatrix} = \begin{pmatrix}\tau_1\\\tau_2\\\tau_3\end{pmatrix} + \begin{pmatrix}\lambda_1\\\lambda_2\\\lambda_3\end{pmatrix}(\eta_1) + \begin{pmatrix}e_1\\e_2\\e_3\end{pmatrix}$$
+
+I motsetning til OLS, som er univariat, er CFA multivariat. For hver $y$ har vi en intercept ($\tau$), en loading ($\lambda$) og en residual ($e$). Det alle $y$ har felles er faktoren $\eta$. Og det vi egentlig sier er at den felles faktoren predikerer alle $y$. 
+
+#### Frihetsgrader
+
+La oss anta at vi ser på spm 3, 4 og 5, og sier at vårt teoretiske utgangspunkt er at (den uobserverte/latente) faktoren SPSS-angst beskriver de observerte skårene på de tre spørsmålene. Grafisk kan vi illustrere dette slik:
+
+![](SPSSangst.png){width=50%}
+
+Vi modifiserer datasettet til å kun inneholde disse tre spørsmålene.
+
+```{r}
+SAQ3 <- select(SAQ2, -c(Spm1, Spm2, Spm6:Spm8))
+SAQ3cov <- round(cov(SAQ3[,1:3]),2)
+upper <- SAQ3cov
+upper[upper.tri(SAQ3cov)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+For å se på antall frihetsgrader begynner vi med å se på antallet kjente størrelser (=totalt antall parametere = "known values"). Dette finner vi ved:
+
+$p(p+1)/2$
+
+I vår tenkte modell har vi $p=3$, altså 6 parametere. Dette kan vi forsåvidt se i kovariansmatrisen også, men i en stor kovariansmatrise er det raskere å bruke utregningen.
+
+Imidlertid ser vår modell slik ut:
+
+$$\Sigma(\theta) = \begin{pmatrix}\lambda_{1} \\\lambda_{2} \\\lambda_{3}\end{pmatrix}\begin{pmatrix}\psi_{11}\end{pmatrix}\begin{pmatrix}\lambda_{1} & \lambda_{2} & \lambda_{3}\end{pmatrix} + \begin{pmatrix}\theta_{11} &  0 & 0 \\\theta_{21} & \theta_{22} & 0 \\\theta_{31} &  \theta_{32} & \theta_{33} \\\end{pmatrix}$$
+
+der
+
+$\lambda$ er kjent fra før
+
+$\psi$ er variansen i faktoren
+
+og siste ledd i likningen er kovariansmatrisen.
+
+I modellen vår må vi finne antall unike parametere, som i dette tilfellet er 10 (3 x $\lambda$, 1 x $\psi$ og 4 x $\theta$). Vi kan da finne antallet frie parametere som er $Antall\ unike\ parametere\ - antall\ faste\ parametere = 10 - 0 = 10$
+
+Antall frihetsgrader vil da være: $antall\ kjente\ parametere\ - antall\ frie\ parametere = 6 - 10 = -4$
+
+Dette er uheldig - vi kan ikke ha et større antall frie parametere enn antall kjente parametere, da får vi et negativt antall frihetsgrader og en umulig modell. Dette kalles "underdefined model", og kan sammenliknes med å skulle løse $x + y = 9$: Det finnes uendelig mange løsninger for den likningen. Der vi har 0 frihetsgrader er modellen "just-identified" (dette eer tilfelle i regresjonsmodeller), og positivt antall frihetsgrader innebærer "over-identified model".
+
+Løsningen på en "underdefined model" er "fixed parameters" - altså at vi låser et antall parametere til en verdi slik at de ikke kan variere. Hvis vi f.eks. låser 3 x $\lambda$ og 1 x $\psi$ får vi 4 låste parametere som gir: 
+
+$Antall\ unike\ parametere\ - antall\ faste\ parametere = 10 - 4 = 6 (frie parrametere)$ 
+
+som gir
+
+$antall\ kjente\ parametere\ - antall\ frie\ parametere = 10 - 6 = 4$.
+
+Antall frihetsgrader blir da:
+
+$antall\ kjente\ parametere\ - antall\ frie\ parametere = 6 - 4 = 2$
+
+#### Kjøring av modell
+
+```{r}
+modell1 <- 'SPSSangst =~ Spm3 + Spm4 + Spm5'
+SPSS_3var <- cfa(modell1, data = SAQ3)
+summary(SPSS_3var)
+```
+I tabellen over ser vi resultatet av vår modell. Ladningene ("loadings") - $\lambda$ - er gitt under "Latent Variables" - "Estimates". "Estimates" under "Variances", f.eks. 0.815 for Spm3 er residualen for Spm3. 
+I R-pakken **lavaan** som er brukt her, låses ladning for første spørsmål til 1. Vi ser dette under "Latent Variables" der "Estimate" for Spm3 = 1, noe vi også kan se grafisk under. Siden ladningen til Spm3 er låst til 1 ("fixed parameter") betyr det at $\lambda$ for de to andre spørsmålene er vist i relasjon til/skalert til Spm3. Dette gjør tolkning vanskelig. 
+
+```{r}
+# Bruker pakken: semPlot
+nodenavnf <- c(
+    "Standard deviations excite me",
+    "I dream that Pearson is attacking me with correlation coefficients",
+    "I don't understand statistics",
+    "SPSS Anxiety Questionnaire"
+)
+semPaths(SPSS_3var,
+         what = "std",
+         whatLabels = "est",
+         style = "lisrel",
+         residScale = 10,
+         nodeNames = nodenavnf,
+         theme = "colorblind",
+         nCharNodes = 0,
+         reorder = FALSE,
+         legend.cex = 0.35,
+         rotation = 2,
+         sizeMan = 8,
+         sizeLat = 10
+)
+```
+
+I stedet for å låse første ladning kan vi låse variansen i faktoren:
+
+```{r}
+modell2 <- "SPSSangst =~ Spm3 + Spm4 + Spm5"
+SPSS_3var_2 <- cfa(modell2, data = SAQ3, std.lv = TRUE)
+summary(SPSS_3var_2)
+```
+
+Vi ser at $\lambda$ - ladningen - for Spm3 ikke lenger er 1. 
+```{r}
+# Bruker pakken: semPlot
+nodenavn <- c(
+    "Standard deviations excite me",
+    "I dream that Pearson is attacking me with correlation coefficients",
+    "I don't understand statistics",
+    "SPSS Anxiety Questionnaire"
+)
+semPaths(SPSS_3var_2,
+         what = "std",
+         whatLabels = "est",
+         style = "lisrel",
+         residScale = 10,
+         nodeNames = nodenavn,
+         theme = "colorblind",
+         nCharNodes = 0,
+         reorder = FALSE,
+         legend.cex = 0.35,
+         rotation = 2,
+         sizeMan = 8,
+         sizeLat = 10
+)
+```
+
+#### Full modell på datasettet
+
+Vi ønsker å lage en CFA-modell for SPSSangst med alle åtte spørsmålene.
+
+```{r}
+# Bruker pakken: lavaan
+modell3 <- "SPSSangst =~ Spm1 + Spm2 + Spm3 + Spm4 + Spm5 + Spm6 + Spm7 + Spm8"
+SPSS_8 <- cfa(modell3, data = SAQ2, std.lv = TRUE)
+summary(SPSS_8, fit.measure = TRUE, standardized = TRUE)
+```
+
+En noe mer oversiktlig tabell over parametrene, modifisert fra [@dudekConfirmatoryFactorAnalysis2019]:
+
+```{r}
+parameterEstimates(SPSS_8,standardized = FALSE) %>% 
+    filter(op=="=~") %>%
+    select(Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue) %>%
+    knitr::kable(digits=3,booktabs=TRUE,format="markdown",caption="Faktorladninger")
+```
+
+
+```{r}
+# Bruker pakken: semPlot
+nodenavn2 <- c(
+    "Statistics make me cry",
+    "My friends will think I'm stupid for not being able to cope with SPSS",
+    "Standard deviations excite me",
+    "I dream that Pearson is attacking me with correlation coefficients",
+    "I don't understand statistics",
+    "I have little experience of computers",
+    "All computers hate me",
+    "I have never been good at mathematics",
+    "SPSS Anxiety Questionnaire"
+)
+semPaths(SPSS_8,
+         what = "std",
+         whatLabels = "est",
+         style = "lisrel",
+         residScale = 8,
+         nodeNames = nodenavn2,
+         theme = "colorblind",
+         nCharNodes = 0,
+         manifests = paste0("Spm", 1:8),
+         reorder = FALSE,
+         legend.cex = 0.35,
+         rotation = 2,
+         sizeMan = 6,
+         sizeLat = 10
+)
+```
+
+Vi kan isolere/hente ut ladningene ($\lambda$ = lambda):
+```{r}
+# Bruker pakken: semPlot
+round(semMatrixAlgebra(SPSS_8, LY), digits = 3)
+```
+
+Vi kan også se isolert på residualenes varians ($\theta$ = theta):
+```{r}
+thetaverdier <- semMatrixAlgebra(SPSS_8, TE)
+upper <- round(thetaverdier, digits = 3)
+upper[upper.tri(thetaverdier)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+Dere finner igjen lambda- og thetaverdiene i såvel tabellearisk som grafisk output ovenfor. 
+
+#### Tolkning av resultatene
+
+Det første vi kan se er at "Estimate" for SPSSangst er 1.000. Dette er fordi vi har låst denne parameteren, hvilket innebærer at variansen er standardisert. Så hvis vi har en enhets økning i SPSSangst, kan vi lese endringen for de åtte spørsmålene. F.eks. vil Spm1 øke med 0.485 i Spm1's skala (for Spm1:Spm8 er ikke standardisert, kun variansen) (se under "Latent Variables" - "Estimate"), og Spm2 vil gå ned med 0.198 ("Estimate" er -0.198). I den grafiske presentasjonen av modellen ser vi det samme, også illustrert med blå og rød farge i dette tilfellet for  positiv eller negativ "Estimate". 
+
+For å gjøre tolkningen lettere kan vi standardisere både variansen i faktoren (til 1) og enhetene/spørsmålene i seg selv:
+
+```{r}
+parameterEstimates(SPSS_8,standardized = TRUE) %>% 
+    filter(op=="=~") %>%
+    select(Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue, Std.Beta = std.all) %>%
+    knitr::kable(digits=3,booktabs=TRUE,format="markdown",caption="Faktorladninger")
+```
+
+Her ønsker vi å se på kolonnen "Std.all" i originaloutput (i vår forenkle tabell = "Std.Beta"), som vi kan sammenlikne med standardiserte betaverdier i lineær regresjon. Tolkningen nå blir: For ett standardavviks økning i SPSSangst øker Spm1 med 0.586 standardavvik, mens Spm går ned med 0.233 standardavvik (-0.233). Dette vil vi (som regel) kalle standardiserte ladninger ("standardized loadings"). En fordel med standardiserte ladninger er at vi kan lettere sammenlikne ladningen til hverandre fordi de er nettopp standardiserte.  
+
+```{r}
+semPaths(SPSS_8,
+         what = "std",
+         whatLabels = "std",
+         style = "lisrel",
+         residScale = 8,
+         nodeNames = nodenavn,
+         theme = "colorblind",
+         nCharNodes = 0,
+         manifests = paste0("Spm", 1:8),
+         reorder = FALSE,
+         legend.cex = 0.35,
+         rotation = 2,
+         sizeMan = 6,
+         sizeLat = 10
+)
+```
+
+#### Hvor god er modellen vår ("Model Fit Statistics")?
+
+Et viktig poeng før vi gir oss i kast med vurdering av hvor god modellen er, er at for å kunne si noe om dette må modellen ha positivt antall frihetsgrader (jfr. delkapittel om frihetsgrader lenger opp). 
+
+#### Kjikvadrattest
+
+![](CFA_ModelFit1.png){width=70%}
+
+I en CFA ønsker vi at p-verdien for kjikvadratverdien er større enn 0.05 - vi ønsker altså ikke å forkaste nullhypotesen, men med en p-verdi < 0.001 må vi forkaste nullhypotesen (nullhypotsen her innebærer at det ikke er forskjell mellom vår modell og populasjonen, men det ønsker vi jo heller ikke - vi ønsker at vår modell representerer populasjonen). Tilsynelatende har vi derfor i forhold til kjikvadrattesten en dårlig modell. Her må vi imidlertid være klar over at store utvalgsstørrelser gir en stor risiko for at vi får en signifikant kjikvadrattest. I dette tilfellet har vi 2571 observasjoner, noe som er høyt.
+
+#### "Approximate Fit Index" - RMSEA, CFI og TLI
+
+Kjikvadrattest er en "Exact Fit"-test, hvilket innebærer at vi hypotetiserer at utvalget/modellen er lik populasjonen. Det finnes imidlertid andre tester som går under betegnelsen "Approximate Fit Index", hvilket innebærer at man tilnærmer seg dette med "nærme nok" (altså ikke absolutt). Vi skal ikke gå inn i detaljer på hvordan disse indeksene regnes ut, men begrense oss til å si at disse bygger på å sammenlikne en verst mulig modell (= ingen kovariasjoner er med, kun varianser for den enkelte enhet/spørsmål) med en best mulig modell (= alle varianser og kovarianser er med -> "just-identified" modell), og deretter plasserer vår modell inn i dette bildet. 
+
+CFI = "Confirmatory Factor Index" ønsker vi skal være over 0.95
+
+TLI = "Tucker Lewis Index" ønsker vi skal være over 0.90
+
+![](CFA_ModelFit2.png){width=70%}
+
+RMSEA = "Root Mean Square Error of Approximation" bør være under eller lik 0.05 for "close fit", og mellom 0.05 og 0.08 for "reasonable approximate fit". RMSEA over 0.08 er "poor fit".
+
+![](CFA_ModelFit3.png){width=70%}
+
+Alle disse tre målene på Model Fit er ikke særlig gode. Modellen vår er trolig ikke den beste modellen for SPSSangst. Et tiltak vi kan se på er hvor store de enkelte standardiserte ladningen er. Vi ser (f.eks. i det siste diagrammet) at Spm2 lader med -0.23, noe som er en god del lavere enn de fleste andre. Hva skjer om vi tar bort dette spørsmålet i en revidert modell?
+
+```{r}
+modell4 <- "SPSSangst =~ Spm1 + Spm3 + Spm4 + Spm5 + Spm6 + Spm7 + Spm8"
+SPSS_7 <- cfa(modell4, data = SAQ2, std.lv = TRUE)
+fitMeasures(SPSS_7, c("cfi","tli", "rmsea"))
+# summary(SPSS_7, fit.measure = TRUE, standardized = TRUE)
+```
+
+Vi ser at forbedringene ikke er store, og at modellen vår ikke ser kjempebra ut (den er ikke elendig, men under cut-off verdiene vi normalt opererer med).
+
+#### Kryssvalidering ("cross-validation")
+
+Kryssvalidering innebærer at vi deler datasettet i to: en del vi utvikler modeller på, og en del vi tester vår utvalgte modell på. På den måten unngår vi at vi bruker hele datasettet på å grave fram (litt sjansepreget) en modell som er ok uten å vite om vi bare har hatt flaks. Hvis vår valgte modell har en god fit med den delen av dataene vi tester på kan vi si noe mer sikkert om vår modell.
+
+I R kan vi bruke pakken **kfa** som gjør dette ganske lett for oss. Grafisk kan vi se for oss prosessen slik:
+
+![](kFold1.png){width=50%}
+
+Datasettet deles først tilfeldig i treningsdata og testdata. Ofte brukes 80/20 eller 70/30 fordeling, men dette kan variere. Treningsdataene deles igjen tilfeldig inn i utvalg.
+
+Metoden vi ser på her kalles "k fold Cross Validation". *k* utgjør antall "folds". Et "fold" er et sett utvalg.  Det er ikke noen formell regel for hvor mange utvalg man bør ha. [@kuhnAppliedPredicitveModelling2013] hevder "The choice of k is usually 5 or 10, but there is no formal rule" (s.70). 
+
+For hvert utvalg kjøres en EFA på alle utvalg unntatt for et uvalg som er et valideringsutvalg. EFA-utvalgene og valideringsutvalget utgjør et "fold". Neste iterasjon kjøres EFA på alle utvalg i testdataene unntatt et nytt utvalg som blir valideringsutvalg. Dette utgjør et nytt "fold". Slik kjøres prosedyren til alle utvalg har vært valideringsutvalg for de andres EFA. 
+
+![](kFold2.png){width=50%}
+
+Hvis vi tenker oss at vi har tre utvalg (U1-3) i treningsdatasettet får vi da:
+
+- Modell 1: Trent på U1 og U2, validert på U3
+- Modell 2: Trent på U1 og U3, validert på U2
+- Modell 3: Trent på U2 og U3, vlaidert på U1
+
+Modellene syntetisreres og til slutt kjøres CFA på testdatasettet. Da utsetter vi modellen for data den ikke har "sett" før. 
+
+![](kFold3.png){width=50%}
+
+```{r}
+kfamodell <- kfa(
+    SAQ2,
+    k = 5,
+    m = 1,
+    seed = 1243)
+
+k_model_fit(kfamodell, index = "default", by.fold = FALSE)
+```
+
+Verdiene for hhv. CFI og RMSEA kan sammenliknes med foreslåtte cutoff-verider lenger opp for å bidra til vurderingen av modellen. Resultatene i dette tilfellet bekrefter på mange måter inntrykket vi har før cross-validation.
 
  
