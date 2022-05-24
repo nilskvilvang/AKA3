@@ -80,6 +80,9 @@ oppsummert-om-forutsetningerdiagnostikk
 eventuell-revisjon-av-modellen
 eventuell-analyse-av-revidert-modell
 konklusjon-oppsummering-rapportering-av-resultater
+modellens-evne-til-å-predikere
+kryssvalidering
+kryssvalidering-av-vår-multiple-regresjonsmodell
 hierarkisk-multippel-regresjonsanalyse
 analyse-av-dataene-1
 evtentuelt-valg-av-prediktorer-ut-fra-analyse-av-dataene-1

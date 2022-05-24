@@ -828,7 +828,7 @@ det(fa_spm_cor)
 
 En positiv verdi indikerer også at datasettet egner seg for faktoranalyse.
 
-### Antall faktorer
+#### Antall faktorer
 
 #### Kaisers kriterium
 
@@ -857,7 +857,7 @@ PARALLEL(fa_spm, eigen_type = "EFA")
 
 Dette peker mot tre faktorer.
 
-### Analyse
+#### Analyse
 
 Vi kjører en faktoranalyse med 3 faktorer uten rotasjon.
 
@@ -932,7 +932,7 @@ abline(h = 0, v = 0)
 
 ### Konfirmerende faktoranalyse (CFA)
 
-Gjennomgangen av Confirmatory Factor Analysis (CFA) er basert på [@linConfirmatoryFactorAnalysis2021]. Vi håper vår gjennomgang kan framstå som like god som Lins original. 
+Gjennomgangen av Confirmatory Factor Analysis (CFA) er basert på @linConfirmatoryFactorAnalysis2021. Vi håper vår gjennomgang kan framstå som like god som Lins original. 
 
 I forrige del beskrev vi forskjellen på EFA og CFA på følgende måte:
 
@@ -941,7 +941,7 @@ I forrige del beskrev vi forskjellen på EFA og CFA på følgende måte:
 
 #### Gjennomgang av teori med eksempel
 
-Data i eksempelet er hentet fra [@fieldDiscoveringStatisticsUsing2009] (dataene er konstruerte).
+Data i eksempelet er hentet fra @fieldDiscoveringStatisticsUsing2009 (dataene er konstruerte).
 
 Du kan laste ned datasettet i SPSS-format [her](http://www.discoveringstatistics.com/docs/ds_data_files/SPSS%20Data%20Files/) - fila heter SAQ.sav.
 
@@ -1161,7 +1161,7 @@ SPSS_8 <- cfa(modell3, data = SAQ2, std.lv = TRUE)
 summary(SPSS_8, fit.measure = TRUE, standardized = TRUE)
 ```
 
-En noe mer oversiktlig tabell over parametrene, modifisert fra [@dudekConfirmatoryFactorAnalysis2019]:
+En noe mer oversiktlig tabell over parametrene, modifisert fra @dudekConfirmatoryFactorAnalysis2019:
 
 ```{r}
 parameterEstimates(SPSS_8,standardized = FALSE) %>% 
@@ -1288,29 +1288,14 @@ Vi ser at forbedringene ikke er store, og at modellen vår ikke ser kjempebra ut
 
 #### Kryssvalidering ("cross-validation")
 
+Dette er også omtalt under delkapittelet om multippel regresjonsanalyse så en litt mer utførlig beskrivelse gis der.
+
 Kryssvalidering innebærer at vi deler datasettet i to: en del vi utvikler modeller på, og en del vi tester vår utvalgte modell på. På den måten unngår vi at vi bruker hele datasettet på å grave fram (litt sjansepreget) en modell som er ok uten å vite om vi bare har hatt flaks. Hvis vår valgte modell har en god fit med den delen av dataene vi tester på kan vi si noe mer sikkert om vår modell.
 
-I R kan vi bruke pakken **kfa** som gjør dette ganske lett for oss. Grafisk kan vi se for oss prosessen slik:
-
-![](kFold1.png){width=50%}
-
-Datasettet deles først tilfeldig i treningsdata og testdata. Ofte brukes 80/20 eller 70/30 fordeling, men dette kan variere. Treningsdataene deles igjen tilfeldig inn i utvalg.
-
-Metoden vi ser på her kalles "k fold Cross Validation". *k* utgjør antall "folds". Et "fold" er et sett utvalg.  Det er ikke noen formell regel for hvor mange utvalg man bør ha. [@kuhnAppliedPredicitveModelling2013] hevder "The choice of k is usually 5 or 10, but there is no formal rule" (s.70). 
+I R kan vi bruke pakken **kfa** som gjør dette ganske lett for oss. 
 
 For hvert utvalg kjøres en EFA på alle utvalg unntatt for et uvalg som er et valideringsutvalg. EFA-utvalgene og valideringsutvalget utgjør et "fold". Neste iterasjon kjøres EFA på alle utvalg i testdataene unntatt et nytt utvalg som blir valideringsutvalg. Dette utgjør et nytt "fold". Slik kjøres prosedyren til alle utvalg har vært valideringsutvalg for de andres EFA. 
 
-![](kFold2.png){width=50%}
-
-Hvis vi tenker oss at vi har tre utvalg (U1-3) i treningsdatasettet får vi da:
-
-- Modell 1: Trent på U1 og U2, validert på U3
-- Modell 2: Trent på U1 og U3, validert på U2
-- Modell 3: Trent på U2 og U3, vlaidert på U1
-
-Modellene syntetisreres og til slutt kjøres CFA på testdatasettet. Da utsetter vi modellen for data den ikke har "sett" før. 
-
-![](kFold3.png){width=50%}
 
 ```{r}
 kfamodell <- kfa(

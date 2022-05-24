@@ -4,7 +4,7 @@ csl: chicago-author-date.csl
 ---
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE}
-pacman::p_load(car, readxl, effects, ggplot2, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, flextable, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, sjPlot, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, summarytools)
+pacman::p_load(car, readxl, effects, ggplot2, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, flextable, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, sjPlot, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, summarytools, caret)
 ```
 
 # Regresjonsanalyse - OLS
@@ -1549,6 +1549,65 @@ tab_model(PallantOLS_reg2)
 </div>
 
 En multippel lineær regresjonsanalyse ble gjennomført for å teste om respondentenes oppfattede nivå av indre kontroll og kontroll på ytre faktorer predikerer totalt nivå av oppfattet stress. Analyser ble gjennomført for å sikre at det ikke var brudd på forutsetningene for en multippel lineær regresjonsanalyse. En statistisk signifikant regresjonsmodell ble funnet (F (2, 423) = 184.5, p < .001), med en $R^2$ på .466. Både nivå av indre kontroll og kontroll på ytre faktorer var signifikante prediktorer. 
+
+### Modellens evne til å predikere
+
+Et siste tema vi skal ta for oss i multippel regresjonsanalyse inkluderes ofte ikke i lærebøkers kapitler om regresjonsanalyse. Det omtales gjerne i andre sammenhenger i lærebøker som "predictive analytics" eller "predictive modelling", og hvis man skal lære seg om temaer som maskinlæring vil dette naturlig element der. Selv synes jeg dette er naturlig å omtale under regresjonsanalyse også fordi:
+
+- "Model fit" handler kun om hvor god modellen vår beskriver/passer til dataene vi har i dette tilfellet
+- Dette sier ikke nødvendigvis så mye om hvor god modellen vår er på andre data. Så hvis vi vil lage en modell basert på våre data som vi også ønsker skal kunne predikere i andre data (er vår modell generaliserbar?) trenger vi en tilleggsanalyse.
+
+Dette tillegget kaller vi kryssvalidering. Metoden vi skal bruke her kalles "k fold cross validation". 
+
+#### Kryssvalidering
+
+Kryssvalidering innebærer at vi deler datasettet i to: en del vi utvikler modeller på, og en del vi tester vår utvalgte modell på. På den måten unngår vi at vi bruker hele datasettet på å grave fram (litt sjansepreget) en modell som er ok uten å vite om vi bare har hatt flaks. Hvis vår valgte modell har en god fit med den delen av dataene vi tester på kan vi si noe mer sikkert om vår modell.
+
+Grafisk kan vi se for oss prosessen slik:
+
+![](kFold1.png){width=50%}
+
+Datasettet deles først tilfeldig i treningsdata og testdata. Ofte brukes 80/20 eller 70/30 fordeling, men dette kan variere. Treningsdataene deles igjen tilfeldig inn i utvalg.
+
+Metoden vi ser på her kalles "k fold Cross Validation". *k* utgjør antall "folds". Et "fold" er et sett utvalg.  Det er ikke noen formell regel for hvor mange utvalg man bør ha. @kuhnAppliedPredicitveModelling2013 hevder "The choice of k is usually 5 or 10, but there is no formal rule" (s.70). 
+
+![](kFold2.png){width=50%}
+
+Hvis vi tenker oss at vi har tre utvalg (U1-3) i treningsdatasettet får vi da:
+
+- Modell 1: Trent på U1 og U2, validert på U3
+- Modell 2: Trent på U1 og U3, validert på U2
+- Modell 3: Trent på U2 og U3, vlaidert på U1
+
+Modellene syntetiseres og til slutt kjøres CFA på testdatasettet. Da utsetter vi modellen for data den ikke har "sett" før. 
+
+![](kFold3.png){width=50%}
+
+#### Kryssvalidering av vår multiple regresjonsmodell
+
+```{r}
+# Bruker pakken: caret
+set.seed(156)
+Pallant_survey <- na.omit(Pallant_survey)
+# Spesifiserer cross-validation parametre 
+kontrollspes <- trainControl(method = "cv", number = 10, savePredictions = "final")
+# Lager modell
+set.seed(156)
+modell1 <- train(tpstress ~ age + tmarlow + tmast + tpcoiss, data = Pallant_survey, method = "lm", trControl = kontrollspes)
+```
+
+Oppsummeringen av vår kryssvalidering viser: 
+```{r}
+print(modell1)
+```
+
+Resultaten vi er spesielt interessert i er:
+
+- RMSE: Root Mean Square Error. Dette er et mål på gjennomsnittlig forskjell mellom prediksjonene gjort av modellen (treningsdelen av datasettet) og de faktiske observasjonene (testdelen av datasettet). Jo lavere RMSE, jo bedre klarer modellen å predikere verdien på ukjente data (testdelen).
+- Rsquared: Er korrelasjonen mellom prediksjonene og observasjonene
+- MAE: Mean Absolute Error. Dette er et mål på forskjellen mellom prediksjonene og observasjonene i absolutte tall. Jo lavere MAE, jo nærmere observasjonene er prediksjonene.
+
+Her skulle vi selvsagt gjerne hatt noen absolutte grenseverdier å forholde seg til for RMSE og MAE (Rsquared er litt enklere å forholde seg til som en korrelasjonskoeffisient). Dessverre er det ikke slik at vi kan gi slike klare grenseverdier for om modellen predikerer bra eller ikke. I stedet må vi sammenlikne verdien på hhv. RMSE og MAE med skalaene på variablene. Hvis vi f.eks. predikerer boligpriser i en modell vil RMSE gi oss avviket relatert til akkurat boligprisene (i motsetning til f.eks. prosent). For å fortsette boligpriseksempelet: Hvis vi får en RMSE på 15 000 i et datasett der snittprisen på boliger er 15 000 000 vil det absolutt måtte betegnes osm en god (=lav) RMSE. Men samme RMSE på 15 000 i et datasett der snittprisen på boliger er 100 000 vil være langt mindre god enn den første. Så man må rett og slett sette seg ned og gjøre en vurdering. 
 
 ## Hierarkisk multippel regresjonsanalyse
 

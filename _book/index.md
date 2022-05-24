@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "23 mai, 2022"
+date: "24 mai, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -68,6 +68,10 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   <tr>
    <td style="text-align:left;width: 8em; "> 23.mai 2022 </td>
    <td style="text-align:left;width: 40em; "> Lagt til delkapittel om CFA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 24.mai 2022 </td>
+   <td style="text-align:left;width: 40em; "> CV på multippel regresjon </td>
   </tr>
 </tbody>
 </table>
