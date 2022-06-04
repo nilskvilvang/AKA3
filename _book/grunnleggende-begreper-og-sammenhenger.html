@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Kapittel 1 Grunnleggende begreper og sammenhenger | Anvendt kvantitativ analyse</title>
+<meta name="author" content="Nils Kvilvang">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Kapittel 1 Grunnleggende begreper og sammenhenger | Anvendt kvantitativ analyse">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kapittel 1 Grunnleggende begreper og sammenhenger | Anvendt kvantitativ analyse">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/tabwid-1.0.0/tabwid.css" rel="stylesheet">
+<link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="libs/plotly-binding-4.10.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script><link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+<link rel="stylesheet" href="style.css">
+<meta name="description" content="Vi skal i dette kapittelet gå gjennom en rekke begreper og forhold som vi vil komme tilbake til gjennom flere ulike analyser senere, i større eller mindre grad, men de er alle det vi vil kalle...">
+<meta property="og:description" content="Vi skal i dette kapittelet gå gjennom en rekke begreper og forhold som vi vil komme tilbake til gjennom flere ulike analyser senere, i større eller mindre grad, men de er alle det vi vil kalle...">
+<meta name="twitter:description" content="Vi skal i dette kapittelet gå gjennom en rekke begreper og forhold som vi vil komme tilbake til gjennom flere ulike analyser senere, i større eller mindre grad, men de er alle det vi vil kalle...">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Anvendt kvantitativ analyse</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Introduksjon</a></li>
+<li><a class="" href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></li>
+<li><a class="active" href="grunnleggende-begreper-og-sammenhenger.html"><span class="header-section-number">1</span> Grunnleggende begreper og sammenhenger</a></li>
+<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">2</span> Regresjonsanalyse - OLS</a></li>
+<li><a class="" href="iv-regresjon.html"><span class="header-section-number">3</span> IV regresjon</a></li>
+<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">4</span> Logistisk regresjon</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">5</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">6</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
+<li><a class="" href="referanser.html">Referanser</a></li>
+<li><a class="" href="vedlegg-x---session-info.html">Vedlegg X - Session Info</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/nilskvilvang/AKA3">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="grunnleggende-begreper-og-sammenhenger" class="section level1" number="1">
+<h1>
+<span class="header-section-number">Kapittel 1</span> Grunnleggende begreper og sammenhenger<a class="anchor" aria-label="anchor" href="#grunnleggende-begreper-og-sammenhenger"><i class="fas fa-link"></i></a>
+</h1>
+<p>Vi skal i dette kapittelet gå gjennom en rekke begreper og forhold som vi vil komme tilbake til gjennom flere ulike analyser senere, i større eller mindre grad, men de er alle det vi vil kalle grunnleggende begreper vi bør ha en grad av kjennskap til.</p>
+<div id="populasjon-og-utvalg" class="section level2" number="1.1">
+<h2>
+<span class="header-section-number">1.1</span> Populasjon og utvalg<a class="anchor" aria-label="anchor" href="#populasjon-og-utvalg"><i class="fas fa-link"></i></a>
+</h2>
+<p>Når vi gjør undersøkelser om «et eller annet» kan vi veldig ofte ikke samle inn informasjon (data) fra alle. Om man gjør en meningsmåling før et valg for å anslå utfallet av valget kan man naturligvis ikke spørre alle stemmeberettigede i hele landet (+ alle stemmeberettigede som ikke er i landet akkurat når man gjennomfører meningsmålingen). Det er praktisk umulig. Alle stemmeberettigede kalles i denne sammenhengen populasjonen. Populasjonen er altså begrepet vi bruker på hele gruppen/den totale mengden av objekter vi ønsker å undersøke. I en meningsmåling tar man derfor et utvalg fra populasjonen, spør dem, og antar at man kan la resultatene fra utvalget snakke for/representere hele populasjonen. Men – man kan selvsagt gjøre undersøkelser på hele populasjoner om det er praktisk mulig, det avhenger bare av hva man definerer som populasjonen.</p>
+<div class="inline-figure"><img src="Modul_2_PopUtv.png" style="width:60.0%"></div>
+<p>I figuren over har vi illustrert dette. Populasjonen består av et antall (kanskje ukjent) antall individer (N). Gjennomsnittsverdien for populasjonen (kalles my – µ) for en egenskap, som for eksempel høyde, er dermed også ukjent. Derfor tar vi et utvalg individer fra populasjonen, måler dem, og kan regne ut gjennomsnittsverdien (kalles x strek, eller «x bar» på engelsk) for utvalget. Så lar vi <span class="math inline">\(\overline{x}\)</span> være et estimat for µ, og antar at gjennomsnittet for utvalget er representativt for gjennomsnittet for populasjonen.</p>
+<p>Det er viktig å huske på at <span class="math inline">\(\overline{x}\)</span> er nettopp et estimat. Kanskje treffer vi bra, kanskje treffer vi dårlig. Hvordan vi velger ut utvalget vil derfor være viktig. I kvantitativ metode opererer vi som regel med det som kalles sannsynlighetsutvalg (i motsetning til strategisk utvalg som ofte brukes i kvalitativ metode). Sannsynlighetsutvalg innebærer at alle enhetene i populasjonen har en gitt sannsynlighet for å bli trukket ut i utvalget. Det gjør at vi innenfor visse feilmarginer kan anta det vi finner i utvalget gjelder for populasjonen.</p>
+<div id="utvelgelse-fra-populasjonen" class="section level3" number="1.1.1">
+<h3>
+<span class="header-section-number">1.1.1</span> Utvelgelse fra populasjonen<a class="anchor" aria-label="anchor" href="#utvelgelse-fra-populasjonen"><i class="fas fa-link"></i></a>
+</h3>
+<p>Ofte deler man måten man foretar sannsynlighetsutvalg inn i fire metoder (se for eksempel <span class="citation">Grønmo (2021)</span>):</p>
+<ol style="list-style-type: decimal">
+<li><p>Enkel tilfeldig utvelgelse. Enhetene trekkes ut helt tilfeldig en og en fra populasjonen («random sampling»). Tilfeldig vil innebære at ethvert medlem i populasjonen har lik sjanse til å bli trukket ut og at hvert objekt trekkes ut uavhengig av hverandre. Også dette er i praksis umulig å få til perfekt, så ethvert utvalg vil trolig ha en eller annen form for skjevhet («bias»).</p></li>
+<li><p>Systematisk utvelgelse. «Den første enheten i utvalget trekkes tilfeldig blant de n første (for eksempel de 100 første) enhetene i universet. Deretter trekkes systematisk hver n’te enhet i universet til utvalget. Hvis den første tilfeldig utvalgte enheten er nummer 83 i universet, vil de neste enhetene i utvalget være universets enheter nummer 183, 283, 383 og så videre» <span class="citation">(Grønmo 2021)</span>.</p></li>
+<li><p>Stratifisert utvelgelse. Man deler først inn populasjonen i kategorier (eller strata) før man deretter foretar et tilfeldig eller systematisk utvalg. Kategoriene kan for eksempel være kjønn, alder ellerliknende).</p></li>
+<li><p>Populasjonen deles inn i klynger basert på fysisk eller geografisk nærhet mellom enhetene. Deretter foretas et tilfeldig eller systematisk utvalg.</p></li>
+</ol>
+</div>
+</div>
+<div id="enheter-variabler-og-verdier" class="section level2" number="1.2">
+<h2>
+<span class="header-section-number">1.2</span> Enheter, variabler og verdier<a class="anchor" aria-label="anchor" href="#enheter-variabler-og-verdier"><i class="fas fa-link"></i></a>
+</h2>
+<div id="enhet" class="section level3" number="1.2.1">
+<h3>
+<span class="header-section-number">1.2.1</span> Enhet<a class="anchor" aria-label="anchor" href="#enhet"><i class="fas fa-link"></i></a>
+</h3>
+<p>En nehet er det vi forsøker å si noe om. For eksempel kan et individ være en enhet. Et individ kan vi kalle en enhet på mikronivå. En organisasjon eller en gruppe individer kan også utgjøre en enhet. Dette nivået kaller vi mesonivå. I tillegg kan vi ha enheter på makronivå – dette kan være samfunnsgrupper (for eksempel klasser, etnisitet og religion).</p>
+</div>
+<div id="variabel" class="section level3" number="1.2.2">
+<h3>
+<span class="header-section-number">1.2.2</span> Variabel<a class="anchor" aria-label="anchor" href="#variabel"><i class="fas fa-link"></i></a>
+</h3>
+<p>Egenskapene ved enheten vi ønsker å si noe om. For eksempel egenskaper ved et individ.</p>
+<p>Ofte vil vi snakke om uavhengig og avhengig variabel. En uavhengig variabel (kan også kalles årsaksvariabel) er en variabel som ikke er påvirket av det vi forsøker å si noe om, men tvert imot påvirker det vi forsøker å si noe om (den avhengige variabelen).</p>
+<p>En avhengig variabel (også kalt virkningsvariabel) er en variabel som påvirkes av andre variabler (andre uavhengige variabler). Dvs. at verdien på den avhengige variabelen er avhengig av verdien på en eller flere uavhengige variabler.</p>
+</div>
+<div id="verdi" class="section level3" number="1.2.3">
+<h3>
+<span class="header-section-number">1.2.3</span> Verdi<a class="anchor" aria-label="anchor" href="#verdi"><i class="fas fa-link"></i></a>
+</h3>
+<p>Hvordan egenskapen måles, hvordan egenskapene ser ut.</p>
+</div>
+<div id="målenivå" class="section level3" number="1.2.4">
+<h3>
+<span class="header-section-number">1.2.4</span> Målenivå<a class="anchor" aria-label="anchor" href="#m%C3%A5leniv%C3%A5"><i class="fas fa-link"></i></a>
+</h3>
+<p>Vi måler altså verdien på variabler. Men variabler er forskjellige, det vil si vi kan måle de på ulik måte ut fra hva de representerer. For eksempel måler vi alder i år, temperatur i grader, inntekt i kroner, kjønn og utdanning i ulike kategorier. De ulike måle- eller kategoriseringsmåtene gjør oss i stand til å gjøre ulike ting med målingene/kategoriene. Vi kan vise dette i en tabell:</p>
+<template id="dea3e0a3-9990-4a8f-998f-1cdbee8ba91c"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style>
+<div class="tabwid">
+<style>.cl-ee6d0d42{table-layout:auto;width:0%;}.cl-ee64fc88{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-ee64fc89{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-ee65237a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-ee654a6c{background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-ee654a6d{background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-ee654a6e{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-ee654a6f{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<div class="inline-table"><table class="cl-ee6d0d42">
+<thead><tr style="overflow-wrap:break-word;">
+<td class="cl-ee654a6f"><p class="cl-ee65237a"><span class="cl-ee64fc88">Nivå</span></p></td>
+<td class="cl-ee654a6f"><p class="cl-ee65237a"><span class="cl-ee64fc88">Data</span></p></td>
+<td class="cl-ee654a6f"><p class="cl-ee65237a"><span class="cl-ee64fc88">Forklaring</span></p></td>
+<td class="cl-ee654a6f"><p class="cl-ee65237a"><span class="cl-ee64fc88">Operasjoner</span></p></td>
+<td class="cl-ee654a6f"><p class="cl-ee65237a"><span class="cl-ee64fc88">Eksempel</span></p></td>
+</tr></thead>
+<tbody>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-ee654a6c"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kategorisk</span></p></td>
+<td class="cl-ee654a6c"><p class="cl-ee65237a"><span class="cl-ee64fc89">Binær/dikotom</span></p></td>
+<td class="cl-ee654a6c"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kun to muligheter/to kategorier</span></p></td>
+<td class="cl-ee654a6c"><p class="cl-ee65237a"><span class="cl-ee64fc89">Telle frekvenser.</span></p></td>
+<td class="cl-ee654a6c"><p class="cl-ee65237a"><span class="cl-ee64fc89">Til stede/ikke til stede, død/levende, ja/nei, på/av</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kategorisk</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Nomiell</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Mer enn to kategorier som er gjensidig utelukkende. Tallverdi er en 'merkelapp' som ikke sier noe om egenskaper.</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Telle frekvenser.</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Nasjonalitet, politiske partier, yrke, studieretning</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kategorisk</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Ordinal</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kategorier som kan rangeres/ordnes, men der avstanden mellom kategoriene er betydningsløs.</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Arrangere i rekkefølge.</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Likertskalaer (sterkt uenig-sterkt enig), Utdanningsnivå</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kontinuerlige</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Intervall</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kan rangeres og man kan si noe kvantitativt om avstanden mellom verdier. Fast avstand mellom måleverdier – lik avstand på måleskalaen representerer lik avstand i fenomenet som måles. Har et kunstig nullpunkt</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Addere, subtrahere og regne ut gjennomsnitt</span></p></td>
+<td class="cl-ee654a6d"><p class="cl-ee65237a"><span class="cl-ee64fc89">Temperatur: 10°C er dobbelt så mye som 5°C, men man kan ikke si at 10°C er dobbelt så varmt som 5°C.</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-ee654a6e"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kontinuerlige</span></p></td>
+<td class="cl-ee654a6e"><p class="cl-ee65237a"><span class="cl-ee64fc89">Skala/ratio/ forholdstall</span></p></td>
+<td class="cl-ee654a6e"><p class="cl-ee65237a"><span class="cl-ee64fc89">Kan rangere, måle avstand og beregne forholdstall mellom verdier. Har et faktisk nullpunkt</span></p></td>
+<td class="cl-ee654a6e"><p class="cl-ee65237a"><span class="cl-ee64fc89">Regne ut ratio/forholdstall og prosenter</span></p></td>
+<td class="cl-ee654a6e"><p class="cl-ee65237a"><span class="cl-ee64fc89">Inntekt: 200000 er dobbelt så mye som 100000, og 200000 er dobbelt så stor inntekt som 100000. Samtidig er 400000 dobbelt så høy inntekt som 200000.</span></p></td>
+</tr>
+</tbody>
+</table></div>
+</div></template><div class="flextable-shadow-host" id="24523daa-fc71-476c-9169-438fa2a6b77d"></div>
+<script>
+var dest = document.getElementById("24523daa-fc71-476c-9169-438fa2a6b77d");
+var template = document.getElementById("dea3e0a3-9990-4a8f-998f-1cdbee8ba91c");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script><p>Vi skal imidlertid merke oss et viktig poeng. Såkalte responsskalaer og Likertskalaer <span class="citation">(Likert 1932)</span> som brukes mye i spørreundersøkelser (typiske 5 eller 7 svaralternativer langs en skala der man velger en verdi) er formelt på ordinalnivå. Her vil vi for eksempel be respondentene svare på en skala fra 1-7, der 7 er «Helt enig» og 1 er «Helt uenig» i en påstand. Dette gir data som <em>ikke</em> er på intervallnivå <span class="citation">(S. S. Stevens 1966)</span>. Vi kan umulig si med sikkerhet at forskjellen mellom «Helt uenig» og «Uenig» er lik forskjellen mellom «Enig» og «Helt enig». Data på ordinalnivå kan man strengt tatt ikke regne ut gjennomsnitt på. Det er imidlertid svært vanlig å behandle denne typen data som intervalldata, og det finnes gode argumenter i litteraturen for å gjøre dette – vi går litt mer i dybden i det påfølgende delkapittelet (du kan leve lenge uten å måtte gå i dybden på dette, men vi velger likevel å behandle dette litt mer inngående i det påfølgende delkapittelet slik at dette er drøftet - så om du trenger argumenter kan du finne det der. Foreløpig nøyer vi oss med å fastslå at vi <em>kan</em> behandle denne typen data som intervalldata. I en ofte sitert bok sier <span class="citation">Tabachnik and Fidell (2007)</span>:</p>
+<blockquote>
+<p>The distinction between continuous and discrete variables is not always clear. If you add enough digits to the digital clock, for instance, it becomes for all practical purposes a continuous measuring device, whereas time as measured by the analog device can also be read in discrete categories such as hours and half hours. In fact, any continuous measurement may be rendered discrete (or dichotomous) with some loss of information, by specifying cutoffs in the continuous scale.</p>
+</blockquote>
+<p>I følge <span class="citation">Kahler et al. (2008)</span> kan vi ikke bruke parametriske tester på slik data. Noen statistikkbøker <span class="citation">Pallant (2010)</span> slår ganske enkelt fast at dataene skal være på minimum intervallnivå for å tilfredsstille forutsetningene for parametriske tester, men diskuterer ikke dette nærmere.</p>
+<div id="forutsetninger-om-intervalldata" class="section level4" number="1.2.4.1">
+<h4>
+<span class="header-section-number">1.2.4.1</span> Forutsetninger om intervalldata<a class="anchor" aria-label="anchor" href="#forutsetninger-om-intervalldata"><i class="fas fa-link"></i></a>
+</h4>
+<p>Latente variabler (vi kommer sterkt tilbake til begrepet latente variabler i såvel faktoranalyse som SEM-analyse i senere kapitler, men kort fortalt er dette variabler vi ikke kan observere eller måle direkte, men som må tilnærmes gjennom andre variabler) måles ofte gjennom skalaer som måler respondentens holdninger eller oppfatninger (“semantic differnatial scales - <span class="citation">Jamieson (2004)</span>), jfr. <span class="citation">Likert (1932)</span>. Slike skalaer, der respondentene velger et av flere svaralternativ som står i forhold til hverandre – f.eks.”Svært uenig” - “Uenig” - “Nøytral” - “Enig” - “Svært enig” - anses produserer data på ordinalnivå ifølge kjente klassifiseringer. En ofte sitert klassifisering er <span class="citation">S. S. Stevens (1946)</span>. Det er umulig å fastslå at forskjellen mellom “Sterkt uenig” og “Uenig” er nøyaktig den samme som forskjellen mellom “Enig” og “Sterkt enig”.</p>
+<p>Stevens’ taksonomi av målenivå er grunnlaget for “representational theory”. <span class="citation">Michell (1986)</span> påpeker at “numbers are used in measurements to represents empirical relations between objects” (s.398). Dette innebærer at vitenskapelige konklusjoner bør være uforanderlige ift skalaen som er brukt (konklusjoner skal ikke endres med ulike skalaer) <span class="citation">(Marcus-Roberts and Roberts 1987)</span>. Parametriske tester, i denne tradisjonen, krever mulighet for lineære transformasjoner, noe ordinale data ikke muliggjør <span class="citation">(N. H. Anderson 1961)</span>. Konsekvensen er at ordinale data ikke tilfredsstiller forutsetningene for parametriske tester, og derfor ikke kan gjøres <span class="citation">(L. Cohen, Manion, and Morrison 2000)</span>. Dette medfører en konservativ tilnærming til hvilke tester man kan gjøre med ulike typer data som følger klassisk “measurement theory” <span class="citation">(Michell 1986)</span>.</p>
+<p>I motsetning til den konservative tilnærmingen finnes det en mer liberal tradisjon som hevder tilhengerne av den konservative tilnærmingen blander sammen “measurement theory” og “statistical theory”, og dermed misforstår når det er mulig/hensiktsmessig å kjøre parametriske tester <span class="citation">(Gaito 1959, 1960, 1980)</span>. <span class="citation">Savage (1957)</span> og <span class="citation">Gaito (1980)</span> hevder i den forbindelsen at det ikke finnes noen matematisk grunn til å begrense statistiske prosedyrer til de som involverer aritmetiske operasjoner av kontinuerlige data av de observerte størrelsene. <span class="citation">N. H. Anderson (1961)</span> poengterer at en statistisk test ikke kan være bevisst den empiriske betydningen/det empiriske innholdet av tallene man putter inn i testen, mens <span class="citation">Baker, Hardyck, and Petrinovich (1966)</span> påpeker at en statistisk test svarer på spørsmålet den er ment å svare på uavhengig av om målingene er sterke eller svake – typen statistisk test er dermed uavhengig av det empiriske betydningen av dataene per se <span class="citation">(Michell 1986)</span>. Tilhengere av denne tradisjonen mener derfor at valget av type statistisk test utelukkende bør handle om statistiske vurderinger som “have nothing to do with scale type” <span class="citation">(N. H. Anderson 1961, s.309)</span>. Det sentrale i valget av type statistisk test bør heller være vurdering av dataenes distribusjon, utvalgsstørrelse, uavhengighet, bias, robusthet, kontekst og empirisk meningsfullhet <span class="citation">(Carifio and Perla 2007; Carifio and Perla 2008; Hand 1996; Knapp 1990; Muthen and Kaplan 1992; Pell 2005)</span>. Det er også empirisk vist at skalaen på målingene i liten grad påvirker variansbaserte statistiske tester <span class="citation">Kempthorne (1955)</span>. Det er også vist at parametriske tester er robuste under de fleste forhold <span class="citation">(Gardner 1975; Glass, Peckham, and Sanders 1972; Norman 2010)</span>.</p>
+<p>Det finnes med andre ord gode begrunnelser for både en konservativ og en liberal tilnærming til hvorvidt man kan kjøre parametriske tester på ordinale data som data fra spørreundersøkelser som bruker Likert skalaer. Det er imidlertid ingen praktisk grunn til å anta at man <em>ikke</em> kan gjøre det – det finnes gode teoretiske og empiriske argumenter for at det kan gjøres, men man bør vurdere andre aspekter ved dataene også som nevnt overfor.</p>
+</div>
+</div>
+<div id="gjennomsnitt-som-modell" class="section level3" number="1.2.5">
+<h3>
+<span class="header-section-number">1.2.5</span> Gjennomsnitt som modell<a class="anchor" aria-label="anchor" href="#gjennomsnitt-som-modell"><i class="fas fa-link"></i></a>
+</h3>
+<p>En mer utførlig forklaring kan finnes i f.eks. <span class="citation">Miles and Shevlin (2001)</span>.</p>
+<p>Hvis vi tenker oss at vi har en gruppe på 100 personer vi ikke kjenner, men der vi vet at gjennomsnittshøyden er 175 cm – hvor høy vil du gjette en tilfeldig person i den gruppa er? Her kjenner vi kun gjennomsnittshøyden – hva vi kan kalle en parameter. Hvis vi ikke kjenner noen andre karakteristika, vil vår beste antakelse være 175 cm. Dette er gjennomsnittshøyden, og det er rimelig å anta at vi vil treffe nærmest hvis vi sier 175 cm hver gang vi blir spurt om hvor høy vi tror en tilfeldig person i den gruppa er. Vi kan selvsagt gjette 182 cm første gang, 168 cm andre gang, 171 cm tredje gang osv. og treffe 100%, men det vil være ren flaks. Første person kan være 163 cm, andre person 190 cm, tredje person 182 cm osv. Hver gang vil vi i så fall bomme grovt. Gjennomsnittsverdien blir vår “modell”. En modell er en representasjon av virkeligheten <span class="citation">(Miles and Shevlin 2001)</span>. Modellen vil aldri være perfekt – hadde den vært prefekt hadde vi ikke hatt en modell av virkeligheten, men et duplikat av virkeligheten – det vil alltid være feil ved modellen i en eller annen grad.</p>
+<p>I vårt eksempel er modellen gjennomsnittshøyden, og vi vet at selv om vår beste gjetning når vi blir spurt om høyden på en tilfeldig person er 175 cm vil vi oppleve av vi kun treffer i noen få (og kanskje ingen) tilfeller. Modellen vår vil imidlertid søke å minimere feilene vi får slik at vi treffer best mulig. Det er mer sannsynlig at en tilfeldig person er i nærheten av 175 cm enn 195 cm. Vi kan si:</p>
+<p><span class="math inline">\(Virkeligheten = Modell + Feil\)</span></p>
+<p>Imidlertid vil vi ofte ikke kjenne “virkeligheten” - vi kjenner ikke populasjonsgjennomsnittet. Vi har som regel data om populasjonen fra et tilfeldig utvalg gjort av populasjonen. Vi vil derfor heller uttrykke:</p>
+<p><span class="math inline">\(Data = Modell + Feil\)</span></p>
+<p>Data (altså en observert verdi – i vårt tilfelle en høyde) = x. Gjennomsnittsverdi = <span class="math inline">\(\overline{x}\)</span>. Det er vanlig å benevne feiltermen som <span class="math inline">\(e\)</span>. Vi kan derfor for første observerte høydeverdi uttrykke dette matematisk som:</p>
+<p><span class="math inline">\(x_1 = x - e_1\)</span></p>
+<p>Eller på en generell form:</p>
+<p><span class="math inline">\(x_i = \overline{x} - e_i\)</span></p>
+<p>Feil i en modell vil ofte betegnes residual (fra engelsk: residual = rest/gjenværende). En residual er altså verdien vi sitter igjen med når vi trekker gjennomsnittsverdien fra den observerte verdien. Hvis den observerte høyden er 179 cm og gjennomsnittsverdien er 175 cm er residualen 3 cm. Dette kan vi uttrykke slik:</p>
+<p><span class="math inline">\(Feil = Data - Modell\)</span></p>
+<p>Eller:</p>
+<p><span class="math inline">\(e = x - \overline{x}\)</span></p>
+<p>Residualbegrepet kommer vi sterkt tilbake til når vi skal ta for oss regresjonsanalyse.</p>
+<p>Vi kommer til å snakke mye om modeller. Vi kommer også itl å snakke mye om “hvor god er modellen” - eller med andre ord: har vi klart å lage en modell som representerer “virkeligheten” på en god måte. Vi skal imidlertid huske på at “All models are wrong, but some are useful” <span class="citation">(Box 1976)</span>. En statistisk modell vil aldri klare å representere den komplekse virkeligheten - vi må alltid forsøke å finne måter å måle og representere enkelte deler av virkeligeheten og lage modeller som kan fortelle oss noe fornuftig og nyttig om denne virkeligheten. Men selv om modellen alltid er feil og imperfekt kan den fortsatt være nyttig.</p>
+</div>
+<div id="normalfordeling" class="section level3" number="1.2.6">
+<h3>
+<span class="header-section-number">1.2.6</span> Normalfordeling<a class="anchor" aria-label="anchor" href="#normalfordeling"><i class="fas fa-link"></i></a>
+</h3>
+<p>Når vi snakker om distribusjonen av et datasett tenker vi på hvordan dataene vi har samlet inn fordeler seg i forhold til hverandre etter gitte egenskaper. Vi kan for eksempel ha målt høyden på 100 mennesker. Disse dataene utgjør da en observert fordeling som vi kan sette inn i et histogram for å visualisere hvordan datasettet ser ut:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-3"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-3-1.png" alt="Høydefordeling for 100 tilfeldige menn, genererte data" width="672"><p class="caption">
+Figure 1.1: Høydefordeling for 100 tilfeldige menn, genererte data
+</p>
+</div>
+<p>Hvis vi tar et utvalg på 100 andre personer kan fordelingen se slik ut:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-4"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-4-1.png" alt="Høydefordeling for 100 andre tilfeldige menn, genererte data" width="672"><p class="caption">
+Figure 1.2: Høydefordeling for 100 andre tilfeldige menn, genererte data
+</p>
+</div>
+<p>Hver gang vi måler høyden på 100 tilfeldig utvalgte menn vil fordelingen se ulik ut siden de er observerte fordelinger i et utvalg av populasjonen (alle) «norske menn». Hvis vi imidlertid økte antallet i utvalget vi målte til 1000 eller 10000 vil vi med større sikkerhet kunne si at vi faktisk viser populasjonens fordeling (mulighetene for at vi tilfeldigvis måler 10000 veldig lave eller veldig høye menn er svært liten). Vi kan derfor, gitt visse forutsetninger om utvalget, si noe om hele populasjonen ut fra utvalget.</p>
+<p>Hittil har vi snakket om observerte fordelinger – altså hva vi har målt, observert, samlet inn osv. Ut fra dette kan vi si at vi kan ha visse forventninger til hvordan fordelingen av ulike populasjoner vil se ut, og vi kan snakke om teoretiske fordelinger – eller sannsynlighetsfordelinger med andre ord. Hvor sannsynlig er det at en tilfeldig x-verdi dukker opp i dataene?</p>
+<p>For høyde kan vi ha visse forventninger til hvilke sannsynligheter det er for at en tilfeldig person har en gitt høyde, eller hvor mange prosent av den mannlige befolkningen som har en høyde innenfor et gitt intervall. Det vil si at fordelingen har en viss form med visse karakteristika. Vi forventer at flest observasjoner befinner seg i nærheten av gjennomsnittet, og at vi vil se færre og færre observasjoner jo lenger unna gjennomsnittet vi beveger oss. Vi forventer å finne flere norske menn over 20 år på rundt 180 cm enn 160 cm eller 210 cm. For fordelingen av høydedata vil vi si at dette er data som er normalfordelte.</p>
+<p>En normalfordeling er en sannsynlighetsfunksjon der flesteparten av verdiene fra funksjonen samler seg om en sentral tendens, og der tettheten (hyppigheten, eller “density” på engelsk) av verdier avtar jevnt jo lenger unna den sentrale tendensen man kommer. Grafisk framstilt får fordelingskurven en klokkeform, og normalfordeling omtales også som “bell shaped”. Overraskende mange fenomener viser seg å være nærme en normalfordeling, og den er derfor en helt sentral teoretisk sannsynlighetsfordeling i mange sammenhenger i kvantitativ metode. Vi bruker dermed normalfordelingen som en modell for observerte data.</p>
+<p>Vi skal her ikke bry oss om det matematisk uttrykket for sannsynlighetstetthetsfunksjonen. Hvis vi derimot genererer et tenkt datasett etter standard normalfordelingsfunksjon vil det kunne se slik ut:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-5"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-5-1.png" alt="Genererte standard normalfordelte data" width="672"><p class="caption">
+Figure 1.3: Genererte standard normalfordelte data
+</p>
+</div>
+<p>Her kan vi legge på en forventningskurve – en teoretisk kurve som viser en standard normalfordeling:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-6"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-6-1.png" alt="Genererte standard normalfordelte data med normalfordelingskurve" width="672"><p class="caption">
+Figure 1.4: Genererte standard normalfordelte data med normalfordelingskurve
+</p>
+</div>
+<p>Vi kan ta bort det genererte datasettet og sitte igjen med bare forventningskurven:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-7"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-7-1.png" alt="Normalfordelingskurve" width="672"><p class="caption">
+Figure 1.5: Normalfordelingskurve
+</p>
+</div>
+<p>Det den standardiserte normalfordelingskurven (også kjent som Gausskurven eller også Bellkurven – “Klokkekurven” fordi den har en klokkeform) – kan brukes til er å si noe om spredningen på forventede verdier – eller hvor langt fra gjennomsnittsverdien man kan forvente å finne de enkelte verdiene.</p>
+<p>Før vi ser nærmere på egenskaper ved normalfordelingskurven kan det være nødvendig å gå litt inn på begrepene varians og standardavvik som mål på spredningen i datasett. Disse begrepene, spesielt standardavvik, vil være helt sentrale i videre arbeid med temaet.</p>
+</div>
+<div id="varians-og-standardavvik" class="section level3" number="1.2.7">
+<h3>
+<span class="header-section-number">1.2.7</span> Varians og standardavvik<a class="anchor" aria-label="anchor" href="#varians-og-standardavvik"><i class="fas fa-link"></i></a>
+</h3>
+<p>Variansen i en variabel representerer det gjennomsnittlige avviket fra gjennomsnittsverdien <span class="citation">(Field, Miles, and Field 2012a)</span> og er et mål på spredningen i dataene (som navnet antyder: hvor mye dataene variere ut fra den sentrale tendensen). Under vises et eksempel basert på <span class="citation">Field (2009b)</span>.</p>
+<p>La oss anta at vi har spurt 5 studenter på høgskolen hvor mange kjæledyr de har. Svarene kan settes opp i en enkel tabell. I gjennomsnitt har de 2,6 kjæledyr. Vi ønsker imidlertid å se hvor mye avviket er for den enkelte fra snittet (siden vi har regnet ut snittet kan vi se på gjennomsnittsverdien som en modell på forholdet mellom studenter og antall kjæledyr). Vi registrerer svarene vi fikk i et skjema:</p>
+<template id="e7983d88-263e-4c48-81c3-bd32f91c5702"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style>
+<div class="tabwid">
+<style>.cl-eef32332{table-layout:auto;width:100%;}.cl-eeebd53c{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-eeebfc38{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-eeec2316{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-eeec2317{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-eeec2318{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<div class="inline-table"><table class="cl-eef32332">
+<thead><tr style="overflow-wrap:break-word;">
+<td class="cl-eeec2318"><p class="cl-eeebfc38"><span class="cl-eeebd53c">Studentnr</span></p></td>
+<td class="cl-eeec2318"><p class="cl-eeebfc38"><span class="cl-eeebd53c">Antall</span></p></td>
+<td class="cl-eeec2318"><p class="cl-eeebfc38"><span class="cl-eeebd53c">Avvik</span></p></td>
+<td class="cl-eeec2318"><p class="cl-eeebfc38"><span class="cl-eeebd53c">Avvik_kvadrert</span></p></td>
+</tr></thead>
+<tbody>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">1</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">1</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">-1.6</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">2.56</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">2</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">2</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">-0.6</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">0.36</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">3</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">3</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">0.4</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">0.16</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">4</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">3</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">0.4</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">0.16</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">5</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">4</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">1.4</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">1.96</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">Snitt</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c">2.6</span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c"></span></p></td>
+<td class="cl-eeec2316"><p class="cl-eeebfc38"><span class="cl-eeebd53c"></span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-eeec2317"><p class="cl-eeebfc38"><span class="cl-eeebd53c">Sum</span></p></td>
+<td class="cl-eeec2317"><p class="cl-eeebfc38"><span class="cl-eeebd53c"></span></p></td>
+<td class="cl-eeec2317"><p class="cl-eeebfc38"><span class="cl-eeebd53c">0</span></p></td>
+<td class="cl-eeec2317"><p class="cl-eeebfc38"><span class="cl-eeebd53c">5.20</span></p></td>
+</tr>
+</tbody>
+</table></div>
+</div></template><div class="flextable-shadow-host" id="117a32c5-d262-4acc-b026-905377c5554d"></div>
+<script>
+var dest = document.getElementById("117a32c5-d262-4acc-b026-905377c5554d");
+var template = document.getElementById("e7983d88-263e-4c48-81c3-bd32f91c5702");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script><p>Når vi regner ut avviket (sum of deviances) summerer vi avvikene. Siden denne er 0 skulle det innebære at det totalt sett i “modellen” ikke er avvik mellom modellen og våre virkelige observasjoner. Problemet her er at det er både positive og negative avvik som nuller hverandre ut. Man må derfor kvadrere avvikene for å omgå problemet med fortegn. Imidlertid får vi et nytt problem. La oss anta at vi i stedet for 5 studenter har spurt 500. Da får vi et svært høyt kvadrert avvik fra snitt. Altså – vi må ta høyde for for antallet observasjoner. Vi deler derfor sum kvadrert avvik fra snitt på antall observasjoner (5,20/5). MEN: vi må foreta et litt teknisk og komplisert tillegg i utregningen. Vi må dele på antall observasjoner MINUS 1 (som er antallet frihetsgrader – degrees of freedom). Dette vil ikke bli nærmere forklart her, men for de som ønsker å lese mer om frihetsgrader kan prøve noen andre kilder, f.eks. <span class="citation">Walker (1940)</span>, <span class="citation">Good (1973)</span> eller <span class="citation">Pandey and Bright (2008)</span>. Vi ender altså opp med regnestykket 5,20/(5-1) = 1,3. Dette er variansen. <em>Variansen er altså det gjennomsnittlige avviket mellom gjennomsnittsverdien av de observerte dataene og verdiene til de enkelte observasjonene.</em></p>
+<p>Som regel snakker vi imidlertid om standardavviket. Dette finner vi ved å ta kvadratroten av variansen (som vi jo har funnet ved å kvadrere avvikene for å unngå fortegnsproblemer). Vi får da i vårt tilfelle et standardavvik på 1,14. Variansen og standardavviket forteller oss altså noe om spredningen i dataene. Liten varians betyr at spredningen er liten (om vi har gjennomført en spørreundersøkelse betyr det at respondentene har svart ganske likt). Stor varians betyr stor spredning (respondentene har svart ganske ulikt).</p>
+</div>
+<div id="normalfordeling-standardavvik-og-forventninger" class="section level3" number="1.2.8">
+<h3>
+<span class="header-section-number">1.2.8</span> Normalfordeling, standardavvik og forventninger<a class="anchor" aria-label="anchor" href="#normalfordeling-standardavvik-og-forventninger"><i class="fas fa-link"></i></a>
+</h3>
+<p>Vi kan nå se nærmere på normalfordelingen.</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-9"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-9-1.png" alt="Normalfordeling med 1 standardavvik" width="672"><p class="caption">
+Figure 1.6: Normalfordeling med 1 standardavvik
+</p>
+</div>
+<p>Ett standardavvik “over og under” 0 (= det skraverte området i grafen over) innebærer at i et normalfordelt datasett vil 68 % av tilfeldig valgte x-verdier befinner seg i dette intervallet. Vi kan vise det samme for 2 og 3 standardavvik:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-10"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-10-1.png" alt="Normalfordeling med 2 standardavvik" width="672"><p class="caption">
+Figure 1.7: Normalfordeling med 2 standardavvik
+</p>
+</div>
+<p>To standardavvik “over og under” 0 (= det skraverte området i grafen over) innebærer at i et normalfordelt datasett vil 95 % av tilfeldig valgte x-verdier befinner seg i dette intervallet. Vi kan finne arealet mellom x=-2 og x=2, som er 0.9544997<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;R-kode for utregning av areal mellom to x-verdier i en normalfordeing (=sannsynlighet for at en gitt x-verdi ligger i intervallet mellom de to x-verdiene): pnorm(2,mean=0,sd=1)-pnorm(-2,mean=0,sd=1)&lt;/p&gt;"><sup>1</sup></a>.</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-11"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-11-1.png" alt="Normalfordeling med 3 standardavvik" width="672"><p class="caption">
+Figure 1.8: Normalfordeling med 3 standardavvik
+</p>
+</div>
+<p>Tre standardavvik “over og under” 0 (= det skraverte området i grafen over) innebærer at i et normalfordelt datasett vil 99.7 % av tilfeldig valgte x-verdier befinner seg i dette intervallet. Vi kan finne arealet mellom x=-3 og x=3, som er 0.9973002<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;pnorm(3,mean=0,sd=1)-pnorm(-3,mean=0,sd=1)&lt;/p&gt;"><sup>2</sup></a>. Dette utgjør et kjernepunkt i statistisk prosesskontroll som vi vil komme mye tilbake til.</p>
+<p>Oppsummert kan vi framstille normalfodeling og standardavvik slik <span class="citation">(Hartmann, Krois, and Waske 2018b)</span>:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-12"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-12-1.png" alt="Normalfordeling med standardavvik" width="672"><p class="caption">
+Figure 1.9: Normalfordeling med standardavvik
+</p>
+</div>
+<p>Som nevnt er mange fenomener i hverdagen normalfordelte, eller nærme nok normalfordeling til at vi kan bruke normalfordeling som teoretisk modell for observerte data <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Normalfordelingen er dessuten en god tilnærming til binomialfordeling med høyt antall observasjoner (høy n), og også til poissonfordeling med høy frekvens. Dette forfølger vi imidlertid ikke videre i dette kompendiet.&lt;/p&gt;"><sup>3</sup></a>. Det finnes imidlertid mange tilfeller der vi ikke kan bruke normalfordelingen. Hvis dataene er sterkt asymmetriske vil ikke reglene for normalfordeling som vi har skissert ovenfor gjelde <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Chebyshevs teorem vil imidlertid gjelde for alle datasett. Teoremet belyses i eget vedlegg for de spesielt interesserte&lt;/p&gt;"><sup>4</sup></a>.</p>
+</div>
+<div id="binomialfordeling" class="section level3" number="1.2.9">
+<h3>
+<span class="header-section-number">1.2.9</span> Binomialfordeling<a class="anchor" aria-label="anchor" href="#binomialfordeling"><i class="fas fa-link"></i></a>
+</h3>
+<p>En distribusjon hvor det kun er to mulige utfall av en hendelse kalles en binomial fordeling. Et myntkast er en slik hendelse (gitt at vi ser bort fra den fysiske muligheten at mynten kan lande stående på høykant). Levende eller død kan også være et eksempel på dette. Det ene utfallet utelukker det andre, men de er uavhengige fordi resultatet i ett myntkast ikke påvirker resultatet i neste myntkast. Alle myntkastene må derimot være identiske, det vil si sannsynligheten for det ene eller det andre resultatet er lik hver gang forsøket eller myntkastet gjennomføres. Hvis vi har lik sannsynlighet, kan en tilfeldig generert binomial distribusjon se slik ut:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-13"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-13-1.png" alt="Binomialfordeling med lik sannsynlighet" width="672"><p class="caption">
+Figure 1.10: Binomialfordeling med lik sannsynlighet
+</p>
+</div>
+<p>I diagrammet over vises en sannsynlighetsfordeling for en binomial fordeling der utfallene suksess/fiasko har lik sannsynlighet. Hvis vi gjennomfører en aktivitet med disse karakteristika 20 ganger kan vi bruke sannsynlighetsfordelingen til å skape en forventning om sannsynligheten for antall suksesser/fiaskoer. Hver gang vi gjennomfører aktiviteten blir det enten suksess eller fiasko. Hvis vi har 50% sjanse for suksess eller feil hver gang vi gjennomfører aktiviteten er sannsynligheten for suksess lik som sannsynligheten for fiasko. Vi kan da forvente at det er størst sannsynlighet at vi i 10 av 20 tilfeller får suksess. Det er liten sannsynlighet for at vi enten får suksess i 0 eller 20 av 20 ganger vi gjør aktiviteten.</p>
+<p>Det er imidlertid verdt å merke seg at de to utfallene ikke trenger å ha lik sannsynlighet. Da vil den binomiale distribusjonen se annerledes ut:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-14"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-14-1.png" alt="Binomialfordeling med ulik sannsynlighet" width="672"><p class="caption">
+Figure 1.11: Binomialfordeling med ulik sannsynlighet
+</p>
+</div>
+<p>Her har vi bare 20% sannsynlighet for suksess, og fordelingen av sannsynligheter vil se annerledes ut. Med 20% sannsynlighet for suksess er det veldig liten sannsynlighet for at vi vil få 10 eller flere suksesser hvis vi gjør forsøket 20 ganger. Det er størst sannsynlighet for å få 4 suksesser.</p>
+<p>Et terningkast (med en vanlig terning med 6 sider) – som ikke er tuklet med – har lik sannsynlighet for å lande på hhv 1,2,3,4,5 og 6. Det vil si det er 1/6 sannsynlighet for 1, 1/6 sannsynlighet for 2 osv. Hvis vi kaster denne terningen 10 ganger kan resultatet se slik ut:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-15"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-15-1.png" alt="10 terningkast" width="672"><p class="caption">
+Figure 1.12: 10 terningkast
+</p>
+</div>
+<p>Vi ser at vi ikke fikk noen 2’ere og 5’ere. Dette kan vi forvente når vi bare har 10 terningkast. Hvis vi imidlertid kaster terningen 100 ganger vil det være svært liten sannsynlighet for å ikke få «treff» på alle 6 verdiene på terningen, og vi burde kunne forvente at vi får en ganske jevn fordeling på alle 6 verdiene. Nedenfor vises resultatet av 100 terningkast.</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-16"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-16-1.png" alt="100 terningkast" width="672"><p class="caption">
+Figure 1.13: 100 terningkast
+</p>
+</div>
+<p>Vi ser at vi har en relativt jevn fordeling. Noe ulikhet er det selvsagt, noe vi vil forvente fra en tilfeldig prosess. Hvis vi gjennomførte 1000 eller 10000 terningkast vil fordelingen bli nærmere og nærmere den teoretisk forventede fordelingen. Vi kan burde, teoretisk, forvente 100 treff på hver mulighet hvis vi kaster terningen 600 ganger, men vi vil sjelden se akkurat 100 treff på hver slik vi ser hvis vi kjører tre runder med 600 terningkast:</p>
+<p>Runde 1:</p>
+<pre><code>#&gt; terning_runde1
+#&gt;   1   2   3   4   5   6 
+#&gt;  93 102 102 102 108  93</code></pre>
+<p>Runde 2:</p>
+<pre><code>#&gt; terning_runde2
+#&gt;   1   2   3   4   5   6 
+#&gt; 101 102  94  91 105 107</code></pre>
+<p>Runde 3:</p>
+<pre><code>#&gt; terning_runde3
+#&gt;   1   2   3   4   5   6 
+#&gt; 104 113  92  98  95  98</code></pre>
+<p>Selv om vi kjører 6 000 000 terningkast og vil forvente 1 000 000 treff på hver av terningens sider vil vi ikke få en perfekt fordeling iht teoretisk forventning, men resultatet vil være svært nærme og er nærme nok til at vi kan bruke sannsynlighetsfordelingen til å lage forventninger om utfall:</p>
+<p>6 000 000 terningkast:</p>
+<pre><code>#&gt; minterning
+#&gt;       1       2       3       4       5       6 
+#&gt; 1000492  998250 1000216 1000832 1001422  998788</code></pre>
+<p>Hvis vi setter resultatet fra 6 000 000 terningkast inn i et histogram ser vi at resultatet er svært nærme hva vi teoretisk vil forvente:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-21"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-21-1.png" alt="6 000 000 terningkast" width="672"><p class="caption">
+Figure 1.14: 6 000 000 terningkast
+</p>
+</div>
+</div>
+<div id="poissonfordeling" class="section level3" number="1.2.10">
+<h3>
+<span class="header-section-number">1.2.10</span> Poissonfordeling<a class="anchor" aria-label="anchor" href="#poissonfordeling"><i class="fas fa-link"></i></a>
+</h3>
+<p>Poissonfordelinger finnes i situasjoner der hendelser skjer vilkårlig i tid (og rom) hvor vi er interessert i kun antallet hendelser i et gitt tidsintervall. Vi kan f.eks. være interessert i hvor mange supporthenvendelser vi får i løpet av en time, antallet feilmedisineringer per uke, hvor mange besøk avdelingen får per dag o.l. Andre eksempler kan være antall trafikkulykker langs en angitt veistrekning, antall elgpåkjørlser på en togstrekning, eller antall av en gitt art fugler i et definert område i et definert tidsrom. En hendelse må være uavhengig tidsmessig av andre hendelser (det er altså ikke økt sannsynlighet for at en hendelse vil skje fordi en tilsvarende hendelse akkurat har skjedd), sannsynligheten for en hendelse i et kort perspektiv er lik sannsynligheten over et lengre perspektiv, og ettersom et tidsintervall blir kortere og kortere vil sannsynligheten for hendelsen gå mot null.</p>
+<p>Poissonfordeling uttrykker sannsynligheten for at et gitt antall hendelser inntreffer i et gitt tidsintervall (eller et gitt geografisk domene) <em>og</em> at vi kjenner gjennomsnittlig hvor ofte hendelsen inntreffer. Denne sannsynligheten uttrykkes som en lambdaverdi (<span class="math inline">\(\lambda\)</span>).</p>
+<p>Eksempelet under er hentet fra <span class="citation">Soage (2020)</span>:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-22"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-22-1.png" alt="Poissonfordelinger" width="672"><p class="caption">
+Figure 1.15: Poissonfordelinger
+</p>
+</div>
+<p>Ut fra hvilken <span class="math inline">\(\lambda\)</span>-verdi vi setter kan vi si noe om sannsynligheten for at et antall hendelser inntreffer.</p>
+<p><span class="citation">Ugarte, Militino, and Arnholt (2016)</span> eksemplifiserer Poissonfordeling ved å vise til at det i gjennomsnitt skåres 2,5 mål i en VM-kamp i fotball. Denne situasjonen tilfredsstiller forutsetningene for å bruke Possionfordeling.Vi kan grafisk framstille sannsynlighetsfordeingen slik:</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-23"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-23-1.png" alt="Poissonfordeling mål i VM-kamp fotball" width="672"><p class="caption">
+Figure 1.16: Poissonfordeling mål i VM-kamp fotball
+</p>
+</div>
+<p>I R kan vi også enkelt regne ut den nøyaktige sannsynligheten for x antall mål gitt forutsetningen om at det i snitt skåres 2.5 mål pr kamp til å være 0. Vi kan bruke sannsynlighetsfordelingen til å regne ut sannsynligheten for et gitt antall mål, f.eks.:</p>
+<ul>
+<li>Sannsynligheten for 0 mål = 0.082085</li>
+<li>Sannsynligheten for 1 mål = 0.2052125</li>
+<li>Sannsynligheten for 2 mål = 0.2565156</li>
+<li>Sannsynligheten for 3 mål = 0.213763</li>
+<li>Sannsynligheten for 4 mål = 0.1336019</li>
+</ul>
+<p>eller f.eks. sannsynligheten for at det skåres mellom 1 og 3 mål (= 0.6754911).</p>
+</div>
+<div id="geometrisk-fordeling" class="section level3" number="1.2.11">
+<h3>
+<span class="header-section-number">1.2.11</span> Geometrisk fordeling<a class="anchor" aria-label="anchor" href="#geometrisk-fordeling"><i class="fas fa-link"></i></a>
+</h3>
+<p>En geometrisk fordeling er en diskret fordeling der man teller antall hendelser/forsøk inntil et gitt resultat forekommer. Resultatet er suksess eller feil, altså hvor mange ganger man har en hendelse før man får en suksess eller feil (avhengig av hva man måler). Et eksempel er hvor mange ganger man må kaste to terninger for å få 11 i sum. Man kaster da to terninger til første gang man får 11 (= suksess). En geometrisk distribusjon kan se slik ut (p = 0,4):</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-24"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-24-1.png" alt="Geometrisk fordeling" width="672"><p class="caption">
+Figure 1.17: Geometrisk fordeling
+</p>
+</div>
+<p>I statistisk prosesskontroll er denne typen fordeling til stede når man f.eks. teller antall dager mellom sjeldne hendelser. Man teller antall dager før man f.eks. får et alvorlig avvik på en medisinering, en operasjon e.l. I geometrisk fordeling er sannsynligheten for et gitt utfall uavhengig av om det har skjedd før. Man kan bruke geometrisk fordeling f.eks. til å estimere hvor mange dager man normalt vil forvente det går mellom en sjelden hendelse. Hvis man gjennom erfaringstall vet at sannsynligheten for en sjelden hendelse er p = 0.035 vil man forvente at det går 1/0.035 <span class="math inline">\(\approx\)</span> 29 dager mellom hver hendelse. Geometrisk distribusjon kan hjelpe oss i en statistisk prosesskontroll for å finne normal/unormal variasjon ved sjeldne hendelser.</p>
+<p>Det kan være verdt å merke seg at binomial og geometrisk fordeling skiller seg fra hverandre ved at geometrisk fordeling har et ukjent antall hendelser (man fortsetter til man får første suksess/feil), mens binomial fordeling har et gitt antall hendelser. Som vi skal se i senere eksempler derfor geometrisk fordeling viktig når vi håndterer sjeldne hendelser, fordi vi ikke kjenner hvor mange dager det f.eks. går før vi får første suksess/feil.</p>
+</div>
+<div id="eksponensiell-fordeling" class="section level3" number="1.2.12">
+<h3>
+<span class="header-section-number">1.2.12</span> Eksponensiell fordeling<a class="anchor" aria-label="anchor" href="#eksponensiell-fordeling"><i class="fas fa-link"></i></a>
+</h3>
+<p>En tilfeldig kontinuerlig variabel kan sies å være analog til den geometriske distribusjonen, men for kontinuerlige data. Den eksponensielle distribusjonen brukes ofte for å modellere tid mellom to hendelser. I statistisk prosesskontroll vil vi typisk bruke denne distribusjonen hvis vi måler tid mellom to sjeldne hendelser. Hvis vi f.eks. måler tiden mellom uventet dødsfall som følge av en type rutineoperasjon på et sykehus vil den ha en eksponensiell distribusjon hvis sannsynligheten for at hendelsen inntreffer innenfor t gitt tidsintervall er omtrentlig proporsjonal med lengde på tidsintervallet <span class="citation">(Taboga 2017)</span>. Eksponensielle fordelinger har samme grunnform, men kan ha ulik bratthet avhengig av den såkalte lamdaverdien (= en parameter for raten av hendelser). Lambdaverdi er en parameter for hvor ofte hendelsene forventes å skje.</p>
+<div class="figure">
+<span style="display:block;" id="fig:unnamed-chunk-25"></span>
+<img src="02_Kap_2_files/figure-html/unnamed-chunk-25-1.png" alt="Eksponensiell fordeling" width="672"><p class="caption">
+Figure 1.18: Eksponensiell fordeling
+</p>
+</div>
+</div>
+<div id="nyllhypotese" class="section level3" number="1.2.13">
+<h3>
+<span class="header-section-number">1.2.13</span> Nyllhypotese<a class="anchor" aria-label="anchor" href="#nyllhypotese"><i class="fas fa-link"></i></a>
+</h3>
+<p>Vi kommer mye tilbake til hypotesetesting (i ulike former), men dette danner grunnlaget for å forstå hvorfor vi tester en nullhypotese og forkaster den hvis vi får et signifikant resultat. Vi ønsker å teste hypotesen om at M = 53 [51,55] er en god estimator for μ. I stedet for å teste alle muligheter for at μ vil ligge i intervallet, tester vi i stedet en presist formulert og testbar nullhypotese om at μ ikke vil ligge i intervallet [51,55]. Hvis vi får et signifikant resultat på nullhypotesetesten kan vi si at sannsynligheten for at μ vil ligge utenfor [51,55] er svært liten (avhengig av konfidensnivå), og at vi derfor har styrket hypotesen om at M=53 [51,55] er en god estimator for μ. Vi setter med andre ord opp en stråmann: vi vil egentlig teste om våre estimatorer for populasjonen er sannsynlige innenfor et konfidensintervall, men tester i stedet sannsynligheten for at de ikke er det i håp om å forkaste stråmannen.</p>
+<p>Nullhypotesen formuleres som regel som en presis og testbar hypotese om ingen forbindelse eller forskjell mellom gitte variabler. Nullhypotesen kan imidlertid være «hva som helst», i den forstand at det er like gyldig å formulere en nullhypotese som ikke inneholder null i betydningen tallet null eller ingen forskjell e.l. Poenget er at den må formuleres slik at den evt kan forkastes hvis den ikke støttes (“null” kommer, har jeg blitt fortalt, fra det engelske “nullify” - altså “gjøre ugyldig, annullere, oppheve”).</p>
+</div>
+<div id="statistisk-styrke-statistical-power---og-type-i-og-ii-feil" class="section level3" number="1.2.14">
+<h3>
+<span class="header-section-number">1.2.14</span> Statistisk styrke – “Statistical Power” - og type I og II feil<a class="anchor" aria-label="anchor" href="#statistisk-styrke-statistical-power---og-type-i-og-ii-feil"><i class="fas fa-link"></i></a>
+</h3>
+<p>I mange sammenhenger i anvendt statistikk leser man om statistisk styrke (“power”). Enkelt forklart er statistisk styrke sannsynligheten for at en statistisk test vil identifisere en effekt hvis den er der. I hypotesetesting referer statistisk styrke til sannsynligheten for å få et statistisk signifikant resultat som fører til at vi forkaster nullhypotesen når den alternative hypotesen er sann. Når den statistiske styrken øker synker sannsynligheten for at vi ikke forkaster en feilaktig nullhypotese (type II feil). Alternativt kan man si at når den statistiske styrken i testen øker, øker sannsynligheten for at vi korrekt godtar en sann alternativ hypotese.</p>
+<p>Vi kan uttrykke dette slik:</p>
+<p><span class="math inline">\(Statistisk\ styrke = 1 - \beta\)</span></p>
+<p>En ofte sitert og brukt vurdering rundt nivået på statistisk styrke (som altså er et tall mellom 0 og 1) er <span class="citation">J. Cohen (1988)</span>. Cohen foreslår 0,8 som et nivå på statistisk styrke som god avveining mellom sannsynligheten for type I og type II feil. Type I feil forekommer når man feilaktig forkaster <span class="math inline">\(H_0\)</span> når den er sann, mens type II feil innebærer å feilaktig beholde <span class="math inline">\(H_0\)</span>når den er usann (eller: vi konkluderer med at det ikke er noen effekt når det faktisk er en) <span class="citation">(Mayr et al. 2007)</span>. Vi kan oppsummere dette slik:</p>
+<div class="inline-figure"><img src="Modul_2_Feil1.png" style="width:75.0%"></div>
+<p>Vi kan med andre ord treffe riktig konklusjon i to av de fire mulighetene, men også feil i to av de fire mulighetene. For å huske forskjellen på type I og type II feil pleier jeg å huske:</p>
+<ul>
+<li>Seeing something that is not there (type I) – det vi også kallen en falsk positiv</li>
+<li>Not seeing something that is there (type II) – det vi også kaller en falsk negativ</li>
+</ul>
+<p><span class="citation">Ellis (2010)</span> illustrerer dette slik:</p>
+<div class="inline-figure"><img src="Modul_2_Feil2.png" style="width:75.0%"></div>
+<p>Cohen postulerer at de fleste forskere vil anse type I som langt verre enn type II, faktisk 4 ganger så ille. Dersom man velger <span class="math inline">\(\alpha=0.05\)</span> (95% konfindensnivå) må da <span class="math inline">\(\beta = 0.05*4=0.2\)</span>. Vi får da:</p>
+<p><span class="math inline">\(Power = 1 - \beta\)</span>
+<span class="math inline">\(Power = 1 . 0.2 = 0.8\)</span></p>
+<p>En annen måte å si dette på er at med statistisk styrke = 0,8 har man 80 % sjanse for å detektere en effekt hvis det virkelig er en effekt. Lav statistisk styrke fører altså til ikke-signifikante resultater. Et ikke-signifikant resultat betyr et uavklart resultat: Det kan være en effekt der og det kan hende det ikke er et resultat der. Et ikke-signifikant resultat betyr IKKE at det ikke kan være en effekt. Derimot vil et ikke-signifikant resultat oftest føre til at man tolker resultatet som at det ikke er noen effekt, og det vil være en type II feil hvis det faktisk er en effekt der som vi ikke ser pga lav statistisk styrke.</p>
+<p>Vi skal ikke gå nærmere inn på type I og type II feil her. I design av undersøkelser og analyser kan man gjøre valg som reduserer sannsynligheten for å gjøre en av feilene, men de to typene feil henger sammen så hvis man reduserer sannsynligheten for den ene øker man samtidig sannsynligheten for den andre feilen (og motsatt). Her må den som foretar undersøkelsen ta noen valg ut fra situasjonen og hvilken feil som vil være mest alvorlig å gjøre, men det er vanlig å regne type I feil som mer alvorlig enn type II (vitenskapsteoretisk sett). Grunnen til dette er at man anser det som verre å gå glipp av noe som har en faktisk effekt, enn å hevde at noe har en effekt når det ikke har det (men for eksempel innen medisinsk forskning kan dette være stikk motsatt – det vil for eksempel kunne være svært uheldig om man feilaktig konkluderer med at en ny medisin eller behandling ikke har negative bivirkninger hvis den faktisk har det).</p>
+<div id="statistisk-styrke---litt-mer" class="section level4" number="1.2.14.1">
+<h4>
+<span class="header-section-number">1.2.14.1</span> Statistisk styrke - litt mer<a class="anchor" aria-label="anchor" href="#statistisk-styrke---litt-mer"><i class="fas fa-link"></i></a>
+</h4>
+<p>Statistisk styrke kan enten brukes a priori eller post hoc – før eller etter.
+For å ta det siste først (post hoc). Dette innebærer at vi kalkulerer statistisk styrke etter at undersøkelsen og analysene er gjort (eller som regel ser på hva f.eks. SPSS forteller oss). Det finnes sterke advarsler mot å gjøre dette <span class="citation">(Cumming 2012)</span>. <span class="citation">Hoenig and Heisey (2001)</span> anser dette som fundamentalt feil. Det er likevel rimelig å si at dette er vanlig. Man skal i hvert fall være klar over at informasjonen vi får ut av post hoc statistisk styrketester er begrenset og, hevdes det, brukes til dels villedende.</p>
+<p>Imidlertid er “alle” enige om at a priori kan statistisk styrke være en viktig del av design av en undersøkelse. Mer spesifikt kan vi bruke “power calculations” for å regne ut hvor stort utvalg vi trenger for å tilfredsstille et gitt konfidensnivå og antall variabler.</p>
+<p>For å gjennomføre en a priori estimering av hvor stor N vi trenger i en undersøkelse trenger vi å vite:</p>
+<ol style="list-style-type: decimal">
+<li>Hvilken type test vi skal gjennomføre: dette kan gi ulik informasjon man trenger for estimering, men uansett trenger man 2-4:</li>
+<li>Forventet effektstørrelse (f.eks. Cohens d)</li>
+<li>Ønsket statistisk styrke</li>
+<li>Signifikansnivå</li>
+</ol>
+<p>Retningslinjer for effektstørrelse i <span class="citation">J. Cohen (1988)</span> gir:</p>
+<template id="0ae68202-3409-4550-94cf-64ee24eb9c45"><style>
+.tabwid table{
+  border-spacing:0px !important;
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style>
+<div class="tabwid">
+<style>.cl-f16e59ce{table-layout:auto;width:0%;}.cl-f1665508{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-f1665509{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-f166550a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-f166a0a8{background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f166a0a9{background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f166a0aa{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-f166a0ab{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<div class="inline-table"><table class="cl-f16e59ce">
+<thead><tr style="overflow-wrap:break-word;">
+<td class="cl-f166a0ab"><p class="cl-f166550a"><span class="cl-f1665508">Effekstørrelse</span></p></td>
+<td class="cl-f166a0ab"><p class="cl-f166550a"><span class="cl-f1665508">Cohens_d</span></p></td>
+</tr></thead>
+<tbody>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-f166a0a8"><p class="cl-f166550a"><span class="cl-f1665509">Veldig liten</span></p></td>
+<td class="cl-f166a0a8"><p class="cl-f166550a"><span class="cl-f1665509">0.01</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-f166a0a9"><p class="cl-f166550a"><span class="cl-f1665509">Liten</span></p></td>
+<td class="cl-f166a0a9"><p class="cl-f166550a"><span class="cl-f1665509">0.20</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-f166a0a9"><p class="cl-f166550a"><span class="cl-f1665509">Middels</span></p></td>
+<td class="cl-f166a0a9"><p class="cl-f166550a"><span class="cl-f1665509">0.50</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-f166a0a9"><p class="cl-f166550a"><span class="cl-f1665509">Stor</span></p></td>
+<td class="cl-f166a0a9"><p class="cl-f166550a"><span class="cl-f1665509">0.80</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-f166a0a9"><p class="cl-f166550a"><span class="cl-f1665509">Veldig stor</span></p></td>
+<td class="cl-f166a0a9"><p class="cl-f166550a"><span class="cl-f1665509">1.20</span></p></td>
+</tr>
+<tr style="overflow-wrap:break-word;">
+<td class="cl-f166a0aa"><p class="cl-f166550a"><span class="cl-f1665509">Enorm</span></p></td>
+<td class="cl-f166a0aa"><p class="cl-f166550a"><span class="cl-f1665509">2.00</span></p></td>
+</tr>
+</tbody>
+</table></div>
+</div></template><div class="flextable-shadow-host" id="e1c5a97e-0e34-4d07-ac57-f08760465ca4"></div>
+<script>
+var dest = document.getElementById("e1c5a97e-0e34-4d07-ac57-f08760465ca4");
+var template = document.getElementById("0ae68202-3409-4550-94cf-64ee24eb9c45");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script><p>Et praktisk hjelpemiddel i a priori vurderinger rundt design av studier - f.eks. for å finne ut hvor stort utvalg (hvor stor N) man bør ha ut fra kriteriene 1-4 ovenfor er programmet G*Power <span class="citation">(Faul et al. 2007, 2009)</span> som kan lastes ned <a href="https://www.psychologie.hhu.de/arbeitsgruppen/allgemeine-psychologie-und-arbeitspsychologie/gpower">her</a></p>
+<p>Et eksempel: Vi planlegger å gjennomføre en undersøkelse der vi skal kjøre en multippel lineær regresjonsanalyse. I G*Power legger vi in følgende verdier: Effect size = 0,15; α = 0,05; Power = 0,8; Number of predictors (antall uavhengige variabler) = 3</p>
+<p>G*Power vil kunne gi oss et plott der vi kan vurdere utvalgsstørrelse:</p>
+<div class="inline-figure"><img src="GPower.png" style="width:75.0%"></div>
+<p>Dette plottet kan vi bruke i planlegging av en undersøkelse. Det viser oss nødvendig N (y-aksen) for en gitt statistisk styrke med den valgte effektstørrelsen. Vi kan visuelt se hvordan en endring i statistisk styrke vil gi utslag i nødvendig N.</p>
+</div>
+<div id="effektstørrelse---litt-mer-og-litt-om-p" class="section level4" number="1.2.14.2">
+<h4>
+<span class="header-section-number">1.2.14.2</span> Effektstørrelse - litt mer (og litt om “p”)<a class="anchor" aria-label="anchor" href="#effektst%C3%B8rrelse---litt-mer-og-litt-om-p"><i class="fas fa-link"></i></a>
+</h4>
+
+</div>
+</div>
+</div>
+</div>
+
+  <div class="chapter-nav">
+<div class="prev"><a href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></div>
+<div class="next"><a href="regresjonsanalyse---ols.html"><span class="header-section-number">2</span> Regresjonsanalyse - OLS</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#grunnleggende-begreper-og-sammenhenger"><span class="header-section-number">1</span> Grunnleggende begreper og sammenhenger</a></li>
+<li>
+<a class="nav-link" href="#populasjon-og-utvalg"><span class="header-section-number">1.1</span> Populasjon og utvalg</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#utvelgelse-fra-populasjonen"><span class="header-section-number">1.1.1</span> Utvelgelse fra populasjonen</a></li></ul>
+</li>
+<li>
+<a class="nav-link" href="#enheter-variabler-og-verdier"><span class="header-section-number">1.2</span> Enheter, variabler og verdier</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#enhet"><span class="header-section-number">1.2.1</span> Enhet</a></li>
+<li><a class="nav-link" href="#variabel"><span class="header-section-number">1.2.2</span> Variabel</a></li>
+<li><a class="nav-link" href="#verdi"><span class="header-section-number">1.2.3</span> Verdi</a></li>
+<li><a class="nav-link" href="#m%C3%A5leniv%C3%A5"><span class="header-section-number">1.2.4</span> Målenivå</a></li>
+<li><a class="nav-link" href="#gjennomsnitt-som-modell"><span class="header-section-number">1.2.5</span> Gjennomsnitt som modell</a></li>
+<li><a class="nav-link" href="#normalfordeling"><span class="header-section-number">1.2.6</span> Normalfordeling</a></li>
+<li><a class="nav-link" href="#varians-og-standardavvik"><span class="header-section-number">1.2.7</span> Varians og standardavvik</a></li>
+<li><a class="nav-link" href="#normalfordeling-standardavvik-og-forventninger"><span class="header-section-number">1.2.8</span> Normalfordeling, standardavvik og forventninger</a></li>
+<li><a class="nav-link" href="#binomialfordeling"><span class="header-section-number">1.2.9</span> Binomialfordeling</a></li>
+<li><a class="nav-link" href="#poissonfordeling"><span class="header-section-number">1.2.10</span> Poissonfordeling</a></li>
+<li><a class="nav-link" href="#geometrisk-fordeling"><span class="header-section-number">1.2.11</span> Geometrisk fordeling</a></li>
+<li><a class="nav-link" href="#eksponensiell-fordeling"><span class="header-section-number">1.2.12</span> Eksponensiell fordeling</a></li>
+<li><a class="nav-link" href="#nyllhypotese"><span class="header-section-number">1.2.13</span> Nyllhypotese</a></li>
+<li><a class="nav-link" href="#statistisk-styrke-statistical-power---og-type-i-og-ii-feil"><span class="header-section-number">1.2.14</span> Statistisk styrke – “Statistical Power” - og type I og II feil</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/02_Kap_2.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/02_Kap_2.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 05 juni, 2022.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
