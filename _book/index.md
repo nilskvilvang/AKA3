@@ -79,7 +79,7 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   </tr>
   <tr>
    <td style="text-align:left;width: 8em; "> 05.juni 2022 </td>
-   <td style="text-align:left;width: 40em; "> Oppdatert kapittel 2. Lagt til CLT og Chebyshev i vedlegg. Nytt kapittel 3. </td>
+   <td style="text-align:left;width: 40em; "> Oppdatert kapittel 2. Lagt til CLT og Chebyshev i vedlegg. Nytt kapittel 3. Nytt kapittel 4. </td>
   </tr>
 </tbody>
 </table>

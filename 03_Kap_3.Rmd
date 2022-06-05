@@ -4,7 +4,7 @@ csl: chicago-author-date.csl
 ---
 
 ```{r echo = FALSE}
-pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra)
+pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra, writexl, car, corrplot)
 ```
 
 
@@ -12,7 +12,7 @@ pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra)
 
 ## Samvariasjon/kovarians
 
-Samvariasjon – at noe varierer sammen (omtales også som kovariasjon/"covariance") – er et mål på en felles variasjon mellom (minst) to variabler. Samvariasjonen kan være enten negativ eller positiv. Hvis vi har data på variablene x og y kan vi undersøke om verdiene i x og y varierer tilfeldig eller om det er en sammenheng mellom de to. Ved positiv samvariasjon vil en økning eller nedgang i en variabel korrespondere med en økning eller nedgang i den andre. Samvariasjon innebærer at det ikke er tilfeldig hvordan to variabler varierer i forhold til hverandre – det er et gjensidig forhold mellom variablene.
+Samvariasjon – at noe varierer sammen (omtales også som kovarians/"covariance") – er et mål på en felles variasjon mellom (minst) to variabler. Samvariasjonen kan være enten negativ eller positiv. Hvis vi har data på variablene x og y kan vi undersøke om verdiene i x og y varierer tilfeldig eller om det er en sammenheng mellom de to. Ved positiv samvariasjon vil en økning eller nedgang i en variabel korrespondere med en økning eller nedgang i den andre. Samvariasjon innebærer at det ikke er tilfeldig hvordan to variabler varierer i forhold til hverandre – det er et gjensidig forhold mellom variablene.
 
 I forrige kapittel var begrepet varians et tema. Et alternativt begrep for samvariasjon er kovarians (fra engelsk «covariance»). Kovariansen er den enkleste måten å se om to variabler varierer sammen – altså om endring i den ene variabelen følges av en endring i den andre. Eller, med andre ord, dersom en variabel avviker fra gjennomsnittet forventer vi at den andre også gjør det (enten i samme eller motsatt retning hvis vi tror de kovarierer). Vi ønsker derfor å finne ut hvor stor kovariansen er.
 
@@ -67,6 +67,25 @@ Korrelasjonskoeffisienten har alltid en verdi mellom -1 og 1, der 0 betyr ingen 
 - Mellom +/- 0.3 og +/- 0.49: Moderat korrelasjon
 - Under +/- 0.29: Liten korrelasjon
 
+@hinkleAppliedStatisticsBehavioral2003 opererer med en noe mer finmasket inndeling:
+
+```{r echo = FALSE, message = FALSE, warning=FALSE}
+
+cohend <- data.frame(Veldig = c("0.90 - 1.00"),
+                     Høy = c("0.70 - 0.90"),
+                     Moderat = c("0.50 - 0.70"),
+                     Lav = c("0.30 - 0.50"),
+                     Ingen = c("0.00 - 0.30"))
+
+colnames(cohend) <- c("Veldig høy", "Høy", "Moderat", "Lav", "Svært lav (om noe)")
+
+cohend<- cohend %>%
+  kbl(caption = "Korrelasjonskoeffisient - Pearsons r, modifisert fra Hinkle et al. (2003)") %>%
+  kable_classic(full_width = F, position = "left", html_font = "Cambria")
+
+column_spec(cohend, 1:3, width = "3.5cm")
+```
+
 Ofte ønsker vi (og anbefaler) å ikke bare se på verdien av korrelasjonskoeffisienten, men også se på en grafisk framstilling av datane - gjerne omtalt som et spredningsplott ("scatter plot").
 
 ![](korrelasjoner.png){width=90%}
@@ -85,7 +104,7 @@ Alle 16 eksemplene viser altså mønstre av korrelasjon mellom to variabler som 
 
 Det er viktig å huske på at en korrelasjon mellom to variabler (x og y) ikke er det samme som å si at det er en årsakssammenheng (kausalitet). Selv om to variabler korrelerer perfekt betyr ikke det nødvendigvis at den ene er årsak til den andre. Det kan være en såkalt spuriøs sammenheng. I mange tilfeller er det åpenbart at det er urimelig å anta at det skal være en sammenheng mellom variablene. 
 
-Korrelasjon betyr altså ikke automatisk kausalitet. Dette er utrolig viktig å huske – og en kilde til mye feilinformasjon/feiltolkninger. La oss ta to eksempler fra ![Tyler Vigen](https://www.tylervigen.com/spurious-correlations).
+Korrelasjon betyr altså ikke automatisk kausalitet. Dette er utrolig viktig å huske – og en kilde til mye feilinformasjon/feiltolkninger. La oss ta to eksempler fra [Tyler Vigen](https://www.tylervigen.com/spurious-correlations).
 
 ![](Modul_6_Kaus1.png){width=90%}
 
@@ -97,6 +116,72 @@ I det andre eksempelet virker sammenhengen like sprø. At det skal være en reel
 
 Det synes åpenbart at selv om det er en klar korrelasjon mellom variablene i de to eksemplene virker det fullstendig meningsløst å tro at de faktisk henger sammen. Dette er det vi kaller **spuriøs korrelasjon**.
 
+## Eksempel på bivariat korrelasjonsanalyse
+
+I tittelen på delkapittelet har vi brukt begrepet *bivariat* korrelasjonsanalyse. Det innebærer at vi ser på korrelasjonen mellom to variabler. I neste delkapittel skal vi vise et enkelt eksempel på korrelasjonsanalyse av flere variabler. 
+
+Dette eksempelet er hentet fra @pallantSPSSSurvivalManual2010. Datasettet kan lastes ned fra nett [her](http://spss.allenandunwin.com.s3-website-ap-southeast-2.amazonaws.com/data-files.html#.YpzW0KhBw2x).
+
+```{r echo = FALSE}
+Pallantmod <- read_excel("Pallant_survey.xlsx")
+Pallantmod <- data.frame(Pallantmod$tpstress,Pallantmod$tpcoiss)
+Pallantmod <- na.omit(Pallantmod)
+write_xlsx(Pallantmod, "Pallantmod.xlsx")
+```
+
+Vi har modifisert datasettet til å kun inneholde de to variablene vi skal bruke og fjernet observasjoner med manglende verdier:
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('Pallantmod.xlsx')
+```
+
+Datasettet inneholder opprinnelig flere variabler, men det jeg skal se på nå er om oppfattelse av stress ("tpstress") korrelerer med variabelen "tpcoiss" ("Total perceived control over internal states"). Jeg ønsker altså å se på sammenhengen mellom oppfattet stress og hvordan man oppfatter at man har "indre kontroll". 
+
+```{r}
+cor.test(Pallantmod$Pallantmod.tpstress, Pallantmod$Pallantmod.tpcoiss)
+```
+
+I resultatet kan vi se at $r = - 0.581$. Siden vi har et negativt fortegn betyr det at vi har en negativ korrelasjon mellom variablene – altså en høy verdi på den ene variabelen er forbundet med en lav verdi på den andre. Vi ser at korrelasjonen er signifikant ($p < .001$). Vi kan også si noe om styrken på korrelasjonen (uavhengig av fortegn på koeffisienten). 
+
+Lenger opp har vi gjengitt forslag til tokning av størrelsen på korrelasjonskoeffisienten. Etter disse har vi en sterk negativ korrelasjon mellom disse to variablene ut fra Cohens inndeling, men en moderat korrelasjon ut fra @hinkleAppliedStatisticsBehavioral2003. 
+
+```{r}
+
+plot(Pallantmod$Pallantmod.tpcoiss, Pallantmod$Pallantmod.tpstress, main = 'Spredningsplott ', xlab = 'tpcoiss', ylab = 'tpstress')
+```
+
+Det er vanligvis ikke nødvendig å vise resultater av en korrelasjonsanalyse dersom det ikke er mer enn to variabler. I eksempelet over kan man rapportere (vi har ikke sjekket forutsetninger, men for eksempelets skyld antar vi at vi ikke har funnet problemer der):
+
+> Forholdet mellom oppfattelse av indre kontroll (målt med PCOISS) og oppfattelse av stress (målt med Perceived Stress Scale) ble undersøkt med Pearsons korrelasjonskoeffisient. Innledende analyser avdekket ingen brudd på forutsetningene om normalitet, linearitet og homoskedastisitet. Basert på resultatene av studien er oppfattelse av indre kontroll sterkt negativt korrelert med oppfattelse av stress, r = -.58, n = 426, p < .001
+
+## Multivariat korrelasjonsanalyse
+
+Eksempelet her er hentet fra @coghlanUsingMultivariateAnalysis2010 ([Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/). Datasettet inneholder data på mengde av 13 ulike kjemikalier i vin fra en region i Italia fra tre ulike produsenter. 
+
+```{r echo = FALSE}
+wine <- read.table("http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data",
+          sep=",")
+```
+
+Vi kan først lage en korrelasjonsmatrise der vi kun tar for oss de første fem kjemikaliene (kolonne 2 til 5 i datasettet):
+
+```{r}
+vinkorrelasjon <- as.matrix(cor(wine[2:5]))
+upper <- round(vinkorrelasjon, 2)
+upper[upper.tri(vinkorrelasjon)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+Og et sammensatt spredninsgplott:
+
+```{r}
+scatterplotMatrix(wine[2:5])
+```
+
+I spredningsplottet kan vi se at korrelasjonen mellom V2 og V3 ser mest "spredd" ut. Dette kan vi også se i matrisen over. Ut fra baree plottet er det ikke så lett å f.eks. se hvor korrelasjonen er størst, men i matrisen ser vi det selvsagt enkelt (V4 og V5). Så kombinasjonen av en korrelasjonsmatrise og et spredningsplott vil være et godt hjelpemiddel for å se på korrelasjon. 
+
 ##  Kausalitet (årsakssammenheng)
 
 Kausalitet – fra latin "causa" -> engelsk "cause" - betyr altså årsak eller grunn. Kausalitet innebærer altså at det må være en årsakssammenheng mellom to hendelser/fenomener.
@@ -107,7 +192,7 @@ I samfunnsvitenskapene har man gjerne en litt annerledes tilnærming til kausali
 
 I et naturvitenskapelig eksperiment kan vi ofte isolere fenomenene vi undersøker fra all annen påvirkning (selv om dette naturligvis på ingen måte er gjeldende for all naturvitenskapelig forskning). Vi kan kontrollere hva som påvirker hva, i tid og rom. Et kontrollert eksperiment er derfor en slags gullstandard for forskning når man skal si noe om kausale forhold.
 
-I samfunnsvitenskapene er dette ofte i praksis umulig. Det vil være mange mulige påvirkninger på et fenomen, og det kan være vanskelig å si noe sikkert om 1) har vi tenkt på alle ting som kan påvirke, 2) klarer vi å ta hensyn til denne usikkerheten i våre analyser og 3) vet vi egentlig hva som påvirker hva (kan det være sånn at vår antakelse om at A påvirker B faktisk kan være motsatt)? Moralen er nok: Vi skal være veldig varsomme med å dra for bastante slutninger om kausalitet så lenge vi ikke gjennomfører et kontrollert eksperiment der vi kontrollerer omgivelsene og variablene. det finnes imidlertid (selvsagt) metoder også i samfunnsvitenskapene som gjør at vi kan snakke om kausalitet. Disse kommer vi (litt) tilbake til undervegs i senere kapitler.
+I samfunnsvitenskapene er dette ofte i praksis umulig. Det vil være mange mulige påvirkninger på et fenomen, og det kan være vanskelig å si noe sikkert om 1) har vi tenkt på alle ting som kan påvirke, 2) klarer vi å ta hensyn til denne usikkerheten i våre analyser og 3) vet vi egentlig hva som påvirker hva (kan det være sånn at vår antakelse om at A påvirker B faktisk kan være motsatt)? Moralen er nok: Vi skal være veldig varsomme med å dra for bastante slutninger om kausalitet så lenge vi ikke gjennomfører et kontrollert eksperiment der vi kontrollerer omgivelsene og variablene. Det finnes imidlertid (selvsagt) metoder også i samfunnsvitenskapene som gjør at vi kan snakke om kausalitet. Disse kommer vi (litt) tilbake til undervegs i senere kapitler.
 
 
 

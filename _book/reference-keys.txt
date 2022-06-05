@@ -20,6 +20,7 @@ tab:unnamed-chunk-26
 tab:unnamed-chunk-27
 tab:unnamed-chunk-28
 tab:unnamed-chunk-2
+tab:unnamed-chunk-3
 fig:unnamed-chunk-19
 fig:unnamed-chunk-28
 tab:unnamed-chunk-45
@@ -55,7 +56,16 @@ samvariasjonkovarians
 korrelasjon-og-korrelasjonskoeffisient
 tolkning-av-korrelasjon-og-korrelasjonskoeffisenter
 spuriøs-korrelasjon
+eksempel-på-bivariat-korrelasjonsanalyse
+multivariat-korrelasjonsanalyse
 kausalitet-årsakssammenheng
+univariat-analyse
+deskriptiv-statistikk
+frekvenstabell
+diagrammer-plott
+kjikvadrattest
+t-tester
+anova
 regresjonsanalyse---ols
 innledning
 teori
@@ -218,7 +228,7 @@ kjøring-av-modell
 full-modell-på-datasettet
 tolkning-av-resultatene
 hvor-god-er-modellen-vår-model-fit-statistics
-kjikvadrattest
+kjikvadrattest-1
 approximate-fit-index---rmsea-cfi-og-tli
 kryssvalidering-cross-validation
 structural-equation-modelling-sem---strukturelle-regresjonsmodeller
