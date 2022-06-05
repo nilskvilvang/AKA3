@@ -1,0 +1,10 @@
+---
+bibliography: bibliografi.bib
+csl: chicago-author-date.csl
+---
+
+```{r echo=FALSE}
+pacman::p_load(tidyverse, codefolder)
+```
+
+# Logistisk regresjon
