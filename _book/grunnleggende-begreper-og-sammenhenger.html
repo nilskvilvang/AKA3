@@ -73,11 +73,12 @@
 <li><a class="" href="index.html">Introduksjon</a></li>
 <li><a class="" href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></li>
 <li><a class="active" href="grunnleggende-begreper-og-sammenhenger.html"><span class="header-section-number">1</span> Grunnleggende begreper og sammenhenger</a></li>
-<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">2</span> Regresjonsanalyse - OLS</a></li>
-<li><a class="" href="iv-regresjon.html"><span class="header-section-number">3</span> IV regresjon</a></li>
-<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">4</span> Logistisk regresjon</a></li>
-<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">5</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
-<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">6</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
+<li><a class="" href="samvariasjon-og-korrelasjon.html"><span class="header-section-number">2</span> Samvariasjon og korrelasjon</a></li>
+<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">3</span> Regresjonsanalyse - OLS</a></li>
+<li><a class="" href="iv-regresjon.html"><span class="header-section-number">4</span> IV regresjon</a></li>
+<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">5</span> Logistisk regresjon</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">6</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">7</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-b---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg B - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-c---chebyshevs-teorem.html">Vedlegg C - Chebyshevs teorem</a></li>
@@ -145,7 +146,7 @@
 <span class="header-section-number">1.3</span> Målenivå<a class="anchor" aria-label="anchor" href="#m%C3%A5leniv%C3%A5"><i class="fas fa-link"></i></a>
 </h2>
 <p>Vi måler altså verdien på variabler. Men variabler er forskjellige, det vil si vi kan måle de på ulik måte ut fra hva de representerer. For eksempel måler vi alder i år, temperatur i grader, inntekt i kroner, kjønn og utdanning i ulike kategorier. De ulike måle- eller kategoriseringsmåtene gjør oss i stand til å gjøre ulike ting med målingene/kategoriene. Vi kan vise dette i en tabell:</p>
-<template id="f3b324ff-0c3e-4f5d-a338-ba0b1809b82f"><style>
+<template id="34cfa8fb-ca97-4ab5-9a2d-82555a0dd4f6"><style>
 .tabwid table{
   border-spacing:0px !important;
   border-collapse:collapse;
@@ -181,57 +182,57 @@ background-color: transparent;
 }
 </style>
 <div class="tabwid">
-<style>.cl-c3d0ab1e{table-layout:auto;width:0%;}.cl-c3c9567a{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-c3c9567b{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-c3c9567c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-c3c9a210{background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-c3c9a211{background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-c3c9a212{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-c3c9a213{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<div class="inline-table"><table class="cl-c3d0ab1e">
+<style>.cl-3e705022{table-layout:auto;width:0%;}.cl-3e688d42{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3e688d43{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3e688d44{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3e68db30{background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3e68db31{background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3e68db32{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3e68db33{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<div class="inline-table"><table class="cl-3e705022">
 <thead><tr style="overflow-wrap:break-word;">
-<td class="cl-c3c9a213"><p class="cl-c3c9567c"><span class="cl-c3c9567a">Nivå</span></p></td>
-<td class="cl-c3c9a213"><p class="cl-c3c9567c"><span class="cl-c3c9567a">Data</span></p></td>
-<td class="cl-c3c9a213"><p class="cl-c3c9567c"><span class="cl-c3c9567a">Forklaring</span></p></td>
-<td class="cl-c3c9a213"><p class="cl-c3c9567c"><span class="cl-c3c9567a">Operasjoner</span></p></td>
-<td class="cl-c3c9a213"><p class="cl-c3c9567c"><span class="cl-c3c9567a">Eksempel</span></p></td>
+<td class="cl-3e68db33"><p class="cl-3e688d44"><span class="cl-3e688d42">Nivå</span></p></td>
+<td class="cl-3e68db33"><p class="cl-3e688d44"><span class="cl-3e688d42">Data</span></p></td>
+<td class="cl-3e68db33"><p class="cl-3e688d44"><span class="cl-3e688d42">Forklaring</span></p></td>
+<td class="cl-3e68db33"><p class="cl-3e688d44"><span class="cl-3e688d42">Operasjoner</span></p></td>
+<td class="cl-3e68db33"><p class="cl-3e688d44"><span class="cl-3e688d42">Eksempel</span></p></td>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c3c9a210"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kategorisk</span></p></td>
-<td class="cl-c3c9a210"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Binær/dikotom</span></p></td>
-<td class="cl-c3c9a210"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kun to muligheter/to kategorier</span></p></td>
-<td class="cl-c3c9a210"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Telle frekvenser.</span></p></td>
-<td class="cl-c3c9a210"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Til stede/ikke til stede, død/levende, ja/nei, på/av</span></p></td>
+<td class="cl-3e68db30"><p class="cl-3e688d44"><span class="cl-3e688d43">Kategorisk</span></p></td>
+<td class="cl-3e68db30"><p class="cl-3e688d44"><span class="cl-3e688d43">Binær/dikotom</span></p></td>
+<td class="cl-3e68db30"><p class="cl-3e688d44"><span class="cl-3e688d43">Kun to muligheter/to kategorier</span></p></td>
+<td class="cl-3e68db30"><p class="cl-3e688d44"><span class="cl-3e688d43">Telle frekvenser.</span></p></td>
+<td class="cl-3e68db30"><p class="cl-3e688d44"><span class="cl-3e688d43">Til stede/ikke til stede, død/levende, ja/nei, på/av</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kategorisk</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Nomiell</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Mer enn to kategorier som er gjensidig utelukkende. Tallverdi er en 'merkelapp' som ikke sier noe om egenskaper.</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Telle frekvenser.</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Nasjonalitet, politiske partier, yrke, studieretning</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Kategorisk</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Nomiell</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Mer enn to kategorier som er gjensidig utelukkende. Tallverdi er en 'merkelapp' som ikke sier noe om egenskaper.</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Telle frekvenser.</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Nasjonalitet, politiske partier, yrke, studieretning</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kategorisk</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Ordinal</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kategorier som kan rangeres/ordnes, men der avstanden mellom kategoriene er betydningsløs.</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Arrangere i rekkefølge.</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Likertskalaer (sterkt uenig-sterkt enig), Utdanningsnivå</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Kategorisk</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Ordinal</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Kategorier som kan rangeres/ordnes, men der avstanden mellom kategoriene er betydningsløs.</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Arrangere i rekkefølge.</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Likertskalaer (sterkt uenig-sterkt enig), Utdanningsnivå</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kontinuerlige</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Intervall</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kan rangeres og man kan si noe kvantitativt om avstanden mellom verdier. Fast avstand mellom måleverdier – lik avstand på måleskalaen representerer lik avstand i fenomenet som måles. Har et kunstig nullpunkt</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Addere, subtrahere og regne ut gjennomsnitt</span></p></td>
-<td class="cl-c3c9a211"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Temperatur: 10°C er dobbelt så mye som 5°C, men man kan ikke si at 10°C er dobbelt så varmt som 5°C.</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Kontinuerlige</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Intervall</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Kan rangeres og man kan si noe kvantitativt om avstanden mellom verdier. Fast avstand mellom måleverdier – lik avstand på måleskalaen representerer lik avstand i fenomenet som måles. Har et kunstig nullpunkt</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Addere, subtrahere og regne ut gjennomsnitt</span></p></td>
+<td class="cl-3e68db31"><p class="cl-3e688d44"><span class="cl-3e688d43">Temperatur: 10°C er dobbelt så mye som 5°C, men man kan ikke si at 10°C er dobbelt så varmt som 5°C.</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c3c9a212"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kontinuerlige</span></p></td>
-<td class="cl-c3c9a212"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Skala/ratio/ forholdstall</span></p></td>
-<td class="cl-c3c9a212"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Kan rangere, måle avstand og beregne forholdstall mellom verdier. Har et faktisk nullpunkt</span></p></td>
-<td class="cl-c3c9a212"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Regne ut ratio/forholdstall og prosenter</span></p></td>
-<td class="cl-c3c9a212"><p class="cl-c3c9567c"><span class="cl-c3c9567b">Inntekt: 200000 er dobbelt så mye som 100000, og 200000 er dobbelt så stor inntekt som 100000. Samtidig er 400000 dobbelt så høy inntekt som 200000.</span></p></td>
+<td class="cl-3e68db32"><p class="cl-3e688d44"><span class="cl-3e688d43">Kontinuerlige</span></p></td>
+<td class="cl-3e68db32"><p class="cl-3e688d44"><span class="cl-3e688d43">Skala/ratio/ forholdstall</span></p></td>
+<td class="cl-3e68db32"><p class="cl-3e688d44"><span class="cl-3e688d43">Kan rangere, måle avstand og beregne forholdstall mellom verdier. Har et faktisk nullpunkt</span></p></td>
+<td class="cl-3e68db32"><p class="cl-3e688d44"><span class="cl-3e688d43">Regne ut ratio/forholdstall og prosenter</span></p></td>
+<td class="cl-3e68db32"><p class="cl-3e688d44"><span class="cl-3e688d43">Inntekt: 200000 er dobbelt så mye som 100000, og 200000 er dobbelt så stor inntekt som 100000. Samtidig er 400000 dobbelt så høy inntekt som 200000.</span></p></td>
 </tr>
 </tbody>
 </table></div>
-</div></template><div class="flextable-shadow-host" id="d0a223f9-acf5-4725-8332-9a2d829f6ad7"></div>
+</div></template><div class="flextable-shadow-host" id="69887ac7-7077-4077-a422-21859635ee58"></div>
 <script>
-var dest = document.getElementById("d0a223f9-acf5-4725-8332-9a2d829f6ad7");
-var template = document.getElementById("f3b324ff-0c3e-4f5d-a338-ba0b1809b82f");
+var dest = document.getElementById("69887ac7-7077-4077-a422-21859635ee58");
+var template = document.getElementById("34cfa8fb-ca97-4ab5-9a2d-82555a0dd4f6");
 var caption = template.content.querySelector("caption");
 if(caption) {
   caption.style.cssText = "display:block;text-align:center;";
@@ -330,7 +331,7 @@ Figure 1.5: Normalfordelingskurve
 </h2>
 <p>Variansen i en variabel representerer det gjennomsnittlige avviket fra gjennomsnittsverdien <span class="citation">(Field, Miles, and Field 2012a)</span> og er et mål på spredningen i dataene (som navnet antyder: hvor mye dataene variere ut fra den sentrale tendensen). Under vises et eksempel basert på <span class="citation">Field (2009b)</span>.</p>
 <p>La oss anta at vi har spurt 5 studenter på høgskolen hvor mange kjæledyr de har. Svarene kan settes opp i en enkel tabell. I gjennomsnitt har de 2,6 kjæledyr. Vi ønsker imidlertid å se hvor mye avviket er for den enkelte fra snittet (siden vi har regnet ut snittet kan vi se på gjennomsnittsverdien som en modell på forholdet mellom studenter og antall kjæledyr). Vi registrerer svarene vi fikk i et skjema:</p>
-<template id="b104b779-b74f-4a5e-965c-25a6863dd84d"><style>
+<template id="cc45dd89-8c93-492f-9adc-23875fd075ed"><style>
 .tabwid table{
   border-spacing:0px !important;
   border-collapse:collapse;
@@ -366,63 +367,63 @@ background-color: transparent;
 }
 </style>
 <div class="tabwid">
-<style>.cl-c45b084a{table-layout:auto;width:100%;}.cl-c4526c9e{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-c4526c9f{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-c452ba82{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-c452ba83{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-c452ba84{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<div class="inline-table"><table class="cl-c45b084a">
+<style>.cl-3eff41f6{table-layout:auto;width:100%;}.cl-3ef68782{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3ef6ae74{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3ef6fc6c{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3ef6fc6d{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3ef6fc6e{background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<div class="inline-table"><table class="cl-3eff41f6">
 <thead><tr style="overflow-wrap:break-word;">
-<td class="cl-c452ba84"><p class="cl-c4526c9f"><span class="cl-c4526c9e">Studentnr</span></p></td>
-<td class="cl-c452ba84"><p class="cl-c4526c9f"><span class="cl-c4526c9e">Antall</span></p></td>
-<td class="cl-c452ba84"><p class="cl-c4526c9f"><span class="cl-c4526c9e">Avvik</span></p></td>
-<td class="cl-c452ba84"><p class="cl-c4526c9f"><span class="cl-c4526c9e">Avvik_kvadrert</span></p></td>
+<td class="cl-3ef6fc6e"><p class="cl-3ef6ae74"><span class="cl-3ef68782">Studentnr</span></p></td>
+<td class="cl-3ef6fc6e"><p class="cl-3ef6ae74"><span class="cl-3ef68782">Antall</span></p></td>
+<td class="cl-3ef6fc6e"><p class="cl-3ef6ae74"><span class="cl-3ef68782">Avvik</span></p></td>
+<td class="cl-3ef6fc6e"><p class="cl-3ef6ae74"><span class="cl-3ef68782">Avvik_kvadrert</span></p></td>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">1</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">1</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">-1.6</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">2.56</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">1</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">1</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">-1.6</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">2.56</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">2</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">2</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">-0.6</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">0.36</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">2</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">2</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">-0.6</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">0.36</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">3</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">3</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">0.4</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">0.16</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">3</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">3</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">0.4</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">0.16</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">4</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">3</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">0.4</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">0.16</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">4</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">3</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">0.4</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">0.16</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">5</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">4</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">1.4</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">1.96</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">5</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">4</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">1.4</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">1.96</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">Snitt</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e">2.6</span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e"></span></p></td>
-<td class="cl-c452ba82"><p class="cl-c4526c9f"><span class="cl-c4526c9e"></span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">Snitt</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782">2.6</span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782"></span></p></td>
+<td class="cl-3ef6fc6c"><p class="cl-3ef6ae74"><span class="cl-3ef68782"></span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-c452ba83"><p class="cl-c4526c9f"><span class="cl-c4526c9e">Sum</span></p></td>
-<td class="cl-c452ba83"><p class="cl-c4526c9f"><span class="cl-c4526c9e"></span></p></td>
-<td class="cl-c452ba83"><p class="cl-c4526c9f"><span class="cl-c4526c9e">0</span></p></td>
-<td class="cl-c452ba83"><p class="cl-c4526c9f"><span class="cl-c4526c9e">5.20</span></p></td>
+<td class="cl-3ef6fc6d"><p class="cl-3ef6ae74"><span class="cl-3ef68782">Sum</span></p></td>
+<td class="cl-3ef6fc6d"><p class="cl-3ef6ae74"><span class="cl-3ef68782"></span></p></td>
+<td class="cl-3ef6fc6d"><p class="cl-3ef6ae74"><span class="cl-3ef68782">0</span></p></td>
+<td class="cl-3ef6fc6d"><p class="cl-3ef6ae74"><span class="cl-3ef68782">5.20</span></p></td>
 </tr>
 </tbody>
 </table></div>
-</div></template><div class="flextable-shadow-host" id="df4d3f47-76ba-4e24-9676-f84d9dcc12ad"></div>
+</div></template><div class="flextable-shadow-host" id="b26ca5f8-484f-4777-a5cb-7754fcc683b4"></div>
 <script>
-var dest = document.getElementById("df4d3f47-76ba-4e24-9676-f84d9dcc12ad");
-var template = document.getElementById("b104b779-b74f-4a5e-965c-25a6863dd84d");
+var dest = document.getElementById("b26ca5f8-484f-4777-a5cb-7754fcc683b4");
+var template = document.getElementById("cc45dd89-8c93-492f-9adc-23875fd075ed");
 var caption = template.content.querySelector("caption");
 if(caption) {
   caption.style.cssText = "display:block;text-align:center;";
@@ -1043,7 +1044,7 @@ Store effekt
 
   <div class="chapter-nav">
 <div class="prev"><a href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></div>
-<div class="next"><a href="regresjonsanalyse---ols.html"><span class="header-section-number">2</span> Regresjonsanalyse - OLS</a></div>
+<div class="next"><a href="samvariasjon-og-korrelasjon.html"><span class="header-section-number">2</span> Samvariasjon og korrelasjon</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">

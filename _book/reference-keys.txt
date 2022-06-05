@@ -19,6 +19,7 @@ fig:unnamed-chunk-25
 tab:unnamed-chunk-26
 tab:unnamed-chunk-27
 tab:unnamed-chunk-28
+tab:unnamed-chunk-2
 fig:unnamed-chunk-19
 fig:unnamed-chunk-28
 tab:unnamed-chunk-45
@@ -49,6 +50,12 @@ statistisk-styrke---litt-mer
 effektstørrelse-og-litt-om-p
 standardisering---transformasjon-av-data-z-skåre
 standardisering---transformasjon-av-data-z-skåre---del-2
+samvariasjon-og-korrelasjon
+samvariasjonkovarians
+korrelasjon-og-korrelasjonskoeffisient
+tolkning-av-korrelasjon-og-korrelasjonskoeffisenter
+spuriøs-korrelasjon
+kausalitet-årsakssammenheng
 regresjonsanalyse---ols
 innledning
 teori

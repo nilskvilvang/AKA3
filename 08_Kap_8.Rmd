@@ -1,0 +1,10 @@
+---
+bibliography: bibliografi.bib
+csl: chicago-author-date.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)
