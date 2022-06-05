@@ -4,7 +4,7 @@ csl: chicago-author-date.csl
 ---
 
 ```{r}
-pacman::p_load(flextable, tidyverse, officer, readxl)
+pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra)
 ```
 
 
@@ -52,7 +52,7 @@ En avhengig variabel (også kalt virkningsvariabel) er en variabel som påvirkes
 
 Hvordan egenskapen måles, hvordan egenskapene ser ut.
 
-### Målenivå
+## Målenivå
 
 Vi måler altså verdien på variabler. Men variabler er forskjellige, det vil si vi kan måle de på ulik måte ut fra hva de representerer. For eksempel måler vi alder i år, temperatur i grader, inntekt i kroner, kjønn og utdanning i ulike kategorier. De ulike måle- eller kategoriseringsmåtene gjør oss i stand til å gjøre ulike ting med målingene/kategoriene. Vi kan vise dette i en tabell:
 
@@ -75,7 +75,7 @@ Vi skal imidlertid merke oss et viktig poeng. Såkalte responsskalaer og Likerts
  
 I følge @kahlerParametricAnalysisOrdinal2008 kan vi ikke bruke parametriske tester på slik data. Noen statistikkbøker [f.eks. @fieldDiscoveringStatisticsUsing2009 og @pallantSPSSSurvivalManual2010] slår ganske enkelt fast at dataene skal være på minimum intervallnivå for å tilfredsstille forutsetningene for parametriske tester, men diskuterer ikke dette nærmere.
 
-#### Forutsetninger om intervalldata
+### Forutsetninger om intervalldata
 
 Latente variabler (vi kommer sterkt tilbake til begrepet latente variabler i såvel faktoranalyse som SEM-analyse i senere kapitler, men kort fortalt er dette variabler vi ikke kan observere eller måle direkte, men som må tilnærmes gjennom andre variabler) måles ofte gjennom skalaer som måler respondentens holdninger eller oppfatninger ("semantic differnatial scales - @jamiesonLikertScalesHow2004), jfr. @likertTechniqueMeasurementAttitudes1932. Slike skalaer, der respondentene velger et av flere svaralternativ som står i forhold til hverandre – f.eks. "Svært uenig" - "Uenig" - "Nøytral" - "Enig" - "Svært enig"  - anses produserer data på ordinalnivå ifølge kjente klassifiseringer. En ofte sitert klassifisering er @stevensTheoryScalesMeasurement1946. Det er umulig å fastslå at forskjellen mellom "Sterkt uenig" og "Uenig" er nøyaktig den samme som forskjellen mellom "Enig" og "Sterkt enig".  
 
@@ -85,7 +85,7 @@ I motsetning til den konservative tilnærmingen finnes det en mer liberal tradis
 
 Det finnes med andre ord gode begrunnelser for både en konservativ og en liberal tilnærming til hvorvidt man kan kjøre parametriske tester på ordinale data som data fra spørreundersøkelser som bruker Likert skalaer. Det er imidlertid ingen praktisk grunn til å anta at man *ikke* kan gjøre det – det finnes gode teoretiske og empiriske argumenter for at det kan gjøres, men man bør vurdere andre aspekter ved dataene også som nevnt overfor. 
 
-### Gjennomsnitt som modell
+## Gjennomsnitt som modell
 
 En mer utførlig forklaring kan finnes i f.eks. @milesApplyingRegressionCorrelation2001. 
 
@@ -119,7 +119,7 @@ Residualbegrepet kommer vi sterkt tilbake til når vi skal ta for oss regresjons
 
 Vi kommer til å snakke mye om modeller. Vi kommer også itl å snakke mye om "hvor god er modellen" - eller med andre ord: har vi klart å lage en modell som representerer "virkeligheten" på en god måte. Vi skal imidlertid huske på at "All models are wrong, but some are useful" [@boxScienceStatistics1976]. En statistisk modell vil aldri klare å representere den komplekse virkeligheten - vi må alltid forsøke å finne måter å måle og representere enkelte deler av virkeligeheten og lage modeller som kan fortelle oss noe fornuftig og nyttig om denne virkeligheten. Men selv om modellen alltid er feil og imperfekt kan den fortsatt være nyttig. 
 
-### Normalfordeling
+## Normalfordeling
 
 Når vi snakker om distribusjonen av et datasett tenker vi på hvordan dataene vi har samlet inn fordeler seg i forhold til hverandre etter gitte egenskaper. Vi kan for eksempel ha målt høyden på 100 mennesker. Disse dataene utgjør da en observert fordeling som vi kan sette inn i et histogram for å visualisere hvordan datasettet ser ut:
 
@@ -215,7 +215,7 @@ Det den standardiserte normalfordelingskurven (også kjent som Gausskurven eller
 
 Før vi ser nærmere på egenskaper ved normalfordelingskurven kan det være nødvendig å gå litt inn på begrepene varians og standardavvik som mål på spredningen i datasett. Disse begrepene, spesielt standardavvik, vil være helt sentrale i videre arbeid med temaet.
 
-### Varians og standardavvik
+## Varians og standardavvik
 
 Variansen i en variabel representerer det gjennomsnittlige avviket fra gjennomsnittsverdien [@Field2012] og er et mål på spredningen i dataene (som navnet antyder: hvor mye dataene variere ut fra den sentrale tendensen). Under vises et eksempel basert på @Field2009.
 
@@ -241,7 +241,7 @@ Når vi regner ut avviket (sum of deviances) summerer vi avvikene. Siden denne e
 
 Som regel snakker vi imidlertid om standardavviket. Dette finner vi ved å ta kvadratroten av variansen (som vi jo har funnet ved å kvadrere avvikene for å unngå fortegnsproblemer). Vi får da i vårt tilfelle et standardavvik på 1,14. Variansen og standardavviket forteller oss altså noe om spredningen i dataene. Liten varians betyr at spredningen er liten (om vi har gjennomført en spørreundersøkelse betyr det at respondentene har svart ganske likt). Stor varians betyr stor spredning (respondentene har svart ganske ulikt).
 
-### Normalfordeling, standardavvik og forventninger
+## Normalfordeling, standardavvik og forventninger
 
 Vi kan nå se nærmere på normalfordelingen. 
 
@@ -351,7 +351,7 @@ text(0, 0.58, "99.7%", cex = 1.5, col=4)
 
 Som nevnt er mange fenomener i hverdagen normalfordelte, eller nærme nok normalfordeling til at vi kan bruke normalfordeling som teoretisk modell for observerte data ^[Normalfordelingen er dessuten en god tilnærming til binomialfordeling med høyt antall observasjoner (høy n), og også til poissonfordeling med høy frekvens. Dette forfølger vi imidlertid ikke videre i dette kompendiet.]. Det finnes imidlertid mange tilfeller der vi ikke kan bruke normalfordelingen. Hvis dataene er sterkt asymmetriske vil ikke reglene for normalfordeling som vi har skissert ovenfor gjelde ^[Chebyshevs teorem vil imidlertid gjelde for alle datasett. Teoremet belyses i eget vedlegg for de spesielt interesserte].  
 
-### Binomialfordeling
+## Binomialfordeling
 
 En distribusjon hvor det kun er to mulige utfall av en hendelse kalles en binomial fordeling. Et myntkast er en slik hendelse (gitt at vi ser bort fra den fysiske muligheten at mynten kan lande stående på høykant). Levende eller død kan også være et eksempel på dette. Det ene utfallet utelukker det andre, men de er uavhengige fordi resultatet i ett myntkast ikke påvirker resultatet i neste myntkast. Alle myntkastene må derimot være identiske, det vil si sannsynligheten for det ene eller det andre resultatet er lik hver gang forsøket eller myntkastet gjennomføres. Hvis vi har lik sannsynlighet, kan en tilfeldig generert binomial distribusjon se slik ut:
 
@@ -455,7 +455,7 @@ hist(minterning,
      xlab = "Verdi på terning")
 ```
 
-### Poissonfordeling
+## Poissonfordeling
 
 Poissonfordelinger finnes i situasjoner der hendelser skjer vilkårlig i tid (og rom) hvor vi er interessert i kun antallet hendelser i et gitt tidsintervall. Vi kan f.eks. være interessert i hvor mange supporthenvendelser vi får i løpet av en time, antallet feilmedisineringer per uke, hvor mange besøk avdelingen får per dag o.l. Andre eksempler kan være antall trafikkulykker langs en angitt veistrekning, antall elgpåkjørlser på en togstrekning, eller antall av en gitt art fugler i et definert område i et definert tidsrom. En hendelse må være uavhengig tidsmessig av andre hendelser (det er altså ikke økt sannsynlighet for at en hendelse vil skje fordi en tilsvarende hendelse akkurat har skjedd), sannsynligheten for en hendelse i et kort perspektiv er lik sannsynligheten over et lengre perspektiv, og ettersom et tidsintervall blir kortere og kortere vil sannsynligheten for hendelsen gå mot null. 
 
@@ -524,7 +524,7 @@ I R kan vi også enkelt regne ut den nøyaktige sannsynligheten for x antall må
 
 eller f.eks. sannsynligheten for at det skåres mellom 1 og 3 mål (= `r dpois(x = 1, lambda = 2.5) + dpois(x=2, lambda = 2.5) + dpois(x=3, lambda = 2.5)`).
 
-### Geometrisk fordeling
+## Geometrisk fordeling
 
 En geometrisk fordeling er en diskret fordeling der man teller antall hendelser/forsøk inntil et gitt resultat forekommer. Resultatet er suksess eller feil, altså hvor mange ganger man har en hendelse før man får en suksess eller feil (avhengig av hva man måler). Et eksempel er hvor mange ganger man må kaste to terninger for å få 11 i sum. Man kaster da to terninger til første gang man får 11 (= suksess). En geometrisk distribusjon kan se slik ut (p = 0,4):
 
@@ -545,7 +545,7 @@ I statistisk prosesskontroll er denne typen fordeling til stede når man f.eks. 
 
 Det kan være verdt å merke seg at binomial og geometrisk fordeling skiller seg fra hverandre ved at geometrisk fordeling har et ukjent antall hendelser (man fortsetter til man får første suksess/feil), mens binomial fordeling har et gitt antall hendelser. Som vi skal se i senere eksempler derfor geometrisk fordeling viktig når vi håndterer sjeldne hendelser, fordi vi ikke kjenner hvor mange dager det f.eks. går før vi får første suksess/feil. 
 
-### Eksponensiell fordeling
+## Eksponensiell fordeling
 
 En tilfeldig kontinuerlig variabel kan sies å være analog til den geometriske distribusjonen, men for kontinuerlige data. Den eksponensielle distribusjonen brukes ofte for å modellere tid mellom to hendelser. I statistisk prosesskontroll vil vi typisk bruke denne distribusjonen hvis vi måler tid mellom to sjeldne hendelser. Hvis vi f.eks. måler tiden mellom uventet dødsfall som følge av en type rutineoperasjon på et sykehus vil den ha en eksponensiell distribusjon hvis sannsynligheten for at hendelsen inntreffer innenfor t gitt tidsintervall er omtrentlig proporsjonal med lengde på tidsintervallet [@Taboga2017]. Eksponensielle fordelinger har samme grunnform, men kan ha ulik bratthet avhengig av den såkalte lamdaverdien (= en parameter for raten av hendelser). Lambdaverdi er en parameter for hvor ofte hendelsene forventes å skje. 
 
@@ -581,13 +581,13 @@ ggarrange(dat1plot, dat2plot, dat3plot, dat4plot + rremove("x.text"), ncol = 2, 
 
 ```
 
-### Nyllhypotese
+## Nullhypotese
 
 Vi kommer mye tilbake til hypotesetesting (i ulike former), men dette danner grunnlaget for å forstå hvorfor vi tester en nullhypotese og forkaster den hvis vi får et signifikant resultat. Vi ønsker å teste hypotesen om at M = 53 [51,55] er en god estimator for μ. I stedet for å teste alle muligheter for at μ vil ligge i intervallet, tester vi i stedet en presist formulert og testbar nullhypotese om at μ ikke vil ligge i intervallet [51,55]. Hvis vi får et signifikant resultat på nullhypotesetesten kan vi si at sannsynligheten for at μ vil ligge utenfor [51,55] er svært liten (avhengig av konfidensnivå), og at vi derfor har styrket hypotesen om at M=53 [51,55] er en god estimator for μ. Vi setter med andre ord opp en stråmann: vi vil egentlig teste om våre estimatorer for populasjonen er sannsynlige innenfor et konfidensintervall, men tester i stedet sannsynligheten for at de ikke er det i håp om å forkaste stråmannen.
 
 Nullhypotesen formuleres som regel som en presis og testbar hypotese om ingen forbindelse eller forskjell mellom gitte variabler. Nullhypotesen kan imidlertid være «hva som helst», i den forstand at det er like gyldig å formulere en nullhypotese som ikke inneholder null i betydningen tallet null eller ingen forskjell e.l. Poenget er at den må formuleres slik at den evt kan forkastes hvis den ikke støttes ("null" kommer, har jeg blitt fortalt, fra det engelske "nullify" - altså "gjøre ugyldig, annullere, oppheve"). 
 
-### Statistisk styrke – "Statistical Power" - og type I og II feil
+## Statistisk styrke – "Statistical Power" - og type I og II feil
 
 I mange sammenhenger i anvendt statistikk leser man om statistisk styrke ("power"). Enkelt forklart er statistisk styrke sannsynligheten for at en statistisk test vil identifisere en effekt hvis den er der. I hypotesetesting referer statistisk styrke til sannsynligheten for å få et statistisk signifikant resultat som fører til at vi forkaster nullhypotesen når den alternative hypotesen er sann. Når den statistiske styrken øker synker sannsynligheten for at vi ikke forkaster en feilaktig nullhypotese (type II feil). Alternativt kan man si at når den statistiske styrken i testen øker, øker sannsynligheten for at vi korrekt godtar en sann alternativ hypotese. 
 
@@ -617,7 +617,7 @@ En annen måte å si dette på er at med statistisk styrke = 0,8 har man 80 % sj
 
 Vi skal ikke gå nærmere inn på type I og type II feil her. I design av undersøkelser og analyser kan man gjøre valg som reduserer sannsynligheten for å gjøre en av feilene, men de to typene feil henger sammen så hvis man reduserer sannsynligheten for den ene øker man samtidig sannsynligheten for den andre feilen (og motsatt). Her må den som foretar undersøkelsen ta noen valg ut fra situasjonen og hvilken feil som vil være mest alvorlig å gjøre, men det er vanlig å regne type I feil som mer alvorlig enn type II (vitenskapsteoretisk sett). Grunnen til dette er at man anser det som verre å gå glipp av noe som har en faktisk effekt, enn å hevde at noe har en effekt når det ikke har det (men for eksempel innen medisinsk forskning kan dette være stikk motsatt – det vil for eksempel kunne være svært uheldig om man feilaktig konkluderer med at en ny medisin eller behandling ikke har negative bivirkninger hvis den faktisk har det). 
 
-#### Statistisk styrke - litt mer
+## Statistisk styrke - litt mer
 
 Statistisk styrke kan enten brukes a priori eller post hoc – før eller etter. 
 For å ta det siste først (post hoc). Dette innebærer at vi kalkulerer statistisk styrke etter at undersøkelsen og analysene er gjort (eller som regel ser på hva f.eks. SPSS forteller oss). Det finnes sterke advarsler mot å gjøre dette [@cummingUnderstandingNewStatistics2012]. @hoenigAbusePowerPervasive2001 anser dette som fundamentalt feil. Det er likevel rimelig å si at dette er vanlig. Man skal i hvert fall være klar over at informasjonen vi får ut av post hoc statistisk styrketester er begrenset og, hevdes det, brukes til dels villedende. 
@@ -634,15 +634,17 @@ For å gjennomføre en a priori estimering av hvor stor N vi trenger i en unders
 Retningslinjer for effektstørrelse i @cohenStatisticalPowerAnalysis1988 gir:
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE}
-effekt <- data.frame(Effekstørrelse= c("Veldig liten", "Liten", "Middels", "Stor", "Veldig stor", "Enorm"),
+effekt <- data.frame(Effektstørrelse= c("Veldig liten", "Liten", "Middels", "Stor", "Veldig stor", "Enorm"),
                             Cohens_d = c("0.01", "0.20", "0.50", "0.80", "1.20", "2.00"))
 
-effekt <- flextable(effekt)
-effekt <- set_table_properties(effekt, layout = "autofit")
-theme_vanilla(effekt)
+effekt <- effekt %>%
+  kbl(caption = "Effektstørrelser, modifisert fra Cohen (1988)") %>%
+  kable_classic(full_width = F, position = "left", html_font = "Cambria")
+
+column_spec(effekt, 1:2, width = "3cm")
 ```
 
-Et praktisk hjelpemiddel i a priori vurderinger rundt design av studier - f.eks. for å finne ut hvor stort utvalg (hvor stor N) man bør ha ut fra kriteriene 1-4 ovenfor er programmet G*Power [@faulPowerFlexibleStatistical2007; @faulStatisticalPowerAnalyses2009] som kan lastes ned [her](https://www.psychologie.hhu.de/arbeitsgruppen/allgemeine-psychologie-und-arbeitspsychologie/gpower)
+Et praktisk hjelpemiddel i a priori vurderinger rundt design av studier - f.eks. for å finne ut hvor stort utvalg (hvor stor N) man bør ha ut fra kriteriene 1-4 ovenfor er programmet G*Power [@faulPowerFlexibleStatistical2007; @faulStatisticalPowerAnalyses2009] som kan lastes ned [her](https://www.psychologie.hhu.de/arbeitsgruppen/allgemeine-psychologie-und-arbeitspsychologie/gpower).
 
 Et eksempel: Vi planlegger å gjennomføre en undersøkelse der vi skal kjøre en multippel lineær regresjonsanalyse. I G*Power legger vi in følgende verdier: Effect size = 0,15; α = 0,05; Power = 0,8; Number of predictors (antall uavhengige variabler) = 3
 
@@ -650,7 +652,171 @@ G*Power vil kunne gi oss et plott der vi kan vurdere utvalgsstørrelse:
 
 ![](GPower.png){width=75%}
 
-Dette plottet kan vi bruke i planlegging av en undersøkelse. Det viser oss nødvendig N (y-aksen) for en gitt statistisk styrke med den valgte effektstørrelsen. Vi kan visuelt se hvordan en endring i statistisk styrke vil gi utslag i nødvendig N. 
+Dette plottet kan vi bruke i planlegging av en undersøkelse. Det viser oss nødvendig N (y-aksen) for en gitt statistisk styrke med den valgte effektstørrelsen. Vi kan visuelt se hvordan en endring i statistisk styrke vil gi utslag i nødvendig N. Som vi skal komme tilbake til andre steder i notatet er planlegging av en studie viktig slik at vi får tilstrekkelig stort utvalg i forhold til hva vi ønsker å undersøke (ut fra parametrene ovenfor), men samtidig at vi ikke "overdriver" utvalgsstørrelsen. Dette kan også få uønskede konsekvenser (som vi kommer tilbake til allerede i neste delkapittel).
 
-#### Effektstørrelse - litt mer (og litt om "p")
+## Effektstørrelse (og litt om "p")
+
+(en god nettressurs for de som trenger å regne på effekstørrelser - og som beskriver mange forhold rundt ulike effektmål - er @lenhardComputationEffectSizes2017). 
+
+Det er, som vi nå ser, en direkte sammenheng mellom effektstørrelse og statistisk styrke. Jo mindre effekt, jo større statistisk styrke må man ha for å oppdage den. @ellisEffectSizeMatters2012 peker på at effektstørrelse, spesielt i samfunnsvitenskapene, i det store er svært små (og mye mindre enn man forventer), og peker på - noe som kanskje burde være åpenbart - at Effekter eksisterer i den virkelige verden. På samme måte som vi bruker utvalgsgjennomsnittet $\overline{x}$ som estimat på populasjonsgjennomsnittet $\mu$, er effektstørrelser vi kalkulerer i utvalg estimater på populasjonseffekter. Samtidig er det klart at effektstørrelse har en vesentlig informasjonsverdi i tillegg til p verdi. Ikke bare kan vi si om det er en signifikant effekt, men vi kan si noe om denne effekten er liten eller stor. Uten en formening om effekten er liten eller stor (ikke bare om den er statistisk liten eller stor, men også om den er liten eller stor i praksis) er informasjonsverdien av å vite at det er en statistisk signifikant effekt begrenset. Likeledes, et ikke-signifikant resultat innebærer ikke at det ikke kan være en effekt (det kan godt være en effekt, men vi har ikke hatt nok statistisk styrke til å oppdage den). 
+
+Her er det på sin plass med noen (flere) ord om effekt og signifikans. @ellisEffectSizeMatters2012 illustrerer sammenhengen med denne likningen:
+
+$Statistisk\ signifikans = Effekstørrelse * Utvalgsstørrelse$
+
+Sammenhenger: Jo større effektstørrelse, jo lavere p verdi (ved uendret utvalg). Ergo: En lav p verdi kan indikere en stor effekt. Men, en lav p verdi kan også skyldes et stort utvalg (og en liten effekt). Det motsatte gjelder selvsagt også. En høy p verdi kan skyldes en lav effekt. Eller et lite utvalg. Eller en kombinasjon. Det er med andre ord umulig å si noe om praktisk eller substansiell signifikans ut fra en p verdi og en statistisk signifikans [@ellisEffectSizeMatters2012]. 
+
+Det finnes et stort antall mål for effektstørrelser. De kan i det store deles inn i to "familier" [@ellisEffectSizeMatters2012]:
+
+1. Effektmål som måler forskjeller mellom grupper – *d* familien. Eksempler: Cohens *d*, Hedges' *g*.
+2. Effektmål som måler assosiasjon/forbindelse (hvor sterk er denne forbindelsen mellom x og y) – *r* familien. Eksempler: Pearsons *r*, Spearmans rho ($\rho$) og Eta squared ($\eta^2$).
+
+@cohenStatisticalPowerAnalysis1988 er en ofte referert kilde for terskelverdier for vurdering av effektstørrelse [her gjengitt fra @ellisEffectSizeMatters2012, s.44, tabell 5]:
+
+```{r echo = FALSE, message = FALSE, warning=FALSE}
+effektstørrelse <- data.frame(Small = c(".20", ".10", ".01"),
+                            Medium = c(".50", ".30", ".50"),
+                            Large = c(".80", ".50", ".25"))
+
+rownames(effektstørrelse) <- c("d, g", "r", "$r^2$")
+
+effektstørrelse <- effektstørrelse %>%
+  kbl(caption = "Effektstørrelser, modifisert fra Cohen (1988)") %>%
+  kable_classic(full_width = F, position = "left", html_font = "Cambria")
+
+column_spec(effektstørrelse, 1:3, width = "3cm")
+```
+
+@lenhardCalculationEffectSizes2016 modifiserer @cohenStatisticalPowerAnalysis1988 og gir følgende retningslinjer:
+
+```{r echo = FALSE, message = FALSE, warning=FALSE}
+effektstørrelse2 <- data.frame(Small = c("< 0", "0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", ">= 1.0"),
+                            Medium = c("< 0", ".00", ".05", ".10", ".15", ".20", ".24", ".29", ".33", ".37", ".41", ".45"),
+                            Large = c("", ".000", ".003", ".010", ".022", ".039", ".060", ".083", ".110", ".140", ".168", ".200"),
+                            Tolkning = c("Ingen effekt", "Ingen effekt", "Ingen effekt", "Liten effekt", "Liten effekt", "Liten effekt", "Middels effekt", "Middels effekt", "Middels effekt", "Stor effekt", "Stor effekt", "Store effekt"))
+
+colnames(effektstørrelse2) <- c("d", "$r^2$", "$eta^2$", "Tolkning")
+
+effektstørrelse2 <- effektstørrelse2 %>%
+  kbl(caption = "Effektstørrelser, modifisert fra Lenhard & Lenhard (2017)") %>%
+  kable_classic(full_width = F, position = "left", html_font = "Cambria")
+
+column_spec(effektstørrelse2, 1:4, width = "3cm")
+```
+
+Det må sies at hva som er en liten, middels eller stor effekt er svært kontekstavhengig. Som @ellisEffectSizeMatters2012, s.46, sier:
+
+> The proper way to view Cohen’s thresholds is as an interpretation tool of last resort. You might refer to them when you have no other basis for drawing meaning from your results. The fact that they are used at all – given that they have no raison d’être beyond Cohen’s study of teenage girls – speaks volumes about the inherent difficulties of assessing the substantive significance of our results.
+
+## Standardisering - transformasjon av data (z-skåre)
+
+I et tidligere delkapittel har vi vist at data kan ha ulike målenivå. Målenivå/skala kan derfor skape utfordringer for oss. Variabler er målt på ulike nivåer og ulike skalaer. dette kan skape utfordringer for oss.  Hvis vi har resultater fra ulike studier kan vi kun sammenlikne resultatene meningsfullt hvis de er gjennomført med samme skalaer. 
+
+I dette delkapittelet bruker vi et eksempel fra @milesApplyingRegressionCorrelation2001. Vi kan for eksempel ha en studie som undersøker eksamensresultater (avhengig variabel) ut fra antall fagbøker lest (uavhengig variabel) og finner en økning i eksamensresultater på x prosentpoeng per leste bok. En annen studie har samme variabler, men presenterer resultatet som en gitt økning på en A til F karakterskala per leste bok. Hvordan kan vi sammenlikne disse to studiene? Siden vi ikke kan tvinge alle til å måle på nøyaktig samme måte og presentere funnene på nøyaktig samme måte (det ville jo unektelig ha gjort en god del mye lettere…) kan vi standardisere målene som er gjort, det vil si vi transformerer distribusjonen til å ha en gjennomsnittsverdi på 0 og et standardavvik på 1, og benevnes ofte som z-score. 
+
+Formelen for å finne z-scores er:
+
+$z_i = \frac{verdien\ av\ x\ på\ målepkt\ i - gjennomsnittverdien\ for\ x}{standardavviket}$
+
+som kan uttrykkes:
+
+$z_i = \frac{x_i - \mu}{\sigma}$ for populasjonen
+
+eller som:
+
+$z_i = \frac{x_i - \overline{x}}{s}$ for utvalget.
+
+En z-score er altså det antallet standardavvik en verdi for x er fra gjennomsnittet. En z-score for verdien xi på 0,45 betyr at i en standardisert distribusjon ligger observasjonen 0,45 standardavvik fra gjennomsnittet. 
+
+La oss anta at vi har normalfordelte data for en variabel x. Gjennomsnittsverdien for x er gitt som $\mu$ og standardavviket som $\sigma$. 
+
+I grafen til under er dette illustrert.
+
+![](zscore1.png){width=75%}
+
+Den blå linjen viser en normalfordelt datamengde som har en gjennomsnittsverdi $\mu$ og standardavviket $\sigma$. I dette eksempelet er dataene høyde for norske kvinner i 2012 målt på sesjon^[()[https://www.ssb.no/a/aarbok/tab/tab-109.html]]. I medisinske kretser regnes ofte et standardavvik på høydefordeling som 6 cm^[()[https://www.dagensmedisin.no/artikler/2000/09/14/hoydespesialisten/]]. Tallene i eksempelet reflekterer dette. Fordelingskurven for kvinners høyde i 2012 viser altså en gjennomsnittshøyde på 167 cm (egentlig 167,1 cm) og et standardavvik på 6 cm.
+
+Vi antar at høyden målt på kvinner på sesjon er representative for populasjonen norske kvinner, og kan si for eksempel at 68 % av norske kvinner er mellom 161 cm og 173 cm høye. 95 % av norske kvinner har en høyde på mellom 156 cm og 179 cm. På bakgrunn av dette kan vi gjøre sannsynlighetsberegninger gjennom å bruke standardverdien z. Vi kan for eksempel være interessert i å vite hva sannsynligheten er for at en tilfeldig norsk kvinne er over 175 cm.
+
+![](Modul_3_Standard5.png){width=75%}
+
+I dette tilfellet er det det rødskraverte området av distribusjonen vi er interessert i, formulert slik:
+
+$p=x > 175$
+
+Dette kan vi omformulere:
+
+$p=\frac{x-\mu}{\sigma}\ som\ gir\ \frac{175 - \mu}{\sigma}$
+
+Fra før vet vi at:
+
+$z=\frac{x-\mu}{\sigma}$
+
+Vi kan dermed uttrykke at:
+
+$p=z>\frac{175-167}{6}\ som\ gir\ p=z>1.33$
+
+Med andre ord kan vi si at sannsynligheten for at x er større enn 175 er den samme som sannsynligheten for at z > 1,33. Vi kan illustrere dette med figuren under, der fordelingen er standardisert med gjennomsnitt 0 og standardavvik 1. Området vi er interessert i er det rødskraverte som ligger til høyre for z = 1,33.
+
+![](Modul_3_Standard6.png){width=75%}
+
+Siden vi vet at en standardisert normalfordeling har $\sigma=1$ betyr det at vi kan se visuelt at det området vi er interessert i, sannsynligheten for at en tilfeldig norsk kvinne er høyere enn 175 cm, ligger utenfor 1 standardavvik.
+
+Vi kan bruke en tabell for standard normalforfordeling (f.eks. ![her](https://www.math.arizona.edu/~rsims/ma464/standardnormaltable.pdf).
+
+![](Modul_3_Standard7.png){width=75%}
+
+Merk: På toppen av tabellen står det «Table Values Represent AREA to the LEFT of the Z score». Vi er jo interessert i området til høyre, så vi kan da si:
+
+$p=1-0.90824 = 0.09176$
+
+Vi kan derfor si at det er cirka 9,2 % sannsynlighet for at en norsk kvinne er over 175 cm. Hadde vi vært interessert i sannsynligheten for at en tilfeldig norsk kvinne er lavere enn 175 cm kunne vi lest det rett ut av tabellen som 0,90824, altså cirka 91 % sannsynlighet.
+
+Tilsvarende kan vi finne sannsynligheten for at en tilfeldig norsk kvinne er mellom 165 cm og 175 cm.
+
+![](Modul_3_Standard8.png){width=75%}
+
+Vi kan uttrykke dette som
+
+$p(165 < x < 175)$
+
+Ved å bruke samme framgangsmåte kommer vi fram til: 
+
+$p(\frac{165-167}{6} < z < \frac{175-167}{6})$
+
+som gir:
+
+$p(-0.33 < z < 1.33)$
+
+Vi bruker samme tabell og finner verdiene 0,37070 og 0,90824, det vil si at sannsynligheten for at en tilfeldig norsk kvinne er mellom 165 cm og 175 cm er (0,90824 – 0,37070 = 0,53754), det vil si cirka 54 %.
+
+Hvis vi ser på dette tallet i forhold til hva vi ville forvente ut fra en normalfordeling ser vi at vi forventer at 68 % av verdiene i en normalfordeling ligger i innenfor intervallet +/- 1 standardavvik. Det vil si vi forventer at 68 % av et utvalg tilfeldige norske kvinner vil ligge i høydeintervallet 161 cm til 173 cm. Siden vi har sett på intervallet 165 cm til 175 cm) har vi et mindre intervall noe som gjør at vi vil forvente en noe lavere sannsynlighet for at en tilfeldig kvinne vil ligge i vårt intervall i forhold til sannsynligheten for å ligge i intervallet +/- 1 standardavvik. Vår utregning virker derfor rimelig i forhold til hva vi kunne forvente. 
+
+Heldigvis vil alle statistikkprogrammer regne ut dette raskt. For det første eksempelet:
+
+```{r}
+popgjsnitt <- 167
+sd <- 6
+    
+pnorm(175, popgjsnitt, sd, lower.tail = FALSE)
+```
+
+For det andre eksempelet:
+
+```{r}
+pnorm(175, popgjsnitt, sd) - pnorm(165, popgjsnitt, sd)
+```
+
+### Standardisering - transformasjon av data (z-skåre) - del 2
+
+Så langt har vi brukt standardisering på en "enkel" måte – altså med en variabel. Som nevnt tidligere kan vi ha spesielt nytte av standardisering dersom vi befinner oss i en situasjon der vi har datainnsamling av ulike variabler som bruker ulike måleskalaer. Standardisering (som også omtales som normalisering) defineres her som en prosess som transformerer data av ulike typer/måleskalaer til en uniform/felles skala slik at de kan sammenliknes. Hvis vi for eksempel har alder (målt i år) og inntekt (målt i kroner) vil vi gjennom å standardisere gi begge fordelingene en gjennomsnittsverdi på 0 og et standardavvik på 1. En z-score i alder på 0,45 vil innebære 0,45 standardavvik fra gjennomsnittet av alder. Det samme vil en z-score på 0,45 for inntekt.
+
+Ofte kan man være interessert i å lage komposittvariabler av et antall variabler. La oss for eksempel si at du sitter med data på høyde (cm), vekt (kg) og lengde på øre (mm).  Du har altså tre mål på hvert objekt i en studie, men alle tre er målt på forskjellige skalaer. Det er her standardisering kommer inn i bildet dersom man ønsker å lage en variabel som heter "Kroppstype". Vi standardiserer hver skåre for hver observasjon og får nye z-skåre variabler for de tre opprinnelige variablene. Vi har dermed fått tre z-skåre variabler som deler at de har gjennomsnitt på 0 og standardavvik på 1.
+
+Høyde er målt i cm, vekt i kg og ørelengde i mm. Nå kan vi "sammenlikne" de tre variablene på en meningsfull måte fordi alle de tre nye variablene har gjennomsnittsverdi på 0 og standardavvik på 1. Z-scoren gir altså avstand fra gjennomsnittet for den enkelte observasjon uavhengig av hvilken skala målingene er gjennomført på. Jeg ønsker nå å lage en komposittvariabel - en ny variabel der jeg bruker de 3 målene i en variabel jeg kan kalle kroppstype (vi "later som" høyde, vekt og ørelengde kan si noe meningsfullt om kroppstype). Siden vi har ulike måleskalaer kan vi bruke standardisering.
+
+Et annet praktisk anvendelsesområde av standardiserte verdier er tolkning av ulike variablers betydning i en regresjonsanalyse. Dette vil vi vise i kapittelet der vi gjennomgår regresjonsanalyse.
+
+
+
 

@@ -1,0 +1,151 @@
+---
+bibliography: bibliografi.bib  
+csl: chicago-author-date.csl
+---
+
+# Vedlegg B - Sentralgrenseteoremet (Central Limit Theorem) {.unnumbered}
+
+Koden brukt i dette eksempelet er i stor grad hentet fra @feditCentralLimitTheorem2018b.
+
+Dette er et noe komplisert begrep som vi ikke skal gå veldig i dybden på, men det har et par viktige konsekvenser for oss når vi skal tenke på distribusjon av populasjoner og utvalg. Her belyser vi to forhold som følger av sentralgrenseteoremet:
+
+1. Gjennomsnittsverdien (mean) av tilfeldige utvalg fra en populasjon vil være tilnærmet lik gjennomsnittsverdien for populasjonen hvis størrelsen på utvalgene er tilstrekkelig stort.
+2. Fordelingen til tilfeldige utvalg fra en populasjon vil være tilnærmet normalfordelt uavhengig av fordelingen på populasjonen. Dette innebærer at selv om populasjonen er langt fra normalfordelt vil et tilstrekkelig stort utvalg vise seg å være tilnærmet normalfordelt.
+
+La oss se på dette gjennom et eksempel der vi starter med en bimodal fordeling (altså langt fra normalfordeling). Vi generer et datasett og plotter et Q-Q diagram (mer om dette et annet sted i notatet, men per nå trenger vi bare vite at dette er en effektiv måte å sjekke om en variabel er normalfordelt eller ikke).
+
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Ikke-normal fordeling og Q-Q plott"}
+
+pacman::p_load(ggplot2, tidyverse, magrittr, dplyr, truncnorm)
+
+nn <- 1e4
+set.seed(1)
+sims <- as_tibble(c(rtruncnorm(nn/2, a=1, b=5, mean=2, sd=.5),
+                    rtruncnorm(nn/2, a=1, b=5, mean=4, sd=.5)))
+
+ggplot(sims, aes(sample=value)) + stat_qq() + stat_qq_line(col = "red")
+
+```
+
+Som sagt har vi gjort rede for Q-Q plott et annet sted i boka, så her kan vi nøye oss med å slå fast at denne variabelen definitivt ikke er normalfordelt.
+Det framkommer også tydelig når vi plotter et histogram:
+
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Histogram for bimodal fordeling"}
+
+pacman::p_load(ggplot2, tidyverse, magrittr, dplyr, truncnorm)
+
+nn <- 1e4
+set.seed(1)
+sims <- c(rtruncnorm(nn/2, a=1, b=5, mean=2, sd=.5),
+                    rtruncnorm(nn/2, a=1, b=5, mean=4, sd=.5))
+
+mySD <- as.character(abs(as.integer((sims - mean(sims)) / sd(sims))))
+myDF <- data.frame(sims, mySD)
+xAxis <- as.integer(max(abs(sims)))
+mu <- round(mean(sims),2)
+sd <- round(sd(sims),2)
+myBin <- sd/10
+ggplot(myDF, aes(sims)) +
+  geom_histogram(aes(fill = mySD), binwidth = myBin, col="black", size=.1) +  # change binwidth
+  labs(x="x", y="Frequency") + 
+  labs(title="Histogram av generert bimodal distribusjon",subtitle=paste0(  "Gj.snitt = ", mu, ", sd = ", sd)) +
+  scale_x_continuous(breaks = seq(mu-sd*5, mu+sd*5, sd)) +
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(fill=guide_legend(expression(sigma))) 
+
+```
+
+Ut fra denne populasjonen tar vi 100 utvalg med 30 i hvert utvalg. Fordelingen ser da slik ut:
+
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Histogram for 100 utvalg fra bimodal fordeling"}
+
+n <- 100
+sampSize <- 30
+xbar <- rep(NA, n)
+for (i in 1:n) {
+  mysamp <- sample(sims, size = sampSize)
+  xbar[i] <- mean(mysamp)
+}
+
+mySD<-as.character( abs(as.integer((xbar - mean(xbar)) / sd(xbar) )))
+myDF<-data.frame(xbar,mySD)
+xAxis<-as.integer(max(abs(xbar)))
+mu<-round(mean(xbar),2)
+sd<-round(sd(xbar),2)
+myBin<-sd/10
+ggplot(myDF, aes(xbar)) +
+  geom_histogram(aes(fill = mySD), binwidth = myBin, col="black", size=.1) +  # change binwidth
+  labs(x="x", y="Frequency") + 
+  labs(title="Histogram for genererte utvalg",
+  subtitle=paste0(  "mean = ", mu, ", sd = ", sd, ", Utvalgsstørrelse = ",sampSize,", Antall utvalg = ",n))+
+  scale_x_continuous(breaks = seq(mu-sd*5, mu+sd*5, sd))+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))+
+  guides(fill=guide_legend(expression(sigma)))+
+  geom_density(aes(y=..count../90))
+
+```
+
+Vi kan allerede nå ane en tilnørming mot normalfordeling, og i hvert fall en endret form enn populasjonen viste. Vi tar nå 1000 utvalg med 30 i hvert utvalg.
+
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Histogram for 1000 utvalg fra bimodal fordeling"}
+
+n<-1000
+sampSize<-30
+xbar <- rep(NA, n)
+for (i in 1:n) {
+  mysamp <- sample(sims, size = sampSize)
+  xbar[i] <- mean(mysamp)
+}
+
+mySD<-as.character( abs(as.integer((xbar - mean(xbar)) / sd(xbar) )))
+myDF<-data.frame(xbar,mySD)
+xAxis<-as.integer(max(abs(xbar)))
+mu<-round(mean(xbar),2)
+sd<-round(sd(xbar),2)
+myBin<-sd/10
+ggplot(myDF, aes(xbar)) +
+  geom_histogram(aes(fill = mySD), binwidth = myBin, col="black", size=.1) +  # change binwidth
+  labs(x="x", y="Frequency") + 
+  labs(title="Histogram for genererte utvalg",
+  subtitle=paste0(  "Gj.snitt = ", mu, ", sd = ", sd, ", Utvalgsstørrelse = ",sampSize,", Antall utvalg = ",n))+
+  scale_x_continuous(breaks = seq(mu-sd*5, mu+sd*5, sd))+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))+
+  guides(fill=guide_legend(expression(sigma)))+
+  geom_density(aes(y=..count../90))
+
+```
+Det er videre åpenbart at dette begynner å se mer og mer ut som en normalfordeling. Til slutt øker vi til 10000 utvalg av 30.
+
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Histogram for 10000 utvalg fra bimodal fordeling"}
+
+n<-10000
+sampSize<-30
+xbar <- rep(NA, n)
+for (i in 1:n) {
+  mysamp <- sample(sims, size = sampSize)
+  xbar[i] <- mean(mysamp)
+}
+
+mySD<-as.character( abs(as.integer((xbar - mean(xbar)) / sd(xbar) )))
+myDF<-data.frame(xbar,mySD)
+xAxis<-as.integer(max(abs(xbar)))
+mu<-round(mean(xbar),2)
+sd<-round(sd(xbar),2)
+myBin<-sd/10
+ggplot(myDF, aes(xbar)) +
+  geom_histogram(aes(fill = mySD), binwidth = myBin, col="black", size=.1) +  # change binwidth
+  labs(x="x", y="Frequency") + 
+  labs(title="Histogram for genererte utvalg",
+  subtitle=paste0(  "Gj.snitt = ", mu, ", sd = ", sd, ", Utvalgsstørrelsee = ",sampSize,", Antall utvalg = ",n))+
+  scale_x_continuous(breaks = seq(mu-sd*5, mu+sd*5, sd))+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))+
+  guides(fill=guide_legend(expression(sigma)))+
+  geom_density(aes(y=..count../90))
+```
+Det vi kan se bekrefter hva Central Limit Theorem sier vi bør forvente. Vi kan starte med en hvilken som helst fordeling (kontinuerlig eller diskret) som har et definert gjennomsnitt og definert varians (og dermed definert standardavvik) og ta tilfeldige utvalg fra denne fordelingen – og vi vil få en tilnærmet normalfordelt fordeling. I det virkelige liv har vi ofte populasjonsfordelinger som har alt annet enn normalfordeling. Likevel kan vi ta tilfeldige utvalg og få en tilnærmet normalfordelt frekvensplott (av f.eks. gjennomsnittsverdier). Størrelsen på utvalget og antallet ganger vi tar utvalg vil påvirke -> jo større utvalg og jo flere utvalg, jo nærmere normalfordeling vil frekvensplottet være. 
+
+En interessant illustrasjon av CLT ligger [her](https://ihstevenson.shinyapps.io/sample_means/).

@@ -1,0 +1,148 @@
+---
+bibliography: bibliografi.bib  
+csl: chicago-author-date.csl
+---
+# Vedlegg C - Chebyshevs teorem {.unnumbered}
+
+Dette vedlegget er i stor grad bygget på @hartmannELearningProjectSOGA2018.
+
+Vi diskuterte i noe detalj hvordan vi kan bruke normalfordelingen til å si noe om hvordan verdier i et datasett kan antas å falle innenfor en gitt avstand fra gjennomsnittet [@hartmannVarianceStandardDeviation2018]:
+
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med standardavvik"}
+
+y.norm <- rnorm(n= 100000, mean = 0, sd = 1)
+h <- hist(y.norm, breaks = 100, plot = F)
+cuts <- cut(h$breaks, c(-Inf,-3,-2,-1,1,2,3,Inf), right = F) # right=False; sets intervals to be open on the right closed on the left
+plot(h, 
+     col = rep(c("white", "4","3","2","3","4", "white"))[cuts], 
+     main = 'Normalfordeling', 
+     xlab = '', 
+     freq = F, 
+     ylim = c(0,0.6))
+
+lwd = 3
+# horzintal lines
+lines(x = c(2,-2), y = c(0.48,0.48), type = "l", col=3, lwd = lwd)
+lines(x = c(3,-3), y = c(0.55,0.55), type = "l", col=4, lwd = lwd)
+lines(x = c(1,-1), y = c(0.41,0.41), type = "l", col=2, lwd = lwd)
+# vertical lines
+lines(x = c(1,1), y = c(0,0.41), type = "l", col=2, lwd = lwd)
+lines(x = c(-1,-1), y = c(0,0.41), type = "l", col=2, lwd = lwd)
+lines(x = c(2,2), y = c(0,0.48), type = "l", col=3, lwd = lwd)
+lines(x = c(-2,-2), y = c(0,0.48), type = "l", col=3, lwd = lwd)
+lines(x = c(3,3), y = c(0,0.55), type = "l", col=4, lwd = lwd)
+lines(x = c(-3,-3), y = c(0,0.55), type = "l", col=4, lwd = lwd)
+# text
+text(0, 0.44, "68%", cex = 1.5, col=2)
+text(0, 0.51, "95%", cex = 1.5, col=3)
+text(0, 0.58, "99.7%", cex = 1.5, col=4)
+
+```
+
+Vi kan ut fra normalfordeingen si at
+
+* 68 % av observajsonene vil ligge innenfor ett standardavvik fra gjennomsnittsverdien
+* 95 % av observasjonene vil ligge innenfor to standradavvik fra gjennomsnittsverdien
+* 99.7 % av observasjonene vil ligge innenfor tre standardaavik fra gjennomsnittsverdien
+
+Dette kalles ofte for den empiriske regelen ("the empirical rule"), og gjelder kun normalfordelte data. Chebyshevs teorem gjelder imidlertid alle fordelinger. Normalfordelingen gir oss at datapunkter med en viss sannsynlighet ligger innenfor en viss avstand fra gjennomsnittsverdien. Det samme sier Chebyshevs teorem om datafordelinger som ikke er normalfordelte: bare en gitt mengde datapunkter kan ligge mer enn en gitt avstand fra gjennomsnittsverdien. 
+
+Teoremet uttrykkes slik [@hartmannVarianceStandardDeviation2018]: 
+
+> For ethvert nummer *k* større enn 1 vil minst  $1-1/$*k*$^2$ av dataverdiene ligge innenfor *k* standardavvik fra gjennomsnittet.
+
+Teoremet kan generisk kan framstilles slik:
+
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Chebyshevs teorem"}
+
+pacman::p_load(tidyverse)
+
+# For å lage eksempelet lager vi to normalfordelte datasett med ulik gjennomsnitt og standardavvik som vi slår sammen
+
+set.seed(10) 
+
+mode1 <- rnorm(1000,2,1)
+mode1 <- mode1[mode1 > 0] 
+mode2 <- rnorm(1000,6,2)
+mode2 <- mode2[mode2 > 0] 
+modex2 <- as_tibble(sort(c(mode1,mode2)))
+
+# Deretter setter vi dataene inn i et diagram
+
+ggplot(modex2, aes(x=value)) + 
+  geom_density() +
+  ggtitle("Eksempel: Bimodal distribusjon", subtitle = "Eksemplet er kun illustrativt, ikke nøyaktig eller basert på reelle data") +
+  labs(x = "", y = "") +
+  theme_classic() +
+  theme(legend.position = "none") + 
+  
+  scale_x_discrete(labels = NULL, breaks = NULL) +
+  labs(x = "") +
+  xlim(-0.02, 8) +
+  ylim(-0.02,0.3) +
+ 
+  annotate("segment", x = 4, y = 0, xend = 4, yend = 0.15, linetype = "dashed", color = "red") + 
+  annotate('text', x = 4, y = -0.015, label = "bar(x)", parse = TRUE, size = 5) +
+  
+  annotate("segment", x = 7.8, y = 0, xend = 7.8, yend = 0.275, color = "darkgreen") + 
+  annotate('text', x = 7.8, y = -0.015, label = "bar(x) ~ + ~ 3 ~ sd", parse = TRUE, size = 5) +
+  
+  annotate("segment", x = 0.2, y = 0, xend = 0.2, yend = 0.275, color = "darkgreen") + 
+  annotate('text', x = 0.3, y = -0.015, label = "bar(x)~-~3~sd", parse = TRUE, size = 5) +
+  
+  annotate("segment", x = 2.1, y = 0, xend = 2.1, yend = 0.235, color = "blue") + 
+  annotate('text', x = 2.1, y = -0.015, label = "bar(x)~-~2~sd", parse = TRUE, size = 5) +
+  
+  annotate("segment", x = 5.9, y = 0, xend = 5.9, yend = 0.235, color = "blue") + 
+  annotate('text', x = 5.9, y = -0.015, label = "bar(x)~+~2~sd", parse = TRUE, size = 5) +
+  
+  annotate("text", x=4, y=0.23, label="Minst 75 %", color = "blue") +
+  annotate("segment", x = 3.35, y = 0.23, xend = 2.25, yend = 0.23, color = "blue") + 
+  annotate("segment", x = 4.6, y = 0.23, xend = 5.8, yend = 0.23, color = "blue") +
+  
+  annotate("text", x=4, y=0.27, label="Minst 88.89 %", color = "darkgreen") +
+  annotate("segment",x = 0.3, y = 0.27, xend = 3.2, yend = 0.27, color = "darkgreen") +
+  annotate("segment", x = 4.8, y = 0.27, xend = 7.7, yend = 0.27, color = "darkgreen")
+```
+
+For ethvert numerisk datasett gjelder:
+
+1. Minst ¾ av datapunktene ligger innenfor to standardavvik av gjennomsnittet – altså i intervallet mellom endepunktene $\overline{x}\pm2s$ for et utvalg og $\overline{x}\pm2\sigma$ for populasjoner. 
+2. Minst 8/9 av datapunktene ligger innenfor tre standardavvik av gjennomsnittet – altså i intervallet mellom endepunktene $\overline{x}\pm3s$ for et utvalg og $\overline{x}\pm3\sigma$ for populasjoner.
+3. Minst $1-1/$*k*$^2$ av datapunktene ligger mellom k standardavvik av gjennomsnittet – altså i intervallet mellom endepunktene $\overline{x}\pm$*k*$s$ for et utvalg og $\overline{x}\pm$*k*$\sigma$ for populasjoner.
+
+Ut fra tabellen under ser vi at dersom vi velger scroller til *k* = 2 vil 75 % av verdiene ligge innenfor (altså 75 % innenfor 2 standardavvik). 
+
+```{r echo=FALSE, message=FALSE, warning = FALSE}
+
+pacman::p_load(tidyverse, kableExtra, knitr)
+k <- seq(1,4,by = 0.1)
+auc <- 1-(1/k^2)
+auc.percent <- round(auc*100)
+cheb_table <- as_tibble(cbind(k,auc.percent))
+
+kbl(cheb_table) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F) %>%
+  kable_paper() %>%
+  scroll_box(height = "200px")
+```
+
+Vi kan også vise en grafisk framstilling av Chebyshevs teorem med fokus på prosenter (y-aksen) mot *k* (x-aksen).
+
+```{r echo=FALSE, message=FALSE, warning = FALSE, fig.cap="Chebyshevs teorem - prosent"}
+
+
+plot(k, 
+     auc.percent, 
+     col = 'blue', 
+     pch = 10, 
+     xlab = 'k', 
+     ylab = 'Prosent', 
+     main = 'Chebyshevs teorem' )
+
+abline(v=2, col="red", lwd = 1)
+abline(h=75, col="red", lwd = 1)
+
+```
+
+Når vi vet at minst 75% av distribusjonen ligger innenfor $\overline{x}\pm2s$ vet vi også at maksimalt 25% ligger utenfor. Likeledes for $\overline{x}\pm3s$ vil maksimalt  11,11 % av distribusjonen ligge utenfor. Så mens reglene for normalfordeling kun gjelder for normalfordelte eller tilnærmet-normalfordelte datasett, er Chebyshevs teorem et faktum som gjelder alle datadistribusjoner og som beskriver minimumsandelen av observasjoner/datapunkter som ligger innenfor hhv +/- 1, 2 og 3 standardavvik fra gjennomsnittet.  
