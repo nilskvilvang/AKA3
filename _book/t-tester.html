@@ -46,9 +46,9 @@
     }
   </style>
 <link rel="stylesheet" href="style.css">
-<meta name="description" content="A book created with bookdown.">
-<meta property="og:description" content="A book created with bookdown.">
-<meta name="twitter:description" content="A book created with bookdown.">
+<meta name="description" content="En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er relativt lite. Vi kan se for oss tre tilfeller: Vi sammenlikner en gruppe mot en kjent gjennomsnittsstørelse og...">
+<meta property="og:description" content="En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er relativt lite. Vi kan se for oss tre tilfeller: Vi sammenlikner en gruppe mot en kjent gjennomsnittsstørelse og...">
+<meta name="twitter:description" content="En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er relativt lite. Vi kan se for oss tre tilfeller: Vi sammenlikner en gruppe mot en kjent gjennomsnittsstørelse og...">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -98,14 +98,124 @@
 <h1>
 <span class="header-section-number">Kapittel 5</span> T-tester<a class="anchor" aria-label="anchor" href="#t-tester"><i class="fas fa-link"></i></a>
 </h1>
+<p>En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er relativt lite. Vi kan se for oss tre tilfeller:</p>
+<p>Vi sammenlikner en gruppe mot en kjent gjennomsnittsstørelse og tester om gruppas gjennomsnitt er signifikant forskjellig fra det kjente gjennomsnittet («One sample t-test»).
+Vi sammenlikner to uavhengige gruppers gjennomsnitt for å se om det er signifikant forskjell på gjennomsnittene for en variabel («Independent samples t-test»)
+Vi sammenlikner samme gruppe på to ulike tidspunkt – observasjonene er altså ikke uavhengige av hverandre («Paired samples t-test»)
+En t-test handler altså om å undersøke om det er signifikant forskjell på gjennomsnittsverdiene i to sett med data. Vi setter derfor opp en nullhypotese som sier at det ikke er forskjell:</p>
+<p><span class="math inline">\(H_0: \mu_1 = \mu_2\)</span></p>
+<p>Hvis vi denne nullhypotesen ikke kan forkastes (at vi konkluderer med at gjennomsnittene er like) betyr det for eksempel at en gruppe som har fått «ekte» medisin ikke skiller seg fra en gruppe som har fått placebo. Hvis vi derimot forkaster nullhypotesen vil vi konkludere med at det er signifikant forskjell mellom de to gruppene (på en eller annen verdi vi måler). T-testen tester denne nullhypotesen – at det ikke er forskjell.</p>
+<p>I en t-test får vi en testverdi. Dersom p-verdien for denne testen er mindre enn 0.05 (gitt at vi bruker <span class="math inline">\(\alpha = 0.05\)</span>) forkaster vi nullhypotesen (If p is low, the null must go»), og vi vil anta at det er signifikant forskjell mellom gruppene (og at denne forskjellen ikke skyldes tilfeldigheter). Er p høyere enn valgt α vil vi beholde nullhypotesen.</p>
+<div id="students-t-test" class="section level2" number="5.1">
+<h2>
+<span class="header-section-number">5.1</span> Students t-test<a class="anchor" aria-label="anchor" href="#students-t-test"><i class="fas fa-link"></i></a>
+</h2>
+<p>T-test, eller “Student’s t-test” som den ofte omtales som, baserer seg på en såkalt t-fordeling. En t-fordeling er ganske lik en normaldistribusjon, men har tyngre haler. Fordelingen vil variere med antall frihetsgrader, men likere og likere en normaldistribusjon ettersom utvalgsstørrelsen øker:</p>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, from <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.41</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, from <span class="op">=</span><span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"brown"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="fl">20</span><span class="op">)</span>, from <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"black"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">dnorm</span>, <span class="op">-</span><span class="fl">4</span>, <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="fl">.3</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"df=2"</span>, <span class="st">"df=10"</span>, <span class="st">"df=20"</span>, <span class="st">"Normal"</span><span class="op">)</span>,
+       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"brown"</span>, <span class="st">"black"</span>, <span class="st">"red"</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">1</span>, cex <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="06_Kap_6_files/figure-html/unnamed-chunk-2-1.png" width="672"></div>
+<p>Så hvorfor behovet for en t-distribusjon? William Sealy Gosset, a.k.a. “Student”, fant ut at hvis man ikke er helt sikker på hva standardavviket er må man bruke et estimat på standardavviket som gjør at fordelingen endrer seg litt fra normalfordelingen. Det vi omtaler som t-test er en test av en statistisk hypotese som baserer seg på Students t-distribusjon.</p>
+</div>
+<div id="one-sample-t-test" class="section level2" number="5.2">
+<h2>
+<span class="header-section-number">5.2</span> One sample t-test<a class="anchor" aria-label="anchor" href="#one-sample-t-test"><i class="fas fa-link"></i></a>
+</h2>
+<p>La oss anta at vi har en gruppe på 20 studenter som gjennomfører et nettbasert kurs i anvendt kvantitativ analyse basert på bruk av en pakke med digitale læringsressurser som legger opp til mange selvøvelser. Vi tester denne gruppa opp mot en gjennomsnittsskåre på en test på 67.5 for alle andre studenter (skåre 0-100) som har gjennomført samme kurs tidligere der man ikke har hatt samme tilgang til digitale øvingsoppgaver. Skårer denne testgruppa signifikant bedre enn resten av studentene?</p>
+<p><a href="data:text/csv;base64,IklEIiwiU2NvcmUiDQoxLDUwDQoyLDYwDQozLDYwDQo0LDY0DQo1LDY2DQo2LDY2DQo3LDY3DQo4LDY5DQo5LDcwDQoxMCw3NA0KMTEsNzYNCjEyLDc2DQoxMyw3Nw0KMTQsNzkNCjE1LDc5DQoxNiw3OQ0KMTcsODENCjE4LDgyDQoxOSw4Mg0KMjAsODkNCg==" download="t-test_onesample.csv">Download t-test_onesample.csv</a></p>
+<p>Vi regner ut teststatstikken (t) slik:</p>
+<p><span class="math inline">\(t=\frac{\overline{x}-\mu}{\frac{s}{\sqrt{n}}}\)</span></p>
+<p>der:</p>
+<p><span class="math inline">\(t = t-verdi\)</span></p>
+<p><span class="math inline">\(\overline{x} = observert\ gjennomsnitt\)</span></p>
+<p><span class="math inline">\(\mu = teoretisk/forventet\ gjennomsnitt\)</span></p>
+<p><span class="math inline">\(s = standardavviket\ i\ utvalget/observerte\)</span></p>
+<p><span class="math inline">\(n=utvalgsstørrelse/antall\ observerte\)</span></p>
+<p>Vi henter nødvendige verdier fra datasettet:</p>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Bruker pakken: summarytools</span>
+<span class="fu">descr</span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span><span class="op">)</span>
+<span class="co">#&gt; Descriptive Statistics  </span>
+<span class="co">#&gt; ttestonesample$Score  </span>
+<span class="co">#&gt; N: 20  </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;                      Score</span>
+<span class="co">#&gt; ----------------- --------</span>
+<span class="co">#&gt;              Mean    72.30</span>
+<span class="co">#&gt;           Std.Dev     9.52</span>
+<span class="co">#&gt;               Min    50.00</span>
+<span class="co">#&gt;                Q1    66.00</span>
+<span class="co">#&gt;            Median    75.00</span>
+<span class="co">#&gt;                Q3    79.00</span>
+<span class="co">#&gt;               Max    89.00</span>
+<span class="co">#&gt;               MAD     9.64</span>
+<span class="co">#&gt;               IQR    13.00</span>
+<span class="co">#&gt;                CV     0.13</span>
+<span class="co">#&gt;          Skewness    -0.45</span>
+<span class="co">#&gt;       SE.Skewness     0.51</span>
+<span class="co">#&gt;          Kurtosis    -0.50</span>
+<span class="co">#&gt;           N.Valid    20.00</span>
+<span class="co">#&gt;         Pct.Valid   100.00</span></code></pre></div>
+<p>Dette gir da:</p>
+<p><span class="math inline">\(t=\frac{72.3-67.5}{\frac{9.52}{\sqrt{20}}}=\frac{4.8}{2.129}=2.255\)</span></p>
+<p>Vi sammenlikner t-verdien 2.255 med kritisk verdi, f.eks. <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">her</a>. Vi finner verdien 1.729. Hvis t-verdien er større enn kritisk verdi: forkast nullhypotesen. Her forkaster vi nullhypotsesen fordi 2.255 er større enn 1.729. Vår alternative hypotese om at det er signifikant forskjell er styrket.</p>
+<p>I R bruker vi:</p>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span>, mu <span class="op">=</span> <span class="fl">67.5</span>, alternative <span class="op">=</span> <span class="st">"two.sided"</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  One Sample t-test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  ttestonesample$Score</span>
+<span class="co">#&gt; t = 2.2547, df = 19, p-value = 0.03615</span>
+<span class="co">#&gt; alternative hypothesis: true mean is not equal to 67.5</span>
+<span class="co">#&gt; 95 percent confidence interval:</span>
+<span class="co">#&gt;  67.84422 76.75578</span>
+<span class="co">#&gt; sample estimates:</span>
+<span class="co">#&gt; mean of x </span>
+<span class="co">#&gt;      72.3</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">qt</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">19</span>, lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; [1] 1.729133</span></code></pre></div>
+<p>Vi ser også her at t-testveridien er større enn kritisk verdi (2.255 &gt; 1.729). I tillegg ser vi at p-verdien er &lt; 0.05 (“If p is low, the null must go”).</p>
+<div id="sjekk-av-forutsetninger-for-one-sample-t-test" class="section level3" number="5.2.1">
+<h3>
+<span class="header-section-number">5.2.1</span> Sjekk av forutsetninger for one sample t-test<a class="anchor" aria-label="anchor" href="#sjekk-av-forutsetninger-for-one-sample-t-test"><i class="fas fa-link"></i></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>Tilfeldig utvalg fra en definert/gitt populasjon</li>
+<li>Variabelen må være kontinuerlig</li>
+<li>Populasjonen er normalfordelt</li>
+</ol>
+<p>Vi ser spesielt på nr 3. Det finnes flere måter å se på normalitetsforutsetningen, både grafisk og formelle statistiske tester. Vi skal vise en formell test - Shapiro-Wilks som ofte brukes. Andre eksempler er Kolmogorov-Smirnov og Anderson-Darling. <span class="citation">Razali and Wah (2011)</span> finner i en sammenlinende studie at Shapiro-WIlks fungerer bra.</p>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">shapirotest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span><span class="op">)</span>
+<span class="va">shapirotest</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Shapiro-Wilk normality test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  ttestonesample$Score</span>
+<span class="co">#&gt; W = 0.96205, p-value = 0.5856</span></code></pre></div>
+<p>Vi sammenlikner testverdien med 0,05 (gitt at vi bruker 0,05 som signifikansnivå). Dersom testverdien er over 0,05 indikerer det at dataene er normalfordelte. Hvis testeverdien er under 0,05 indikerer det at dataene avviker fra normalfordelingen. Dette er ikke tilfelle her (0.5855703).</p>
 
+</div>
+</div>
 </div>
   <div class="chapter-nav">
 <div class="prev"><a href="kjikvadrattest---analyse-av-kategoriske-data.html"><span class="header-section-number">4</span> Kjikvadrattest - Analyse av kategoriske data</a></div>
 <div class="next"><a href="anova.html"><span class="header-section-number">6</span> ANOVA</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav"><li><a class="nav-link" href="#t-tester"><span class="header-section-number">5</span> T-tester</a></li></ul>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#t-tester"><span class="header-section-number">5</span> T-tester</a></li>
+<li><a class="nav-link" href="#students-t-test"><span class="header-section-number">5.1</span> Students t-test</a></li>
+<li>
+<a class="nav-link" href="#one-sample-t-test"><span class="header-section-number">5.2</span> One sample t-test</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#sjekk-av-forutsetninger-for-one-sample-t-test"><span class="header-section-number">5.2.1</span> Sjekk av forutsetninger for one sample t-test</a></li></ul>
+</li>
+</ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
@@ -122,7 +232,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 06 juni, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 08 juni, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

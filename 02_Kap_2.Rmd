@@ -4,7 +4,7 @@ csl: chicago-author-date.csl
 ---
 
 ```{r}
-pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra)
+pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra, writexl, car, readxl, effects, ggplot2, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, flextable, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, sjPlot, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, summarytools, caret)
 ```
 
 
@@ -350,6 +350,364 @@ text(0, 0.58, "99.7%", cex = 1.5, col=4)
 ```
 
 Som nevnt er mange fenomener i hverdagen normalfordelte, eller nærme nok normalfordeling til at vi kan bruke normalfordeling som teoretisk modell for observerte data ^[Normalfordelingen er dessuten en god tilnærming til binomialfordeling med høyt antall observasjoner (høy n), og også til poissonfordeling med høy frekvens. Dette forfølger vi imidlertid ikke videre i dette kompendiet.]. Det finnes imidlertid mange tilfeller der vi ikke kan bruke normalfordelingen. Hvis dataene er sterkt asymmetriske vil ikke reglene for normalfordeling som vi har skissert ovenfor gjelde ^[Chebyshevs teorem vil imidlertid gjelde for alle datasett. Teoremet belyses i eget vedlegg for de spesielt interesserte].  
+
+### Er dataene dine normalfordelte?
+
+Vi vil se senere at mange tester har en forutsetning om at dataene er normalfordelte. Ulike analyser vi gjør i statistisk har forutsetninger/bygger på antalkelser om hvordan dataene er fordelt (det gjelder forsåvidt alle statistiske analyser vi gjør). Dvs. i mange sammenhenger må de være "tilnærmet" normalfordelte. Mange tester er såkalt "robuste", altså de tåler avvik fra en nærmest perfekt normalfordeling uten at resultatene av testen nødvendigvis blir uåpålitelige. Det er rimelig å si at det er tildels stor uenighet om hvor alvorlig avvik fra normalfordelingens teoretiske forventning man kan være for likevel å bruke ulike statistiske analyser. Vi skal også være klar over at utregning av såkalte testverdier (som Shapiro-Wilk eller Anderson-Darling) også bygger på visse forutsetninger.
+
+#### Histogram
+
+Som tidligere vist kan vi få et inntrykk av fordelingen gjennom et histogram:
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 tilfeldige menn, genererte data"}
+
+set.seed(30)
+x = rnorm(100, 179, 16)
+hist(x, xlab = "Høyde", ylab = "Antall", main = "Histogram for genererte høydedata")
+```
+
+#### QQ-plott
+
+```{r echo = FALSE}
+Field_OLS_data <- read_excel("Field_datasett_OLS.xlsx")
+```
+
+
+Q-Q plottet (“quantile-quantile plot”) kan tolkes ved å se om dataverdiene ligger langs en rett linje med ca 45 graders vinkel. Q-Q plottet (se video for forklaring på utregning) innebærer å se to distribusjoner mot hverandre – empirisk fordeling (dataene) og teoretisk forventning ut fra en fordelingsmodell (som normalfordeling om vi snakker om “normal Q-Q plott - dvs vi ser om vår empiriske datafordeling og normalfordelingen er lik). Om de samsvarer perfekt ligger de på en helt rett linje (x = y). I eksempelet under vil da alle punktene ligge perfekt oppå den rette linjen. Siden vi vet den teoretiske distribusjonen til normalfordelingen, kan vi bruke denne teoretiske fordelingen til å plotte den mot datasettet vi sitter med.
+
+Under viser vi typiske mønstre for histogram og "tilhørende" qq-plott som kan være til hjelp i tolkning av dataene dine. Dette er genererte tall og ikke tallene fra eksempelet over:
+
+##### Normalfordelt
+
+```{r}
+set.seed(89)
+# base R
+# Bruker pakken: tibble (Tidyverse)
+qqnorm <- as_tibble(rnorm(10000, mean=90, sd=5))
+# Bruker pakken: writexl
+write_xlsx(qqnorm,"QQ_norm.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('QQ_norm.xlsx')
+```
+
+```{r fig.cap = "Q-Q plott normalfordeling"}
+# Bruker pakken: ggpubr
+ggqqplot(qqnorm$value) + ggtitle("Normal Q-Q plott") + labs(x = "Teoretisk forventning", y = "Data")
+```
+
+Vi ser at dette Q-Q plottet viser oss at vi kan være ganske sikre på at dette datasettet er normalfordelt (noe som gir meninig siden vi har brukt R til å lage et normalfordelt datasett).
+
+##### Skjevhet høyre
+
+```{r}
+# Lage datasett med right skew
+# base R
+# Bruker pakken: tibble
+set.seed(90)
+N <- 5000
+qqrightskew <- as_tibble(rnbinom(N, 10, .1))
+# Eksportere datasettet
+# Bruker pakken: writexl
+write_xlsx(qqrightskew,"QQ_norm_rs.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('QQ_norm_rs.xlsx')
+```
+
+```{r fig.cap = "Q-Q plott - fordeling skjevhet høyre", message = FALSE}
+# Plotte histogram og Q-Q plott"
+# Bruker pakken: ggplot2
+qqrighthist <- ggplot(qqrightskew, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
+# Bruker pakken: ggpubr
+qqrightskew_plott <- ggqqplot(qqrightskew$value) + ggtitle("Normal Q-Q plott - skjevhet høyre") + labs(x = "Teoretisk forventning", y = "Data")
+# Bruker pakken: gridExtra
+grid.arrange(qqrighthist, qqrightskew_plott, ncol=2)
+```
+
+I et datasett med høyreskjevhet vil ofte Q-Q plottet vise en bananform med bunnen/midten av bananen ned mot høyre hjørne og endene pekende oppover/utover fra den rette linjen.
+
+##### Skjevhet venstre
+
+```{r}
+# Lage datasett med left skew
+# base R
+# Bruker pakken: tibble
+set.seed(91)
+N=5000
+qqleftskew <- as_tibble(rbeta(N,5,1,ncp=0))
+# Eksportere datasettet
+# Bruker pakken: writexl
+write_xlsx(qqleftskew,"QQ_norm_ls.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('QQ_norm_ls.xlsx')
+```
+
+
+```{r fig.cap = "Q-Q plott - fordeling skjevhet venstre", message = FALSE}
+# Plotte histogram og Q-Q plott
+# Bruker pakken: ggplot2
+qqlefthist <- ggplot(qqleftskew, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
+# Bruker pakken: ggpubr
+qqleftskew_plott <- ggqqplot(qqleftskew$value) + ggtitle("Normal Q-Q plott - skjevhet venstre") + labs(x = "Teoretisk forventning", y = "Data")
+# Bruker pakken: gridExtra
+grid.arrange(qqlefthist, qqleftskew_plott, ncol=2)
+```
+
+I dette datasettet har vi generert en kraftig skjevhet til venstre. Q-Q plottet får da en omvendt bananform i forhold til høyre skjevhet, altså en topp på midten og to ender som svinger nedover ift den rette linja.
+
+##### Tunge haler
+
+```{r}
+set.seed(14)
+N=100
+# Bruker pakken: tibble
+# Base R
+qqcauchy <- as_tibble(rcauchy(N, scale = 5)) 
+# Eksportere datasettet
+# Bruker pakken: writexl
+write_xlsx(qqcauchy,"QQ_ht.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('QQ_ht.xlsx')
+```
+
+```{r fig.cap = "Q-Q plott - 'heavy-tail'", message = FALSE}
+# Bruker pakken: ggplot2
+qqcauchyhist <- ggplot(qqcauchy, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
+# Bruker pakken: ggpubr
+qqcauchy_plott <- ggqqplot(qqcauchy$value) + ggtitle("Normal Q-Q plott - tung hale") + labs(x = "Teoretisk forventning", y = "Data")
+# Bruker pakken: gridExtra
+grid.arrange(qqcauchyhist, qqcauchy_plott, ncol=2)
+```
+
+"Heavy-tailed" (fete/tunge haler) har større sannsynlighet for at ekstreme verdier vil forekomme). Fordelinger med tunge haler vil ofte følge en slags S-form, men den er ofte mer "liggende" enn S-formen til fordeling med lette haler. Den starter med å vokse raskere enn normalfordelingen og ender med å vokse saktere.
+
+##### Lette haler
+
+```{r}
+set.seed(81)
+# Base R
+# Bruker pakken: tibble
+qqlt <- as_tibble(runif(n = 1000, min = -1, max = 1))
+# Eksportere datasettet
+# Bruker pakken: writexl
+write_xlsx(qqlt,"QQ_lt.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('QQ_lt.xlsx')
+```
+
+```{r fig.cap = "Q-Q plott - 'light-tail'", message = FALSE}
+# Bruker pakken: ggplot2
+qqlthist <- ggplot(qqlt, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
+# Bruker pakken ggpubr
+qqlt_plott <- ggqqplot(qqlt$value) + ggtitle("Normal Q-Q plott - lett hale") + labs(x = "Teoretisk forventning", y = "Data")
+# Bruker pakken: gridExtra
+grid.arrange(qqlthist, qqlt_plott, ncol=2)
+```
+
+"Light-tailed" (lette haler) har liten sannsynlighet for ekstreme verdier og utvalg tenderer til å ikke fravike gjennomsnittet med mye. Q-Q plottet for en fordeling med lette haler har ofte en S-form. Dataene vokser saktere enn normalfordelingen i starten før den følger vekstraten til normalfordelingen. Mot slutten vokser den raskere enn normalfordelingen. Derfor bøyer den av fra normalfordelingen.
+
+##### Bimodalitet
+
+```{r}
+set.seed(10) 
+# Base R
+# Bruker pakken: ggplot2
+# Bruker pakken: tibble
+mode1 <- rnorm(50,2,1)
+mode1 <- mode1[mode1 > 0] 
+mode2 <- rnorm(50,6,1)
+mode2 <- mode2[mode2 > 0] 
+qqbimod <- as_tibble(sort(c(mode1,mode2)))
+# Eksportere datasettet
+# Bruker pakken: writexl
+write_xlsx(qqbimod,"QQ_bimod.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken. xfun
+xfun::embed_file('QQ_bimod.xlsx')
+```
+
+```{r fig.cap = "Q-Q plott - bimodal", message = FALSE}
+# Plotte histogram og Q-Q plott
+# Bruker pakken ggplot2
+qqbimodhist <- ggplot(qqbimod, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
+# Bruker pakken: ggpubr
+qqbimod_plott <- ggqqplot(qqbimod$value) + ggtitle("Normal Q-Q plott - bimodial") + labs(x = "Teoretisk forventning", y = "Data")
+# Bruker pakken: gridExtra
+grid.arrange(qqbimodhist, qqbimod_plott, ncol=2)
+```
+
+Den bimodiale fordelingen viser ofte et brudd eller et distinkt knekkpunkt rundt krysning av den rette linja, med en del av linja på hver side av den rette linja.
+
+##### Multimodalitet
+
+```{r}
+# Bruker pakken: readxl
+# Bruker pakken: tibble
+qqmultimod <- as_tibble(read_xlsx("Multimodal.xlsx"))
+# Eksportere datasettet
+# Bruker pakken: writexl
+write_xlsx(qqmultimod,"QQ_multimod.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('QQ_multimod.xlsx')
+```
+
+```{r fig.cap = "Q-Q plott - multimodal", message = FALSE}
+# Plotte histogram og Q-Q plott
+# Bruker pakken ggplot2
+qqmultimodhist <- ggplot(qqmultimod, aes(x=Verdi)) + geom_histogram(color="black", fill="lightblue")
+# Bruker pakken: ggpubr
+qqmultimod_plott <- ggqqplot(qqmultimod$Verdi) + ggtitle("Normal Q-Q plott - multimodial") + labs(x = "Teoretisk forventning", y = "Data")
+# Bruker pakken: gridExtra
+grid.arrange(qqmultimodhist, qqmultimod_plott, ncol=2)
+```
+
+Multimodale fordelinger vil som regel vise flere brudd.
+
+#### Statistiske tester for vurdering av dataenes distribusjon
+
+Vi har nå sett på noen typiske eksempler på mønstre i Q-Q plott. Det kan imidlertid være vanskelig å bedømme fordelinger som ligger nære normalfordelingen, men likevel ikke perfekt oppå (du vil trolig aldri se en perfekt match med mindre du har generert et normalfordelt datasett med mange datapunkter). Vi kan supplere Q-Q plottene med visse statistiske tester (men husk: disse statistiske testene har sine egne forutsetninger og er heller ikke uten utfordringer).
+
+##### Anderson-Darling 
+
+Anderson-Darlings test er en test for å se om et datasett kommer fra en gitt fordeling, f.eks. normalfordelingen [@andersonAsymptoticTheoryCertain1952b; @andersonTestGoodnessFit1954]. Testen setter opp to hypoteser:
+
+* $H_0$: Dataene følger normalfordelingen
+* $H_1$: Dataene følger ikke normalfordelingen
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('Anderson-Darling_raw.xlsx')
+```
+
+```{r}
+# Bruker pakken: tibble
+# Bruker pakken: readxl
+addata <- as_tibble(read_excel("Anderson-Darling_raw.xlsx"))
+# Bruker pakken: nortest
+ad.test(addata$Values)
+```
+Siden vi vet at nullhypotesen er at datasettet **har** en normalfordeling vil vi forkaste nullhypotesen dersom vi har en signifikant p-verdi (grensen for hva som er signifikant bestemmer vi forsåvidt selv, men vanlige verdier er 0.01, 0.05 og 0.1). Altså - i dette tilfellet har vi en p-verdi=0.04. Vi forkaster derfor nullhypotesen og aksepterer $H_1$ som sier at dataene er trolig ikke er normalfordelte (med andre ord: p-verdien må være større enn signifikansverdien for at vi skal si at dataene trolig er normalfordelte) - en huskeregel: "If p is low, the null must go" (her: "low" = under terskelverdien vi har satt, ofte 0.05).
+
+Generisk ser dette slik ut [@hartmannELearningProjectSOGA2018]:
+
+![](Hartman1.png)
+
+Det er verdt å merke seg at Anderson-Darling testen egentlig ikke forteller deg at dataene dine er normalfordelte, men at det er usannsynlig at de ikke er det om testen viser det. Dette synes kanskje som samme sak, men er i realiteten en viktig erkjennelse – en tørr gressplen er et bevis for at det ikke har regnet, men en våt gressplen er ikke bevis for at det har regnet. En våt gressplen kan skyldes andre ting enn regn. Altså – en signifikant p-verdi på testen gjør at vi forkaster $H_0$ og antar at fordelingen er ikke-normal. En ikke-signifikant p-verdi på gjør at vi med f.eks. 95% konfidens kan si at vi ikke har funnet avvik fra normalfordelingen. 
+
+Tabellarisk kan vi oppsummere vurderingene slik:
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+adbet <- data.frame(
+    'Betingelse' = c("p-verdi $\\le$ valgt signifikansnivå", "p-verdi > valgt signifikansnivå", "Testverdi ($A^2$ verdi) > kritisk verdi", "Testverdi ($A^2$ verdi) $\\le$ kritisk verdi"),
+    'Vurdering'= c("Forkast $H_0$ - datene er trolig ikke normalfordelte", "Behold $H_0$ - dataene er trolig normalfordelte", "Forkast $H_0$ - datene er trolig ikke normalfordelte", "Behold $H_0$ - dataene er trolig normalfordelte")
+)
+# Bruker pakken: knitr
+kable(adbet, 
+  align = "ll",
+  escape = F, 
+  caption = NULL) %>%
+  kable_styling(latex_options = "hold_position", full_width = F)
+```
+
+Det finnes flere andre statistiske tester som kan kjøres for å teste for normalitet, f.eks. Kolmogorov-Smirnov, Shapiro-Wilks og Cramer Von-Mises test. Anderson-Darling er en modifisering/videreutvikling av Kolmogorov-Smirnov og anses ofte som en bedre test av de to. Andre kilder (se f.eks. @razaliPowerComparisonsShapiroWilk2011) finner at Shapiro-Wilks presterer best i 10 000 simuleringer på ulike distribusjoner. 
+
+```{r}
+options(scipen=999)
+# Bruker pakken: tibble
+# Bruker pakken: readxl
+addata5 <- as_tibble(read_excel("Anderson-Darling_raw.xlsx"))
+# Base R
+ks.test(addata5, "pnorm")
+```
+
+```{r}
+# Base R
+shapiro.test(addata5$Values)
+```
+
+```{r}
+# bruker pakken: nortest
+cvm.test(addata$Values)
+```
+
+Tolkning Kolmogorov-Smirnov: Hvis p-verdien er under valgte signifikansnivå (f.eks. 0.05) skal vi anta at datasettet ikke er normalfordelt. Her vil testen peke på at datasettet *ikke* er normalfordelt.
+
+Tolkning av Shapiro-Wilks og Cramer-von Mieses test er lik som for Kolmogorov-Smirnov. 
+
+Som et siste eksempel på en statistisk test for normalitet kan vi bruke Jarque-Bera test. Denne skiller seg litt ut fra de andre ved at den spesifikt ser på skjevhet og kurtosis i datasettet opp mot hva en normalfordeling vil ha. For å gjøre lykken komplett finnes det versjoner av testen:
+
+```{r}
+# Bruker pakken: tibble
+# bruker pakken: readxl
+addata6 <- as_tibble(read_excel("Anderson-Darling_raw.xlsx"))
+# Bruker pakken: tseries
+jarque.bera.test(addata6$Values)
+```
+
+```{r}
+# Bruker pakken: normtest
+ajb.norm.test(addata6$Values, nrepl=2000)
+```
+
+Tolkningen er lik som før - hvis p-verdien er mindre enn valgte signifikansnivå peker det mot at datasettet ikke er normalfordelt. Her, i motsetning til de øvrige testene, er p-verdien større enn signifikansnivået (0,05) så det peker mot at datasettet *er* normalfordelt. 
+
+Dette er altså ikke så enkelt. Det finnes mange statistiske tester, som kan gi motsatte indikasjoner på om et datasett er normalfordelt eller ikke siden de ser på dataene fra "ulik vinkel" (fokuserer på ulike aspekter ved dataene). **Vårt råd blir:** Start alltid med Q-Q plott. Velg evt en teststatistikk, men vær klar over at alle teststatistikker bygger på forutsetninger eller tester ulike sider av distribusjonen. Det vi også kan huske på er at i henhold til sentralgrenseteoremet ("Central Limit Theorem") vil populasjonens fordeling være av mindre interesse dersom utvalgsstørrelsen er stor nok. Hva er stor nok? De fleste kilder peker mot at over 30 er "stort nok". 
+
+#### Boxplott
+
+```{r}
+# Base R
+par(mfrow=(c(1,2)))
+Boxplot(Field_OLS_data$Adverts, id = list(n=Inf), ylab = "", main = "Adverts", col = "Blue")
+Boxplot(Field_OLS_data$Sales, id = list(n=Inf), ylab = "", main = "Sales", col = "Green")
+```
+Vi ser at vi får først ut en liste over uteliggerne identifisert ved id/case/observasjonsnummer (43, 87 og 184) for variabelen Adverts. Dette vises også som tre små sirkler i boxplottet. 
+
+Et boxplott forteller oss mye om dataenes distribusjon.
+
+* Selve boksen representerer 50 % av observasjonene/casene, det vil si at nedre kant representerer første kvartil (= 25.prosentil) og øvre kant tredje kvartil (= 75.prosentil). 
+* Den tykkere horisontale streken i boksen viser medianverdien (= andre kvartil = 50.prosentil)
+* Dersom en observasjon ligger utenfor en terkselverdi (jfr figur under) vises dette med en liten sirkel. Dette defineres som uteliggere. Å identifisere uteliggere kan være viktig for mange statistiske tester.  
+
+@galarnykUnderstandingBoxplots2018 illustrerer boxplott slik:
+
+![](Boxplott.png){width=50%}
+
+#### Scatterplott
+
+```{r}
+# Bruker pakken: ggplot2
+ggplot(Field_OLS_data, aes(x = Adverts, y = Sales)) +
+  geom_point(colour = 4)
+```
+
+Et scatterplott viser oss på en god visuell måte hvordan de to variablene forholder seg til hverandre (vi plotter hver enkelt observasjon gjennom verdiene de har på de to variablene). Mønsteret kan derfor si oss mye om sammenhengen mellom de to. 
+
+En god måte å fremstille et scatterplott på i R (gjennom pakken *car*) er denne:
+
+```{r}
+# Bruker pakken: car
+scatterplot(Adverts ~ Sales, data = Field_OLS_data, id = list(n=4))
+```
+
+Her kombinerer vi scatterplott og boxplott. Den rette blå linja er en minste kvadratssums regresjonslinje (OLS). Den stiplede blå linja bruker en ikke-parametrisk tilnærming. I tillegg får vi visualisert de fire mest ekstreme tilfellene (lengst vekk fra gjennomsnitt). 
 
 ## Binomialfordeling
 

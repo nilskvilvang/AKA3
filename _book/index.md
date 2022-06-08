@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "06 juni, 2022"
+date: "08 juni, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -84,6 +84,10 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   <tr>
    <td style="text-align:left;width: 8em; "> 06.juni 2022 </td>
    <td style="text-align:left;width: 40em; "> Nytt kapittel 5. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 07.juni 2022 </td>
+   <td style="text-align:left;width: 40em; "> Deler av nytt delkapittel 6. Lagt til test av normalfordeling i kap.2 </td>
   </tr>
 </tbody>
 </table>
