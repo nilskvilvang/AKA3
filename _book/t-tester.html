@@ -77,7 +77,7 @@
 <li><a class="" href="univariat-analyse.html"><span class="header-section-number">3</span> Univariat analyse</a></li>
 <li><a class="" href="kjikvadrattest---analyse-av-kategoriske-data.html"><span class="header-section-number">4</span> Kjikvadrattest - Analyse av kategoriske data</a></li>
 <li><a class="active" href="t-tester.html"><span class="header-section-number">5</span> T-tester</a></li>
-<li><a class="" href="anova.html"><span class="header-section-number">6</span> ANOVA</a></li>
+<li><a class="" href="variansanalyse---anova-analysis-of-variance.html"><span class="header-section-number">6</span> Variansanalyse - ANOVA (“Analysis of Variance”)</a></li>
 <li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">7</span> Regresjonsanalyse - OLS</a></li>
 <li><a class="" href="iv-regresjon.html"><span class="header-section-number">8</span> IV regresjon</a></li>
 <li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">9</span> Logistisk regresjon</a></li>
@@ -200,13 +200,183 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <span class="co">#&gt; data:  ttestonesample$Score</span>
 <span class="co">#&gt; W = 0.96205, p-value = 0.5856</span></code></pre></div>
 <p>Vi sammenlikner testverdien med 0,05 (gitt at vi bruker 0,05 som signifikansnivå). Dersom testverdien er over 0,05 indikerer det at dataene er normalfordelte. Hvis testeverdien er under 0,05 indikerer det at dataene avviker fra normalfordelingen. Dette er ikke tilfelle her (0.5855703).</p>
-
 </div>
+</div>
+<div id="paired-samples-t-test" class="section level2" number="5.3">
+<h2>
+<span class="header-section-number">5.3</span> Paired samples t-test<a class="anchor" aria-label="anchor" href="#paired-samples-t-test"><i class="fas fa-link"></i></a>
+</h2>
+<p>Paired samples t-test brukes når gruppene/målingene ikke er uavhengige av hverandre. I tilfeller hvor vi for eksempel har en gruppe som er testet to ganger på ulike tidspunkt er ikke observasjonene uavhengige av hverandre.</p>
+<p>Paired samples t-test og one sample t-test er på en måte “samme sak” - altså, der en one sample t-test sammenlikner gjennomsnittet fra et utvalg med en kjent størrelse kalkulerer en paired samples t-test forskjellen mellom de to gjennomsnittene for deretter å gjennomføre en one sample t-test på forskjellen.</p>
+<p>La oss anta at vi har en gruppe på 15 studenter som vi har testet to ganger. Imellom testene har de gjennomført en aktivitet som skal trigge hukommelsen.</p>
+<p><a href="data:text/csv;base64,IlByZSIsIlBvc3QiDQo3My4xNjM0OTg3NTY2NTQ0LDgzLjAyMDQzNTUyMDI4MzEyDQo3OC45MTAxNDk4NjAwOTcxOSw3Ni45NzE1MzQ0MTEwMjE2NA0KNzguMjc0MDcxMDk3NTMxODcsNzkuMzkyMTIwNTk0NjY5ODkNCjc3LjExNDA1NTQyMTIyNjI3LDc3LjM2OTM3ODY5NzMyNDMNCjgxLjY3NzA4NzA0ODI5OTMzLDc5LjY3OTg4NTkxNTk2NTkNCjc3Ljk2NjQyMTE1OTczOTQzLDc4LjYyNzQwMzg2MDQyMTINCjY3LjgyNDU1OTU1ODMwOTU2LDczLjUxNDY1NDAzMTk2NTUNCjcwLjgwODA4MzE2NzM5NjQzLDcwLjc1NjMzOTM0MDQwMDgzDQo3OS41NjkyMjc4NDY0NzE5LDc4LjY3NTM1OTg4MTMyOTE0DQo3Ny42MDE4NDIzMzg5NTkwMiw3Ny42NjI2OTc4NTQxMDQ3NQ0KODAuOTg1ODI5MDg2Nzg2MjUsNzQuOTgwOTE5MzQxMDYxODINCjY5LjcyOTYwMjA4OTQ3OTU2LDc3LjMzODMwOTczMTc2NA0KODMuMzU4NDY4NTg4MTQwMTEsNzEuMjI4OTk3MDU2NTUyMTUNCjY5LjI2NDcxNTg5NTc0NjgsNzAuNzgzNDM4Mzk4MzY3OTINCjc2Ljk2MzUyMjY2NDc5MTgyLDcyLjc3OTQxNzA3ODM0Nzk1DQo=" download="t-test_paired.csv">Download t-test_paired.csv</a></p>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pairedsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"t-test_paired.csv"</span><span class="op">)</span>
+<span class="co"># Bruker pakken: summarytools</span>
+<span class="fu">descr</span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">)</span>
+<span class="co">#&gt; Descriptive Statistics  </span>
+<span class="co">#&gt; pairedsamples  </span>
+<span class="co">#&gt; N: 15  </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;                       Post      Pre</span>
+<span class="co">#&gt; ----------------- -------- --------</span>
+<span class="co">#&gt;              Mean    76.19    76.21</span>
+<span class="co">#&gt;           Std.Dev     3.69     4.87</span>
+<span class="co">#&gt;               Min    70.76    67.82</span>
+<span class="co">#&gt;                Q1    72.78    70.81</span>
+<span class="co">#&gt;            Median    77.34    77.60</span>
+<span class="co">#&gt;                Q3    78.68    79.57</span>
+<span class="co">#&gt;               Max    83.02    83.36</span>
+<span class="co">#&gt;               MAD     3.47     5.02</span>
+<span class="co">#&gt;               IQR     5.50     7.25</span>
+<span class="co">#&gt;                CV     0.05     0.06</span>
+<span class="co">#&gt;          Skewness    -0.09    -0.39</span>
+<span class="co">#&gt;       SE.Skewness     0.58     0.58</span>
+<span class="co">#&gt;          Kurtosis    -1.18    -1.31</span>
+<span class="co">#&gt;           N.Valid    15.00    15.00</span>
+<span class="co">#&gt;         Pct.Valid   100.00   100.00</span></code></pre></div>
+<p>Vi kan regne ut testverdien slik:</p>
+<p><span class="math inline">\(t=\frac{\sum{d}}{\frac{n(\sum{d^2})-(\sum{d}^2)}{(n-1)}}\)</span></p>
+<p>der</p>
+<p><span class="math inline">\(t = testverdi\)</span></p>
+<p><span class="math inline">\(d=differansen\ innad\ i\ hvert\ par\)</span></p>
+<p><span class="math inline">\(n=antall\ i\ utvalget\)</span></p>
+<p>Gjennom en manuell utregning finner vi <span class="math inline">\(t=0.02\)</span></p>
+<p>Vi gjennomfører en t-test i R:</p>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">$</span><span class="va">Pre</span>, <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Post</span>, paired <span class="op">=</span> <span class="cn">TRUE</span>, alternative <span class="op">=</span> <span class="st">"two.sided"</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Paired t-test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  pairedsamples$Pre and pairedsamples$Post</span>
+<span class="co">#&gt; t = 0.020764, df = 14, p-value = 0.9837</span>
+<span class="co">#&gt; alternative hypothesis: true difference in means is not equal to 0</span>
+<span class="co">#&gt; 95 percent confidence interval:</span>
+<span class="co">#&gt;  -2.934057  2.991423</span>
+<span class="co">#&gt; sample estimates:</span>
+<span class="co">#&gt; mean of the differences </span>
+<span class="co">#&gt;              0.02868286</span></code></pre></div>
+<p>Her ser vi at p er over 0,05. Dvs vi kan ikke forkaste nullhypotesen. Vi kan derfor ikke si at det er en signifikant forskjell mellom de to gruppene.</p>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">ggpaired</span><span class="op">(</span><span class="va">pairedsamples</span>, cond1 <span class="op">=</span> <span class="st">"Pre"</span>, cond2 <span class="op">=</span> <span class="st">"Post"</span>,
+    fill <span class="op">=</span> <span class="st">"condition"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="06_Kap_6_files/figure-html/unnamed-chunk-12-1.png" width="672"></div>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Bruker pakken: summarytools</span>
+<span class="fu">descr</span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">)</span>
+<span class="co">#&gt; Descriptive Statistics  </span>
+<span class="co">#&gt; pairedsamples  </span>
+<span class="co">#&gt; N: 15  </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;                       Post      Pre</span>
+<span class="co">#&gt; ----------------- -------- --------</span>
+<span class="co">#&gt;              Mean    76.19    76.21</span>
+<span class="co">#&gt;           Std.Dev     3.69     4.87</span>
+<span class="co">#&gt;               Min    70.76    67.82</span>
+<span class="co">#&gt;                Q1    72.78    70.81</span>
+<span class="co">#&gt;            Median    77.34    77.60</span>
+<span class="co">#&gt;                Q3    78.68    79.57</span>
+<span class="co">#&gt;               Max    83.02    83.36</span>
+<span class="co">#&gt;               MAD     3.47     5.02</span>
+<span class="co">#&gt;               IQR     5.50     7.25</span>
+<span class="co">#&gt;                CV     0.05     0.06</span>
+<span class="co">#&gt;          Skewness    -0.09    -0.39</span>
+<span class="co">#&gt;       SE.Skewness     0.58     0.58</span>
+<span class="co">#&gt;          Kurtosis    -1.18    -1.31</span>
+<span class="co">#&gt;           N.Valid    15.00    15.00</span>
+<span class="co">#&gt;         Pct.Valid   100.00   100.00</span></code></pre></div>
+<p>Av grafen og tabellen over ser vi at spredningen er mindre etter aktiviteten (se f.eks. på standardavviket i tabellen).</p>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">forskjell</span> <span class="op">&lt;-</span> <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Post</span> <span class="op">-</span> <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Pre</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Shapiro-Wilk normality test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  forskjell</span>
+<span class="co">#&gt; W = 0.94997, p-value = 0.5239</span>
+<span class="co">#Bruker pakken: nortest</span>
+<span class="fu">ad.test</span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Anderson-Darling normality test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  forskjell</span>
+<span class="co">#&gt; A = 0.44249, p-value = 0.2483</span>
+<span class="co"># Bruker pakken: tseries</span>
+<span class="fu">jarque.bera.test</span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Jarque Bera Test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  forskjell</span>
+<span class="co">#&gt; X-squared = 0.26188, df = 2, p-value = 0.8773</span></code></pre></div>
+<p>Vi kan se fra ulike tester ovenfor at forutsetningen om normalfordeling ser ut til å være innfridd. Normalt trenger vi ikke gjøre alle tre testene, men vi har tatt de med for å vise relevant kode om man skulle ha behov for den ene eller den andre - de tester normalitet fra ulike vinkler, og i svært mange tilfeller vil man se Shapiro-Wilks brukt. Robusthetstester viser også at Shapiro-Wilks viser bra robusthet og egenskaper sammenliknet med alternativer <span class="citation">(Razali and Wah 2011)</span>.</p>
+</div>
+<div id="independent-samples-t-test" class="section level2" number="5.4">
+<h2>
+<span class="header-section-number">5.4</span> Independent samples t-test<a class="anchor" aria-label="anchor" href="#independent-samples-t-test"><i class="fas fa-link"></i></a>
+</h2>
+<p>En vanlig situasjon er at vi har to grupper som skal sammenliknes. Hvis gruppene er uavhengige av hverandre (i motsetning til paired samples t-test), kan vi bruke independent samples t-test.</p>
+<p>I eksempelet ønsker vi å sammenlikne to grupper studenter: en gruppe har ren nettundervisning, mens den andre gruppa har hybrid undervisning (nett og fysisk). Vi har eksamensresultater for begge gruppene. Kan vi ut fra eksamensresultatene si om gruppene er signifikant forskjellige fra hverandre?</p>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">independent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"t-test_independent.csv"</span><span class="op">)</span>
+<span class="va">HeadTail</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">independent</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">independent</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">independent</span><span class="op">)</span><span class="op">)</span><span class="op">}</span>
+<span class="fu">HeadTail</span><span class="op">(</span><span class="va">independent</span><span class="op">)</span>
+<span class="co">#&gt;     Studentnr   Type    Score</span>
+<span class="co">#&gt; 1           1   Nett 77.36150</span>
+<span class="co">#&gt; 2           2   Nett 79.39069</span>
+<span class="co">#&gt; 3           3   Nett 71.88117</span>
+<span class="co">#&gt; 4           4   Nett 80.00219</span>
+<span class="co">#&gt; 5           5   Nett 81.99973</span>
+<span class="co">#&gt; 6           6   Nett 73.35320</span>
+<span class="co">#&gt; 195       195 Hybrid 93.46116</span>
+<span class="co">#&gt; 196       196 Hybrid 83.60819</span>
+<span class="co">#&gt; 197       197 Hybrid 79.41945</span>
+<span class="co">#&gt; 198       198 Hybrid 78.83346</span>
+<span class="co">#&gt; 199       199 Hybrid 94.84745</span>
+<span class="co">#&gt; 200       200 Hybrid 86.55348</span></code></pre></div>
+<p>Vi ser at datasettet består av 200 observasjoner av studenter som enten har gjennomført ren nettundervisning eller en hybrid undervisning (nett og fysisk undervisning).</p>
+<p>Vi kan regne ut testverdien:</p>
+<p><span class="math inline">\(t=\frac{\overline{x}_A - \overline{x}_B}{\sqrt{\biggl({\frac{(\sum A^2-\frac{(\sum A)^2}{n_A})+(\sum B^2-\frac{(\sum B)^2}{n_B})}{n_A+n_B-2}\biggr)}*\biggl(\frac{1}{n_A}+\frac{1}{n_B}\biggr)}}\)</span></p>
+<p>der:</p>
+<p><span class="math inline">\(A = Variabel 1 - i\ vårt\ tilfelle\ "nett"\)</span></p>
+<p><span class="math inline">\(B = Variabel 2 - i\ vårt\ tilfelle\ "hybrid"\)</span></p>
+<p><span class="math inline">\((\sum A)^2 = Summen\ av\ A'ene\ kvadrert\)</span></p>
+<p><span class="math inline">\((\sum B)^2 = Summen\ av\ B'ene\ kvadrert\)</span></p>
+<p><span class="math inline">\(A_2 = Enkeltverdien\ A\ kvadrert\ (hver\ enkelt\ verdi)\)</span></p>
+<p><span class="math inline">\(B_2 = Enkeltverdien\ B\ kvadrert\ (hver\ enkelt\ verdi)\)</span></p>
+<p><span class="math inline">\(\sum A^2 = Summen\ av\ de\ kvadrerte\ A'ene\)</span></p>
+<p><span class="math inline">\(\sum B^2 = Summen\ av\ de\ kvadrerte\ B'ene\)</span></p>
+<p><span class="math inline">\(\overline{x}_A = Gjennomsnitt\ for\ variabel\ A\)</span></p>
+<p><span class="math inline">\(\overline{x}_B = Gjennomsnitt\ for\ variabel\ B\)</span></p>
+<p><span class="math inline">\(n_A = antall\ i\ variabelen\ A\)</span></p>
+<p><span class="math inline">\(n_B = antall\ i\ variabelen\ B\)</span></p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ttestind</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">Score</span> <span class="op">~</span> <span class="va">Type</span>, <span class="va">independent</span><span class="op">)</span></code></pre></div>
+<p>Vi kan legge merke til at t-testen i R velger Welch t-test i stedet for Student t-test. Forskjellen ligger i at Welch t-test ikke forutsetter lik varians, mens Student t-test gjør dette.</p>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">Score</span> <span class="op">~</span> <span class="va">Type</span>, <span class="va">independent</span>, var.equal<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Two Sample t-test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  Score by Type</span>
+<span class="co">#&gt; t = 10.98, df = 198, p-value &lt; 2.2e-16</span>
+<span class="co">#&gt; alternative hypothesis: true difference in means between group Hybrid and group Nett is not equal to 0</span>
+<span class="co">#&gt; 95 percent confidence interval:</span>
+<span class="co">#&gt;   7.216698 10.376497</span>
+<span class="co">#&gt; sample estimates:</span>
+<span class="co">#&gt; mean in group Hybrid   mean in group Nett </span>
+<span class="co">#&gt;             84.58566             75.78906</span></code></pre></div>
+<p>I dette eksempelet har vi ingen forskjell mellom Welch og Student t-test. Noen programmer vil automatisk gi deg den ene eller den andre, alternativt begge to. Forskjellen Forskjellen på Student’s t og Welch’s t er altså at førstnevnte forutsetter at begge gruppene har likt standardavvik (“«”the assumption of equal variances”). I virkeligheten er dette ofte ikke tilfelle (det er liten grunn til å tro at gruppene har likt standardavvik hvis de ikke har lik gjennomsnittsverdi). I slike tilfeller er Welch’s t en mer robust test.</p>
+<p>Ut fra testen kan vi si at det er en statistisk signifikant forskjell mellom de to gruppene. Hvis vi ser på resultatet fra testen ser vi hybridgruppa har høyere snitt enn nettgruppa. Dette forteller oss at hybridgruppa skårer signifikant høyere enn nettgruppa.</p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ttestind</span><span class="op">$</span><span class="va">estimate</span>
+<span class="co">#&gt; mean in group Hybrid   mean in group Nett </span>
+<span class="co">#&gt;             84.58566             75.78906</span></code></pre></div>
+
 </div>
 </div>
   <div class="chapter-nav">
 <div class="prev"><a href="kjikvadrattest---analyse-av-kategoriske-data.html"><span class="header-section-number">4</span> Kjikvadrattest - Analyse av kategoriske data</a></div>
-<div class="next"><a href="anova.html"><span class="header-section-number">6</span> ANOVA</a></div>
+<div class="next"><a href="variansanalyse---anova-analysis-of-variance.html"><span class="header-section-number">6</span> Variansanalyse - ANOVA (“Analysis of Variance”)</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
@@ -215,6 +385,8 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <li>
 <a class="nav-link" href="#one-sample-t-test"><span class="header-section-number">5.2</span> One sample t-test</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#sjekk-av-forutsetninger-for-one-sample-t-test"><span class="header-section-number">5.2.1</span> Sjekk av forutsetninger for one sample t-test</a></li></ul>
 </li>
+<li><a class="nav-link" href="#paired-samples-t-test"><span class="header-section-number">5.3</span> Paired samples t-test</a></li>
+<li><a class="nav-link" href="#independent-samples-t-test"><span class="header-section-number">5.4</span> Independent samples t-test</a></li>
 </ul>
 
       <div class="book-extra">
@@ -232,7 +404,7 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 08 juni, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 10 juni, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

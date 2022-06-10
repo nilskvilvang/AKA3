@@ -98,7 +98,10 @@ t-tester
 students-t-test
 one-sample-t-test
 sjekk-av-forutsetninger-for-one-sample-t-test
-anova
+paired-samples-t-test
+independent-samples-t-test
+variansanalyse---anova-analysis-of-variance
+enveis-mellom-grupper-anova-one-way-between-groups-anova
 regresjonsanalyse---ols
 innledning
 teori

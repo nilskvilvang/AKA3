@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Kapittel 6 Variansanalyse - ANOVA (“Analysis of Variance”) | Anvendt kvantitativ analyse</title>
+<meta name="author" content="Nils Kvilvang">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Kapittel 6 Variansanalyse - ANOVA (“Analysis of Variance”) | Anvendt kvantitativ analyse">
+<meta property="og:type" content="book">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kapittel 6 Variansanalyse - ANOVA (“Analysis of Variance”) | Anvendt kvantitativ analyse">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/tabwid-1.0.0/tabwid.css" rel="stylesheet">
+<link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="libs/plotly-binding-4.10.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script><link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+<link rel="stylesheet" href="style.css">
+<meta name="description" content="I kapittel 2 så vi på korrelasjon mellom enkeltvariabler (bivariat korrelasjon) ) og sammenlikninger mellom to grupper eller en gruppe på to tidspunkter (kjikvadrattester og t-tester)....">
+<meta property="og:description" content="I kapittel 2 så vi på korrelasjon mellom enkeltvariabler (bivariat korrelasjon) ) og sammenlikninger mellom to grupper eller en gruppe på to tidspunkter (kjikvadrattester og t-tester)....">
+<meta name="twitter:description" content="I kapittel 2 så vi på korrelasjon mellom enkeltvariabler (bivariat korrelasjon) ) og sammenlikninger mellom to grupper eller en gruppe på to tidspunkter (kjikvadrattester og t-tester)....">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">Anvendt kvantitativ analyse</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Introduksjon</a></li>
+<li><a class="" href="hvorfor-dette-notatet.html">Hvorfor dette notatet?</a></li>
+<li><a class="" href="grunnleggende-begreper-og-sammenhenger.html"><span class="header-section-number">1</span> Grunnleggende begreper og sammenhenger</a></li>
+<li><a class="" href="samvariasjon-og-korrelasjon.html"><span class="header-section-number">2</span> Samvariasjon og korrelasjon</a></li>
+<li><a class="" href="univariat-analyse.html"><span class="header-section-number">3</span> Univariat analyse</a></li>
+<li><a class="" href="kjikvadrattest---analyse-av-kategoriske-data.html"><span class="header-section-number">4</span> Kjikvadrattest - Analyse av kategoriske data</a></li>
+<li><a class="" href="t-tester.html"><span class="header-section-number">5</span> T-tester</a></li>
+<li><a class="active" href="variansanalyse---anova-analysis-of-variance.html"><span class="header-section-number">6</span> Variansanalyse - ANOVA (“Analysis of Variance”)</a></li>
+<li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">7</span> Regresjonsanalyse - OLS</a></li>
+<li><a class="" href="iv-regresjon.html"><span class="header-section-number">8</span> IV regresjon</a></li>
+<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">9</span> Logistisk regresjon</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">10</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">11</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
+<li><a class="" href="referanser.html">Referanser</a></li>
+<li><a class="" href="vedlegg-b---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg B - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
+<li><a class="" href="vedlegg-c---chebyshevs-teorem.html">Vedlegg C - Chebyshevs teorem</a></li>
+<li><a class="" href="vedlegg-x---session-info.html">Vedlegg X - Session Info</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/nilskvilvang/AKA3">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="variansanalyse---anova-analysis-of-variance" class="section level1" number="6">
+<h1>
+<span class="header-section-number">Kapittel 6</span> Variansanalyse - ANOVA (“Analysis of Variance”)<a class="anchor" aria-label="anchor" href="#variansanalyse---anova-analysis-of-variance"><i class="fas fa-link"></i></a>
+</h1>
+<p>I kapittel 2 så vi på korrelasjon mellom enkeltvariabler (bivariat korrelasjon) ) og sammenlikninger mellom to grupper eller en gruppe på to tidspunkter (kjikvadrattester og t-tester). Regresjonsanalyser, som vi kommer itlbake til i neste kapittel, kan også ses på som analyser av forholdet mellom enkeltvariabler.</p>
+<p>Variansanalyse - heretter ANOVA - er en samlebetegnelse på flere statistiske metoder der man tester likheter mellom to eller flere utvalg. Har man to grupper vil ANOVA og en t-test gi samme resultat (for hypotesen <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> mot <span class="math inline">\(H_A: \mu_1 \neq \mu_2\)</span>). Man kan faktisk (i prinsippet) gjennomføre t-tester for x antall kombinasjoner av y antall grupper, men risikoen for type-I feil øker sammenliknet med en ANOVA test på samme data.</p>
+<p>I en ANOVA snakker man om to elementer som utgjør den totale variansen: varians innad i gruppen og varians mellom gruppene. Det er derfor vanlig å dele ANOVA inn i to hovedgrupper: enveis og toveis ANOVA. Enveis analyser ser kun på en egenskap som varierer mellom gruppene, mens toveis inkluderer egenskaper som kan variere mellom enhetene i gruppene.</p>
+<p>Det ANOVA innbærer - helt grunnleggende - er å teste om variansen mellom gruppene er større enn variansen innad i gruppene.</p>
+<div id="enveis-mellom-grupper-anova-one-way-between-groups-anova" class="section level2" number="6.1">
+<h2>
+<span class="header-section-number">6.1</span> Enveis mellom grupper ANOVA (“One-way between-groups ANOVA”)<a class="anchor" aria-label="anchor" href="#enveis-mellom-grupper-anova-one-way-between-groups-anova"><i class="fas fa-link"></i></a>
+</h2>
+<p>Enveis ANOVA (one-way ANOVA) er analyser der vi har en uavhengig variabel som er målt på/har flere nivåer. Hvis vi f.eks. vil undersøke effekt av ulike opplæringstiltak for selgere (den uavhengige variabelen er opplæringsmetode) som kan bestå av tre grupper (metoder for opplæring): e-læring/egenlæring, gruppeopplæring og observasjon/mentorering av erfaren selger) vil den avhengige variabelen kunne være ukentlig salg (i kroner, enheter e.l.).
+Analysen sammenlikner variansen mellom gruppene (metodene for opplæring) med variansen internt i hver gruppe. Teststatistikken kalles F (F ratio):</p>
+<p><span class="math inline">\(F = \frac{Varians\ mellom\ gruppene}{Varians\ innad\ i\ gruppen}\)</span></p>
+<p>En høy F-verdi vil innebære at det er høyere varians mellom gruppene enn internt i gruppene. En signifikant F-verdi betyr at vi kan forkaste hypotesen (<span class="math inline">\(H_0\)</span>)) om at det gjennomsnittene er like.</p>
+<p>I dette eksempelet skal vi bruke et datasett fra <span class="citation">Pallant (2010)</span> og trekker ut de to variablene vi trenger i eksempelet. Vi gjør også om variabelen “agegp3” til faktor (dette er nødvendig i R, men andre programmer “fikser” dette selv).</p>
+<p><a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="Pallant_Survey_ANOVA1.xlsx">Download Pallant_Survey_ANOVA1.xlsx</a></p>
+<p>Vi skal bruke en variabel i datasettet som deler respondentene inn i tre aldersgrupper (“agegp3”) og en variabel som måler total optimisme (“toptim”) der respondentene skårer på en skala fra 6 til 30 (30 er høyeste nivået av optimisme).</p>
+<p>Hypotesen er altså:</p>
+<p><span class="math inline">\(H_0: \mu_1 = \mu_2,\ dvs.\ gjennomsnittet\ til\ de\ ulike\ gruppene\ er\ like\)</span></p>
+<p><span class="math inline">\(H_A: \mu_1 \neq \mu_2\ dvs.\ gjennomsnittet\ til\ de\ ulike\ gruppene\ er\ ulike\)</span></p>
+<p>Vi kan først se på datasettet:</p>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">group_by</span><span class="op">(</span><span class="va">optimisme</span>, <span class="va">agegp3</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">summarise</span><span class="op">(</span>
+    count <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>,
+    mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">toptim</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+    sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">toptim</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+  <span class="op">)</span>
+<span class="co">#&gt; # A tibble: 3 x 4</span>
+<span class="co">#&gt;   agegp3 count  mean    sd</span>
+<span class="co">#&gt;   &lt;fct&gt;  &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 1        149  21.4  4.55</span>
+<span class="co">#&gt; 2 2        153  22.1  4.15</span>
+<span class="co">#&gt; 3 3        137  23.0  4.49</span></code></pre></div>
+<p>Vi kan se at gjennomsnittene er forskjellige for de tre gruppene, men vi vet ikke om denne forskjellen er statistisk signifikant.</p>
+<p>Vi kan også se på dette grafisk:</p>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">ggboxplot</span><span class="op">(</span><span class="va">optimisme</span>, x <span class="op">=</span> <span class="st">"agegp3"</span>, y <span class="op">=</span> <span class="st">"toptim"</span>, 
+          color <span class="op">=</span> <span class="st">"agegp3"</span>, palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span><span class="op">)</span>,
+          order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span><span class="op">)</span>,
+          ylab <span class="op">=</span> <span class="st">"Total optimisme"</span>, xlab <span class="op">=</span> <span class="st">"Aldersgruppe"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="07_Kap_7_files/figure-html/unnamed-chunk-5-1.png" width="672"></div>
+<p>Om vi skal anta noe ut fra grafen over vil det kunne være at gruppe 1 og 2 ikke er signifikant ulike, mens gruppe 3 kanskje skiller seg statistisk signifikant ut.</p>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">resultataov1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aov.html">aov</a></span><span class="op">(</span><span class="va">toptim</span> <span class="op">~</span> <span class="va">agegp3</span>, data <span class="op">=</span> <span class="va">optimisme</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">resultataov1</span><span class="op">)</span>
+<span class="co">#&gt;              Df Sum Sq Mean Sq F value Pr(&gt;F)  </span>
+<span class="co">#&gt; agegp3        2    179   89.53   4.641 0.0101 *</span>
+<span class="co">#&gt; Residuals   432   8334   19.29                 </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
+<span class="co">#&gt; 4 observations deleted due to missingness</span></code></pre></div>
+<p>Siden p-verdien er lavere enn 0.05 kan vi konkludere med at det er signifikante forskjell et sted (mellom to eller flere grupper) i variabelen (agegp3). Men vi kan ikke ut fra dette si hvor – altså hvilken gruppe som er signifikant forskjellig fra de andre).</p>
+<p>Vi bør sjekke forutsetningen om homogenitet i variansen. Homogen (lik) varians har vi når standardavvikene i ulike grupper er omtrent like.</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/bartlett.test.html">bartlett.test</a></span><span class="op">(</span><span class="va">toptim</span> <span class="op">~</span> <span class="va">agegp3</span>, data <span class="op">=</span> <span class="va">optimisme</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Bartlett test of homogeneity of variances</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  toptim by agegp3</span>
+<span class="co">#&gt; Bartlett's K-squared = 1.4561, df = 2, p-value =</span>
+<span class="co">#&gt; 0.4828</span></code></pre></div>
+<p>Bartletts test brukes dersom vi har normalfordelte data. Vi kan derfor sjekke for dette:</p>
+<p>Vi kan teste for normalfordeling:</p>
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">optimisme</span><span class="op">$</span><span class="va">toptim</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Shapiro-Wilk normality test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  optimisme$toptim</span>
+<span class="co">#&gt; W = 0.97471, p-value = 0.0000007366</span></code></pre></div>
+<p>Siden testverdien er &lt; 0.05 må vi anta at dataene er signifikant forskjellig fra normalfordelingen. Dette betyr at vi bør bruke Levenes og/eller Fligner-Killeen.</p>
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">leveneoptimisme</span> <span class="op">&lt;-</span> <span class="fu">leveneTest</span><span class="op">(</span><span class="va">toptim</span> <span class="op">~</span> <span class="va">agegp3</span>, data <span class="op">=</span> <span class="va">optimisme</span><span class="op">)</span>
+<span class="va">leveneoptimisme</span>
+<span class="co">#&gt; Levene's Test for Homogeneity of Variance (center = median)</span>
+<span class="co">#&gt;        Df F value Pr(&gt;F)</span>
+<span class="co">#&gt; group   2  0.7147 0.4899</span>
+<span class="co">#&gt;       432</span></code></pre></div>
+<p>En annen test av homogenitet i varians som framholdes som robust for avvik fra normalfordeling er altså “Fligner-Killeen test”:</p>
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/fligner.test.html">fligner.test</a></span><span class="op">(</span><span class="va">toptim</span> <span class="op">~</span> <span class="va">agegp3</span>, data <span class="op">=</span> <span class="va">optimisme</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Fligner-Killeen test of homogeneity of variances</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  toptim by agegp3</span>
+<span class="co">#&gt; Fligner-Killeen:med chi-squared = 1.5588, df = 2,</span>
+<span class="co">#&gt; p-value = 0.4587</span></code></pre></div>
+<p>Tolkningen av alle tre testene for homogenitet i varians er den samme: Hvis p &lt; 0.05 er variansen ikke lik. Det fremheves imidlertid at dersom gruppene er tilnærmet like store er ikke denne forutsetningen kritisk (eller sågar nødvendig) - ANOVA (og t-tester) er generelt robuste i forhold til brudd på forutsetningen om homogen varians dersom gruppene er relativt like <span class="citation">(Solutions 2013)</span>. I vårt eksempel viser f.eks. Levenes test (p = 0.4899) at vi har homogenitet i variansen.</p>
+<p>Et alternativ er å gjøre en såkalt Welch enveis test. Welch test forutsetter ikke homogen varians:</p>
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">welchoptimisme</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/stats/oneway.test.html">oneway.test</a></span><span class="op">(</span><span class="va">toptim</span> <span class="op">~</span> <span class="va">agegp3</span>, data <span class="op">=</span> <span class="va">optimisme</span><span class="op">)</span>
+<span class="va">welchoptimisme</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  One-way analysis of means (not assuming equal</span>
+<span class="co">#&gt;  variances)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  toptim and agegp3</span>
+<span class="co">#&gt; F = 4.38, num df = 2.00, denom df = 284.51, p-value =</span>
+<span class="co">#&gt; 0.01338</span></code></pre></div>
+<p>Vi kan deretter se nærmere på hvilke grupper som er statistisk signifikant forskjellige:</p>
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/TukeyHSD.html">TukeyHSD</a></span><span class="op">(</span><span class="va">resultataov1</span><span class="op">)</span>
+<span class="co">#&gt;   Tukey multiple comparisons of means</span>
+<span class="co">#&gt;     95% family-wise confidence level</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Fit: aov(formula = toptim ~ agegp3, data = optimisme)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $agegp3</span>
+<span class="co">#&gt;          diff        lwr      upr     p adj</span>
+<span class="co">#&gt; 2-1 0.7440309 -0.4489781 1.937040 0.3080109</span>
+<span class="co">#&gt; 3-1 1.5950113  0.3636472 2.826376 0.0069296</span>
+<span class="co">#&gt; 3-2 0.8509804 -0.3687705 2.070731 0.2296685</span></code></pre></div>
+<p>Vi ser av tabellen at gruppene 1 og 3 er signifikant forskjellige. De andre parene - 1-2 og 2-3 ikke har signifikante forskjeller.
+Dette kan også visualiseres:</p>
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TukeyHSD.html">TukeyHSD</a></span><span class="op">(</span><span class="va">resultataov1</span>, conf.level<span class="op">=</span><span class="fl">.95</span><span class="op">)</span>, las <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="07_Kap_7_files/figure-html/unnamed-chunk-13-1.png" width="672"></div>
+<p>Gruppene 1-2 og 2-3 har konfiendsintervall som inneholder 0, mens 1-3 ikke har det.</p>
+<p>Til slutt kan vi være interessert i å vurdere hvor stor effektstørrelsen (eta squared = <span class="math inline">\(\eta^2\)</span>).</p>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Bruker pakken: lsr</span>
+<span class="fu">etaSquared</span><span class="op">(</span><span class="va">resultataov1</span><span class="op">)</span>
+<span class="co">#&gt;            eta.sq eta.sq.part</span>
+<span class="co">#&gt; agegp3 0.02103477  0.02103477</span></code></pre></div>
+<p><span class="citation">J. Cohen (1988)</span> angir følgende forslag på grenseverdier for tolkning av <span class="math inline">\(\eta^2\)</span>:</p>
+<ul>
+<li>Liten effekt: 0.01</li>
+<li>Middels effekt: 0.06</li>
+<li>Stor effekt: 0.14</li>
+</ul>
+<p>I vårt eksempel er det altså en statistisk signifikant, men liten forskjell (noe vi sannsynligvis fikk en mistanke om i plottet lenger opp der vi antok at det kanskje kunne være en forskjell for gruppe 3), noe vi også fikk en indikasjon på i tabellen med forskjellene i gjennomsnittsverdier for gruppene. Dette er ikke uvanlig - vi har 435 observasjoner, og i store utvalg kan selv små forskjeller gi statistisk signifikans og vi bør tolke resultatene med det for øye. I en tolkning bør vi også vurdere hvilken praktisk forskjell det er mellom gruppene selv om vi har funnet en statistisk signifikant forskjell.</p>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="t-tester.html"><span class="header-section-number">5</span> T-tester</a></div>
+<div class="next"><a href="regresjonsanalyse---ols.html"><span class="header-section-number">7</span> Regresjonsanalyse - OLS</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#variansanalyse---anova-analysis-of-variance"><span class="header-section-number">6</span> Variansanalyse - ANOVA (“Analysis of Variance”)</a></li>
+<li><a class="nav-link" href="#enveis-mellom-grupper-anova-one-way-between-groups-anova"><span class="header-section-number">6.1</span> Enveis mellom grupper ANOVA (“One-way between-groups ANOVA”)</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/07_Kap_7.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/07_Kap_7.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 10 juni, 2022.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

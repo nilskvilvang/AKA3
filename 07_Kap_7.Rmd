@@ -3,4 +3,149 @@ bibliography: bibliografi.bib
 csl: chicago-author-date.csl
 ---
 
-# ANOVA
+```{r echo = FALSE}
+pacman::p_load(readxl, summarytools, ggpubr, tidyverse, writexl, car, lsr)
+
+options(scipen=999)
+```
+
+
+# Variansanalyse - ANOVA ("Analysis of Variance")
+
+I kapittel 2 så vi på korrelasjon mellom enkeltvariabler (bivariat korrelasjon) ) og sammenlikninger mellom to grupper eller en gruppe på to tidspunkter (kjikvadrattester og t-tester). Regresjonsanalyser, som vi kommer itlbake til i neste kapittel, kan også ses på som analyser av forholdet mellom enkeltvariabler.
+
+Variansanalyse - heretter ANOVA - er en samlebetegnelse på flere statistiske metoder der man tester likheter mellom to eller flere utvalg. Har man to grupper vil ANOVA og en t-test gi samme resultat (for hypotesen $H_0: \mu_1 = \mu_2$ mot $H_A: \mu_1 \neq \mu_2$). Man kan faktisk (i prinsippet) gjennomføre t-tester for x antall kombinasjoner av y antall grupper, men risikoen for type-I feil øker sammenliknet med en ANOVA test på samme data. 
+
+I en ANOVA snakker man om to elementer som utgjør den totale variansen: varians innad i gruppen og varians mellom gruppene. Det er derfor vanlig å dele ANOVA inn i to hovedgrupper: enveis og toveis ANOVA. Enveis analyser ser kun på en egenskap som varierer mellom gruppene, mens toveis inkluderer egenskaper som kan variere mellom enhetene i gruppene. 
+
+Det ANOVA innbærer - helt grunnleggende - er å teste om variansen mellom gruppene er større enn variansen innad i gruppene. 
+
+## Enveis mellom grupper ANOVA ("One-way between-groups ANOVA")
+
+Enveis ANOVA (one-way ANOVA) er analyser der vi har en uavhengig variabel som er målt på/har flere nivåer. Hvis vi f.eks. vil undersøke effekt av ulike opplæringstiltak for selgere (den uavhengige variabelen er opplæringsmetode) som kan bestå av tre grupper (metoder for opplæring): e-læring/egenlæring, gruppeopplæring og observasjon/mentorering av erfaren selger) vil den avhengige variabelen kunne være ukentlig salg (i kroner, enheter e.l.). 
+Analysen sammenlikner variansen mellom gruppene (metodene for opplæring) med variansen internt i hver gruppe. Teststatistikken kalles F (F ratio):
+
+$F = \frac{Varians\ mellom\ gruppene}{Varians\ innad\ i\ gruppen}$
+
+En høy F-verdi vil innebære at det er høyere varians mellom gruppene enn internt i gruppene. En signifikant F-verdi betyr at vi kan forkaste hypotesen ($H_0$)) om at det gjennomsnittene er like. 
+
+I dette eksempelet skal vi bruke et datasett fra @pallantSPSSSurvivalManual2010 og trekker ut de to variablene vi trenger i eksempelet. Vi gjør også om variabelen "agegp3" til faktor (dette er nødvendig i R, men andre programmer "fikser" dette selv).
+
+```{r echo = FALSE}
+optimisme <- read_excel("Pallant_Survey.xlsx")
+optimisme <- optimisme[ , c("agegp3", "toptim")] 
+optimisme$agegp3 <- as.factor(optimisme$agegp3)
+write_xlsx(optimisme, "Pallant_Survey_ANOVA1.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+# Bruker pakken: xfun
+xfun::embed_file('Pallant_Survey_ANOVA1.xlsx')
+```
+
+Vi skal bruke en variabel i datasettet som deler respondentene inn i tre aldersgrupper ("agegp3") og en variabel som måler total optimisme ("toptim") der respondentene skårer på en skala fra 6 til 30 (30 er høyeste nivået av optimisme).
+
+Hypotesen er altså:
+
+$H_0: \mu_1 = \mu_2,\ dvs.\ gjennomsnittet\ til\ de\ ulike\ gruppene\ er\ like$
+
+$H_A: \mu_1 \neq \mu_2\ dvs.\ gjennomsnittet\ til\ de\ ulike\ gruppene\ er\ ulike$
+
+Vi kan først se på datasettet:
+
+```{r}
+group_by(optimisme, agegp3) %>%
+  summarise(
+    count = n(),
+    mean = mean(toptim, na.rm = TRUE),
+    sd = sd(toptim, na.rm = TRUE)
+  )
+```
+
+Vi kan se at gjennomsnittene er forskjellige for de tre gruppene, men vi vet ikke om denne forskjellen er statistisk signifikant. 
+
+Vi kan også se på dette grafisk:
+```{r warning = FALSE}
+ggboxplot(optimisme, x = "agegp3", y = "toptim", 
+          color = "agegp3", palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+          order = c("1", "2", "3"),
+          ylab = "Total optimisme", xlab = "Aldersgruppe")
+```
+
+Om vi skal anta noe ut fra grafen over vil det kunne være at gruppe 1 og 2 ikke er signifikant ulike, mens gruppe 3 kanskje skiller seg statistisk signifikant ut.
+
+```{r}
+resultataov1 <- aov(toptim ~ agegp3, data = optimisme)
+summary(resultataov1)
+```
+
+Siden p-verdien er lavere enn 0.05 kan vi konkludere med at det er signifikante forskjell et sted (mellom to eller flere grupper) i variabelen (agegp3). Men vi kan ikke ut fra dette si hvor – altså hvilken gruppe som er signifikant forskjellig fra de andre). 
+
+Vi bør sjekke forutsetningen om homogenitet i variansen. Homogen (lik) varians har vi når standardavvikene i ulike grupper er omtrent like.
+
+```{r}
+bartlett.test(toptim ~ agegp3, data = optimisme)
+```
+
+Bartletts test brukes dersom vi har normalfordelte data. Vi kan derfor sjekke for dette:
+
+Vi kan teste for normalfordeling:
+
+```{r}
+shapiro.test(optimisme$toptim)
+```
+
+Siden testverdien er < 0.05 må vi anta at dataene er signifikant forskjellig fra normalfordelingen. Dette betyr at vi bør bruke Levenes og/eller Fligner-Killeen. 
+
+```{r}
+leveneoptimisme <- leveneTest(toptim ~ agegp3, data = optimisme)
+leveneoptimisme
+```
+
+En annen test av homogenitet i varians som framholdes som robust for avvik fra normalfordeling er altså  "Fligner-Killeen test":
+
+```{r}
+fligner.test(toptim ~ agegp3, data = optimisme)
+```
+
+Tolkningen av alle tre testene for homogenitet i varians er den samme: Hvis p < 0.05 er variansen ikke lik. Det fremheves imidlertid at dersom gruppene er tilnærmet like store er ikke denne forutsetningen kritisk (eller sågar nødvendig) - ANOVA (og t-tester) er generelt robuste i forhold til brudd på forutsetningen om homogen varians dersom gruppene er relativt like [@statisticssolutionsAssumptionHomogeneityVariance2013]. I vårt eksempel viser f.eks. Levenes test (p = 0.4899) at vi har homogenitet i variansen.
+
+Et alternativ er å gjøre en såkalt Welch enveis test. Welch test forutsetter ikke homogen varians:
+
+```{r}
+welchoptimisme <-oneway.test(toptim ~ agegp3, data = optimisme)
+welchoptimisme
+```
+
+Vi kan deretter se nærmere på hvilke grupper som er statistisk signifikant forskjellige:
+```{r}
+TukeyHSD(resultataov1)
+```
+
+Vi ser av tabellen at gruppene 1 og 3 er signifikant forskjellige. De andre parene - 1-2 og 2-3 ikke har signifikante forskjeller.
+Dette kan også visualiseres:
+
+```{r}
+plot(TukeyHSD(resultataov1, conf.level=.95), las = 2)
+```
+
+Gruppene 1-2 og 2-3 har konfiendsintervall som inneholder 0, mens 1-3 ikke har det.
+
+Til slutt kan vi være interessert i å vurdere hvor stor effektstørrelsen (eta squared = $\eta^2$).
+
+```{r}
+# Bruker pakken: lsr
+etaSquared(resultataov1)
+```
+
+@cohenStatisticalPowerAnalysis1988 angir følgende forslag på grenseverdier for tolkning av $\eta^2$:
+
+- Liten effekt: 0.01
+- Middels effekt: 0.06
+- Stor effekt: 0.14
+
+I vårt eksempel er det altså en statistisk signifikant, men liten forskjell (noe vi sannsynligvis fikk en mistanke om i plottet lenger opp der vi antok at det kanskje kunne være en forskjell for gruppe 3), noe vi også fikk en indikasjon på i tabellen med forskjellene i gjennomsnittsverdier for gruppene. Dette er ikke uvanlig - vi har 435 observasjoner, og i store utvalg kan selv små forskjeller gi statistisk signifikans og vi bør tolke resultatene med det for øye. I en tolkning bør vi også vurdere hvilken praktisk forskjell det er mellom gruppene selv om vi har funnet en statistisk signifikant forskjell.
+
+
+
+
