@@ -164,7 +164,7 @@
 <span class="header-section-number">8.3</span> Eksempel 1 med data fra pakken “AER”<a class="anchor" aria-label="anchor" href="#eksempel-1-med-data-fra-pakken-aer"><i class="fas fa-link"></i></a>
 </h2>
 <p>I datasettet har vi en rekke variabler:</p>
-<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"CigarettesSW"</span><span class="op">)</span>
 
 <span class="co"># Bruker pakken: summarytools</span>
@@ -189,14 +189,14 @@
 <li>z og x må være korrelerte: at pris og skatte-/avgiftsnivå korrelerer virker rimelig</li>
 <li>z må ikke påvirke y direkte: at skatte-/avgiftsnivået ikke i seg selv påvirker antall sigarettpakker som selges direkte virker rimelig, men at skatte-/avgiftsnivået påvirker antall sigarettpakker som selges gjennom prisnivåt virker også rimelig (dette er en forutsetning som alltid kan diskuteres, men for eksempelets skyld antar vi dette).</li>
 </ol>
-<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb245"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">CigarettesSW</span><span class="op">$</span><span class="va">price</span>, <span class="va">CigarettesSW</span><span class="op">$</span><span class="va">taxs</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0.9203278</span></code></pre></div>
 <div id="modell-1" class="section level3" number="8.3.1">
 <h3>
 <span class="header-section-number">8.3.1</span> Modell 1<a class="anchor" aria-label="anchor" href="#modell-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model1</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">packs</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">|</span> <span class="va">taxs</span>, data <span class="op">=</span> <span class="va">CigarettesSW</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -228,7 +228,7 @@
 <span class="header-section-number">8.3.2</span> Modell 2<a class="anchor" aria-label="anchor" href="#modell-2"><i class="fas fa-link"></i></a>
 </h3>
 <p>Her legger vi inn en eksogen variabel - inntekt - altså en variabel hvis verdi er bestemt utenfor modellen for så å legges inn i modellen. Pris ser vi på som en endogen variabel, altså en variabel hvis verdi bestemmes i modellen. En tilfeldig endogen variabel i en modell korrelerer med feilleddet (som vi forsåvidt har beskrevet i begynnelsen av dette kapittelet), mens en eksogen variabel ikke er korrelert med feilleddet (hvilket er naturlig siden vi sier verdien er bestemt utenfor modellen).</p>
-<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb247"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">model2</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">packs</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">income</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">income</span><span class="op">)</span> <span class="op">+</span> <span class="va">taxs</span>, data <span class="op">=</span> <span class="va">CigarettesSW</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model2</span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -264,7 +264,7 @@
 <span class="header-section-number">8.4</span> Eksempel 2<a class="anchor" aria-label="anchor" href="#eksempel-2"><i class="fas fa-link"></i></a>
 </h2>
 <p>Data for dette eksempelet er hentet fra <span class="citation">Becker and Lincoln (2021)</span> (“Mroz.csv”).</p>
-<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Mrozdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">'Mroz.csv'</span>, na.strings <span class="op">=</span> <span class="st">"."</span><span class="op">)</span>
 <span class="va">Mrozdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">Mrozdata</span>, <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">wage</span><span class="op">)</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">Mrozdata</span><span class="op">)</span>
@@ -294,7 +294,7 @@
 <span class="header-section-number">8.4.1</span> Modell 1: Standard OLS<a class="anchor" aria-label="anchor" href="#modell-1-standard-ols"><i class="fas fa-link"></i></a>
 </h3>
 <p>Vi ønsker å kjøre en regresjon med kvinners lønn (lwage) som avhengig variabel og utdanning (educ) som uavhengig variabel. Eksempelet tar utgangspunkt i <span class="citation">Wooldridge (2016)</span> (se kap. 15).</p>
-<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">IVregmod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod1</span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -325,7 +325,7 @@
 <h3>
 <span class="header-section-number">8.4.2</span> Modell 2: IV regresjon<a class="anchor" aria-label="anchor" href="#modell-2-iv-regresjon"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">IVregmod2</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span> <span class="op">|</span> <span class="va">fatheduc</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -353,7 +353,7 @@
 <h3>
 <span class="header-section-number">8.4.3</span> Modell 3: OLS med flere prediktorer<a class="anchor" aria-label="anchor" href="#modell-3-ols-med-flere-prediktorer"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb251"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">IVregmod3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod3</span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -391,7 +391,7 @@
 <span class="header-section-number">8.4.4</span> Modell 4: IV regresjon med flere (to) instrumenter<a class="anchor" aria-label="anchor" href="#modell-4-iv-regresjon-med-flere-to-instrumenter"><i class="fas fa-link"></i></a>
 </h3>
 <p>Vi legger til både fars og mors utdannelse som instrumenter:</p>
-<div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb252"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">IVregmod4</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span>  <span class="op">+</span><span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span> <span class="op">|</span> <span class="va">fatheduc</span> <span class="op">+</span> <span class="va">motheduc</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod4</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -424,7 +424,7 @@
 <span class="header-section-number">8.4.5</span> Test av relevansen av instrumentene<a class="anchor" aria-label="anchor" href="#test-av-relevansen-av-instrumentene"><i class="fas fa-link"></i></a>
 </h3>
 <p>Det er selvsagt avgjørende at instrumentet/-ene er relevante. Som beskrevet må instrumentene være tilstrekkelig sterkt korrelerte med den/de endogene uavhengige variablene. I dette eksempelet (modell 4) må altså fatheduc og motheduc forklare en tilstrekkelig del av variasjonen i educ for å kunne være relevant instrumenter. Dette kan vi gjøre gjennom en vanlig F-test:</p>
-<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb253"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">steg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">educ</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span> <span class="op">+</span> <span class="va">fatheduc</span> <span class="op">+</span> <span class="va">motheduc</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
 
 <span class="va">instrumentF</span> <span class="op">&lt;-</span> <span class="fu">waldtest</span><span class="op">(</span><span class="va">steg1</span>, <span class="va">.</span><span class="op">~</span><span class="va">.</span> <span class="op">-</span><span class="va">fatheduc</span> <span class="op">-</span><span class="va">motheduc</span><span class="op">)</span>
@@ -440,7 +440,7 @@
 <span class="co">#&gt; Signif. codes:  </span>
 <span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre></div>
 <p>F-verdien er 54.943 med p &lt; .001. Vi kan finne kritisk F-verdi:</p>
-<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb254"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/Fdist.html">qf</a></span><span class="op">(</span><span class="fl">0.05</span>, df1 <span class="op">=</span> <span class="fl">422</span>, df2 <span class="op">=</span> <span class="fl">424</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0.8520168</span></code></pre></div>
 <p>Vi kan klart forkaste nullhypotesen om at instrumentene er irrelevante.</p>
@@ -489,7 +489,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 10 juni, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 12 juni, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

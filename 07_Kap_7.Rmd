@@ -3,10 +3,12 @@ bibliography: bibliografi.bib
 csl: chicago-author-date.csl
 ---
 
-```{r echo = FALSE}
-pacman::p_load(readxl, summarytools, ggpubr, tidyverse, writexl, car, lsr)
-
+```{r setup, include=FALSE}
 options(scipen=999)
+```
+
+```{r echo = FALSE}
+pacman::p_load(readxl, summarytools, ggpubr, tidyverse, writexl, car, lsr, haven, rstatix, ez, effectsize, sjstats, effsize, apaTables, performance)
 ```
 
 
@@ -16,9 +18,16 @@ I kapittel 2 så vi på korrelasjon mellom enkeltvariabler (bivariat korrelasjon
 
 Variansanalyse - heretter ANOVA - er en samlebetegnelse på flere statistiske metoder der man tester likheter mellom to eller flere utvalg. Har man to grupper vil ANOVA og en t-test gi samme resultat (for hypotesen $H_0: \mu_1 = \mu_2$ mot $H_A: \mu_1 \neq \mu_2$). Man kan faktisk (i prinsippet) gjennomføre t-tester for x antall kombinasjoner av y antall grupper, men risikoen for type-I feil øker sammenliknet med en ANOVA test på samme data. 
 
-I en ANOVA snakker man om to elementer som utgjør den totale variansen: varians innad i gruppen og varians mellom gruppene. Det er derfor vanlig å dele ANOVA inn i to hovedgrupper: enveis og toveis ANOVA. Enveis analyser ser kun på en egenskap som varierer mellom gruppene, mens toveis inkluderer egenskaper som kan variere mellom enhetene i gruppene. 
+I en ANOVA snakker man om to elementer som utgjør den totale variansen: varians innad i gruppen og varians mellom gruppene. Det er derfor vanlig å dele ANOVA inn i to hovedgrupper: enveis (=en faktor) og toveis (= to faktorer) ANOVA. Enveis analyser ser kun på en egenskap som varierer mellom gruppene, mens toveis inkluderer egenskaper som kan variere mellom enhetene i gruppene. Toveis ANOVA gir derfor innsikt i både hovedeffekter og interaksjonseffekter.
 
 Det ANOVA innbærer - helt grunnleggende - er å teste om variansen mellom gruppene er større enn variansen innad i gruppene. 
+
+Vi skal i dette kapittelet se på:
+
+- Enveis mellom grupper ANOVA ("One-way between-groups")
+- Enveis avhengig ANOVA ("One-way repreated measures")
+- Toveis mellom grupper ANOVA ("Two-way between groups")
+- Blandet design ANOVA ("Mixed between-within")
 
 ## Enveis mellom grupper ANOVA ("One-way between-groups ANOVA")
 
@@ -39,7 +48,6 @@ write_xlsx(optimisme, "Pallant_Survey_ANOVA1.xlsx")
 ```
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
-# Bruker pakken: xfun
 xfun::embed_file('Pallant_Survey_ANOVA1.xlsx')
 ```
 
@@ -66,7 +74,7 @@ Vi kan se at gjennomsnittene er forskjellige for de tre gruppene, men vi vet ikk
 
 Vi kan også se på dette grafisk:
 ```{r warning = FALSE}
-ggboxplot(optimisme, x = "agegp3", y = "toptim", 
+ggpubr::ggboxplot(optimisme, x = "agegp3", y = "toptim", 
           color = "agegp3", palette = c("#00AFBB", "#E7B800", "#FC4E07"),
           order = c("1", "2", "3"),
           ylab = "Total optimisme", xlab = "Aldersgruppe")
@@ -98,7 +106,7 @@ shapiro.test(optimisme$toptim)
 Siden testverdien er < 0.05 må vi anta at dataene er signifikant forskjellig fra normalfordelingen. Dette betyr at vi bør bruke Levenes og/eller Fligner-Killeen. 
 
 ```{r}
-leveneoptimisme <- leveneTest(toptim ~ agegp3, data = optimisme)
+leveneoptimisme <- car::leveneTest(toptim ~ agegp3, data = optimisme)
 leveneoptimisme
 ```
 
@@ -113,7 +121,7 @@ Tolkningen av alle tre testene for homogenitet i varians er den samme: Hvis p < 
 Et alternativ er å gjøre en såkalt Welch enveis test. Welch test forutsetter ikke homogen varians:
 
 ```{r}
-welchoptimisme <-oneway.test(toptim ~ agegp3, data = optimisme)
+welchoptimisme <- oneway.test(toptim ~ agegp3, data = optimisme)
 welchoptimisme
 ```
 
@@ -134,8 +142,7 @@ Gruppene 1-2 og 2-3 har konfiendsintervall som inneholder 0, mens 1-3 ikke har d
 Til slutt kan vi være interessert i å vurdere hvor stor effektstørrelsen (eta squared = $\eta^2$).
 
 ```{r}
-# Bruker pakken: lsr
-etaSquared(resultataov1)
+lsr::etaSquared(resultataov1)
 ```
 
 @cohenStatisticalPowerAnalysis1988 angir følgende forslag på grenseverdier for tolkning av $\eta^2$:
@@ -146,6 +153,322 @@ etaSquared(resultataov1)
 
 I vårt eksempel er det altså en statistisk signifikant, men liten forskjell (noe vi sannsynligvis fikk en mistanke om i plottet lenger opp der vi antok at det kanskje kunne være en forskjell for gruppe 3), noe vi også fikk en indikasjon på i tabellen med forskjellene i gjennomsnittsverdier for gruppene. Dette er ikke uvanlig - vi har 435 observasjoner, og i store utvalg kan selv små forskjeller gi statistisk signifikans og vi bør tolke resultatene med det for øye. I en tolkning bør vi også vurdere hvilken praktisk forskjell det er mellom gruppene selv om vi har funnet en statistisk signifikant forskjell.
 
+## Enveis avhengig ANOVA ("One-way repreated measures")
+
+I stedet for å se på ulike grupper mot en avhengig variabel målt på et tidspunkt kan vi være interessert i å se på en gruppe målt på ulike tidspunkt («repeated»). Hvis du har sett gjennom kapittelet om t-tester vil du se paralleller til designet.
+
+Vi bruker også her et eksempel fra @pallantSPSSSurvivalManual2010 basert på et konstruert datasett.
+
+```{r echo = FALSE}
+selvtillit <- haven::read_sav("experim.sav")
+```
+
+![](selvtillit.png){width=75%}
+
+```{r echo = FALSE}
+selvtillit2 <- selvtillit %>% select(6, 9, 12)
+selvtillit2$ID <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30)
+selvtillit2 <- selvtillit2[, c(4, 1, 2, 3)]
+```
+
+I R arrangerer vi dataene i "long" format og lager faktor:
+```{r warning = FALSE}
+selvtillit3 <- selvtillit2 %>%
+  gather(key = "time", value = "score", confid1, confid2, confid3) %>%
+  convert_as_factor(ID)
+```
+
+```{r echo = FALSE}
+writexl::write_xlsx(selvtillit3, "experim.xlsx")
+```
+
+Modifisert datasett ligger her:
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('experim.xlsx')
+```
+
+
+Så kan vi se på gjennomsnitt og standardavvik:
+```{r}
+selvtillit3 %>%
+  group_by(time) %>%
+  get_summary_stats(score, type = "mean_sd")
+```
+
+Og det samme grafisk:
+```{r warning = FALSE}
+ggpubr::ggboxplot(
+  selvtillit3, x = "time", y = "score",
+  color = "time", palette = "jco"
+  )
+```
+
+Vi sjekker forutsetning om normalfordeling:
+
+```{r}
+selvtillit3 %>%
+  group_by(time) %>%
+  shapiro_test(score)
+```
+
+Disse testene peker mot at vi har normalfordelte data. 
+
+Det kan også være verdt å sjekke for uteliggere siden disse kan ha stor påvirkning på analysen senere:
+
+```{r}
+selvtillit3 %>%
+  group_by(time) %>%
+  identify_outliers(score)
+```
+
+Visuelt får vi samme indikasjon:
+
+```{r}
+ggpubr::ggqqplot(selvtillit3, "score", facet.by = "time")
+```
+
+Når vi har "repeated measures" i ANOVA erstatter vi testen for homogenitet i varians med den såkalte "Mauchly's test of sphericity" [@fieldDiscoveringStatisticsUsing2009]. Sphericity referer til likhet i variansen for forskjellene i nivåene/tidspunktene målingene er tatt. Sagt på en annen måte; Hvis du har tre måletidspunkter (som i dette tilfellet) må variansen i forskjellen mellom tid 1 og 2 være tilnærmet lik variansen i forskjellen mellom tid 2 og 3.
+
+For å vise bruk av en annen pakke i R kjører vi analysen med pakken "ez", som automatisk gir oss "vanlig" ANOVA, tester for sferisitet (Mauchly's test) og - dersom denne er signifikant - videre gir oss resultater korrigert (under "Spericity Corrections"):
+
+```{r}
+resultataov4 <- ez::ezANOVA(data =selvtillit3, dv = score, wid = ID, within = time, type=3)
+resultataov4
+```
+
+Siden vi ser at p < 0.05 for Mauchly's test bruker vi nederste del av resultatet ovenfor. Det er to tester som vises der som begge gjør korreksjoner på antall frihetsgrader gitt at forutsetningen om sferisitet ikke er oppfyllt. Vi går ikke inn på hvordan disse korreksjonene gjøres, ut over F verdiene (= forholdet mellom systematisk og usystematisk varians) vil være like for alle tre, men at signifikansverdien vil endres ettersom det er den kritiske verdien gjennom frihetsgradene som endres ved de to korreksjonene). 
+
+1. Greenhouse-Geisser (GG) som gir $\epsilon$ (epsilon) - som gir en verdi mellom 0 og 1 på hvor langt de foreliggende dataene er fra det ideelle/optimale. I vårt tilfelle er $\epsilon=0.71$ (se "GGe" i resultatet ovenfor). @karadimitriouRepeatedMeasuresWithinsubjects angir at man bør bruke Huynh-Feldt dersom $\epsilon > 0.75$ eller om man har små utvalg (10). Her kan vi derfor se på verdien i p[GG] som er < 0.005. Dette indikerer at det er en signifikant effekt/forskjell et sted mellom måletidspunktene. 
+2. Huynh-Feldt (HF) - som brukes/tolkes på lik måte som Greenhouse-Geisser dersom betingelsene for det er tilstede (som nevnt under forrige punkt.)
+
+Vi ønsker da å se på de parvise sammenlikningene for å se hvor vi har signifikante forskjeller:
+
+```{r}
+padj <- selvtillit3 %>%
+  pairwise_t_test(
+    score ~ time, paired = TRUE,
+    p.adjust.method = "bonferroni"
+    )
+padj
+```
+
+I tabellen vises ikke den mest interessante kolonnen "p.adj", men verdiene er:
+
+```{r}
+padj$p.adj
+```
+
+Vi kan se at det er statistisk signifikant forskjell mellom alle tre parene: confid1 - confid2 (< 0.05) , confid1 - confid3 (< 0.001) og confid2 - confid3 (< 0.001). 
+
+Til slutt ser vi på effektstørrelsen ($\eta^2$). Denne ble gitt automatisk da vi brukte pakken "ez" som "ges" (se tabell lenger opp). Vi kan også hente verdien direkte:
+
+```{r}
+resultataov5 <- aov(score ~ time, data = selvtillit3)
+effectsize::eta_squared(resultataov5)
+```
+
+Vi kan gjenta fra @cohenStatisticalPowerAnalysis1988 som grenseverdier for tolkning av $\eta^2$:
+
+- Liten effekt: 0.01
+- Middels effekt: 0.06
+- Stor effekt: 0.14'
+
+Når det gjelder effektstørrelse anbefaler @fieldDiscoveringStatisticsUsing2009 $\omega^2$ ("omega squared") som det beste målet for effektstørrelse for denne typen analyser [jfr. @kirkPracticalSignificanceConcept1996]. $\omega^2$ regnes ofte som mindre systematisk skjev ("biased") enn $\eta^2$, spesielt for mindre utvalg [@ben-shacharEffectsizeEstimationEffect2020a].
+
+```{r}
+effectsize::omega_squared(resultataov5)
+```
+
+$\omega^2$ vil ha en verdi på $\pm 1$. 0 indikerer ingen effekt. Et fiffig hjelpemiddel finnes i pakken "effectsize" [@ben-shacharEffectsizeEstimationEffect2020a], som - basert på hvilken verdi vi får - indikerer effektstørrelse for en lang rekke effektmål.
+
+```{r}
+effectsize::interpret_omega_squared(0.16, rules = "field2013")
+effectsize::interpret_omega_squared(0.16, rules = "cohen1992")
+```
+
+Litt avhengig av hvilke retningslinjer vi velger å følge (@cohenStatisticalPowerAnalysis1988 eller @fieldDiscoveringStatisticsUsing2012) har vi en middels til stor effekt. 
+
+Vi kan si at det er en signifikant økning i testscore mellom tidspunkt 1 og tidspunkt 2, og tispunkt 2 til tidspunkt 3 (økning fordi gjennomsnittet har økt), og denne effekten er middels til stor samlet sett. Vi kan derfor si at "intervensjonen" mellom tid 1 og tid 2 har hatt en signifikant effekt på gjennomsnittlig selvtillit ift statistikk, og at tiden mellom tid 2 og tid 3 tilsvarende har ført til en signifikant høyere selvtillit. Så både intervensjonen og tidseffekten er signifikante. Dette gjelder for hele modellen. det kan selvsagt være interessant å se effekten fra tid 1 til tid 2, og videre tid 2 til tid 3. 
+
+```{r}
+cohen1 <- effsize::cohen.d(selvtillit2$confid2, selvtillit2$confid1)
+cohen2 <- effsize::cohen.d(selvtillit2$confid3, selvtillit2$confid2)
+cohen1
+cohen2
+```
+
+Vi ser at Cohens d for tid 1 - tid 2 er `r cohen1$estimate` og for tid 2 til tid 3 er `r cohen2$estimate`. Dette gir følgende tolkning [@ben-shacharEffectsizeEstimationEffect2020a], jfr. @gignacEffectSizeGuidelines2016:
+
+```{r}
+effectsize::interpret_cohens_d(0.52, rules = "gignac2016")
+effectsize::interpret_cohens_d(0.57, rules = "gignac2016")
+```
+
+Vi kan med andre ord si at intervensjonen gir en moderat/middels effekt, og at tidsperioden fra intervensjon til siste måling også gir en moderat/middels effekt. Når det gjelder effektstørrelser har vi altså nå mål på effekten i hele modellen og for de ulike "stegene" separat.
+
+En hendig funksjon i pakken "sjstats" gir en samlet oppsummering:
+```{r}
+sjstats::anova_stats(resultataov5)
+```
+
+## Toveis mellom grupper ANOVA ("Two-way between groups")
+
+ANOVA-analysene vi til nå har gjort har inneholdt en uavhengig variabel. Det vi skal se på nå er tilfeller der vi har to uavhengige variabler og flere grupper i de ulike gruppene. Vi kan da se på både individuelle effekter og «sameffekter» av de to uavhengige på den avhengige variabelen, f.eks. kan vi ønske å se på både kjønn og alder som uahvengige variabler opp mot optimisme som den avhengige variabelen. 
+
+![](optimisme2.png){width=50%}
+
+Vi skal fortsette å bruke datasettet fra @pallantSPSSSurvivalManual2010.
+
+```{r echo = FALSE}
+optimisme2 <- read_excel("Pallant_Survey.xlsx")
+optimisme2 <- optimisme2[ , c("sex", "agegp3", "toptim")] 
+optimisme2$sex <- as.factor(optimisme2$sex)
+optimisme2$agegp3 <- as.factor(optimisme2$agegp3)
+levels(optimisme2$sex) <- c("Menn", "Kvinner")
+optimisme2 <- na.omit(optimisme2)
+writexl::write_xlsx(optimisme2, "Pallant_Survey_ANOVA2.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('Pallant_Survey_ANOVA2.xlsx')
+```
+
+Vi kan se på dataene grafisk:
+```{r}
+ggpubr::ggboxplot(optimisme2, x = "agegp3", y = "toptim", color = "sex", palette = c("#00AFBB", "#E7B800"))
+```
+
+```{r}
+resultataov6 <- optimisme2 %>%
+    rstatix::anova_test(toptim ~ sex + agegp3 + sex*agegp3, type = "III")
+resultataov6
+```
+
+Det første vi kan legge merke til er at "sex*agegp3", altså interaksjonseffekten mellom de uavhengige variablene, ikke er signifikant. Dette betyr at det ikke er noen signifikant forskjell i effekten av alder mellom menn og kvinner (vi finner ikke en signifikant interaksjonseffekt). Hadde vi derimot fått en signifikant forskjell her ville det vært vanskelig å tolke den totale effekten. Siden vi ikke hadde en signifikant effekt kan vi se på totaleffekten. 
+
+Vi ser da på radene «agegp3» og «sex». Vi kan se at det er en signifikant effekt av alder, men ikke for kjønn. Kvinner og menn skårer ikke signifikant forskjellig, men alder har en signifikant betydning. 
+
+Videre ser vi på effektstørrelsen. For alder, som var signifikant, finner vi en liten effekt (Partial Eta Squared = 0.018 (under kolonnen "ges"), hvilket er en middels effekt - jfr. tidligere grenseverdier gitt av @cohenStatisticalPowerAnalysis1988.
+
+Forutsetning om homogenitet i varians:
+```{r}
+leveneoptimisme2 <- car::leveneTest(toptim ~ sex*agegp3, center = mean, data = optimisme2)
+leveneoptimisme2
+```
+
+Her er Levene’s test ikke signifikant. Det innebærer at forutsetningen ikke er brutt da vi har lik varians for den avhengige variabelen i alle gruppene (homogenitet i variansen).
+
+## Blandet design ANOVA ("Mixed between-within")
+
+I siste delkapittel skal vi kombinere tidligere analyser. I enkelte situasjoner ønsker vi å se på nivået på et fenomen hos ulike grupper på ulike måletidspunkter. Vi har da en uavhengig variabel («between subjects») som er dikotom (type påvirkning) og en uavhengig variabel («within subjects») som er verdier på ulike måletidspunkter (f.eks. før og etter en påvirkning; tid 1, tid 2 og tid 3). 
+
+![](statistikkfrykt.png){width=75%}
+
+fost1, fost2 og fost3 er målinger på en skala som måler respondentens selvrapporterte frykt for statistikk. Gruppe 1 er gruppen som ble utsatt for et program som skulle heve deres matematikkunnskaper, mens gruppe 2 er gruppen som fikk et tilsvarende program som var rettet mot å heve deres selvtillit i statistikkoppgaver.
+
+```{r echo = FALSE}
+statfrykt <- haven::read_sav("experim.sav")
+statfrykt <- selvtillit %>% select(1, 4, 5, 8, 11)
+statfrykt$group <- as.factor(statfrykt$group)
+statfrykt <- na.omit(statfrykt)
+statfrykt <- statfrykt[order(statfrykt$id),]
+statfryktlong <- tidyr::pivot_longer(
+  statfrykt,
+  cols = fost1:fost3,
+  names_to = "fost",
+  values_to = "score")
+statfryktlong$fost <- as.factor(statfryktlong$fost)
+```
+
+```{r echo = FALSE}
+writexl::write_xlsx(statfryktlong, "experim3.xlsx")
+```
+
+Modifisert datasett ligger her:
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('experim3.xlsx')
+```
+
+I R må vi før analysen konvertere dataene til såkalt "long" format slik at hver rad representerer en observasjon (og ikke en person som det gjør nå i "wide" format). Dette er gjort for den nedlastbare fila ovenfor.
+
+Vi har modifisert den opprinnelige datafila slik at det ser slik ut (første 6 rader):
+```{r}
+head(statfryktlong)
+```
+
+```{r}
+statfryktaov <- afex::aov_ez(
+  id = "id",
+  dv = "score",
+  data = statfryktlong,
+  between = "group",
+  within = "fost"
+)
+```
+
+Forutsetningen om sferisitet er brutt:
+```{r}
+performance::check_sphericity(statfryktaov)
+```
+
+I resultatet under får vi automatisk korreksjon gjennom Greenhouse-Geiser korreksjonen når vi bruker denne pakken (resultatet kan derfor framstå som litt avvikende fra resultatet du vil få i andre programmer). 
+
+```{r}
+apatabell <- ezANOVA(
+    statfryktlong
+    , dv = .(score)
+    , wid = .(id)
+    , within = .(fost)
+    , between = .(group)
+)
+apatabell <- apaTables::apa.ezANOVA.table(apatabell, correction = "GG", table.title = "APA-tabell for ANOVA")
+print(apatabell)
+```
+
+```{r warning = FALSE, message = FALSE}
+afex::afex_plot(statfryktaov, x = "fost", trace = "group")
+```
+
+Det vi kan se av resultattabellen for ANOVA er først at group*fost (interaksjonseffekten "type intervensjon") ikke er signifikant. Som tidligere nevnt – dersom vi hadde hatt en signifikant interaksjonseffekt ville det vært vanskelig å tolke totaleffektene siden effekten av en variabel er påvirket av den andre. Vi kan her se på hovedeffekten.
+
+Variabelen "group" er heller ikke signifikant. Derimot er "fost" signifikant (p < 0.001) med en $\eta^2 = 0.12$. Dette indikerer en middels effekt [@cohenStatisticalPowerAnalysis1988]. Dette støttes av utregning av $\omega^2$:
+
+```{r}
+effectsize::omega_squared(statfryktaov)
+```
+
+```{r}
+effectsize::interpret_omega_squared(0.12, rules = "field2013")
+```
+
+Til slutt i effektvurderingen kan vi se på Cohens d for fost1-fost2 og fost2-fost3:
+
+```{r}
+cohen3 <- effsize::cohen.d(statfrykt$fost2, statfrykt$fost1)
+cohen4 <- effsize::cohen.d(statfrykt$fost3, statfrykt$fost2)
+cohen3
+cohen4
+```
+
+Vi ser at Cohens d for tid 1 - tid 2 er `r cohen3$estimate` og for tid 2 til tid 3 er `r cohen4$estimate`. Dette gir følgende tolkning [@ben-shacharEffectsizeEstimationEffect2020a], jfr. @gignacEffectSizeGuidelines2016:
+
+```{r}
+effectsize::interpret_cohens_d(-0.52, rules = "gignac2016")
+effectsize::interpret_cohens_d(-0.40, rules = "gignac2016")
+```
+
+Vi kan dermed si at fost1 - fost2 har en middels effekt, mens fost2 - fost3 har en liten effekt. Begge gruppene fikk altså en signifikant lavere selvrapportert frykt for statistikk, både totalt sett og fra tidspunkt til tidspunkt for måling, men det var ingen signifikant forskjell mellom gruppene (hvilket av de to programmene de fulgte). 
+
+### Eksport til word etter APA-standard
+
+En nyttig pakke dersom man skal eksportere resultattabell iht. f.eks. APA-standard er "apaTables" [@stanleyReproducibleTablesPsychology2018]. Nedenfor vises først tabellen slik den fremstår i R, deretter bilde av hvordan det ser ut i det eksporterte worddokumentet.
+```{r}
+apaTables::apa.aov.table(lm(score ~ group*fost, statfryktlong),filename = "Example1.doc",table.number = 1)
+```
+
+![](anovaapatabell.png){width=75%}
+
+(merk: Tallene er noe avvikende fra vårt eksempel og kan skyldes ulike måter å foreta korreksjoner på, men er tatt med her for å vise muligheten. Pakken apaTables kan gi APA-tabeller for en rekke ulike analyser)
 
 
 

@@ -102,6 +102,10 @@ paired-samples-t-test
 independent-samples-t-test
 variansanalyse---anova-analysis-of-variance
 enveis-mellom-grupper-anova-one-way-between-groups-anova
+enveis-avhengig-anova-one-way-repreated-measures
+toveis-mellom-grupper-anova-two-way-between-groups
+blandet-design-anova-mixed-between-within
+eksport-til-word-etter-apa-standard
 regresjonsanalyse---ols
 innledning
 teori
