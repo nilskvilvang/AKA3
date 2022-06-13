@@ -106,6 +106,18 @@ enveis-avhengig-anova-one-way-repreated-measures
 toveis-mellom-grupper-anova-two-way-between-groups
 blandet-design-anova-mixed-between-within
 eksport-til-word-etter-apa-standard
+variansanalyse---manova-multivariate-analysis-of-variance
+enveis-manova
+sjekk-av-forutsetninger
+teoretisk-begrunnede-variabler
+utvalgsstørrelse
+univariat-normalitet
+multivariat-normalitet
+homogenitet-i-varians-kovariansmatrisene
+univariate-uteliggere
+multivariate-uteliggere
+linearitet
+multikolinearitet
 regresjonsanalyse---ols
 innledning
 teori
@@ -128,7 +140,7 @@ variablene-er-uten-målefeil
 relevante-og-irrelevante-variabler
 forholdstall-mellom-caserobservasjoner-og-uavhengige-variabler
 de-uavhengige-variablene-er-additiv-for-den-avhengige-variabelen
-linearitet
+linearitet-1
 residualene-skal-være-normalfordelte
 fravær-av-multikolinearitet
 fravær-av-heteroskedasisitet
@@ -157,7 +169,7 @@ variablene-er-uten-målefeil-1
 relevante-og-irrelevante-variabler-1
 forholdstall-mellom-caserobservasjoner-og-uavhengige-variabler-1
 de-uavhengige-variablene-er-additiv-for-den-avhengige-variabelen-1
-linearitet-1
+linearitet-2
 residualene-skal-være-normalfordelte-1
 fravær-av-multikolinearitet-1
 fravær-av-heteroskedasisitet-1
@@ -182,7 +194,7 @@ kausalitet-2
 relevante-og-irrelevante-variabler-2
 forholdstall-mellom-caserobservasjoner-og-uavhengige-variabler-2
 de-uavhengige-variablene-er-additiv-for-den-avhengige-variabelen-2
-linearitet-2
+linearitet-3
 residualene-skal-være-normalfordelte-2
 fravær-av-multikolinearitet-2
 fravær-av-heteroskedasisitet-2
