@@ -226,6 +226,14 @@ modell-3-ols-med-flere-prediktorer
 modell-4-iv-regresjon-med-flere-to-instrumenter
 test-av-relevansen-av-instrumentene
 logistisk-regresjon
+binær-logistisk-regresjon
+deviance-residuals
+koeffisientene
+anova-på-residualene
+fit-indekser
+total-effekt-wald-test
+forskjeller-mellom-de-signifikante-uavhengige-variablene
+fra-logodds-til-odds-ratios
 dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca
 innledning-2
 principal-component-analysis-pca

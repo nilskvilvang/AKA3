@@ -46,9 +46,9 @@
     }
   </style>
 <link rel="stylesheet" href="style.css">
-<meta name="description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
-<meta property="og:description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
-<meta name="twitter:description" content="pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable,...">
+<meta name="description" content="Som vi vil se i kapittelet om regresjonsforutsetninger er det en forutsetning at den avhengige variabelen er kontinuerlig. Så langt har vi hatt det. Men det kan gjerne tenkes at vi sitter med en...">
+<meta property="og:description" content="Som vi vil se i kapittelet om regresjonsforutsetninger er det en forutsetning at den avhengige variabelen er kontinuerlig. Så langt har vi hatt det. Men det kan gjerne tenkes at vi sitter med en...">
+<meta name="twitter:description" content="Som vi vil se i kapittelet om regresjonsforutsetninger er det en forutsetning at den avhengige variabelen er kontinuerlig. Så langt har vi hatt det. Men det kan gjerne tenkes at vi sitter med en...">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -99,16 +99,311 @@
 <h1>
 <span class="header-section-number">Kapittel 10</span> Logistisk regresjon<a class="anchor" aria-label="anchor" href="#logistisk-regresjon"><i class="fas fa-link"></i></a>
 </h1>
-
+<p>Som vi vil se i kapittelet om regresjonsforutsetninger er det en forutsetning at den avhengige variabelen er kontinuerlig. Så langt har vi hatt det. Men det kan gjerne tenkes at vi sitter med en avhengig variabel som er kategorisk. Logistisk regresjon er regresjonsanalyse der de uavhengige variablene er kontinuerlige eller kategoriske og den avhengige kategorisk. Av den grunn bygger logistisk regresjon på andre prinsipper og teknikker enn «vanlig» regresjon. Der lineær regresjon er en regresjonsalgoritme (bestemmer/predikere en kontonuerlig variabel) er logistisk regresjon en klassifiseringsalgoritme (bestemme/predikere en binær klassifiering - f.eks. sant/usant) dersom analysen kobles til en verdi/terskel for beslutninger. <span class="citation">(Vyas 2020)</span>.</p>
+<p>Et viktig poeng med logistisk regresjon er at det er et viktig element i temaer som maskinlæring og kunstige nevrale nettverk (<span class="citation">Monroe (2017)</span>). Dette går vi ikke nærmere inn på i dette kapittelet.</p>
+<p>Det er vanlig å snakke om to typer logistisk regresjon:</p>
+<ol style="list-style-type: decimal">
+<li><p>Binær logistisk regresjon (ofte omtalt kun som “logistisk regresjon”) der vi den avhangige variabelen kun har to mulige utfall (f.eks. 0,1 - ja/nei - død/levende o.l.).</p></li>
+<li><p>Multinomial logistisk regresjon der den avhengige variabelen kan ha tre eller flere mulige utfall (f.eks. lett, middels, vanskelig - gruppe 1, gruppe 2, gruppe 3 - misfornøyd, litt misfornøyd, nøytral, litt fornlyd, fornøyd o.l.).</p></li>
+</ol>
+<p>Selve begrepet “logistisk” har sitt utspring i “logit-funksjonen” (der begrepet “logit” i sin opprinnelse er en kortform for “logistic unit” <span class="citation">(Berkson 1944)</span>). Matematikken bak logistisk regresjon er noe mer komplisert enn for lineær regresjon. <span class="citation">Field (2009a)</span> skriver (s.265) at “I don’t wish to dwell on the underlying principles of logistic regression because they aren’t necessary to understand the test (I am living proof of this fact)”. Likevel forsøker vi under å gi en kort (og ufullstendig) beskrivelse. Et ok sted å lese mer detaljert om dette er f.eks. <span class="citation">Miles and Shevlin (2001)</span>.</p>
+<p>Fra lineær regresjon kjenner vi at den avhengige variabelen er kontinuerlig (med mulig utfall <span class="math inline">\(-\infty, \infty\)</span>). I en binær avhengig variabel er utfallet en sannsynlighetsverdi mellom <span class="math inline">\(0,1\)</span>. Utfordringen er da å transformere <span class="math inline">\(0,1\)</span> til <span class="math inline">\(-\infty, \infty\)</span> for å kunne kjøre (lineær) regresjon på de transformerte verdiene. Veien til dette går om “log odds”. Enhver sannsynlighet kan konverteres til log odds gjennom å ta logaritmen til odds ratioen (vår gjennomgang lener seg på <span class="citation">Glen (2021)</span>). Sannsynlighet, odds og log odds er (litt upresist sagt) samme sak uttrykt på ulik måte:</p>
+<p><span class="math inline">\(Sannsynlighet = uttrykk\ for\ hvor\ trolig\ det\ er\ at\ en\ hendelse\ vil\ inntreffe\)</span> <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;Uttrykkes ofte som % av 100, eller matematisk som en verdi mellom 0 og 1&lt;/p&gt;"><sup>7</sup></a></p>
+<p>$Odds (“odds of success”) == f.eks.  $</p>
+<p><span class="math inline">\(Odds-ratio = angivelse\ av\ odds =\frac{sannsynlighet\ for\ regn}{sannsynlighet\ for\ oppholdsvær}= \frac{80\%}{20\%}=4\)</span></p>
+<p><span class="math inline">\(log-odds=ln(4)\approx1.386\)</span></p>
+<p>På en mer generell form kan log-odds uttrykkes:</p>
+<p><span class="math inline">\(log-odds = log\left[\frac{p}{p-1}\right] (=logit(p))\)</span></p>
+<p>der <span class="math inline">\(p\)</span> er sannsynligheten for en hendelse.</p>
+<p>Logistisk regresjon innebærer å konvertere sannsynligheter til log-odds, og deretter tilbake til sannsynligheter (se eksempel litt lenger ned). Logitfunksjonen estimerer sannsynligheter mellom 0 og 1 for våre hendelser/data. I en binær logistisk regresjon kalukulerer vi dermed den betingede sannsynligheten for variabelen (Y) gitt variabelen (X). Dette kan uttrykkes slik:</p>
+<p><span class="math inline">\(P(Y=1|X), dvs.\ den\ betingede\ sannsynligheten\ for\ Y=1\ gitt\ X\)</span></p>
+<p>eller</p>
+<p><span class="math inline">\(P(Y=0|X), dvs.\ den\ betingede\ sannsynligheten\ for\ Y=0\ gitt\ X\)</span></p>
+<p>P(Y|X) er estimert som en såkalt sigmoid-funksjon. En sigmoid funksjon</p>
+<p><span class="math inline">\(p=\frac{e^{log(odds)}}{1+e^{log(odds)}} = \frac{1}{e^{-log(odds)}} = \frac{1}{1+e^{-x}} (= Sigmoid\ funksjon)\)</span></p>
+<p>Sigmoid-funksjon er (som del av logistisk regresjon) også et sentralt element i f.eks. maskinlæring. Vi kan visualisere en sigmoid-funksjon slik:</p>
 <div class="sourceCode" id="cb281"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sigmoid</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+   <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">0.01</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu">sigmoid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, col<span class="op">=</span><span class="st">'darkgreen'</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="11_Kap_11_files/figure-html/unnamed-chunk-2-1.png" width="672"></div>
+<p>Dette gjør at vi kan plotte verdier i spennet <span class="math inline">\((0,1)\)</span> som <span class="math inline">\(-\infty, \infty\)</span>.</p>
+<p>La oss se på et enkelt eksempel på hvordan logistisk regresjon kan brukes (basert på <span class="citation">Starmer (2018b)</span>).</p>
+<p>Vi vil klassifisere en person som enten smittet eller ikke smittet av en sykdom. Output er enten 1 (= smittet) eller 0 (ikke smittet) - basert på en eller annen test/kriterium. La oss si vi har 10 tilfeller:</p>
+<div class="sourceCode" id="cb282"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">smitte</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x1 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,
+                   x2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="va">smitteplott</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">smitte</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">smitte</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="st">"red"</span>, <span class="st">"blue"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">smitteplott</span> <span class="op">&lt;-</span> <span class="va">smitteplott</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_discrete.html">scale_x_discrete</a></span><span class="op">(</span>name <span class="op">=</span><span class="st">"Pasient"</span>, 
+                    limits<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1"</span><span class="op">:</span><span class="st">"10"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Smittet"</span><span class="op">)</span>
+<span class="va">smitteplott</span> </code></pre></div>
+<div class="inline-figure"><img src="11_Kap_11_files/figure-html/unnamed-chunk-3-1.png" width="672"></div>
+<p>Målet vårt er altså å finne den linjen som best passer til disse dataene (slik vi gjennom OLS-regresjon forsøker å finne den linja som passer best til dataene i lineær regresjon). I logistisk regresjon bruker vi imidlertid ikke minste kvadratsums metode (OLS), men det som kalles “Maximum Likelihood” (ML). Grunnen til dette er at transformasjonen (gjennom logit funksjonen) gir uendelig store kvadratsummer fordi punktene etter transformasjonen har uendelig verdi.</p>
+<p>Første steg er å konvertere sannsynlighetene for smitte til log(odds) for smitte og bruke log(odds) på y-aksen. Vi legger på en “kandidatlinje” til regresjonslinja (“kandidatlinje” som i: vi trekker en linje som er ca. riktig visuelt og bruker den videre).</p>
+<div class="inline-figure"><img src="logodds.png" style="width:75.0%"></div>
+<p>Ved å trekke vertikale linjer fra hvert punkt til kandidatlinjen finner vi hvert punkts log(odds) punkt (y-verdien der punktets vertikale linje treffer kandidatlinjen). Deretter brukes sigmoid-funksjonen til å konvertere log(odds) verdiene til hver observasjon til sannsynligheter. Det gir oss y-verdien på linja fra sigmoid-funksjonen for den første observasjonen:</p>
+<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sigmoid</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+   <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">0.01</span><span class="op">)</span>
+<span class="va">sigmoidplott</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu">sigmoid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, col<span class="op">=</span><span class="st">'darkgreen'</span>, xaxt<span class="op">=</span><span class="st">'n'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="fl">0.02</span>, col <span class="op">=</span> <span class="st">"red"</span>, pch<span class="op">=</span><span class="fl">16</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="11_Kap_11_files/figure-html/unnamed-chunk-4-1.png" width="672"></div>
+<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sigmoidplott</span>
+<span class="co">#&gt; NULL</span></code></pre></div>
+<p>Som repeteres for alle observasjonene. Dette gjør at vi kan regne ut samlet sannsynlighet (y-verdien for på sigmoid-linja for det enkelt punkt er det samme som sannsynligheten for y-verdien for dette punktet). Dette gjør vi enten ved å multiplisere alle observasjonenes sannsynlighet, eller å addere log(sannsynlighet) for alle observasjonene (gir samme resultat). Verdien vi får er altså samlet sannsynlighet for dataene gitt kandidatlinja.</p>
+<p>Deretter roteres kandidatlinja og prosedyren gjentas inntil man får linja med høyest sannsynlighet (= Maximum likelihood). Algoritmen som gjør dette for oss roterer kun på en måte som øker sannsynligheten (= tids- og ressursbesparende).</p>
+<p>Når vi har funnet linja som best forklarer dataen kan vi bruke denne i prediksjon. Dersom vi har en gitt test elelr indikasjon på om en ny perosn er smittet kan vi bruke testverdien til å predikere om vi tror vedkommende er smittet eller ikke. Hvilken cut-off verdi vi setter er kontekstavhengig, men hvis vi f.eks. setter 0.5 vil en måling på 0.51 gjøre at vi klassifiserer vedkommende som smittet, mens en verdi på 0.49 vil klassifisere som ikke-smittet. Man kan selvsagt legge til flere målinger (=flere uavhengige variabler) for å fange opp flere forhold som gjør at vi kan si noe sikrere om smitte/ikke-smitte. Akkurat dette - muligheten til å bruke sannsynlighet for å klassifisere nye tilfeller/observasjoner som kan være både kategoriske og kontinuerlige - gjør metoden særlig egnet i teknikker som maskinlæring. <span class="citation">Tabachnik and Fidell (2007)</span> beskriver logistisk regresjon som relativt fri for begrensninger og i stand til å analysere en miks av kontinuerlige og kategoriske variabler (“the variety and complexity of data sets that can be analyzed are almost unlimited” - s.441).</p>
+<p>Imidlertid er det litt mer komplisert å se om en uavhengig variabel bidrar i modellen. I lineær regresjon er dette relativt enkelt. Det vi gjør i logistisk regresjon er å teste om en variabels effekt på prediksjonen er signifikant forskjellig fra 0 (gjennom en såkalt Walds test). Hvis effekten til en variabel er 0 gir den åpenbart ingen hjelp i prediksjonen (og er unødvendig i modellen).</p>
+<div id="binær-logistisk-regresjon" class="section level2" number="10.1">
+<h2>
+<span class="header-section-number">10.1</span> Binær logistisk regresjon<a class="anchor" aria-label="anchor" href="#bin%C3%A6r-logistisk-regresjon"><i class="fas fa-link"></i></a>
+</h2>
+<p>I dette eksempelet følger vi <span class="citation">Pallant (2010)</span>.</p>
+<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sovn</span> <span class="op">&lt;-</span> <span class="fu">read_sav</span><span class="op">(</span><span class="st">"sleep4ED.sav"</span><span class="op">)</span>
+<span class="va">sovn</span> <span class="op">&lt;-</span> <span class="fu">select</span><span class="op">(</span><span class="va">sovn</span>, <span class="va">sex</span>, <span class="va">getsleprec</span>, <span class="va">stayslprec</span>, <span class="va">hourwnit</span>, <span class="va">age</span>, <span class="va">probsleeprec</span><span class="op">)</span>
+<span class="fu">write_sav</span><span class="op">(</span><span class="va">sovn</span>, <span class="st">"sovn.sav"</span><span class="op">)</span></code></pre></div>
+<p><a href="data:application/octet-stream;base64,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" download="sovn.sav">Download sovn.sav</a></p>
+<p>Som Pallant beskriver er det vesentlig for enklere tolkning av resultatene at variablene kodes fornuftig. For en dikotom variabler bør 0 brukes på det alternativet som indikerer fravær av det du spør om, mens 1 brukes om tilstedeværelse. F.eks.: Hvis spørsmålet er “Spiller du tennis?” så bør “Nei” kodes 0 og “Ja” kodes 1.</p>
+<div class="inline-figure"><img src="sovn.png" style="width:75.0%"></div>
+<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">sovn</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 6</span>
+<span class="co">#&gt;        sex getsleprec stayslprec hourwnit   age probsleeprec</span>
+<span class="co">#&gt;   &lt;dbl+lb&gt;  &lt;dbl+lbl&gt;  &lt;dbl+lbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl+lbl&gt;</span>
+<span class="co">#&gt; 1 0 [fema~   NA         NA            9      42       0 [no]</span>
+<span class="co">#&gt; 2 0 [fema~    1 [yes]    1 [yes]      6.5    54       0 [no]</span>
+<span class="co">#&gt; 3 1 [male]    1 [yes]    1 [yes]      6      NA       0 [no]</span>
+<span class="co">#&gt; 4 0 [fema~    1 [yes]    0 [no]       7      41       0 [no]</span>
+<span class="co">#&gt; 5 0 [fema~    1 [yes]    1 [yes]      7      39       0 [no]</span>
+<span class="co">#&gt; 6 0 [fema~    1 [yes]    1 [yes]      7      66       0 [no]</span></code></pre></div>
+<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sovnlogit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="va">probsleeprec</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">getsleprec</span> <span class="op">+</span> <span class="va">stayslprec</span> <span class="op">+</span> <span class="va">hourwnit</span> <span class="op">+</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">sovn</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Call:</span>
+<span class="co">#&gt; glm(formula = probsleeprec ~ sex + getsleprec + stayslprec + </span>
+<span class="co">#&gt;     hourwnit + age, family = "binomial", data = sovn)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Deviance Residuals: </span>
+<span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
+<span class="co">#&gt; -2.0186  -0.7329  -0.5076   0.8504   2.0633  </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Coefficients:</span>
+<span class="co">#&gt;              Estimate Std. Error z value Pr(&gt;|z|)    </span>
+<span class="co">#&gt; (Intercept)  1.953457   1.451062   1.346  0.17823    </span>
+<span class="co">#&gt; sex         -0.108266   0.314660  -0.344  0.73079    </span>
+<span class="co">#&gt; getsleprec   0.716079   0.338920   2.113  0.03462 *  </span>
+<span class="co">#&gt; stayslprec   1.984240   0.324843   6.108 1.01e-09 ***</span>
+<span class="co">#&gt; hourwnit    -0.448479   0.165242  -2.714  0.00665 ** </span>
+<span class="co">#&gt; age         -0.006031   0.013711  -0.440  0.66003    </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     Null deviance: 329.00  on 240  degrees of freedom</span>
+<span class="co">#&gt; Residual deviance: 252.98  on 235  degrees of freedom</span>
+<span class="co">#&gt;   (30 observations deleted due to missingness)</span>
+<span class="co">#&gt; AIC: 264.98</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Number of Fisher Scoring iterations: 4</span></code></pre></div>
+<div id="deviance-residuals" class="section level3" number="10.1.1">
+<h3>
+<span class="header-section-number">10.1.1</span> “Deviance Residuals”<a class="anchor" aria-label="anchor" href="#deviance-residuals"><i class="fas fa-link"></i></a>
+</h3>
+<p>Det første vi kan se på i output fra modellen er “Deviance Residuals”. Dette forteller oss noe om modellens “fit”.</p>
+</div>
+<div id="koeffisientene" class="section level3" number="10.1.2">
+<h3>
+<span class="header-section-number">10.1.2</span> Koeffisientene<a class="anchor" aria-label="anchor" href="#koeffisientene"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span>
+<span class="co">#&gt;                 Estimate Std. Error    z value     Pr(&gt;|z|)</span>
+<span class="co">#&gt; (Intercept)  1.953457430 1.45106156  1.3462264 1.782295e-01</span>
+<span class="co">#&gt; sex         -0.108266375 0.31466036 -0.3440738 7.307908e-01</span>
+<span class="co">#&gt; getsleprec   0.716079317 0.33892007  2.1128265 3.461562e-02</span>
+<span class="co">#&gt; stayslprec   1.984240290 0.32484318  6.1083022 1.006965e-09</span>
+<span class="co">#&gt; hourwnit    -0.448478626 0.16524155 -2.7140791 6.646030e-03</span>
+<span class="co">#&gt; age         -0.006031274 0.01371143 -0.4398720 6.600298e-01</span></code></pre></div>
+<p>Her kan vi først se på p-verdiene. Vi ser at getsleprec, stayslprec og hourwnit er statistisk signifikante. Med andre ord, de tre variablene som signifikant påvirker søvnproblemer er “Falle i søvn”, “Ikke våkne” og “Timer søvn ukedager”.</p>
+<p>Tolkningen av koeffisientene er ikke like rett fram som for lineær regresjon. Her viser de til endring i log(odds) til den avhengige variabelen for en enhet økning i den respektive uavhengige variabelen:</p>
+<ul>
+<li>For hver enhet økning i “Falle i søvn” (der 0 er “nei” og 1 er “ja”) øker log(odds) for søvnproblemer med 0.72</li>
+<li>For hver enhet økning i “Ikke våkne” (der 0 er “nei” og 1 er “ja”) øker log(odds) for søvnproblemer med 1.98</li>
+<li>For hver enhet økning i “Timer søvn hverdager” (timer søvn i gjennomsnitt hver ukedag) reduseres log(odds) for søvnproblemer med 0.44 (øker med -0.44)</li>
+</ul>
+</div>
+<div id="anova-på-residualene" class="section level3" number="10.1.3">
+<h3>
+<span class="header-section-number">10.1.3</span> ANOVA på residualene<a class="anchor" aria-label="anchor" href="#anova-p%C3%A5-residualene"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">sovnlogit</span>, test<span class="op">=</span><span class="st">"Chisq"</span><span class="op">)</span>
+<span class="co">#&gt; Analysis of Deviance Table</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model: binomial, link: logit</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Response: probsleeprec</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Terms added sequentially (first to last)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;            Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    </span>
+<span class="co">#&gt; NULL                         240     329.00              </span>
+<span class="co">#&gt; sex         1    1.213       239     327.78  0.270801    </span>
+<span class="co">#&gt; getsleprec  1   19.145       238     308.64 1.211e-05 ***</span>
+<span class="co">#&gt; stayslprec  1   47.776       237     260.86 4.779e-12 ***</span>
+<span class="co">#&gt; hourwnit    1    7.692       236     253.17  0.005545 ** </span>
+<span class="co">#&gt; age         1    0.194       235     252.98  0.659761    </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre></div>
+<p>Her ser vi på kolonnen “Resid. Dev”. Vi ser på hvor stor nedgang det er for hver variabel som legges inn i modellen. Vi ser at forskjellene er størst for de signifikante variablene. Vi har et markert dropp når “getsleprec” legges inn og når “stayslprec” legges inn, og et noe mindre dropp når “hourwnit” inkluderes.</p>
+</div>
+<div id="fit-indekser" class="section level3" number="10.1.4">
+<h3>
+<span class="header-section-number">10.1.4</span> Fit indekser<a class="anchor" aria-label="anchor" href="#fit-indekser"><i class="fas fa-link"></i></a>
+</h3>
+<p>Vi har ingen eksakt ekvivalent til <span class="math inline">\(R^2\)</span> som vi vil ha i lineær regresjon, men McFadden <span class="math inline">\(\rho^2\)</span> indeks kan gi oss verdifull informasjon <span class="citation">(McFadden 1974, 1977)</span>.</p>
+<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">DescTools</span><span class="fu">::</span><span class="fu"><a href="https://andrisignorell.github.io/DescTools/reference/PseudoR2.html">PseudoR2</a></span><span class="op">(</span><span class="va">sovnlogit</span>, which <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span>
+<span class="co">#&gt;        McFadden     McFaddenAdj        CoxSnell </span>
+<span class="co">#&gt;       0.2310662       0.1945916       0.2705286 </span>
+<span class="co">#&gt;      Nagelkerke   AldrichNelson VeallZimmermann </span>
+<span class="co">#&gt;       0.3632952       0.2397952       0.4154529 </span>
+<span class="co">#&gt;           Efron McKelveyZavoina            Tjur </span>
+<span class="co">#&gt;       0.2876696       0.3452914       0.2899666 </span>
+<span class="co">#&gt;             AIC             BIC          logLik </span>
+<span class="co">#&gt;     264.9760850     285.8848666    -126.4880425 </span>
+<span class="co">#&gt;         logLik0              G2 </span>
+<span class="co">#&gt;    -164.4979666      76.0198483</span></code></pre></div>
+<p>McFaddens <span class="math inline">\(\rho^2\)</span> kalles en <span class="math inline">\(pseudo\ R^2\)</span>. Verdiene på <span class="math inline">\(R^2\)</span> og <span class="math inline">\(\rho^2\)</span> er imidlertid ikke direkte sammenliknbare.</p>
+<div class="figure">
+<img src="McFadden.png" alt=""><p class="caption">McFadden (1974), s.124, figur 5.5</p>
+</div>
+<p>Vi kan se av illustrasjonen over at forholdet ikke er lineært, og at <span class="math inline">\(\rho^2-verdiene\)</span> er betraktelig lavere enn <span class="math inline">\(R^2-verdiene\)</span> <span class="citation">(se feks. T. J. Smith and McKenna 2013)</span>. McFadden uttrykte selv <span class="citation">(McFadden 1979)</span> at verdier mellom 0.2 og 0.4 ga uttrykk for en utmerket fit. I så fall har vi med 0.23 en god modell.</p>
+<p><span class="citation">T. J. Smith and McKenna (2013)</span> finner i sin studie av ulike <span class="math inline">\(pseudo-R^2\)</span> indekser at “Aldrich-Nelson” ligger nærmest <span class="math inline">\(R^2\)</span>. Man skal likevel være observant på at <span class="math inline">\(pseudo-R^2\)</span> indekser er en tilnærming til <span class="math inline">\(R^2\)</span> og at man uansett skal være forsiktig med å tolke en <span class="math inline">\(pseudo-R^2\)</span> helt likt som en <span class="math inline">\(R^2\)</span> selv om det gir oss en indikasjon på hva modellen forklarer slik <span class="math inline">\(R^2\)</span> gir i lineær regresjon.</p>
+</div>
+<div id="total-effekt-wald-test" class="section level3" number="10.1.5">
+<h3>
+<span class="header-section-number">10.1.5</span> Total effekt (Wald test)<a class="anchor" aria-label="anchor" href="#total-effekt-wald-test"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">999</span><span class="op">)</span>
+<span class="fu">aod</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/aod/man/wald.test.html">wald.test</a></span><span class="op">(</span>b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, Terms <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>
+<span class="co">#&gt; Wald test:</span>
+<span class="co">#&gt; ----------</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Chi-squared test:</span>
+<span class="co">#&gt; X2 = 54.9, df = 3, P(&gt; X2) = 0.0000000000073</span></code></pre></div>
+<p>Vi ser at Walds test indikerer at den totale effekten er statistisk signifikant.</p>
+</div>
+<div id="forskjeller-mellom-de-signifikante-uavhengige-variablene" class="section level3" number="10.1.6">
+<h3>
+<span class="header-section-number">10.1.6</span> Forskjeller mellom de signifikante uavhengige variablene<a class="anchor" aria-label="anchor" href="#forskjeller-mellom-de-signifikante-uavhengige-variablene"><i class="fas fa-link"></i></a>
+</h3>
+<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Forskjell mellom variabel 3 og 4 i modellen</span>
+<span class="va">diff1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
+<span class="fu">wald.test</span><span class="op">(</span>b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, L <span class="op">=</span> <span class="va">diff1</span><span class="op">)</span>
+<span class="co">#&gt; Wald test:</span>
+<span class="co">#&gt; ----------</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Chi-squared test:</span>
+<span class="co">#&gt; X2 = 6.3, df = 1, P(&gt; X2) = 0.012</span></code></pre></div>
+<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Forskjell mellom variabel 4 og 5 i modellen</span>
+<span class="va">diff2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
+<span class="fu">wald.test</span><span class="op">(</span>b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, L <span class="op">=</span> <span class="va">diff2</span><span class="op">)</span>
+<span class="co">#&gt; Wald test:</span>
+<span class="co">#&gt; ----------</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Chi-squared test:</span>
+<span class="co">#&gt; X2 = 42.0, df = 1, P(&gt; X2) = 0.000000000094</span></code></pre></div>
+<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Forskjell mellom variabel 3 og 5 i modellen</span>
+<span class="va">diff3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
+<span class="fu">wald.test</span><span class="op">(</span>b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, L <span class="op">=</span> <span class="va">diff3</span><span class="op">)</span>
+<span class="co">#&gt; Wald test:</span>
+<span class="co">#&gt; ----------</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Chi-squared test:</span>
+<span class="co">#&gt; X2 = 10.8, df = 1, P(&gt; X2) = 0.00099</span></code></pre></div>
+<p>Vi kan se av de tre kjikvadrattestene at det er statistisk signifikant forskjell mellom varaibelparrene 3-4, 4-5 og 3-5 (som var de tre statistisk signifikante variablene i modellen).</p>
+</div>
+<div id="fra-logodds-til-odds-ratios" class="section level3" number="10.1.7">
+<h3>
+<span class="header-section-number">10.1.7</span> Fra log(odds) til odds-ratios<a class="anchor" aria-label="anchor" href="#fra-logodds-til-odds-ratios"><i class="fas fa-link"></i></a>
+</h3>
+<p>Odds-ratios er enklere å tolke enn log(odds). Derfor ønsker vi å konvertere log(odds) til odds-ratio.</p>
+<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>OR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/confint.html">confint</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Waiting for profiling to be done...</span>
+<span class="co">#&gt;                    OR     2.5 %      97.5 %</span>
+<span class="co">#&gt; (Intercept) 7.0530308 0.4184472 126.4735087</span>
+<span class="co">#&gt; sex         0.8973885 0.4831609   1.6657006</span>
+<span class="co">#&gt; getsleprec  2.0463942 1.0542105   3.9997539</span>
+<span class="co">#&gt; stayslprec  7.2735195 3.8980843  13.9805634</span>
+<span class="co">#&gt; hourwnit    0.6385990 0.4573768   0.8762471</span>
+<span class="co">#&gt; age         0.9939869 0.9673924   1.0210516</span></code></pre></div>
+<p>Dette kan vi tolke slik:</p>
+<div class="sourceCode" id="cb296"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coefficients</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#&gt; getsleprec </span>
+<span class="co">#&gt;   2.046394</span></code></pre></div>
+<ul>
+<li>For hver enhet økning i “Falle i søvn” øker oddsene for søvnproblemer med en faktor på 2.05.</li>
+</ul>
+<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coefficients</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#&gt; stayslprec </span>
+<span class="co">#&gt;    7.27352</span></code></pre></div>
+<ul>
+<li>For hver enhet økning i “Ikke våkne” øker oddsene for søvnproblemer med en faktor på 7.28</li>
+</ul>
+<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coefficients</a></span><span class="op">(</span><span class="va">sovnlogit</span><span class="op">)</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#&gt; hourwnit </span>
+<span class="co">#&gt; 0.638599</span></code></pre></div>
+<ul>
+<li>For hver enhet økning i “Timer søvn hverdager” reduseres oddsene for søvnproblemer med en faktor på 0.64</li>
+</ul>
+<p>Størst odds for å få søvnproblemer får vi altså hvis vi våkner opp i løpet av søvnen. Det er imidlertid “gode odds” for at vi får søvnproblemer også av å ikek få sove, mens - ikke uventet - oddsene for å få søvnproblemer synker med lengden (antall timer) på søvnen.</p>
+
+<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">readxl</span>, <span class="va">car</span>, <span class="va">rgl</span>, <span class="va">flextable</span>, <span class="va">plotly</span>, <span class="va">latex2exp</span>, <span class="va">ggfortify</span>, <span class="va">gridExtra</span>, <span class="va">factoextra</span>, <span class="va">corrplot</span>, <span class="va">Directional</span>, <span class="va">tidyverse</span>, <span class="va">palmerpenguins</span>, <span class="va">psych</span>, <span class="va">paran</span>, <span class="va">kableExtra</span>, <span class="va">multiUS</span>, <span class="va">xtable</span>, <span class="va">GPArotation</span>, <span class="va">EFAtools</span>, <span class="va">nFactors</span>, <span class="va">rstatix</span>, <span class="va">calibrate</span>, <span class="va">Matrix</span>, <span class="va">summarytools</span>, <span class="va">lavaan</span>, <span class="va">lavaanPlot</span>, <span class="va">haven</span>, <span class="va">skimr</span>, <span class="va">psycho</span>, <span class="va">semPlot</span>, <span class="va">gridExtra</span>, <span class="va">kfa</span><span class="op">)</span></code></pre></div>
 </div>
+</div>
+</div>
+
   <div class="chapter-nav">
 <div class="prev"><a href="iv-regresjon.html"><span class="header-section-number">9</span> IV regresjon</a></div>
 <div class="next"><a href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">11</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav"><li><a class="nav-link" href="#logistisk-regresjon"><span class="header-section-number">10</span> Logistisk regresjon</a></li></ul>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#logistisk-regresjon"><span class="header-section-number">10</span> Logistisk regresjon</a></li>
+<li>
+<a class="nav-link" href="#bin%C3%A6r-logistisk-regresjon"><span class="header-section-number">10.1</span> Binær logistisk regresjon</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#deviance-residuals"><span class="header-section-number">10.1.1</span> “Deviance Residuals”</a></li>
+<li><a class="nav-link" href="#koeffisientene"><span class="header-section-number">10.1.2</span> Koeffisientene</a></li>
+<li><a class="nav-link" href="#anova-p%C3%A5-residualene"><span class="header-section-number">10.1.3</span> ANOVA på residualene</a></li>
+<li><a class="nav-link" href="#fit-indekser"><span class="header-section-number">10.1.4</span> Fit indekser</a></li>
+<li><a class="nav-link" href="#total-effekt-wald-test"><span class="header-section-number">10.1.5</span> Total effekt (Wald test)</a></li>
+<li><a class="nav-link" href="#forskjeller-mellom-de-signifikante-uavhengige-variablene"><span class="header-section-number">10.1.6</span> Forskjeller mellom de signifikante uavhengige variablene</a></li>
+<li><a class="nav-link" href="#fra-logodds-til-odds-ratios"><span class="header-section-number">10.1.7</span> Fra log(odds) til odds-ratios</a></li>
+</ul>
+</li>
+</ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
@@ -125,7 +420,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 13 juni, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 18 juni, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

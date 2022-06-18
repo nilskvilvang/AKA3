@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "13 juni, 2022"
+date: "18 juni, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -100,6 +100,14 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   <tr>
    <td style="text-align:left;width: 8em; "> 12.juni 2022 </td>
    <td style="text-align:left;width: 40em; "> Komplettert kap 6 ANOVA med siste delkapittel. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 13.juni 2022 </td>
+   <td style="text-align:left;width: 40em; "> Kapittel MANOVA </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 18.juni 2022 </td>
+   <td style="text-align:left;width: 40em; "> Logistisk regresjon </td>
   </tr>
 </tbody>
 </table>
