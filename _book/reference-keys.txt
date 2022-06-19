@@ -234,6 +234,9 @@ fit-indekser
 total-effekt-wald-test
 forskjeller-mellom-de-signifikante-uavhengige-variablene
 fra-logodds-til-odds-ratios
+ordinal-logistisk-regresjon
+multinomial-logistisk-regresjon
+predikerte-sannsynligheter-i-modellen
 dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca
 innledning-2
 principal-component-analysis-pca

@@ -4,7 +4,7 @@ csl: chicago-author-date.csl
 ---
 
 ```{r echo=FALSE}
-pacman::p_load(tidyverse, haven, writexl, aod, pscl, DescTools)
+pacman::p_load(tidyverse, haven, writexl, aod, pscl, DescTools, reshape2, foreign, nnet, MASS)
 ```
 
 # Logistisk regresjon
@@ -13,11 +13,13 @@ Som vi vil se i kapittelet om regresjonsforutsetninger er det en forutsetning at
 
 Et viktig poeng med logistisk regresjon er at det er et viktig element i temaer som maskinlæring og kunstige nevrale nettverk (@monroeLogisticRegression2017). Dette går vi ikke nærmere inn på i dette kapittelet.
 
-Det er vanlig å snakke om to typer logistisk regresjon:
+Det er vanlig å snakke om tre typer logistisk regresjon:
 
 1. Binær logistisk regresjon (ofte omtalt kun som "logistisk regresjon") der vi den avhangige variabelen kun har to mulige utfall (f.eks. 0,1 - ja/nei - død/levende o.l.).
 
-2. Multinomial logistisk regresjon der den avhengige variabelen kan ha tre eller flere mulige utfall (f.eks. lett, middels, vanskelig - gruppe 1, gruppe 2, gruppe 3 - misfornøyd, litt misfornøyd, nøytral, litt fornlyd, fornøyd o.l.).
+2. Ordinal logistisk regresjon (noen steder omtalt som "ordinal regresjon") er en forlengelse av binær logistisk regresjon. Dette brukes når vi har en avhengig variabel med rangerte ("ordered") kategorier - f.eks. en svarskala (sterkt uenig - uenig - nøytral - enig - sterkt enig). 
+
+3. Multinomial logistisk regresjon der den avhengige variabelen kan ha tre eller flere mulige utfall (f.eks. gruppe 1, gruppe 2, gruppe 3 - klasse A, klasse B, klasse C o.l.), men der det ikke er rangerte kategorier i forhold til hverandre (som i ordinal logistisk regresjon).
 
 Selve begrepet "logistisk" har sitt utspring i "logit-funksjonen" (der begrepet "logit" i sin opprinnelse er en kortform for "logistic unit" [@berksonApplicationLogisticFunction1944]). Matematikken bak logistisk regresjon er noe mer komplisert enn for lineær regresjon. @fieldDiscoveringStatisticsUsing2009 skriver (s.265) at "I don’t wish to dwell on the underlying principles of logistic regression because they aren’t necessary to understand the test (I am living proof of this fact)”. Likevel forsøker vi under å gi en kort (og ufullstendig) beskrivelse. Et ok sted å lese mer detaljert om dette er f.eks. @milesApplyingRegressionCorrelation2001.
 
@@ -25,9 +27,9 @@ Fra lineær regresjon kjenner vi at den avhengige variabelen er kontinuerlig (me
 
 $Sannsynlighet = uttrykk\ for\ hvor\ trolig\ det\ er\ at\ en\ hendelse\ vil\ inntreffe$ ^[Uttrykkes ofte som % av 100, eller matematisk som en verdi mellom 0 og 1] 
 
-$Odds\ ("odds\ of\ success") =\frac{sannsynlighet\ for\ suksess}{sannsynlighet\ for\ ikke-suksess}= f.eks.\ \frac{sannsynlighet\ for\ regn}{sannsynlighet\ for\ oppholdsvær} $
+$Odds\ ("odds\ of\ success") =\frac{sannsynlighet\ for\ suksess}{sannsynlighet\ for\ ikke-suksess}= f.eks.\ \frac{sannsynlighet\ for\ regn}{sannsynlighet\ for\ oppholdsvær}$
 
-$Odds-ratio = angivelse\ av\ odds =\frac{sannsynlighet\ for\ regn}{sannsynlighet\ for\ oppholdsvær}= \frac{80\%}{20\%}=4$
+$Odds-ratio = \frac{sannsynlighet\ for\ regn}{sannsynlighet\ for\ oppholdsvær}= \frac{80\%}{20\%}=4$
 
 $log-odds=ln(4)\approx1.386$
 
@@ -107,7 +109,6 @@ I dette eksempelet følger vi @pallantSPSSSurvivalManual2010.
 
 ```{r}
 sovn <- read_sav("sleep4ED.sav")
-sovn <- select(sovn, sex, getsleprec, stayslprec, hourwnit, age, probsleeprec)
 write_sav(sovn, "sovn.sav")
 ```
 
@@ -228,4 +229,189 @@ exp(coefficients(sovnlogit)[5])
 - For hver enhet økning i "Timer søvn hverdager" reduseres oddsene for søvnproblemer med en faktor på 0.64
 
 Størst odds for å få søvnproblemer får vi altså hvis vi våkner opp i løpet av søvnen. Det er imidlertid "gode odds" for at vi får søvnproblemer også av å ikek få sove, mens - ikke uventet - oddsene for å få søvnproblemer synker med lengden (antall timer) på søvnen.
+
+## Ordinal logistisk regresjon
+
+Ordinal logistisk regresjon er en utvidelse av binær logistisk regresjon når vi har en avhengig variabel som er kategorisk, men der kategoriene er ordnet i forhold til hverandre og der analysen bør beholde dette innbyrdes forholdet.
+
+Vi bruker her et datasett fra UCLA [@OrdinalLogisticRegression].
+
+```{r}
+orddata <- foreign::read.dta("https://stats.idre.ucla.edu/stat/data/ologit.dta")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+writexl::write_xlsx(orddata, "orddata.xlsx")
+xfun::embed_file('orddata.xlsx')
+```
+
+```{r}
+names(orddata)
+dim(orddata)
+```
+
+Variabelen "apply" er en rangert kategorisk variabel der studenter har svart på en undersøkelse som kategoriserer dem etter hvor sannsynlig det er at de søker høyere akademiske studier (Usannsynlig = 1, Mulig = 2, Sannsynlig = 3). Variabelen "pared" er binær der 0 betyr at ingen av foreldrene har gjennomført høyere akademisk utdannelse, og 1 betyr at minst en av foreldrene har det. "public" er også binær, der 0 betyr privat institusjon, 1 betyr offentlig. "gps" ("Grade Point Average") måler gjennomsnittskarakter i lavere akademisk utdannelse. 
+
+Vi kan se på dataene:
+
+```{r}
+lapply(orddata[, c("apply", "pared", "public")], table)
+ftable(xtabs(~ public + apply + pared, data = orddata))
+summary(orddata$gpa)
+round(sd(orddata$gpa),3)
+```
+
+Visuelt:
+
+```{r}
+ggplot(orddata, aes(x = apply, y = gpa)) +
+  geom_boxplot(size = .75) +
+  geom_jitter(alpha = .5) +
+  facet_grid(pared ~ public, margins = TRUE) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+Lager modellen:
+
+```{r}
+ordlogmod <- polr(apply ~ pared + public + gpa, data = orddata, Hess=TRUE)
+summary(ordlogmod)
+```
+
+Koeffisientene er (log)odds. For "pared" (foreldre) vil vi si at for en enhets økning i "pared" (dcs fra 0 til 1 siden det er en binær variabel) vil vi forvente en økning på 1.048 i den forvente verdien på "apply" *på (log)odds skalaen. Dette er selvsagt noe kludrete å tolke. Det vil være lettere å tolke odds (odds ratio).
+
+```{r}
+round(exp(coef(ordlogmod)),3)
+```
+
+Her kan vi tolke:
+
+- For studenter med foreldre som har høyere utdannelse er oddsene for å søke dersom man tilhører kategoriene "very likely" eller "somewhat likely" 2.85 ganger høyere enn om man har foreldre som ikke har høyere utdannelse, gitt at alle andre variabler holdes konstant. 
+
+- For studenter som er i offentlig skole er oddsene for å være i kategorien "very likely" eller "somewhat likely" 5.7% høyere enn de som går på privat skole ($(1-0.943)*100$).
+
+- For hver enhet økning i "gpa" øker oddsene for å være i kategoriene "very likely" eller "somewhat likely" med 85% (eller øker med en faktor på 1.85). 
+
+Og se p-verdiene.
+
+```{r}
+options(scipen = 999)
+koefftabell <- coef(summary(ordlogmod))
+sanns <- pnorm(abs(koefftabell[, "t value"]), lower.tail = FALSE) * 2
+koefftabell <- cbind(koefftabell, "p value" = sanns)
+round(koefftabell, 3)
+```
+
+Vi ser at variabelen "public" ikke er statistisk signifikant, mens "pared" og "gpa" har p < 0.05. 
+
+## Multinomial logistisk regresjon
+
+I motsetning til binær logistisk regresjon er multinomial logistisk regresjon klassifisering i tilfeller der en kategorisk avhengig variabel kan anta tre eller flere utfall.
+
+Eksempelet er hentet fra @MultinomialLogisticRegression2014, og går på hvilke valg elever som skal inn på videregående skole (min oversettelse, dataene omtaler "high school students", men det spiller ikke noen stor betydning for eksempelets skyld). Disse elevene velger mellom studieforberedende ("general program"), yrkesfag ("vocational program") og et akademisk program ("academic program", ingen klar norsk oversettelse, men som vi her kaller "IB" fra International Baccalaureate for å skille det fra studieforberedende).
+
+Her kan vi vise hvordan vi laster ned data direkte fra nett i R:
+```{r}
+multinommod <- foreign::read.dta("https://stats.idre.ucla.edu/stat/data/hsbdemo.dta")
+```
+
+For vårt formål trenger vi den avhengige variabelen "prog", og de to uavhengige variablene "ses" (sosio-økononmisk status) og "write" (score på skrivetest). Vi døper også om variablene til norsk.
+```{r echo = FALSE}
+multinommod <- rename(multinommod, program = prog)
+multinommod <- rename(multinommod, skrivetest = write)
+multinommod$ses <- recode(multinommod$ses, low = "Lav",
+                            middle = "Middels",
+                            high = "Høy")
+multinommod$program <- recode(multinommod$program, vocation = "Yrkesfag", general = "Studieforb", academic = "IB")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+writexl::write_xlsx(multinommod, "multinommod.xlsx")
+xfun::embed_file('multinommod.xlsx')
+```
+
+Vi kan se litt på dataene:
+```{r}
+with(multinommod, table(ses, program))
+```
+
+```{r}
+round(with(multinommod, do.call(rbind, tapply(skrivetest, program, function(x) c(M = mean(x), SD = sd(x))))),2)
+```
+
+Første skritt i å lage modellen er å lage en basline, altså en av kategoriene i den avhengige variabelen vi "sammenlikner med". Vi ser på oddsene for å være i en kategori (i den avhengige variabelen) relativt til oddsene for å være i baselinekategorien. 
+
+```{r}
+multinommod$program2 <- relevel(multinommod$program, ref = "IB")
+```
+
+```{r}
+modell1 <- nnet::multinom(program2 ~ ses + skrivetest, data = multinommod)
+summary(modell1)
+```
+
+Vi trenger også å se på p-verdiene for koeffisientene gjennom Walds test:
+
+```{r}
+options(scipen = 999)
+zverdier <- summary(modell1)$coefficients/summary(modell1)$standard.errors
+pverdier <- (1 - pnorm(abs(zverdier), 0, 1)) * 2
+round(pverdier, 3)
+```
+
+Hvis vi først ser på koeffisientene ser vi i første linje "Studieforberedende" sammenliknet med baseline "IB", og på andre linjer "Yrkesfag" sammenliknet med baseline "IB". 
+
+Vi ser først på første linje. En enhets økning i skrivetesten er forbundet med en nedgang i (log)oddsene for å være i studieforberedende i forhold til IB på 0.058. Likeledes - en enhets økning i skrivetesten er assosiert med en nedgang i (log)oddsene for å være i yrkesfag i forhold til IB på 0.114.
+
+(Log)oddsene for å være i studieforberedende vs. IB synker med 1.163 dersom man går fra lav til høy sosioøkonmisk status. 
+
+(Log)oddsene for å være i studieforberedende vs. IB synker med 0.533 dersom man går fra lav til middels sosioøkonmisk status, men forskjellen er ikke signifikant.
+
+(Log)oddsene for å være i yrkesfag vs. IB synker med 0.983 dersom man går fra lav til høy sosioøkonomisk status.
+
+(Log)oddsene for å være i yrkesfag vs. IB øker med 0.291 dersom man går fra lav til middels sosioøkonomisk status, men forskjellen er ikke signifikant.
+
+Vi kan også se på den relative risken - oddsene - for å være i en kategori i forhold til å være i baselinekateogrien IB:
+
+```{r}
+round(exp(coef(modell1)),3)
+```
+
+Oddsene for en enhets økning på skrivetesten er 0.944 for å være i studieforberedende vs. IB.
+
+Oddsene for å endre fra lav til høy sosioøkonomisk status er 0.313 ved å være i studieforberedende vs. IB.
+
+### Predikerte sannsynligheter i modellen
+
+```{r}
+predsann <- fitted(modell1)
+```
+
+Vi genererer datasett der vi varierer en variabel mens vi holder de andre konstant (ved å låse den/de som skal holdes konstante til gjennomsnittsverdien). 
+
+```{r}
+dses <- data.frame(ses = c("Lav", "Middels", "Høy"), skrivetest = mean(multinommod$skrivetest))
+predict(modell1, newdata = dses, "probs")
+```
+
+Tabellen over inneholder altså de predikerte verdiene for nivåene av sosioøkonomisk status (lav, middels, høy) når skrivetest holdes konstant. Modellen predikerer altså at f.eks. for de som har lav sosioøkonomisk status vil ca. 44% være i kateogrien IB, ca. 36% være i kateogrien studieforberedende og ca. 20% være i kategorien yrkesfag. For de med høy sosioøkonomisk status predikerer modellen at ca. 70% vil være i kateogrien IB, ca. 18% i studieforberedende og ca. 12% i yrkesfag. 
+
+Vi kan snu på prediksjonene og se på hva forventet score på skrivetesten for hvert nivå av sosioøkonomisk status:
+
+```{r}
+dskrivetest <- data.frame(ses = rep(c("Lav", "Middels", "Høy"), each = 41), skrivetest = rep(c(30:70),
+    3))
+pred_skrivetest <- cbind(dskrivetest, predict(modell1, newdata = dskrivetest, type = "probs", se = TRUE))
+by(pred_skrivetest[, 3:5], pred_skrivetest$ses, colMeans)
+```
+
+For hvert nivå av sosioøkonomisk status ser vi predikerte gjennomsnittlige sannsynligheter for skrivetesten for de ulike kategoriene. 
+
+Vi kan visualisere det samme (ofte er tolkning lettere visuelt):
+
+```{r}
+longpred <- melt(pred_skrivetest, id.vars = c("ses", "skrivetest"), value.name = "sannsynlighet")
+ggplot(longpred, aes(x = skrivetest, y = sannsynlighet, colour = ses)) + geom_line() + facet_grid(variable ~
+    ., scales = "free")
+```
 
