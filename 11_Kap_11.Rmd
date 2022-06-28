@@ -306,7 +306,7 @@ Vi ser at variabelen "public" ikke er statistisk signifikant, mens "pared" og "g
 
 ## Multinomial logistisk regresjon
 
-I motsetning til binær logistisk regresjon er multinomial logistisk regresjon klassifisering i tilfeller der en kategorisk avhengig variabel kan anta tre eller flere utfall.
+I motsetning til binær logistisk regresjon er multinomial logistisk regresjon klassifisering i tilfeller der en kategorisk avhengig variabel kan anta tre eller flere utfall, men der de ikke er rangerte som i ordinal logistisk regresjon.
 
 Eksempelet er hentet fra @MultinomialLogisticRegression2014, og går på hvilke valg elever som skal inn på videregående skole (min oversettelse, dataene omtaler "high school students", men det spiller ikke noen stor betydning for eksempelets skyld). Disse elevene velger mellom studieforberedende ("general program"), yrkesfag ("vocational program") og et akademisk program ("academic program", ingen klar norsk oversettelse, men som vi her kaller "IB" fra International Baccalaureate for å skille det fra studieforberedende).
 

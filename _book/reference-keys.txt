@@ -86,6 +86,8 @@ univariat-analyse
 deskriptiv-statistikk
 frekvenstabell
 diagrammer-plott
+kateogriske-data
+stolpediagram-bar-chart
 kjikvadrattest---analyse-av-kategoriske-data
 test-of-association---sammenheng-mellom-to-kategorisek-variabler
 utregning-av-kjikvadratverdi

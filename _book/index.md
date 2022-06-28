@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "19 juni, 2022"
+date: "28 juni, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -111,7 +111,11 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   </tr>
   <tr>
    <td style="text-align:left;width: 8em; "> 19.juni 2022 </td>
-   <td style="text-align:left;width: 40em; "> Oridnal og multinomial logistisk regresjon </td>
+   <td style="text-align:left;width: 40em; "> Ordinal og multinomial logistisk regresjon </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 20.juni 2022 </td>
+   <td style="text-align:left;width: 40em; "> Lett revisjon innledningskapittel. </td>
   </tr>
 </tbody>
 </table>

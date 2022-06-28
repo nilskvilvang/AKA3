@@ -88,7 +88,7 @@ column_spec(cohend, 1:3, width = "3.5cm")
 
 Ofte ønsker vi (og anbefaler) å ikke bare se på verdien av korrelasjonskoeffisienten, men også se på en grafisk framstilling av datane - gjerne omtalt som et spredningsplott ("scatter plot").
 
-![](korrelasjoner.png){width=90%}
+![Eksempler på korrelasjoner](korrelasjoner.png){width=90%}
 
 I eksempelet og illustrasjonene over har vi vist Pearsons korrelasjonskoeffisient $r$. Det finnes ulike korrelasjonskoeffisienter for ulike typer datasett. Pearsons korrelasjonskoeffisient brukes som regel på datasett der vi gjennomfører såkalte parametriske tester. For andre tester, ikke-parametriske, kan Spearmans rho ($\rho$) - ofte brukt for ordinale variabler (men kan også brukes på intervall/ratiodata) med parrede data ("matched pair") - og Kendalls tau ($\tau$) - ofte brukt for "nominelle variabler med rangert data ("ranked data") - være gode alternativer. Vi går ikke nærmere inn på disse her.
 
@@ -96,7 +96,7 @@ Vi skal merke oss at en korrelasjonskoeffisient på 0 ikke betyr at det ikke er 
 
 Som sagt, et viktig poeng er at vi skal være veldig forsiktige med å tolke en korrelasjonskoeffisient uten å ha en grafisk framstilling av hvordan datapunktene fordeler seg (hvordan distribusjonen av datapunkter ser ut). Dette fordi en gitt korrelasjonskoeffisient kan representere et uendelig antall mønstre mellom to variabler.  @vanhoveWhatDataPatterns2018 viser dette:
 
-![](korrelasjoner2.png){width=85%}
+![Eksempler på lik korrelasjon (r = 0.5)](korrelasjoner2.png){width=85%}
 
 Alle 16 eksemplene viser altså mønstre av korrelasjon mellom to variabler som alle har korrelasjonskoeffisienten r=0,5. 
 
@@ -106,9 +106,9 @@ Det er viktig å huske på at en korrelasjon mellom to variabler (x og y) ikke e
 
 Korrelasjon betyr altså ikke automatisk kausalitet. Dette er utrolig viktig å huske – og en kilde til mye feilinformasjon/feiltolkninger. La oss ta to eksempler fra [Tyler Vigen](https://www.tylervigen.com/spurious-correlations).
 
-![](Modul_6_Kaus1.png){width=90%}
+![Spuriøs korrelasjon - filmer med Nicolas Cage og dødsfall som følge av drukning i svømmebasseng](Modul_6_Kaus1.png){width=90%}
 
-![](Modul_6_Kaus2.png){width=90%}
+![Spuriøs korrelasjon - konsum av ost og dødsfall gjennom innvikling i eget sengetøy](Modul_6_Kaus2.png){width=90%}
 
 I det første eksempelet ovenfor er det altså en sterk korrelasjon mellom filmer Nicholas Cage medvirker i og antall mennesker som druknet etter å ha falt i et svømmebasseng. Med mindre man tenker seg at Cage er så dårlig skuespiller at det får folk til å hoppe frivillig ut i et svømmebasseng for å drukne seg virker denne sammenhengen ganske søkt.
 
@@ -180,7 +180,7 @@ Og et sammensatt spredninsgplott:
 scatterplotMatrix(wine[2:5])
 ```
 
-I spredningsplottet kan vi se at korrelasjonen mellom V2 og V3 ser mest "spredd" ut. Dette kan vi også se i matrisen over. Ut fra baree plottet er det ikke så lett å f.eks. se hvor korrelasjonen er størst, men i matrisen ser vi det selvsagt enkelt (V4 og V5). Så kombinasjonen av en korrelasjonsmatrise og et spredningsplott vil være et godt hjelpemiddel for å se på korrelasjon. 
+I spredningsplottet kan vi se at korrelasjonen mellom V2 og V3 ser mest "spredd" ut. Dette kan vi også se i matrisen over. Ut fra bare plottet er det ikke så lett å f.eks. se hvor korrelasjonen er størst, men i matrisen ser vi det selvsagt enkelt (V4 og V5). Så kombinasjonen av en korrelasjonsmatrise og et spredningsplott vil være et godt hjelpemiddel for å se på korrelasjon. 
 
 ##  Kausalitet (årsakssammenheng)
 

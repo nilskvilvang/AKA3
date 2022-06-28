@@ -38,7 +38,7 @@ Ofte deler man måten man foretar sannsynlighetsutvalg inn i fire metoder (se fo
 
 ### Enhet
 
-En nehet er det vi forsøker å si noe om. For eksempel kan et individ være en enhet. Et individ kan vi kalle en enhet på mikronivå. En organisasjon eller en gruppe individer kan også utgjøre en enhet. Dette nivået kaller vi mesonivå. I tillegg kan vi ha enheter på makronivå – dette kan være samfunnsgrupper (for eksempel klasser, etnisitet og religion).
+En enhet er det vi forsøker å si noe om. For eksempel kan et individ være en enhet. Et individ kan vi kalle en enhet på mikronivå. En organisasjon eller en gruppe individer kan også utgjøre en enhet. Dette nivået kaller vi mesonivå. I tillegg kan vi ha enheter på makronivå – dette kan være samfunnsgrupper (for eksempel klasser, etnisitet og religion).
 
 ### Variabel
 
@@ -69,7 +69,7 @@ nivå <- set_table_properties(nivå, layout = "autofit")
 theme_vanilla(nivå)
 ```
 
-Vi skal imidlertid merke oss et viktig poeng. Såkalte responsskalaer og Likertskalaer [@likertTechniqueMeasurementAttitudes1932] som brukes mye i spørreundersøkelser (typiske 5 eller 7 svaralternativer langs en skala der man velger en verdi) er formelt på ordinalnivå. Her vil vi for eksempel be respondentene svare på en skala fra 1-7, der 7 er «Helt enig» og 1 er «Helt uenig» i en påstand. Dette gir data som *ikke* er på intervallnivå [@stevensHandbookExperimentalPsychology1966]. Vi kan umulig si med sikkerhet at forskjellen mellom «Helt uenig» og «Uenig» er lik forskjellen mellom «Enig» og «Helt enig». Data på ordinalnivå kan man strengt tatt ikke regne ut gjennomsnitt på. Det er imidlertid svært vanlig å behandle denne typen data som intervalldata, og det finnes gode argumenter i litteraturen for å gjøre dette – vi går litt mer i dybden i det påfølgende delkapittelet (du kan leve lenge uten å måtte gå i dybden på dette, men vi velger likevel å behandle dette litt mer inngående i det påfølgende delkapittelet slik at dette er drøftet - så om du trenger argumenter kan du finne det der. Foreløpig nøyer vi oss med å fastslå at vi *kan* behandle denne typen data som intervalldata. I en ofte sitert bok sier @tabachnikUsingMultivariateStatistics2007:
+Vi skal imidlertid merke oss et viktig poeng. Såkalte responsskalaer og Likertskalaer [@likertTechniqueMeasurementAttitudes1932] som brukes mye i spørreundersøkelser (typiske 5 eller 7 svaralternativer langs en skala der man velger en verdi) er formelt på ordinalnivå. Her vil vi for eksempel be respondentene svare på en skala fra 1-7, der 7 er «Helt enig» og 1 er «Helt uenig» i en påstand. Dette gir data som *ikke* er på intervallnivå [@stevensHandbookExperimentalPsychology1966]. Vi kan umulig si med sikkerhet at forskjellen mellom «Helt uenig» og «Uenig» er lik forskjellen mellom «Enig» og «Helt enig». Data på ordinalnivå kan man strengt tatt ikke regne ut gjennomsnitt på. Det er imidlertid svært vanlig å behandle denne typen data som intervalldata, og det finnes gode argumenter i litteraturen for å gjøre dette – vi går litt mer i dybden i det påfølgende delkapittelet. Du kan leve lenge uten å måtte gå i dybden på dette, men vi velger likevel å behandle dette litt mer inngående i det påfølgende delkapittelet slik at dette er drøftet - så om du trenger argumenter kan du finne det der. Foreløpig nøyer vi oss med å fastslå at vi *kan* behandle denne typen data som intervalldata. I en ofte sitert bok sier @tabachnikUsingMultivariateStatistics2007:
 
 > The distinction between continuous and discrete variables is not always clear. If you add enough digits to the digital clock, for instance, it becomes for all practical purposes a continuous measuring device, whereas time as measured by the analog device can also be read in discrete categories such as hours and half hours. In fact, any continuous measurement may be rendered discrete (or dichotomous) with some loss of information, by specifying cutoffs in the continuous scale.
  
@@ -99,7 +99,7 @@ Imidlertid vil vi ofte ikke kjenne "virkeligheten" - vi kjenner ikke populasjons
 
 $Data = Modell + Feil$
 
-Data (altså en observert verdi – i vårt tilfelle en høyde) = x. Gjennomsnittsverdi = $\overline{x}$. Det er vanlig å benevne feiltermen som $e$. Vi kan derfor for første observerte høydeverdi uttrykke dette matematisk som:
+Data (altså en observert verdi – i vårt tilfelle en høyde) = $x$. Gjennomsnittsverdi = $\overline{x}$. Det er vanlig å benevne feiltermen som $e$. Vi kan derfor for første observerte høydeverdi uttrykke dette matematisk som:
 
 $x_1 = x - e_1$
 
@@ -126,9 +126,10 @@ Når vi snakker om distribusjonen av et datasett tenker vi på hvordan dataene v
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 tilfeldige menn, genererte data"}
 
 set.seed(30)
-x = rnorm(100, 179, 16)
-hist(x, xlab = "Høyde", ylab = "Antall", main = "Histogram for genererte høydedata")
+x <- rnorm(100, 179, 16)
+hist(x, xlab = "Hoyde", ylab = "Antall", main = "Histogram for genererte hoydedata")
 ```
+
 Hvis vi tar et utvalg på 100 andre personer kan fordelingen se slik ut:
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 andre tilfeldige menn, genererte data"}
@@ -140,7 +141,7 @@ data4 <- sample(185:190, 5, replace = TRUE)
 
 data <- c(data1, data2, data3, data4)
 
-hist(data, xlab = "Høyde", ylab = "Antall", main = "Histogram for genererte høydedata")
+hist(data, xlab = "Hoyde", ylab = "Antall", main = "Histogram for genererte hoydedata")
 ```
 
 Hver gang vi måler høyden på 100 tilfeldig utvalgte menn vil fordelingen se ulik ut siden de er observerte fordelinger i et utvalg av populasjonen (alle) «norske menn». Hvis vi imidlertid økte antallet i utvalget vi målte til 1000 eller 10000 vil vi med større sikkerhet kunne si at vi faktisk viser populasjonens fordeling (mulighetene for at vi tilfeldigvis måler 10000 veldig lave eller veldig høye menn er svært liten). Vi kan derfor, gitt visse forutsetninger om utvalget, si noe om hele populasjonen ut fra utvalget.
@@ -211,7 +212,7 @@ ggplot(data.frame(x = c(-4, 4)), aes(x)) +
   scale_y_continuous(limits = c(0, 0.5), breaks = seq(0, 0.5, by = 0.1))
 ```
 
-Det den standardiserte normalfordelingskurven (også kjent som Gausskurven eller også Bellkurven – "Klokkekurven" fordi den har en klokkeform) – kan brukes til er å si noe om spredningen på forventede verdier – eller hvor langt fra gjennomsnittsverdien man kan forvente å finne de enkelte verdiene. 
+Det den standardiserte normalfordelingskurven (også kjent som Gausskurven eller også Bellkurven – "Klokkekurven" - fordi den har en klokkeform) – kan brukes til er å si noe om spredningen på forventede verdier – eller hvor langt fra gjennomsnittsverdien man kan forvente å finne de enkelte verdiene. 
 
 Før vi ser nærmere på egenskaper ved normalfordelingskurven kan det være nødvendig å gå litt inn på begrepene varians og standardavvik som mål på spredningen i datasett. Disse begrepene, spesielt standardavvik, vil være helt sentrale i videre arbeid med temaet.
 
