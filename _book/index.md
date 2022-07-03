@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "28 juni, 2022"
+date: "03 juli, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -116,6 +116,10 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   <tr>
    <td style="text-align:left;width: 8em; "> 20.juni 2022 </td>
    <td style="text-align:left;width: 40em; "> Lett revisjon innledningskapittel. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 02.juli 2022 </td>
+   <td style="text-align:left;width: 40em; "> Mindre oppdateringer kap 1. Delvis innhold kap.12 </td>
   </tr>
 </tbody>
 </table>

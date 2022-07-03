@@ -20,7 +20,8 @@
 <link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet">
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="libs/plotly-binding-4.10.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
 <script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script><link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet">
-<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script><script src="libs/viz-1.8.2/viz.js"></script><link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+<script src="libs/grViz-binding-1.0.9/grViz.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
     
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   </style>
@@ -607,7 +608,7 @@ Vi kan sjekke F-verdien opp mot antall frihetsgrader (df) gjennom tabeller som o
 </h4>
 <p>Forholdstallet mellom respondenter/caser/observasjoner og uavhengig variabler er av stor betydning dersom man skal gjennomføre en multippel regresjon. Dette gjelder spesielt ved skjevdistribusjon av den avhengige variabelen, effektstørrelsen er forventet liten eller man kan mistenke vesentlige målefeil <span class="citation">(Tabachnik and Fidell 2007)</span>.</p>
 <p>Det finnes ulike anbefalte normer for vurdering av forholdstallet (vi tar her utgangspunkt i standard multippel regresjonsanalyse - stegvis multippel regresjonsanalyse kan gi andre vurderinger rundt forholdstallet). Under viser vi noen eksempler på hvordan man kan vurdere dette:</p>
-<template id="db4d24b9-a490-46e7-ab02-e4c772bed1a8"><style>
+<template id="08df7fe6-161f-486d-b169-871f280942b6"><style>
 .tabwid table{
   border-spacing:0px !important;
   border-collapse:collapse;
@@ -643,46 +644,46 @@ background-color: transparent;
 }
 </style>
 <div class="tabwid">
-<style>.cl-41c7f1fe{}.cl-41bb8f04{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-41bb8f0e{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-41bbb11e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-41bbf50c{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41bbf520{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41bbf52a{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41bbf52b{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41bbf534{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41bbf53e{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41bbf53f{width:324pt;background-color:rgba(173, 223, 173, 1.00);vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41bbf548{width:180pt;background-color:rgba(173, 223, 173, 1.00);vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<div class="inline-table"><table class="cl-41c7f1fe">
+<style>.cl-03a500b4{}.cl-039a23f6{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-039a240a{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-039a4570{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-039a817a{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-039a8184{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-039a8185{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-039a818e{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-039a8198{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-039a8199{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-039a81a2{width:324pt;background-color:rgba(173, 223, 173, 1.00);vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-039a81a3{width:180pt;background-color:rgba(173, 223, 173, 1.00);vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<div class="inline-table"><table class="cl-03a500b4">
 <caption class="Table Caption">
 <p><span id="tab:unnamed-chunk-13">Table 8.1: </span>Forholdstall</p>
 </caption>
 <thead><tr style="overflow-wrap:break-word;">
-<td class="cl-41bbf548"><p class="cl-41bbb11e"><span class="cl-41bb8f04">Kilde</span></p></td>
-<td class="cl-41bbf53f"><p class="cl-41bbb11e"><span class="cl-41bb8f04">Antall</span></p></td>
+<td class="cl-039a81a3"><p class="cl-039a4570"><span class="cl-039a23f6">Kilde</span></p></td>
+<td class="cl-039a81a2"><p class="cl-039a4570"><span class="cl-039a23f6">Antall</span></p></td>
 </tr></thead>
 <tbody>
 <tr>
-<td class="cl-41bbf520"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">Marks (1966, i Harris (2013)</span></p></td>
-<td class="cl-41bbf50c"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">Minimum 200 uansett</span></p></td>
+<td class="cl-039a8184"><p class="cl-039a4570"><span class="cl-039a240a">Marks (1966, i Harris (2013)</span></p></td>
+<td class="cl-039a817a"><p class="cl-039a4570"><span class="cl-039a240a">Minimum 200 uansett</span></p></td>
 </tr>
 <tr>
-<td class="cl-41bbf52b"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">Schmidt (1971)</span></p></td>
-<td class="cl-41bbf52a"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">15-1 til 25-1</span></p></td>
+<td class="cl-039a818e"><p class="cl-039a4570"><span class="cl-039a240a">Schmidt (1971)</span></p></td>
+<td class="cl-039a8185"><p class="cl-039a4570"><span class="cl-039a240a">15-1 til 25-1</span></p></td>
 </tr>
 <tr>
-<td class="cl-41bbf52b"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">Nunally (1978)</span></p></td>
-<td class="cl-41bbf52a"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">2-3 IV = minst 100, 9-10 IV = 300-400</span></p></td>
+<td class="cl-039a818e"><p class="cl-039a4570"><span class="cl-039a240a">Nunally (1978)</span></p></td>
+<td class="cl-039a8185"><p class="cl-039a4570"><span class="cl-039a240a">2-3 IV = minst 100, 9-10 IV = 300-400</span></p></td>
 </tr>
 <tr>
-<td class="cl-41bbf52b"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">Stevens (1996)</span></p></td>
-<td class="cl-41bbf52a"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">15 pr IV</span></p></td>
+<td class="cl-039a818e"><p class="cl-039a4570"><span class="cl-039a240a">Stevens (1996)</span></p></td>
+<td class="cl-039a8185"><p class="cl-039a4570"><span class="cl-039a240a">15 pr IV</span></p></td>
 </tr>
 <tr>
-<td class="cl-41bbf52b"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">Green (1991)</span></p></td>
-<td class="cl-41bbf52a"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">N≥50+8m (m=antall uavhengige variabler) ved «medium-sized relationship between the IVs and the DV, α=.05 and β=.20</span></p></td>
+<td class="cl-039a818e"><p class="cl-039a4570"><span class="cl-039a240a">Green (1991)</span></p></td>
+<td class="cl-039a8185"><p class="cl-039a4570"><span class="cl-039a240a">N≥50+8m (m=antall uavhengige variabler) ved «medium-sized relationship between the IVs and the DV, α=.05 and β=.20</span></p></td>
 </tr>
 <tr>
-<td class="cl-41bbf53e"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">Miles &amp; Shevlin (2001)</span></p></td>
-<td class="cl-41bbf534"><p class="cl-41bbb11e"><span class="cl-41bb8f0e">Som Green (2001). Utvalgsstørrelse avhenger av størrelse på effekt og statistisk styrke (se Cohen, 1988 for effektstørrelser). Stor effekt: 80 respondenter er alltid nok for opptil 20 IVs. Middels effekt: 200 respondenter vil alltid være nok for opptil 20 IVs, 100 er nok for opptil 6 eller færre IVs. Lav effekt: Minst 600.</span></p></td>
+<td class="cl-039a8199"><p class="cl-039a4570"><span class="cl-039a240a">Miles &amp; Shevlin (2001)</span></p></td>
+<td class="cl-039a8198"><p class="cl-039a4570"><span class="cl-039a240a">Som Green (2001). Utvalgsstørrelse avhenger av størrelse på effekt og statistisk styrke (se Cohen, 1988 for effektstørrelser). Stor effekt: 80 respondenter er alltid nok for opptil 20 IVs. Middels effekt: 200 respondenter vil alltid være nok for opptil 20 IVs, 100 er nok for opptil 6 eller færre IVs. Lav effekt: Minst 600.</span></p></td>
 </tr>
 </tbody>
 </table></div>
-</div></template><div class="flextable-shadow-host" id="f50701f7-6f61-488f-b35c-107a46975ff3"></div>
+</div></template><div class="flextable-shadow-host" id="dcc5ebc4-0449-4f4c-8938-6d0428443206"></div>
 <script>
-var dest = document.getElementById("f50701f7-6f61-488f-b35c-107a46975ff3");
-var template = document.getElementById("db4d24b9-a490-46e7-ab02-e4c772bed1a8");
+var dest = document.getElementById("dcc5ebc4-0449-4f4c-8938-6d0428443206");
+var template = document.getElementById("08df7fe6-161f-486d-b169-871f280942b6");
 var caption = template.content.querySelector("caption");
 if(caption) {
   caption.style.cssText = "display:block;text-align:center;";
@@ -1294,7 +1295,7 @@ Durbin-Watson testen er en test på autokorrelasjon i residualene, og vil ha en 
 <code class="sourceCode R"><span class="co"># Bruker pakken: car</span>
 <span class="fu">durbinWatsonTest</span><span class="op">(</span><span class="va">FieldOLS_reg</span><span class="op">)</span>
 <span class="co">#&gt;  lag Autocorrelation D-W Statistic p-value</span>
-<span class="co">#&gt;    1     -0.04394305      2.032324   0.808</span>
+<span class="co">#&gt;    1     -0.04394305      2.032324    0.82</span>
 <span class="co">#&gt;  Alternative hypothesis: rho != 0</span></code></pre></div>
 <p>Her viser verdien <span class="math inline">\(2.03\)</span> noe som ikke gir grunn til bekymring.</p>
 </div>
@@ -1741,7 +1742,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 <span class="co">#&gt;  8 functiona… global   RESE…   3.72e+0  0.0261  0.05 Problem</span>
 <span class="co">#&gt;  9 outliers   global   Cook…   7.08e-2 NA       1    No Pro…</span>
 <span class="co">#&gt; 10 outliers   global   Bonf…   3.16e+0  0.362   0.05 No Pro…</span>
-<span class="co">#&gt; 11 autocorre… global   Durb…   2.70e-3  0.734   0.05 No Pro…</span>
+<span class="co">#&gt; 11 autocorre… global   Durb…   2.70e-3  0.768   0.05 No Pro…</span>
 <span class="co">#&gt; # … with 1 more variable: decision &lt;chr&gt;</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Outliers:</span>
@@ -2636,7 +2637,7 @@ tmast:tpcoiss
 <code class="sourceCode R"><span class="co"># Bruker pakken: car</span>
 <span class="fu">durbinWatsonTest</span><span class="op">(</span><span class="va">PallantOLS_reg2</span><span class="op">)</span>
 <span class="co">#&gt;  lag Autocorrelation D-W Statistic p-value</span>
-<span class="co">#&gt;    1      0.08185218      1.825972    0.06</span>
+<span class="co">#&gt;    1      0.08185218      1.825972   0.088</span>
 <span class="co">#&gt;  Alternative hypothesis: rho != 0</span></code></pre></div>
 <p>Her viser verdien <span class="math inline">\(1.826\)</span> noe som ikke gir grunn til bekymring.</p>
 </div>
@@ -5344,7 +5345,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 28 juni, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 03 juli, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

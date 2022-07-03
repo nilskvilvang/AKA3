@@ -16,7 +16,8 @@ Vi skal i dette kapittelet gå gjennom en rekke begreper og forhold som vi vil k
 
 Når vi gjør undersøkelser om «et eller annet» kan vi veldig ofte ikke samle inn informasjon (data) fra alle. Om man gjør en meningsmåling før et valg for å anslå utfallet av valget kan man naturligvis ikke spørre alle stemmeberettigede i hele landet (+ alle stemmeberettigede som ikke er i landet akkurat når man gjennomfører meningsmålingen). Det er praktisk umulig. Alle stemmeberettigede kalles i denne sammenhengen populasjonen. Populasjonen er altså begrepet vi bruker på hele gruppen/den totale mengden av objekter vi ønsker å undersøke. I en meningsmåling tar man derfor et utvalg fra populasjonen, spør dem, og antar at man kan la resultatene fra utvalget snakke for/representere hele populasjonen. Men – man kan selvsagt gjøre undersøkelser på hele populasjoner om det er praktisk mulig, det avhenger bare av hva man definerer som populasjonen.
 
-![](Modul_2_popUtv.png){width=60%}
+![Populasjon og utvalg](Modul_2_popUtv.png){width=60%}
+<figcaption>Populasjon og utvalg.</figcaption>
 
 I figuren over har vi illustrert dette. Populasjonen består av et antall (kanskje ukjent) antall individer (N). Gjennomsnittsverdien for populasjonen (kalles my – µ) for en egenskap, som for eksempel høyde, er dermed også ukjent. Derfor tar vi et utvalg individer fra populasjonen, måler dem, og kan regne ut gjennomsnittsverdien  (kalles x strek, eller «x bar» på engelsk) for utvalget. Så lar vi $\overline{x}$ være et estimat for µ, og antar at gjennomsnittet for utvalget er representativt for gjennomsnittet for populasjonen.
 
@@ -1176,6 +1177,20 @@ Høyde er målt i cm, vekt i kg og ørelengde i mm. Nå kan vi "sammenlikne" de 
 
 Et annet praktisk anvendelsesområde av standardiserte verdier er tolkning av ulike variablers betydning i en regresjonsanalyse. Dette vil vi vise i kapittelet der vi gjennomgår regresjonsanalyse.
 
+## Variabelbegreper og modeller
 
+Man vil komme over ulike termer/begreper/"ord" for datavariabler. Her gir vi en kort definisjon på begreper som vil forekomme senere:
+
+- Obervert variabel ("observed variabel"): en variabel som finnes/eksisterer i dataene "i seg selv", i motsetning til:
+- Latent variabel ("latent variabel"): en variabel som er konstruert (som ikke finnes målet/uttrykt direkte i dataene selv, men f.eks. som blir konstruert av observerte variabler).
+- Uavhengig variabel: En variabel av interesse som påvirker den annen variabel vi er interessert i. Andre begreper: prediktor, årsaksvariabel, forklaringsvariabel.
+- Avhengig variabel: En variabel som påvirkes ("er avhengig av...") av andre, uavhengige variabler. Andre begreper: virkningsvariabel.
+- Eksogen variabel: En uavhengig variabel (observert eller latent) som forklarer en endogen variabel. Disse variablene blir bestemt utenfor modellen vi bruker - de er oppgitt eller målt, og er "input" i modellen. Ofte brukt begrep i f.eks. økonomiske modeller. 
+- Endogen variabel: En avhengig variabel (observert eller latent) som har en kausal sti ("path") som forklaring ("som leder fram til den endogene variabelen"). Dette er variabler som bestemmes av/i modellen. Vi kan se på dette som "output" av modellen.
+- Indikator: En observert variabel i en "measurement model" (kan både være eksogen og endogen)
+- Faktor: En latent variabel definert av indikatorer (kan være både eksogen og endogen)
+- Lading ("loading"): En sti mellom indikator og faktor
+- Målemodell ("measurement model"): En modell som ser på forholdet mellom observerte variabler og latente variabler
+- Strukturell modell ("structural model"): En modell som ser på det kausale forholdet mellom eksogene og endogene variabler (som begge kan være både observerte og latente)
 
 

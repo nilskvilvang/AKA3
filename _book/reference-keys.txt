@@ -74,6 +74,7 @@ statistisk-styrke---litt-mer
 effektstørrelse-og-litt-om-p
 standardisering---transformasjon-av-data-z-skåre
 standardisering---transformasjon-av-data-z-skåre---del-2
+variabelbegreper-og-modeller
 samvariasjon-og-korrelasjon
 samvariasjonkovarians
 korrelasjon-og-korrelasjonskoeffisient
@@ -286,3 +287,9 @@ kjikvadrattest
 approximate-fit-index---rmsea-cfi-og-tli
 kryssvalidering-cross-validation
 structural-equation-modelling-sem---strukturelle-regresjonsmodeller
+datasettet
+multivariat-regresjon
+stianalyse
+strukturell-regresjon
+en-endogen-variabel
+to-endogene-variabler
