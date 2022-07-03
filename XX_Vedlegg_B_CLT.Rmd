@@ -3,7 +3,7 @@ bibliography: bibliografi.bib
 csl: chicago-author-date.csl
 ---
 
-# Vedlegg B - Sentralgrenseteoremet (Central Limit Theorem) {.unnumbered}
+# Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem) {.unnumbered}
 
 Koden brukt i dette eksempelet er i stor grad hentet fra @feditCentralLimitTheorem2018b.
 

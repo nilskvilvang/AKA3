@@ -2,7 +2,7 @@
 bibliography: bibliografi.bib  
 csl: chicago-author-date.csl
 ---
-# Vedlegg C - Chebyshevs teorem {.unnumbered}
+# Vedlegg B - Chebyshevs teorem {.unnumbered}
 
 Dette vedlegget er i stor grad bygget på @hartmannELearningProjectSOGA2018.
 
