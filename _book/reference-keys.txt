@@ -37,6 +37,7 @@ tab:unnamed-chunk-78
 tab:unnamed-chunk-82
 fig:unnamed-chunk-1
 fig:unnamed-chunk-2
+hvorfor-dette-notatet
 grunnleggende-begreper-og-sammenhenger
 populasjon-og-utvalg
 utvelgelse-fra-populasjonen
@@ -125,6 +126,7 @@ regresjonsanalyse---ols
 innledning
 teori
 minste-kvadratsum-ordinary-least-squares---ols
+r2-r-squared
 konfidensintervall
 steg-i-analyse
 enkel-lineær-regresjonsanalyse
@@ -228,6 +230,7 @@ modell-2-iv-regresjon
 modell-3-ols-med-flere-prediktorer
 modell-4-iv-regresjon-med-flere-to-instrumenter
 test-av-relevansen-av-instrumentene
+polynomisk-regresjon
 logistisk-regresjon
 binær-logistisk-regresjon
 deviance-residuals
@@ -240,6 +243,13 @@ fra-logodds-til-odds-ratios
 ordinal-logistisk-regresjon
 multinomial-logistisk-regresjon
 predikerte-sannsynligheter-i-modellen
+structural-equation-modelling-sem---strukturelle-regresjonsmodeller
+datasettet
+multivariat-regresjon
+stianalyse
+strukturell-regresjon
+en-endogen-variabel
+to-endogene-variabler
 dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca
 innledning-2
 principal-component-analysis-pca
@@ -286,10 +296,4 @@ hvor-god-er-modellen-vår-model-fit-statistics
 kjikvadrattest
 approximate-fit-index---rmsea-cfi-og-tli
 kryssvalidering-cross-validation
-structural-equation-modelling-sem---strukturelle-regresjonsmodeller
-datasettet
-multivariat-regresjon
-stianalyse
-strukturell-regresjon
-en-endogen-variabel
-to-endogene-variabler
+maskinlæring-machine-learning

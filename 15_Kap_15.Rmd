@@ -1,0 +1,35 @@
+---
+bibliography: bibliografi.bib
+csl: chicago-author-date.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen=999)
+```
+
+# Maskinlæring (Machine Learning)
+
+Berepet "maskinlæring" har blitt et mer og mer sentralt begrep i dataanalyse. Selve begrepet ble "coinet" (først brukt) av @samuelStudiesMachineLearning1959. Endel av metodene i maskinlæring kjenner vi fra før. Regresjon er f.eks. et sentralt element i "pakken" av metoder som kan puttes inn i begrepet maskinlæring. Og regresjon er jo ikke noe nytt, så er maskinlæring kun et moteord? Et fancy ord på ting vi har gjort før? Tja, kanskje svaret er både ja og nei. Det er unektelig slik at vi har drevet med regresjonsanalyser lenge før begrepet maskinlæring i hvert fall ble allment kjent og popularisert. Samtidig er maskinlæring en distinkt gruppe av analytiske metoder hvis hensikt er å - nettopp - lære. Med dette mener vi modeller som bruker data til å forbedre analyseopgavene vi har foran oss. 
+
+Maskinlæring knyttes tett til kunstig intelligens (Articifical Intelligence, eller bare AI). Det er imildertid ulike oppfatninger av hvordan disse begrepene forholder seg til hverandre. I tillegg har begrepet "deep learning" også kommet mer i fokus. En vanlig måte å se sammenhengen på er denne [@SuperDataScience2022]:
+
+![Sammenhengen AI - ML - DL, fra SuperDataScience](AI_ML_2.png)
+
+Det er videre vanlig å sele inn maskinlæring ut fra hvordan dataanalysen skjer:
+
+- Supervised learning: Modellering gjennom algortimer som kjenner både input og ønsket output.
+- Unsupervised learning: Modellering gjennom algortimer som kjenner kun input, og forsøker finne mønstre og grupper i dataene. 
+- Semi-supervised learning: En form for mellomting mellom supervised og unsupervised, dvs. vi kan ha mindre deler av data med input og putput som kan brukes på data uten kjent/ønsket output
+- Reinforcement learning: Modellering gjennom algoritmer der henskten/målsetningen er å maksimere en oppfatning om kumulativ belønning/utkomme. Reinforcement learning brukes f.eks. til å lære maskiner å spille spill mot mennesker. 
+- Dimensionality reduction: Dette kjenner vi fra f.eks. Principal Component Analysis (PCA), der hensikten er å redusere et større antall variabler til et mindre antall komponenter. 
+
+Teknikkene som ofte brukes i maskinlæring er:
+
+- Regresjon
+- Klassifisering
+- Clustering
+- Association
+- Natural Language Processing - NLP
+- Deep learning
+- Dimensionality reduction

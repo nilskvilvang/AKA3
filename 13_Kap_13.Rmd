@@ -82,10 +82,8 @@ Vi kan se på kovariansmatrisen:
 
 ```{r}
 semdatacov <- as.matrix(cov(semdata))
-upper <- round(semdatacov)
-upper[upper.tri(semdatacov)] <- ""
-upper <- as.data.frame(upper)
-upper
+# Bruker pakken: sjPlot
+sjPlot::tab_corr(semdatacov, triangle = "lower")
 ```
 
 En positiv kovarians betyr altså at når f.eks. motivasjon og harmoni er positivt kovariert (77) øker den ene når den andre øker. Og motsatt - når motivasjon og foreldrepåvirkning er negativt kovariert (-25) betyr det at negativ foreldrepåvirkning resulterer i lavere motivasjon.

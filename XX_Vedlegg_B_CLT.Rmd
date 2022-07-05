@@ -87,7 +87,7 @@ ggplot(myDF, aes(xbar)) +
 
 ```
 
-Vi kan allerede nå ane en tilnørming mot normalfordeling, og i hvert fall en endret form enn populasjonen viste. Vi tar nå 1000 utvalg med 30 i hvert utvalg.
+Vi kan allerede nå ane en tilnærming mot normalfordeling, og i hvert fall en endret form enn populasjonen viste. Vi tar nå 1000 utvalg med 30 i hvert utvalg.
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Histogram for 1000 utvalg fra bimodal fordeling"}
 

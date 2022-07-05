@@ -3,7 +3,7 @@ bibliography: bibliografi.bib
 csl: chicago-author-date.csl
 ---
 
-# Vedlegg B - Sentralgrenseteoremet (Central Limit Theorem) {.unnumbered}
+# Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem) {.unnumbered}
 
 Koden brukt i dette eksempelet er i stor grad hentet fra @feditCentralLimitTheorem2018b.
 
@@ -34,7 +34,7 @@ Ut fra denne populasjonen tar vi 100 utvalg med 30 i hvert utvalg. Fordelingen s
 <p class="caption">(\#fig:unnamed-chunk-3)Histogram for 100 utvalg fra bimodal fordeling</p>
 </div>
 
-Vi kan allerede nå ane en tilnørming mot normalfordeling, og i hvert fall en endret form enn populasjonen viste. Vi tar nå 1000 utvalg med 30 i hvert utvalg.
+Vi kan allerede nå ane en tilnærming mot normalfordeling, og i hvert fall en endret form enn populasjonen viste. Vi tar nå 1000 utvalg med 30 i hvert utvalg.
 
 <div class="figure">
 <img src="XX_Vedlegg_B_CLT_files/figure-html/unnamed-chunk-4-1.png" alt="Histogram for 1000 utvalg fra bimodal fordeling" width="672" />
