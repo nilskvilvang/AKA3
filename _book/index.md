@@ -129,6 +129,10 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
    <td style="text-align:left;width: 8em; "> 06.juli 2022 </td>
    <td style="text-align:left;width: 40em; "> Polynomial regresjon lagt til </td>
   </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 08.juli 2022 </td>
+   <td style="text-align:left;width: 40em; "> SVR </td>
+  </tr>
 </tbody>
 </table>
 

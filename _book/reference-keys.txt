@@ -305,4 +305,6 @@ maskinlæring-machine-learning
 regresjon
 enkel-lineær-regresjon
 multippel-regresjon
-support-vector-regression-svr
+polynomisk-regresjon-1
+linear-support-vector-regression-svr
+svr-eksempel-2
