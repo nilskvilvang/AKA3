@@ -104,13 +104,13 @@
 <span class="header-section-number">Kapittel 15</span> Maskinlæring (Machine Learning)<a class="anchor" aria-label="anchor" href="#maskinl%C3%A6ring-machine-learning"><i class="fas fa-link"></i></a>
 </h1>
 <p>Berepet “maskinlæring” har blitt et mer og mer sentralt begrep i dataanalyse. Selve begrepet ble “coinet” (først brukt) av <span class="citation">Samuel (1959)</span>. Endel av metodene i maskinlæring kjenner vi fra før. Regresjon er f.eks. et sentralt element i “pakken” av metoder som kan puttes inn i begrepet maskinlæring. Og regresjon er jo ikke noe nytt, så er maskinlæring kun et moteord? Et fancy ord på ting vi har gjort før? Tja, kanskje svaret er både ja og nei. Det er unektelig slik at vi har drevet med regresjonsanalyser lenge før begrepet maskinlæring i hvert fall ble allment kjent og popularisert. Samtidig er maskinlæring en distinkt gruppe av analytiske metoder hvis hensikt er å - nettopp - lære. Med dette mener vi modeller som bruker data til å forbedre analyseopgavene vi har foran oss.</p>
-<p>Maskinlæring knyttes tett til kunstig intelligens (Articifical Intelligence, eller bare AI). Det er imildertid ulike oppfatninger av hvordan disse begrepene forholder seg til hverandre. I tillegg har begrepet “deep learning” også kommet mer i fokus. En vanlig måte å se sammenhengen på er denne <span class="citation">(<span>“<span>SuperDataScience</span>”</span> 2022)</span>:</p>
+<p>Maskinlæring knyttes tett til kunstig intelligens (Articifical Intelligence, eller bare AI). Det er imildertid ulike oppfatninger av hvordan disse begrepene forholder seg til hverandre. I tillegg har begrepet “deep learning” også kommet mer i fokus. En vanlig måte å se sammenhengen på er denne <span class="citation">(SuperDataScience 2022)</span>:</p>
 <div class="figure">
 <img src="AI_ML_2.png" alt=""><p class="caption">Sammenhengen AI - ML - DL, fra SuperDataScience</p>
 </div>
 <p>Det er videre vanlig å sele inn maskinlæring ut fra hvordan dataanalysen skjer:</p>
 <ul>
-<li>Supervised learning: Modellering gjennom algortimer som kjenner både input og ønsket output.</li>
+<li>Supervised learning: Modellering gjennom algoritmer som kjenner både input og ønsket output.</li>
 <li>Unsupervised learning: Modellering gjennom algortimer som kjenner kun input, og forsøker finne mønstre og grupper i dataene.</li>
 <li>Semi-supervised learning: En form for mellomting mellom supervised og unsupervised, dvs. vi kan ha mindre deler av data med input og putput som kan brukes på data uten kjent/ønsket output</li>
 <li>Reinforcement learning: Modellering gjennom algoritmer der henskten/målsetningen er å maksimere en oppfatning om kumulativ belønning/utkomme. Reinforcement learning brukes f.eks. til å lære maskiner å spille spill mot mennesker.</li>
@@ -126,13 +126,242 @@
 <li>Deep learning</li>
 <li>Dimensionality reduction</li>
 </ul>
+<div id="regresjon" class="section level2" number="15.1">
+<h2>
+<span class="header-section-number">15.1</span> Regresjon<a class="anchor" aria-label="anchor" href="#regresjon"><i class="fas fa-link"></i></a>
+</h2>
+<p>Vi har i tidligere kapitler gått gjennom enkel og multippel OLS og polynomial regresjon. Disse er også teknikker under paraplyen maskinlæring. Selv om vi har vist regresjon i tidligere kapittel introduserer vi et element i maskinlæringskapittelet som viser splitting av datasett i treningsdata og testdata. Dette er karakteristisk for maskinlæring. Det innebærer at vi deler datasettet (tilfeldig) inn i to grupper: den første gruppa - treningsdata - bruker vi til å lage/trene en modell. Den andre gruppa - testdata - bruker vi for å se hvor god modellen v lagde med treningsdataene klarer å predikere dataene som ligger i testdatasettet. Testdatasettet består jo av “virkelige” data, så hvis modellen vår er god og klarer å predikere disse dataene kan vi si noe sikrere om hvor godt vi kan anta modellen vil predikere nye, hittil ikke målte/observerte verdier.</p>
+<p>Eksempelet er et utvidet datasett vi brukte i kapittelet om polynomisk regresjon. Det baserer seg på at vi har lønnsdata på 47 medarbeidere i et firma.</p>
+<div class="sourceCode" id="cb420"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://strengejacke.github.io/sjPlot/">sjPlot</a></span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb421"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mldata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">"mldata.xlsx"</span><span class="op">)</span></code></pre></div>
+<p><a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="mldata.xlsx">Download mldata.xlsx</a></p>
+<div class="sourceCode" id="cb422"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">mldata</span><span class="op">)</span>
+<span class="co">#&gt; Rows: 47</span>
+<span class="co">#&gt; Columns: 3</span>
+<span class="co">#&gt; $ Ansiennitet       &lt;dbl&gt; 1.1, 1.3, 1.5, 2.0, 2.2, 2.9, 3.…</span>
+<span class="co">#&gt; $ Stillingskategori &lt;dbl&gt; 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2,…</span>
+<span class="co">#&gt; $ Lonn              &lt;dbl&gt; 39343, 46205, 37731, 43525, 3989…</span></code></pre></div>
+<p>Vi har altså variablene ansiennitet (år), stillingskategori (1-10) og månedslønn.</p>
+<div id="enkel-lineær-regresjon" class="section level3" number="15.1.1">
+<h3>
+<span class="header-section-number">15.1.1</span> Enkel lineær regresjon<a class="anchor" aria-label="anchor" href="#enkel-line%C3%A6r-regresjon"><i class="fas fa-link"></i></a>
+</h3>
+<p>Det første vi gjør er å splitte datasettet i treningsdata og testdata.</p>
+<div class="sourceCode" id="cb423"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">caTools</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+
+<span class="va">splitt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/caTools/man/sample.split.html">sample.split</a></span><span class="op">(</span><span class="va">mldata</span><span class="op">$</span><span class="va">Ansiennitet</span>, SplitRatio <span class="op">=</span> <span class="fl">2</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span>
+
+<span class="va">treningssett</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">mldata</span>, <span class="va">splitt</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">testsett</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">mldata</span>, <span class="va">splitt</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">treningssett</span><span class="op">)</span>
+<span class="co">#&gt; Rows: 31</span>
+<span class="co">#&gt; Columns: 3</span>
+<span class="co">#&gt; $ Ansiennitet       &lt;dbl&gt; 1.1, 1.5, 2.9, 3.0, 3.2, 3.7, 4.…</span>
+<span class="co">#&gt; $ Stillingskategori &lt;dbl&gt; 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3,…</span>
+<span class="co">#&gt; $ Lonn              &lt;dbl&gt; 39343, 37731, 56642, 60150, 6444…</span>
+<span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">testsett</span><span class="op">)</span>
+<span class="co">#&gt; Rows: 16</span>
+<span class="co">#&gt; Columns: 3</span>
+<span class="co">#&gt; $ Ansiennitet       &lt;dbl&gt; 1.3, 2.0, 2.2, 3.2, 3.9, 4.9, 6.…</span>
+<span class="co">#&gt; $ Stillingskategori &lt;dbl&gt; 1, 1, 1, 2, 2, 3, 4, 4, 4, 5, 5,…</span>
+<span class="co">#&gt; $ Lonn              &lt;dbl&gt; 46205, 43525, 39891, 54445, 6321…</span></code></pre></div>
+<p>Det neste er å lage lineær modell på treningsdatasettet.</p>
+<div class="sourceCode" id="cb424"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">enkelOLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Lonn</span> <span class="op">~</span> <span class="va">Ansiennitet</span>, data <span class="op">=</span> <span class="va">treningssett</span><span class="op">)</span>
+<span class="fu"><a href="https://strengejacke.github.io/sjPlot/reference/tab_model.html">tab_model</a></span><span class="op">(</span><span class="va">enkelOLS</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table style="border-collapse:collapse; border:none;" class="table table-sm">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+Lonn
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-11404.42
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-37574.29 – 14765.45
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.380
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+Ansiennitet
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+18067.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+15125.34 – 21009.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+31
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+0.845 / 0.839
+</td>
+</tr>
+</table></div>
+<div class="sourceCode" id="cb425"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">enkelOLSplott</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treningssett</span><span class="op">$</span><span class="va">Ansiennitet</span>, y <span class="op">=</span> <span class="va">treningssett</span><span class="op">$</span><span class="va">Lonn</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">treningssett</span><span class="op">$</span><span class="va">Ansiennitet</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">treningssett</span><span class="op">$</span><span class="va">Ansiennitet</span><span class="op">)</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">treningssett</span><span class="op">$</span><span class="va">Ansiennitet</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">enkelOLS</span>, newdata <span class="op">=</span> <span class="va">treningssett</span><span class="op">)</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">"Enkel OLS"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"Ansiennitet"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Snittlønn"</span><span class="op">)</span>
+<span class="va">enkelOLSplott</span></code></pre></div>
+<div class="inline-figure"><img src="15_Kap_15_files/figure-html/unnamed-chunk-6-1.png" width="672"></div>
+<p>Så kan vi se på hvilke verdier modellen vil predikere på testdataene:</p>
+<div class="sourceCode" id="cb426"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">y_prediksjon</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">enkelOLS</span>, newdata <span class="op">=</span> <span class="va">testsett</span><span class="op">)</span>
+<span class="va">y_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">y_prediksjon</span><span class="op">)</span>
+<span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">testsett</span><span class="op">$</span><span class="va">Lonn</span><span class="op">)</span>
+<span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">y_pred</span>, <span class="va">obs</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df</span>
+<span class="co">#&gt;    y_prediksjon testsett.Lonn</span>
+<span class="co">#&gt; 1      12083.12         46205</span>
+<span class="co">#&gt; 2      24730.26         43525</span>
+<span class="co">#&gt; 3      28343.73         39891</span>
+<span class="co">#&gt; 4      46411.07         54445</span>
+<span class="co">#&gt; 5      59058.21         63218</span>
+<span class="co">#&gt; 6      77125.55         67938</span>
+<span class="co">#&gt; 7      96999.62         75462</span>
+<span class="co">#&gt; 8     111453.49         87050</span>
+<span class="co">#&gt; 9     116873.69         79782</span>
+<span class="co">#&gt; 10    136747.77        115300</span>
+<span class="co">#&gt; 11    151201.64        118890</span>
+<span class="co">#&gt; 12    180109.38        134162</span>
+<span class="co">#&gt; 13    181916.12        142222</span>
+<span class="co">#&gt; 14    185529.58        145876</span>
+<span class="co">#&gt; 15    187336.32        142058</span>
+<span class="co">#&gt; 16    189143.05        187880</span></code></pre></div>
+<p>Den venstre kolonnen i tabellen over er verdien modellen predikerer, den høyre kolonnen tilhørende observerte verdi i testsettet. Når vi ser de to kolonnene, og hvor stor differansen er mellom dem, kan vi sammenholde det med grafen rett over som viser observerte verdier mot regresjonslinja (modellens prediksjon). I noen områder forventer vi ut fra grafen at de er ganske nærme hverandre - f.eks. rundt x = 4 og x = 12. Og i tabellen ser vi at vi for noen verdier har lite avvik og for noen større avvik. I kapittelet om polynomisk regresjon beskrev vi “Mean Square Error” (MSE) slik:</p>
+<p><span class="math inline">\(MSE = \frac{1}{n}*\sum(faktisk\ verdi - predikert\ verdi)\)</span></p>
+<p>Vi kan regne ut MSE slik:</p>
+<div class="sourceCode" id="cb427"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="op">(</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">testsett.Lonn</span> <span class="op">-</span> <span class="va">df</span><span class="op">$</span><span class="va">y_prediksjon</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+<span class="co">#&gt; [1] 816706116</span>
+<span class="co"># Alternativt:</span>
+<span class="va">mseOLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">testsett.Lonn</span> <span class="op">-</span> <span class="va">df</span><span class="op">$</span><span class="va">y_prediksjon</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+<span class="va">mseOLS</span>
+<span class="co">#&gt; [1] 816706116</span></code></pre></div>
+<p>Vi kan bruke MSE til å sammenlikne modeller. Av to modeller vil modellen med lavest MSE være best til å predikere.</p>
+</div>
+<div id="multippel-regresjon" class="section level3" number="15.1.2">
+<h3>
+<span class="header-section-number">15.1.2</span> Multippel regresjon<a class="anchor" aria-label="anchor" href="#multippel-regresjon"><i class="fas fa-link"></i></a>
+</h3>
+<p>Vi bruker det samme datasettet. Før vi går videre faktoriserer vi den kategoriske variabelen.</p>
+<div class="sourceCode" id="cb428"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mldata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">"mldata.xlsx"</span><span class="op">)</span>
+<span class="va">mldata</span><span class="op">$</span><span class="va">Stillingskategori</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">mldata</span><span class="op">$</span><span class="va">Stillingskategori</span><span class="op">)</span></code></pre></div>
+<p>Deler datasettet:</p>
+<div class="sourceCode" id="cb429"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">caTools</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
+<span class="va">splitt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/caTools/man/sample.split.html">sample.split</a></span><span class="op">(</span><span class="va">mldata</span><span class="op">$</span><span class="va">Lonn</span>, SplitRatio <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
+<span class="va">treningssett</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">mldata</span>, <span class="va">splitt</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">testsett</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">mldata</span>, <span class="va">splitt</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p>Lager modell på treningssettet:</p>
+<div class="sourceCode" id="cb430"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">multiregressor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Lonn</span> <span class="op">~</span> <span class="va">Ansiennitet</span> <span class="op">+</span> <span class="va">Stillingskategori</span>, data <span class="op">=</span> <span class="va">treningssett</span><span class="op">)</span></code></pre></div>
+<p>Prediksjon ift testdata:</p>
+<div class="sourceCode" id="cb431"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">y_prediksjon2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">multiregressor</span>, newdata <span class="op">=</span> <span class="va">testsett</span><span class="op">)</span>
+<span class="va">y_pred2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">y_prediksjon2</span><span class="op">)</span>
+<span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">testsett</span><span class="op">$</span><span class="va">Lonn</span><span class="op">)</span>
+<span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">y_pred2</span>, <span class="va">obs</span><span class="op">)</span><span class="op">)</span>
+<span class="va">df2</span>
+<span class="co">#&gt;    y_prediksjon2 testsett.Lonn</span>
+<span class="co">#&gt; 1       46780.96         43525</span>
+<span class="co">#&gt; 2       48406.09         39891</span>
+<span class="co">#&gt; 3       59606.50         54445</span>
+<span class="co">#&gt; 4       65294.46         63218</span>
+<span class="co">#&gt; 5       63944.77         67938</span>
+<span class="co">#&gt; 6       82813.43         75462</span>
+<span class="co">#&gt; 7       89313.96         87050</span>
+<span class="co">#&gt; 8      109188.25        115300</span>
+<span class="co">#&gt; 9      127771.31        134162</span>
+<span class="co">#&gt; 10     150755.60        142222</span></code></pre></div>
+<p>Vi kan se av tabellen over at prediksjonene for den multiple modellen er betydelig bedre enn for den enkle lineære.</p>
+<p>Og MSE:</p>
+<div class="sourceCode" id="cb432"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">msemultippel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">df2</span><span class="op">$</span><span class="va">testsett.Lonn</span> <span class="op">-</span> <span class="va">df2</span><span class="op">$</span><span class="va">y_prediksjon</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+<span class="va">msemultippel</span>
+<span class="co">#&gt; [1] 34019257</span></code></pre></div>
+<div class="sourceCode" id="cb433"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">msetab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">mseOLS</span>, <span class="va">msemultippel</span><span class="op">)</span>
+<span class="va">msetab</span>
+<span class="co">#&gt;      mseOLS msemultippel</span>
+<span class="co">#&gt; 1 816706116     34019257</span></code></pre></div>
+</div>
+</div>
+<div id="support-vector-regression-svr" class="section level2" number="15.2">
+<h2>
+<span class="header-section-number">15.2</span> Support Vector Regression (SVR)<a class="anchor" aria-label="anchor" href="#support-vector-regression-svr"><i class="fas fa-link"></i></a>
+</h2>
+<p>Så kommer vi til den første nye teknikken vi knytter til maskinlæring.</p>
+
+</div>
 </div>
   <div class="chapter-nav">
 <div class="prev"><a href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">14</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></div>
 <div class="next"><a href="referanser.html">Referanser</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <ul class="nav navbar-nav"><li><a class="nav-link" href="#maskinl%C3%A6ring-machine-learning"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li></ul>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#maskinl%C3%A6ring-machine-learning"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li>
+<li>
+<a class="nav-link" href="#regresjon"><span class="header-section-number">15.1</span> Regresjon</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#enkel-line%C3%A6r-regresjon"><span class="header-section-number">15.1.1</span> Enkel lineær regresjon</a></li>
+<li><a class="nav-link" href="#multippel-regresjon"><span class="header-section-number">15.1.2</span> Multippel regresjon</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#support-vector-regression-svr"><span class="header-section-number">15.2</span> Support Vector Regression (SVR)</a></li>
+</ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
@@ -149,7 +378,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 05 juli, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 08 juli, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

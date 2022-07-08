@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "05 juli, 2022"
+date: "08 juli, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -123,7 +123,11 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   </tr>
   <tr>
    <td style="text-align:left;width: 8em; "> 05.juli 2022 </td>
-   <td style="text-align:left;width: 40em; "> Kort forklaring om utregning av R^2 </td>
+   <td style="text-align:left;width: 40em; "> Kort forklaring om utregning av R^2. Endret rekkefølge kapitler. Start kap om maskinlæring. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 06.juli 2022 </td>
+   <td style="text-align:left;width: 40em; "> Polynomial regresjon lagt til </td>
   </tr>
 </tbody>
 </table>

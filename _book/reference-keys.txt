@@ -231,6 +231,11 @@ modell-3-ols-med-flere-prediktorer
 modell-4-iv-regresjon-med-flere-to-instrumenter
 test-av-relevansen-av-instrumentene
 polynomisk-regresjon
+modellering-av-andregrads-quadratic-polynomisk-regresjon
+modellering-av-tredjegrads-cubic-polynomisk-regresjon
+modellering-av-fjerdegrads-quartic-polynomisk-regresjon
+tolkning
+tilnæmring-gjennom-kryssvalidering---valg-av-antall-grader-i-polynomialfunksjonen
 logistisk-regresjon
 binær-logistisk-regresjon
 deviance-residuals
@@ -297,3 +302,7 @@ kjikvadrattest
 approximate-fit-index---rmsea-cfi-og-tli
 kryssvalidering-cross-validation
 maskinlæring-machine-learning
+regresjon
+enkel-lineær-regresjon
+multippel-regresjon
+support-vector-regression-svr
