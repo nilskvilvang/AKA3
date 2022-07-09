@@ -254,6 +254,10 @@ Hvorfor begrepet Support Vector Regression? Vel, alle datapunktene er vektorer (
 
 La oss se på dataene i vårt eksempel.
 
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("mldata3.xlsx")
+```
+
 ```{r}
 mldata4 <- read_excel("mldata3.xlsx")
 mldata4 <- mldata4[2:3]
@@ -272,14 +276,17 @@ svrregresjon <- ggplot() +
     xlab("Stillingskateogri") +
     ylab("Lonn")
 svrregresjon
-
 ```
 
 ### SVR eksempel 2
 
 Vi kan illustrere SVR på en annen type datasett. Datasettet "Boston" ligger integrert i R-pakken "MASS" og ble opprinnelig publisert i 1978. Datasettet inneholder boligdata fra Boston (N = 506) og var en undersøkelse "to measure the willingness to pay for clean air"  [@harrisonHedonicHousingPrices1978, s.81]. I dette eksempelet bruker vi variabelen "medv" som avhengig variabel (som er boligenens medianverdi målt i $1000). Vi har tatt ut en variabel - "B-1000" - fra det opprinnelige datasettet.
 
-```{r}
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("bostondata.xlsx")
+```
+
+```{r warning = FALSE, echo = FALSE}
 library(e1071)
 library(caret)
 bostondata <-  MASS::Boston
@@ -389,6 +396,150 @@ ggplot(bostondata, aes(x = "", y = medv)) + geom_boxplot()
 
 Vi kan gå videre med å se på hvor inflytelsesrike uteliggerne er for å se om det taler for bruk av IQR, men det gjør vi ikke her. 
 
+## Decision Tree Regression 
 
+Vi illustrerer DTR gjennom et eksempel basert på @plotly3DScatterPlots2022. I pakken "plotly" ligger et kjent datasett - mtcars - som er brukt i mange lærebøker og eksempler. 
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("mtcars.xlsx")
+```
+
+```{r}
+library(plotly)
+glimpse(mtcars)
+```
+
+Et tips i R for å se på innhold og hva de enkelte variabler er i datasett som følger pakker er:
+```{r message = FALSE, warning = FALSE}
+# ?mtcars
+```
+Hvor man (i RStudio) får opp tekst om datasettet i hjelpevinduet (normalt nede til høyre i skjermen). Vi kan se at variabelen "wt" er vekt, "hp" er hestekrefter og "qsec" er tid bilen bruker fra 0 til 1/4 mile. Vi kan se for oss at wt og hp er uavhengige variabler, og tid den avhengige variabelen.
+
+Vi kan plotte dataene. Vi kan først se på de to uavhengige variablene wt og hp.
+
+```{r}
+library(tidyverse)
+ggplot(mtcars, aes(x=wt, y=hp)) + geom_point(color = "red") +
+    scale_x_continuous(breaks = round(seq(min(mtcars$wt), max(mtcars$wt), by = 0.5),1))
+```
+
+Siden vi har tre variabler kan vi framstille dette som et 3D-plott (vi kan ha flere variabler i regresjonen naturligvis, men det klarer vi ikke å plotte).
+```{r}
+mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
+mtcars$am[which(mtcars$am == 1)] <- 'Manual'
+mtcars$am <- as.factor(mtcars$am)
+fig <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c('#BF382A', '#0C4B8E'))
+fig <- fig %>% add_markers()
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'wt'),
+                     yaxis = list(title = 'hp'),
+                     zaxis = list(title = '1/4 mile tid')))
+fig
+```
+
+DTR starter med alle dataene (i treningssettet), noe som kalles rotnode. Deretter vil en algoritme splitte dataene (noden) i to eller flere sub-noder. Dersom en sub-node igjen splittes kalles denne sub-noden en beslutningsnode. Dersom den ikke splittes kalles sub-noden en leaf eller terminalnode.  
+
+![Prinsippiell skisse beslutningstre](DTR1.png){width=90%}
+
+Hver node i treet utgjør en test for en case/et dilemma/et valg inntil det ikke kan tas flere valg i akkurat den respektive linjen. DTR bruker et antall algoritmer for å beslutte hvordan splitting foregår. Hver splitt søker å øke homogeniteten (hver subsett av data skal inneholder samme verdi for en eller annen attributt) i de resulterende sub-nodene sett opp mot den uavhengige variabelen. 
+
+Modellen begynner med hele datasettet og leter gjennom alle verdier for alle inputvariabler (uavhengige variabler) for å finne splittverdien som deler datasettet i to og samtidig gir lavest mulig "Sums of Squares Error". Deretter gjentas denne prosessen inntil en stoppverdi er nådd.
+
+La oss gå tilbake til eksempelet med mtcars og se på kun de to uavhengige variablene:
+
+```{r}
+dtrplott <- ggplot(mtcars, aes(x=wt, y=hp)) + geom_point(color = "red")
+dtrplott +
+    geom_segment(aes(x = 1.5, y = 170, xend = 3.6, yend = 170)) +
+    annotate(geom ="text", x = 1.5, y = 180, label = "Splitt 2",
+              color = "blue") +
+    geom_segment(aes(x = 3.6, y = 0, xend = 3.6, yend = 350)) +
+    annotate(geom ="text", x = 3.4, y = 350, label = "Splitt 1",
+              color = "blue") +   
+    geom_segment(aes(x = 1.3, y = 75, xend = 3.6, yend = 75)) +
+    annotate(geom ="text", x= 1.5, y = 85, label = "Splitt 3",
+              color = "blue") +
+    annotate(geom ="text", x= 2.3, y = 20, label = "Splitt 4",
+              color = "blue") +
+    geom_segment(aes(x = 2.5, y = 0, xend = 2.5, yend = 75)) +
+    annotate(geom = "text", x = 3.7, y = 350, label = "3.6") +
+    annotate(geom = "text", x = 1.5, y = 160, label = "170") +
+    annotate(geom = "text", x = 1.5, y = 65, label = "75")  +
+    annotate(geom = "text", x = 2.6, y = 20, label = "2.5")
+```
+
+![Beslutningstre](DTR2.png){width=75%}
+
+I grafen over har vi visualisert beslutningstreet. Første splitt skjer ved wt = 3.6. Neste splitt skjer ved hp = 170, men bare for området under wt = 3.6. Deretter kommer splitt 3 ved hp = 75, men bare for området under wt = 3.6 og under hp = 170. Splitt 4 skjer ved wt = 2.5, men bare for området under wt = 3.6, under hp = 170 og under hp = 75. 
+
+Vi har fått delt opp de to uavhengige variablene i bokser. Hvis vi nå får et nytt punkt (eller vil predikere verdien på den avhengige variabelen ut fra gitt verdier av de to uavhengige variablene) kan vi legge det nye punktet inn i riktig boks ut fra verdiene på hhv. wt og hp. Den predikerte Y-verdien - verdien på den avhengige variabelen - blir ganske enkelt gjennomsnittsverdien av alle y-verdiene i den respektive boksen (jfr $\hat{y}_n$ i figuren over). Inndeingen i boksene gjennom belsutningstreet har i realiteten tilført informasjon til våre data. Vi trenger altså predikere ut fra et mye snevrere utfallsområde enn en tradisjonell tilnærming som vil ta hensyn til alle datapunktene (ikke bare de i rette boks).
+
+### Eksempel DTR
+
+I dette eksempelet skal vi bruke et datasett fra pakken "AmesHousing".
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("AmesHousing.csv")
+```
+
+```{r warning = FALSE, message = FALSE}
+library(AmesHousing)
+Ames <- read.csv("AmesHousing.csv")
+dim(Ames)
+```
+
+Datasettet [@decockAmesIowaAlternative2011] inneholder salgsdata for 2930 boliger i Ames, Iowa i tidsrommet 2006 til 2010 med tilhørende 82 variabler (23 nominelle, 23 ordinale, 14 diskrete og 20 kontinuerlige). Den uavhengige variabelen er salgspris.
+
+Eksempelet er basert på @boehmkeRegressionTrees. Først deler vi datasettet i trenings- og testsett.
+
+```{r}
+library(rsample)
+set.seed(123)
+ames_splitt <- initial_split(AmesHousing::make_ames(), prop = .7)
+ames_trening <- training(ames_splitt)
+ames_test  <- testing(ames_splitt)
+dim(ames_trening)
+dim(ames_test)
+```
+
+```{r}
+library(rpart)
+dtregress <- rpart(
+  formula = Sale_Price ~ .,
+  data    = ames_trening,
+  method  = "anova"
+  )
+dtregress
+```
+
+Output over beskriver stegene i byggingen av beslutningstreet (splittene). Vi ser at vi starter med 2051 salgsobjekter. Den første splitten skjer gjennom variabelen "Overall_Qual". Dette danner utgangspunkt for gren nr 2 og 3. Gren 2 omfatter 1725 boliger med gjennomsnittlig salgspris på 155077,10 og gren 3 omfatter 326 boliger med gjennomsnittlig salgspris på 305506,30. Gren 2 splittes i splitt 4 som blir 8 og 9. 9 splittes igjen i 18 og 19. Osv. 
+
+```{r warning = FALSE, message = FALSE}
+library(rpart.plot)
+rpart.plot(dtregress)
+```
+
+Plottet kan fort se smått og uoversiktlig ut (for et mindre datasett med færre grener og splitter vil dette se mer oversiktlig ut), men med litt zooming vil man se beslutningstreet og f.eks. hvor mange prosent av observasjonene som ligger i de repsektive grenene. 
+
+Hvis vi ser litt nøyere på beslutningstreet ser vi at vi ender opp med 12 terminalnoder ut av 81 variabler i treningssettet. Dette skjer fordi algoritmen i rpart-pakken foretar beregninger for å se hvor det ikke gir mer å inkludere flere (gjennom en kryssvalidering). Vi ser forsåvidt det samme i beslutningstreoversikten lenger opp. 
+
+Vi kan se dette i følgende plott:
+
+```{r}
+plotcp(dtregress)
+```
+
+I grafen over ser vi på y-aksen relative feil gjennom kryssvalidering. Den nedre x-aksen er "cost complexity" verdi. Jo flere terminalnoder et belsutningstre har, jo mer kompleks blir treet (modellen). Cost complexity er en terskelverdi - algoritmen vil splitte noden kun hvis modellen forbedres med en verdi større enn terskelverdien. I vår modell/vårt tre skjer dette ved 12 terminalnoder. Den stiplede linjen viser en alternativ tilnærming som i dette tilfellet skulle tilsi 9 terminalnoder. 
+
+```{r warning = FALSE, message = FALSE}
+library(Metrics)
+pred <- predict(dtregress, newdata = ames_test)
+modelpred <- rmse(ames_test$Sale_Price, pred)
+```
+
+RMSE er `r round(modelpred, 2)`. Dvs at i gjennomsnitt bommer modellens prediksjoner med $`r round(modelpred, 2)`. 
+
+Decision Tree Regression kan i seg selv være en noe lunefull og dårlig modell for prediksjon. Det er ikke sjeldent å finne en god fit til dataene, men ofte en overfit (altså at vi får en god fit til dataene, men lav prediksjonsnøyaktighet). Derimot er den grunnstammen (no pun intended) i "Random Forests" modellering som vi skal se på i neste delkapittel.
+
+## Random Forest regresjon
 
 

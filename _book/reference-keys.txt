@@ -308,3 +308,6 @@ multippel-regresjon
 polynomisk-regresjon-1
 linear-support-vector-regression-svr
 svr-eksempel-2
+decision-tree-regression
+eksempel-dtr
+random-forest-regresjon
