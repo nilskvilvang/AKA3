@@ -539,8 +539,6 @@ FieldOLS_mult_reg <- lm(Sales ~ ., data = Field_OLS_data)
 brief(FieldOLS_mult_reg)
 ```
 
-
-
 Imidletid finnes det også advarsler mot å se kun på de parvise korrelasjonene. Selv om korrelasjonen mellom f.eks. fem par variabler er lav/under 0.8/0.9, kan det hende at korrelasjonen mellom fire av disse tilsammen forklarer en veldig høy andel av variansen i den femte, uten at dette fremkommer i de parvise korrelasjonene. En måte å supplere vurderingen av multikolinearitet er gjennom VIF ("Variance Inflation Factor"). VIF bruker multippel regresjonsanalyse (se evt kap. om regresjonsanalyse) for å regne ut graden av multikolinearitet. Det statistikkprogrammet ditt gjør er å kjøre en og en av variablene som avhengig variabel:
 
 $x1 <- x2, x3, x4, x5$
@@ -915,7 +913,11 @@ Vi gjør ingen analyse av dette da vi har valgt to uavhengige variabler ut fra e
 
 #### Antall prediktorer/uavhengige variabler, overfitting og predicted R-square
 
-I multippel regresjonsanalyse har vi mer enn en prediktor/uavhengig variabel. Som regel kan vi ønske å inkludere mer enn en prediktor fordi vi sjeldent klarer å fange nok av variansen i en avhengig variabel gjennom en prediktor. Samtidig ønsker vi ikke flere uavhengige variabler enn nødvendig for å lage en så enkel modell som mulig som gir oss prediksjoner vi kan bruke. Matematisk er det også slik at enhver uavhengig variabel som har en grad av korrelasjon med den avhengige variabelen vil bidra til å øke $R^2$ uten at det nødvendigvis gjør modellen "riktigere" (men kan gjøre den vanskeligere å tolke). Dersom vi legger til unødvendige uavhengige variabler risikerer vi det som kalles overfitting - altså at modellen blir god på å beskrive tilfeldige feil i dataene heller enn å beskrive forholdet mellom variablene. Resultatet er at modellen ikke kan generaliseres. Vi kan også se tilbake på regresjonsforutsetningene og vil se at et stort antall uavhengige variabler er en invitasjon til multikolinearitet. 
+I multippel regresjonsanalyse har vi mer enn en prediktor/uavhengig variabel. Som regel kan vi ønske å inkludere mer enn en prediktor fordi vi sjeldent klarer å fange nok av variansen i en avhengig variabel gjennom en prediktor. Samtidig ønsker vi ikke flere uavhengige variabler enn nødvendig for å lage en så enkel modell som mulig som gir oss prediksjoner vi kan bruke. Matematisk er det også slik at enhver uavhengig variabel som har en grad av korrelasjon med den avhengige variabelen vil bidra til å øke $R^2$ uten at det nødvendigvis gjør modellen "riktigere" (men kan gjøre den vanskeligere å tolke). Dersom vi legger til unødvendige uavhengige variabler risikerer vi det som kalles overfitting - altså at modellen blir god på å beskrive tilfeldige feil i dataene heller enn å beskrive forholdet mellom variablene. Resultatet er at modellen ikke kan generaliseres. 
+
+![Underfit - God fit - Overfit](Fit.png)
+
+Vi kan også se tilbake på regresjonsforutsetningene og vil se at et stort antall uavhengige variabler er en invitasjon til multikolinearitet. 
 
 En måte å sjekke dette er å dele datasettet slik at man gjør regresjonsanalysen på en del av datasettet og deretter tester modellen på den andre delen av datasettet. Dette kalles kryssvalidering. En annen måte er å se på "predicted R-square" som innebærer følgende prosedyre (som statistikkprogrammer gjør for oss naturligvis):
 

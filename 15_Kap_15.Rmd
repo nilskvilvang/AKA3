@@ -38,161 +38,377 @@ Teknikkene som ofte brukes i maskinlæring er:
 
 Vi har i tidligere kapitler gått gjennom enkel og multippel OLS og polynomial regresjon. Disse er også teknikker under paraplyen maskinlæring. Selv om vi har vist regresjon i tidligere kapittel introduserer vi et element i maskinlæringskapittelet som viser splitting av datasett i treningsdata og testdata. Dette er karakteristisk for maskinlæring. Det innebærer at vi deler datasettet (tilfeldig) inn i to grupper: den første gruppa - treningsdata - bruker vi til å lage/trene en modell. Den andre gruppa - testdata - bruker vi for å se hvor god modellen vi lagde med treningsdataene klarer å predikere dataene som ligger i testdatasettet. Testdatasettet består jo av "virkelige" data, så hvis modellen vår er god og klarer å predikere disse dataene kan vi si noe sikrere om hvor godt vi kan anta modellen vil predikere nye, hittil ikke målte/observerte verdier. 
 
-Eksempelet er basert på @superdatascienceMachineLearningAZ2022. Det baserer seg på at vi har lønnsdata på 47 medarbeidere i et firma. I dette delkapittelet har vi lagd gjennomsnitt av lønn og ansiennitet for de ulike stillingskategoriene
+I delkapittelet om regresjon skal vi bruke datasettet AmesHousing 
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("AmesHousing.csv")
+```
+
+```{r warning = FALSE, message = FALSE}
+library(AmesHousing)
+library(tidyverse)
+Ames <- read.csv("AmesHousing.csv")
+dim(Ames)
+```
+
+Datasettet "AmesHousing" [@decockAmesIowaAlternative2011] inneholder salgsdata for 2930 boliger i Ames, Iowa i tidsrommet 2006 til 2010 med tilhørende 82 variabler (23 nominelle, 23 ordinale, 14 diskrete og 20 kontinuerlige). Den uavhengige variabelen er salgspris. En oversikt over variablene finnes flere stedet på nett, f.eks. [her](https://rdrr.io/cran/AmesHousing/man/ames_raw.html).
+
+### Manglende verdier i datasettet (NAs)
+
+Det kan innledningsvis være verdt å se om vi har variabler med mange manglende verdier ("na"). Vi kan først se på hvilke kolonner (variabler) som har manglende verdier:
+
+```{r}
+nas <- colSums(is.na(Ames))
+nas <- as.data.frame(sort(nas, decreasing = TRUE))
+names(nas)[1] <- "Antall_NA"
+nas[nas==0] <- NA
+nas2<-as.data.frame(nas[complete.cases(nas),])
+nas2
+```
+
+Vi kan se at 5 variabler har et veldig høyt antall mangelnde verdier (NAs). Jeg velger å droppe disse variablene fra datasettet.
+
+```{r}
+Ames2 <- subset(Ames, select = -c(Pool.QC, Misc.Feature, Alley, Fence, Fireplace.Qu))
+dim(Ames2)
+```
+
+Det er flere måter å håndtere manglende verdier på. Vi velger her å erstatte NA med gjennomsnitt for "Lot.Frontage" som har mange manglende verdier, og lar øvrige variabler være hva angår manglende verdier. 
+
+```{r}
+Ames2$Lot.Frontage[is.na(Ames2$Lot.Frontage)] <- mean(Ames2$Lot.Frontage, na.rm = TRUE)
+```
+
+```{r}
+nas3 <- colSums(is.na(Ames2))
+nas3 <- as.data.frame(sort(nas3, decreasing = TRUE))
+nas3[nas3==0] <- NA
+nas4 <- as.data.frame(nas3[complete.cases(nas3),])
+nas4
+```
+
+### Uteligger
+
+Den avhengige variabelen er salgspris ("SalePrice"). Hvis vi ser på distribusjonen av boligenes verdi ser vi indikasjoner på at det kan være enkeltboliger med unormalt høye salgsverdier.
+
+```{r}
+Amessalgspris <- ggplot() +
+    geom_point((aes(x=seq_along(Ames2$SalePrice), y=Ames2$SalePrice)), color = "red") + 
+    ggtitle("Boligens salgspris") +
+    xlab("Bolig nr.") +
+    ylab("Verdi")
+Amessalgspris
+```
+
+Dette kommer tydeligere fram i histogrammet:
+
+```{r}
+ggplot(Ames2, aes(x=SalePrice)) + 
+    geom_histogram(color="black", fill="lightblue") +
+    labs(title = "Histogram salgsverdi", x = "Salgspris i $", y = "Antall") +
+    theme_classic()
+```
+
+Vi får også en klar indikasjon på uteliggere gjennom boksplottet:
+```{r}
+ggplot(data = Ames2, aes(x = "", y = SalePrice)) + 
+  geom_boxplot(fill = 'lightblue') +
+  labs(title = "Boksplott salgsverdi - Ames2",
+       y = "Verdi")
+```
+
+Uteliggere er en "tricky" greie. Man kan si at all data har verdifull informasjon. Samtidig påvirker uteliggere mange analyser og kan gi oss større avvik i prediksjoner fordi modellene påvirkes i uforholdsmessig grad av uteliggere i forhold til andre observasjoner. Mange av teknikkene i maskinlæring er sensitive ovenfor uteliggere. Vi gikk i detalj inn på dette i kapittelet om OLS, så vi begrenser oss her til noen analyser og viser til dette kapittelet for mer utførlig forklaringer.
+
+Vi starter med Grubbs test:
+```{r message = FALSE, warning = FALSE}
+library(outliers)
+grubbstest <- grubbs.test(Ames2$SalePrice)
+grubbstest
+```
+Høyeste salgsverdi bør altså regnes som uteligger (hvis ikke høyeste verdi bør ses som en uteligger er det ingen grunn til å gå videre).
+
+Vi kan også bruke et såkalt Hampel filter som tar utgangspunkt i median:
+```{r}
+nedregrense <- median(Ames2$SalePrice) - 3*(mad(Ames2$SalePrice, constant = 1))
+ovregrense <- median(Ames2$SalePrice) + 3*(mad(Ames2$SalePrice, constant = 1))
+uteligger_ind <- which(Ames2$SalePrice < nedregrense |Ames2$SalePrice > ovregrense)
+uteligger_ind
+```
+Gjennom å identifisere uteliggere gjennom Hampelfilteret kan vi fjerne uteliggere (som sagt er det mange måter å forholde seg til uteliggere på og mye er kontekstavhengig - vi går ikke inn i ulike måter å behandle uteliggere på her, men velger å vise hvordan vi fjerner de identifiserte uteliggerne etter Hampel). 
+
+```{r}
+Ames3 <- subset(Ames2, Ames2$SalePrice > nedregrense & Ames2$SalePrice < ovregrense)
+```
+
+Vi kan se hvordan datasettet har endret seg som følge av de justeringene vi nå har gjort:
+
+```{r}
+v1 <- as.data.frame(dim(Ames))
+v2 <- as.data.frame(dim(Ames2))
+v3 <- as.data.frame(dim(Ames3))
+Amesendring <- data.frame(c(v1, v2, v3))
+rownames(Amesendring) <- c("Observasjoner", "Variabler")
+colnames(Amesendring) <- c("Ames", "Ames2", "Ames3")
+Amesendring
+```
+
+Vi sjekker nå Ames3 gjennom Rosners test (de 5 mest uteliggende verdiene blant gjenværende data):
 
 ```{r message = FALSE, warning = FALSE}
-library(readxl)
-library(tidyverse)
-library(sjPlot)
+library(EnvStats)
+rosnerstest <- rosnerTest(Ames3$SalePrice,
+  k = 5)
+rosnerstest$all.stats
+rosnerstest$n.outliers
+```
+
+Vi kan også sjekke igjen med et boksplott:
+
+```{r}
+ggplot(data = Ames3, aes(x = "", y = SalePrice)) + 
+  geom_boxplot(fill = 'lightblue') +
+  labs(title = "Boksplott salgsverdi - Ames3",
+       y = "Verdi")
+```
+
+Til slutt merker vi oss at variabelen "SaleCondition" er en variabel som har registrert om salget har skjedd "normalt" (som vi tolker som etter markedsmessige betingelser), "Abnormal" eller "Family". Vi kan mistenke at unormalt salg eller salg innad i familie kan ha en vesentlig påvirkning på slagspris, og siden vi er interessert i å modellere markedsmessige betingelser ved salgsprisen bør vi undersøke dette.
+
+```{r}
+group_by(Ames3, Sale.Condition) %>%
+  summarise(
+    count = n(),
+    mean = mean(SalePrice, na.rm = TRUE))
+ggplot(Ames3, aes(x=Sale.Condition, y=SalePrice, fill=Sale.Condition)) + 
+    geom_boxplot()
 ```
 
 ```{r}
-mldata1 <- read.csv("Lonnsdata.csv")
+res.aov <- aov(SalePrice ~ Sale.Condition, data = Ames3)
+summary(res.aov)
 ```
 
-```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
-xfun::embed_file("Lonnsdata.csv")
-```
+Siden p-verdien er signifikant kan vi si det er signifikant forskjell mellom en eller flere av gjennomsnittsverdiene for de ulike gruppene i Sale.Condition.
 
 ```{r}
-glimpse(mldata1)
+TukeyHSD(res.aov)
 ```
 
-Vi har altså variablene "Erfaring" (ansiennitet i år) og månedslønn.
+Vi tar utgangspunkt i at "normal" er den markedsmessige salgsprosessen vi ønsker å modellere, noe vi forsåvidt også ser ut fra antallet salgsprosesser (som i overveiende grad er normale). Vi ønsker derfor å ta ut de typene salgsprosesser som har signifikant forskjellig salgsverdi i forhold til normal. Av ANOVA-resultatene ser vi at det gjelder "abnorml", "AdjLand" og "Partial" (vi kan også legge merke til at det **ikke** er signifikant forskjell på en kommersiell salgsprosess og salgsprosess i kategorien "familiy" som vi kanskje forventet).
 
-### Enkel lineær regresjon
+```{r}
+Ames4 <- Ames3[Ames3$Sale.Condition != "Abnorml" & Ames3$Sale.Condition != "AdjLand" & Ames3$Sale.Condition != "Partial",]
+group_by(Ames4, Sale.Condition) %>%
+  summarise(
+    count = n(),
+    mean = mean(SalePrice, na.rm = TRUE))
+v4 <- as.data.frame(dim(Ames4))
+Amesendring2 <- data.frame(c(v1, v2, v3, v4))
+rownames(Amesendring2) <- c("Observasjoner", "Variabler")
+colnames(Amesendring2) <- c("Ames", "Ames2", "Ames3", "Ames4")
+Amesendring2
+```
 
-Det første vi gjør er å splitte datasettet i treningsdata og testdata.
+Vårt datasett ender derfor opp med `r Amesendring2[1,4]` boligsalg med `r Amesendring2[2,4]` variabler.
+
+### Deling av datasettet i trenings- og testdatasett
+
+Vi deler datasettet i trenings- og testsett siden vi vil trenge dette i regresjon som metodikk i maksinlæring.
 
 ```{r}
 library(caTools)
 set.seed(123)
-splitt <- sample.split(mldata1$Lonn, SplitRatio = 2/3)
-treningssett1 <- subset(mldata1, splitt == TRUE)
-testsett1 <- subset(mldata1, splitt == FALSE)
+splitt <- sample.split(Ames4$SalePrice, SplitRatio = .7)
+Ames4_trening <- subset(Ames4, splitt == TRUE)
+Ames4_test <- subset(Ames4, splitt == FALSE)
 ```
 
-Det neste er å lage lineær modell på treningsdatasettet.
+```{r}
+dim1 <- as.data.frame(dim(Ames4_trening))
+dim2 <- as.data.frame(dim(Ames4_test))
+dimensjoner <- data.frame(dim1, dim2)
+rownames(dimensjoner) <- c("Observasjoner", "Variabler")
+colnames(dimensjoner) <- c("Treningssett", "Testsett")
+dimensjoner
+```
+
+
+### Enkel lineær regresjon
+
+I den enkle lineære regresjonsn ser vi på forholdet mellom salgspris som avhengig variabel og "Gr.Liv.Area" som er boligareal (ikke inkludert kjeller).Det vil være rimelig å anta at det er en sammenheng mellom boligareal og salgspris.
 
 ```{r}
-enkelOLS <- lm(Lonn ~ Erfaring, data = treningssett1)
-tab_model(enkelOLS)
+enkelOLS <- lm(SalePrice ~ Gr.Liv.Area, data = Ames4_trening)
+sjPlot::tab_model(enkelOLS)
 enkelOLSplott <- ggplot() +
-    geom_point(aes(x = treningssett1$Erfaring, y = treningssett1$Lonn), col = "red") +
-    scale_x_continuous(breaks = round(seq(min(treningssett1$Erfaring), max(treningssett1$Erfaring), by = 1),0)) +
-    geom_line(aes(x = treningssett1$Erfaring, y = predict(enkelOLS, newdata = treningssett1)), col = "blue") +
-    ggtitle("Enkel OLS") +
-    xlab("Stillingskategori") +
-    ylab("Snittlønn")
+    geom_point(aes(x = Ames4_trening$Gr.Liv.Area, y = Ames4_trening$SalePrice), col = "red") +
+    geom_line(aes(x = Ames4_trening$Gr.Liv.Area, y = predict(enkelOLS, newdata = Ames4_trening)), col = "blue") +
+    ggtitle("Enkel OLS - treningsdata") +
+    xlab("Boligareal (ikke inkl. kjeller)") +
+    ylab("Salgspris")
 enkelOLSplott
 ```
 
-Vi kan visualisere såvel treningssett som testsett.
+Vi kan se det er en sammenheng, men også at det er et slags konisk/trakt mønster der spredningen i verdiene øker med boligarealet. Dette kan tyde på at det er en (eller flere) andre variabler som påvirker sammenhengen mellom boligareal og salgspris. Dette kan f.eks. være beliggenhet/hvilket område av byen boligen ligger i (registrert i variabelen "Neighborhood"). Vi kan se på medianprisen for de uilke områdene:
 
-```{r}
-library(ggplot2)
-ggplot() +
-    geom_point(aes(x = treningssett1$Erfaring, y = treningssett1$Lonn), 
-               color = "red") +
-    scale_x_continuous(breaks = round(seq(min(treningssett1$Erfaring), max(treningssett1$Erfaring), by = 1),0)) +
-    geom_line(aes(x = treningssett1$Erfaring, y = predict(enkelOLS, newdata = treningssett1)),
-              color = "blue") +
-    ggtitle("Lønn vs. erfaring (treningssett)") +
-    xlab("Antall års erfaring") + 
-    ylab("Lønn")
+```{r warning = FALSE, message = FALSE}
+nabolag <- tapply(Ames4$SalePrice, Ames4$Neighborhood, median)
+nabolag <- sort(nabolag, decreasing = TRUE)
+
+dotchart(nabolag, pch = 21, bg = "red",
+         cex = 0.85,
+         xlab="Medianpris på solgt bolig",
+         main = "Sortering av boliger etter median salgspris fordelt på nabolag - Ames4")
 ```
 
-
-```{r}
-library(ggplot2)
-ggplot() +
-    geom_point(aes(x = testsett1$Erfaring, y = testsett1$Lonn), 
-               color = "red") +
-    scale_x_continuous(breaks = round(seq(min(testsett1$Erfaring), max(testsett1$Erfaring), by = 1),0)) +
-    geom_line(aes(x = treningssett1$Erfaring, y = predict(enkelOLS, newdata = treningssett1)), 
-              color = "blue") +
-    ggtitle("Lønn vs. erfaring (testsett)") +
-    xlab("Antall års erfaring") + 
-    ylab("Lønn")
-```
 
 Så kan vi se på hvilke verdier modellen vil predikere på testdataene:
 
 ```{r}
-y_prediksjon1 <- predict(enkelOLS, newdata = testsett1)
-y_pred1 <- as.data.frame(y_prediksjon1)
-obs1 <- as.data.frame(testsett1$Lonn)
-df1 <- as.data.frame(c(y_pred1, obs1))
-df1
+y_prediksjon1 <- predict(enkelOLS, newdata = Ames4_test)
+OLSpred <- as.data.frame(y_prediksjon1)
+obs1 <- as.data.frame(Ames4_test$SalePrice)
+df1 <- as.data.frame(c(OLSpred, obs1))
+colnames(df1) <- c("Predikert", "Observert")
+head(df1, n = 10)
 ```
 
-Den venstre kolonnen i tabellen over er verdien modellen predikerer, den høyre kolonnen tilhørende observerte verdi i testsettet. Når vi ser de to kolonnene, og hvor stor differansen er mellom dem, kan vi sammenholde det med grafen rett over som viser observerte verdier mot regresjonslinja (modellens prediksjon). I noen områder forventer vi ut fra grafen at de er ganske nærme hverandre - f.eks. rundt x = 4 og x = 12. Og i tabellen ser vi at vi for noen verdier har lite avvik og for noen større avvik. I kapittelet om polynomisk regresjon beskrev vi "Mean Square Error" (MSE) slik:
+Av plasshensyn viser vi kun de første 10 sammenlikningene mellom predikert og faktisk verdi. Den venstre kolonnen i tabellen over er verdien modellen predikerer, den høyre kolonnen tilhørende observerte verdi i testsettet. 
+
+I kapittelet om polynomisk regresjon beskrev vi "Mean Square Error" (MSE) slik:
 
 $MSE = \frac{1}{n}*\sum(faktisk\ verdi - predikert\ verdi)$
 
 Vi kan regne ut MSE slik:
 
 ```{r}
-((1/(nrow(df1))))*sum((df1$testsett1.Lonn - df1$y_prediksjon1)^2)
+((1/(nrow(df1))))*sum((df1$Observert - df1$Predikert)^2)
 # Alternativt:
-mseOLS <- mean((df1$testsett1.Lonn - df1$y_prediksjon1)^2)
+mseOLS <- mean((df1$Observert - df1$Predikert)^2)
 mseOLS
 ```
 
-Vi kan bruke MSE til å sammenlikne modeller. Av to modeller vil modellen med lavest MSE være best til å predikere. MSE kan altså ikke vurderes direkte, men til sammenlikning. 
+En annen vanlig måte å se på modellens prediksjonsevne er RMSE.
+
+```{r warning = FALSE, message = FALSE}
+library(Metrics)
+pred1 <- predict(enkelOLS, newdata = Ames4_test)
+rmsepred1 <- rmse(df1$Observert, pred1)
+rmsepred1
+```
+
+MSE/RMSE kan fortelle oss noe om hvor god modellen er ved at den sammenlikner observerte verdier mot predikerte verdier. RMSE forteller oss f.eks. den gjennomsnittlige avstanden mellom en predikert verdi og den "tilhørende" observerte verdien. Jo nærmere 0 verdien er, jo bedre predikerer modellen (0 = perfekt prediksjon).
+RMSE er `r round(rmsepred1, 2)`. Dvs at i gjennomsnitt bommer modellens prediksjoner med $`r round(rmsepred1, 2)`. Vi kan tolke dette i kontekst av dataene. Det er vanskelig å si noe fornuftig om den gjennomsnittlig feilen i prediksjonen uten å se på den avhengige variabelen. La oss derfor se på den.
+
+```{r warning = FALSE, message = FALSE}
+library(psych)
+deskSalePrice <- describe(Ames4$SalePrice)
+deskSalePrice
+```
+
+Vi kan se at boligprisen varierer mellom `r deskSalePrice$min` og `r deskSalePrice$max`, med et standardavvik (= verdienes gjennomsnittlig avstand fra gjennomsnittet) på `r round(deskSalePrice$sd, 2)`. I det perspektivet bør altså vurdere om en gjennomsnittlig feil på `r round(rmsepred1, 2)` indikerer en modell vi er fornøyd med eller ikke. Jeg vil være tilbøyelig til å si at dette virker som et noe høyt gjennomsnittlig avvik i prediksjonene. 
+
+Vi kan enklere tolke og sammenlikne RMSE hvis vi normaliserer verdien.
+
+Det finnes fire beskrevne måter å normalisere RMSE [@ottoHowNormalizeRMSE2019]:
+
+```{r warning = FALSE, message = FALSE}
+library(psych)
+deskdata1 <- describe(Ames4_test$SalePrice)
+library(Metrics)
+# Gjennom maks og min verdier
+egennrmse1 <- as.data.frame(rmsepred1/(deskdata1$max-deskdata1$min))
+# Gjennom gjennomsnitt
+egennrmse2 <- as.data.frame(rmsepred1/deskdata1$mean)
+# Gjennom standardavvik
+egennrmse3 <- as.data.frame(rmsepred1/deskdata1$sd)
+# Gjennom interkvartil bredde (IQR)
+interkvart <- IQR(Ames4$SalePrice)
+egennrmse4 <- as.data.frame(rmsepred1/(interkvart))
+normrmse <- data.frame(c(egennrmse1, egennrmse2, egennrmse3, egennrmse4))
+normrmse <- rename(normrmse, MaksMin = rmsepred1..deskdata1.max...deskdata1.min.,
+       Snitt = rmsepred1.deskdata1.mean,
+       Standardavvik = rmsepred1.deskdata1.sd,
+       IQR = rmsepred1..interkvart.)
+normrmse
+```
+
+@ottoHowNormalizeRMSE2019 finner i sin simulering at "there is no normalization method (of the one tested here) that is obviously superior", men gir følgende råd:
+
+- Gjennomsnitt er ok hvis man sammenlikner modeller som baserer seg på samme responsvariabel. Hvis ikke, bruk en av de andre tre.
+- Maks-min metoden sies å være mer sensitiv for utvalgsstørrelse, men Otto fant ingen større forskjeller for utvalg helt ned til 5
+- IQR sies å være mindre sensitiv for ekstreme verdier
+
+En lettere veg i R er gjennom pakken tdr (hensikten med utregning ovenfor er å vise - utregningen):
+```{r warning = FALSE, message = FALSE}
+library(tdr)
+normrmse1 <- as.data.frame(tdStats(pred1, Ames4_test$SalePrice))
+normrmseverdi <- normrmse1[12,]
+normrmse1
+```
+Normalisert RMSE er `r round(normrmseverdi, 2)` (ut fra `r normrmseverdi`). 
+
+Merk at "tdr"-pakken bruker snitt til å normalisere i kolonnen "cvrmse" og MaksMin for å normalisere i kolonnen "nrmse" (hvilket vi ser gjennom de like verdiene fra pakken og fra vår manuelle utregning).
+
+Jaha...så hvilken metode skal man bruke siden det gir fire ulike normaliserte verdier?
+
+@ottoHowNormalizeRMSE2019 finner i sin simulering at "there is no normalization method (of the one tested here) that is obviously superior", men gir følgende råd:
+
+- Gjennomsnitt er ok hvis man sammenlikner modeller som baserer seg på samme responsvariabel. Hvis ikke, bruk en av de andre tre.
+- Maks-min metoden sies å være mer sensitiv for utvalgsstørrelse, men Otto fant ingen større forskjeller for utvalg helt ned til 5
+- IQR sies å være mindre sensitiv for ekstreme verdier
+
+Vi må rett og slett ta et valg ut fra de (få) retningslinjene som f.eks. @ottoHowNormalizeRMSE2019 gir, men vi bør i hvert fall være obs på dette hvis vi bruker normalisert RSME til å sammenlikne modeller slik at vi ikke sammenlikner epler og pærer. 
 
 ### Multippel regresjon
 
-Vi bruker det samme datasettet, men utvider med en uavhengig variabel. 
-
-```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
-xfun::embed_file("mldata2.xlsx")
-```
-
 ```{r}
-mldata2 <- read_xlsx("mldata2.xlsx")
-glimpse(mldata2)
+numerisk <- Ames4 %>% select(where(is.numeric))
+korrelasjoner <- as.data.frame(cor(numerisk, Ames4$SalePrice))
+korrelasjoner <- na.omit(korrelasjoner)
+korrelasjoner <- korrelasjoner %>%
+    filter(V1 > 0.5 | V1 < -0.5)
+korrelasjoner
 ```
 
-Deler datasettet:
-
-```{r}
-library(caTools)
-set.seed(123)
-splitt2 <- sample.split(mldata2$Lonn, SplitRatio = 2/3)
-treningssett2 <- subset(mldata2, splitt2 == TRUE)
-testsett2 <- subset(mldata2, splitt2 == FALSE)
-```
+Ut fra dette utvider vi med fem uavhengige variabler. I tillegg til boligstørrelse tar vi nå inn "Overall.Qual", "Lot.Area", "Year.Built", "Year.Remod.Add" og "Total.Bsmt.SF" som er hhv. et mål på kvaliteten på materialer, tomtestørrelse, byggeår, nyeste år for oppussing og kjellerareal.  
 
 Lager modell på treningssettet:
 
 ```{r}
-multiregressor <- lm(Lonn ~ ., data = treningssett2)
+multiregressor <- lm(SalePrice ~ Gr.Liv.Area + Overall.Qual + Year.Built + Year.Remod.Add + Total.Bsmt.SF + Full.Bath, data = Ames4_trening)
+sjPlot::tab_model(multiregressor)
 ```
 
-Prediksjon ift testdata:
+Prediksjon ift testdata (10 første verdier):
 
 ```{r}
-y_prediksjon2 <- predict(multiregressor, newdata = testsett2)
+y_prediksjon2 <- predict(multiregressor, newdata = Ames4_test)
 y_pred2 <- as.data.frame(y_prediksjon2)
-obs2 <- as.data.frame(testsett2$Lonn)
+obs2 <- as.data.frame(Ames4_test$SalePrice)
 df2 <- as.data.frame(c(y_pred2, obs2))
-df2
+colnames(df2) <- c("Predikert", "Observert")
+head(df2, 10)
 ```
 
-Vi kan se av tabellen over at prediksjonene for den multiple modellen er ganske lik den enkle lineære. Vi kan sammenlikne MSE:
+Vi kan sammenlikne MSE mellom multippel og enkel lineær:
 
 ```{r}
-msemultippel <- mean((df2$testsett2.Lonn - df2$y_prediksjon2)^2)
-msemultippel
-```
-
-```{r}
+msemultippel <- mean((df2$Observert - df2$Predikert)^2)
 msetab <- data.frame(mseOLS, msemultippel)
 msetab
 ```
 
-Det kan se ut til at den enkle OLS har noe lavere MSE enn den multiple regresjonsmodellen.
+Det ser ut til at den enkle OLS har vesentlig høyere MSE enn den multiple regresjonsmodellen.
+
+Vi kan også se på RMSE:
+
+```{r warning = FALSE, message = FALSE}
+library(tdr)
+normrmse2 <- as.data.frame(tdStats(y_prediksjon2, Ames4_test$SalePrice))
+normrmseverdi2 <- normrmse2[12,]
+normrmse2
+```
+
+For den enkle lineære var NRMSE `r round(normrmseverdi, 2)`, mens det for den multiple var `r round(normrmseverdi2, 2)`. For $R^2$ hadde den enkle lineære `r round(summary(lm(SalePrice ~ Gr.Liv.Area, data = Ames4_trening))$r.squared, 2)` og for den multiple `r round(summary(lm(SalePrice ~ Gr.Liv.Area + Overall.Qual + Year.Built + Year.Remod.Add + Total.Bsmt.SF + Full.Bath, data = Ames4_trening))$r.squared, 2)`.
 
 ## Polynomisk regresjon
 
@@ -203,6 +419,7 @@ xfun::embed_file("mldata3.xlsx")
 ```
 
 ```{r}
+library(readxl)
 mldata3 <- read_xlsx("mldata3.xlsx")
 glimpse(mldata3)
 ```
@@ -318,7 +535,7 @@ print(svrreg)
 Og predikerer på bakgrunn av treningssettet og sammenlikner med testdataene:
 
 ```{r}
-pred <-  predict(svrreg, btestsett)
+pred4 <-  predict(svrreg, btestsett)
 x = 1:length(btestsett$medv)
 ggplot() +
     geom_point(aes(x = x, y = btestsett$medv), 
@@ -333,16 +550,14 @@ ggplot() +
 Vi kan til slutt sjekke hvor godt modellen predikerer:
 
 ```{r warning = FALSE, message = FALSE}
-library(Metrics)
-mse <- mse(btestsett$medv, pred)
-mae <- MAE(btestsett$medv, pred)
-rmse <- RMSE(btestsett$medv, pred)
-r2 <- R2(btestsett$medv, pred, form = "traditional")
-cat(" MAE:", mae, "\n", "MSE:", mse, "\n", 
-     "RMSE:", rmse, "\n", "R^2:", r2)
+library(tdr)
+normrmse3 <- as.data.frame(tdStats(pred4, btestsett$medv))
+normrmseverdi3 <- normrmse3[12,]
+normrmseverdi4 <- normrmse3[7,]
+normrmse3
 ```
 
-MSE/RMSE kan fortelle oss noe om hvor god modellen er ved at den sammenlikner observerte verdier mot predikerte verdier. RMSE forteller oss f.eks. den gjennomsnittlige avstanden mellom en predikert verdi og den "tilhørende" observerte verdien. Jo nærmere 0 verdien er, jo bedre predikerer modellen (0 = perfekt prediksjon). Men det er nødvendig å se verdiene vi får i kontekst. Gitt at den avhengige variabelen "medv" er median boligpris målt i 1000, betyr det at RMSE på 3.43 * 1000 betyr at modellen i gjennomsnitt bommer med $3430. Er det bra eller dårlig? Vel, la oss se på variabelen:
+RMSE er `r round(normrmseverdi4, 2)`. La oss se på verdien i kontekst. Gitt at den avhengige variabelen "medv" er median boligpris målt i 1000, betyr det at RMSE på `r round(normrmseverdi4, 2)` * 1000 betyr at modellen i gjennomsnitt bommer med `r round(normrmseverdi4, 2)*1000`. Er det bra eller dårlig? Vel, la oss se på variabelen:
 
 ```{r warning = FALSE, message = FALSE}
 library(psych)
@@ -352,41 +567,15 @@ deskdata
 
 Vi kan se at boligprisen varierer mellom 5000 og 50000, med et standardavvik (= verdienes gjennomsnittlig avstand fra gjennomsnittet) på 9200 (9.2). I det perspektivet kan modellen se ut til å predikere rimelig bra. 
 
-En veg videre i tolkningen er også å normalisere RMSE verdien. Det finnes fire beskrevne måter å normalisere RMSE [@ottoHowNormalizeRMSE2019]:
-
-```{r}
-# Gjennom maks og min verdier
-egennrmse1 <- as.data.frame(rmse/(deskdata$max-deskdata$min))
-# Gjennom gjennomsnitt
-egennrmse2 <- as.data.frame(rmse/deskdata$mean)
-# Gjennom standardavvik
-egennrmse3 <- as.data.frame(rmse/deskdata$sd)
-# Gjennom interkvartil bredde (IQR)
-interkvart <- IQR(bostondata$medv)
-egennrmse4 <- as.data.frame(rmse/(interkvart))
-normrmse <- data.frame(c(egennrmse1, egennrmse2, egennrmse3, egennrmse4))
-normrmse <- rename(normrmse, MaksMin = rmse..deskdata.max...deskdata.min.,
-       Snitt = rmse.deskdata.mean,
-       Standardavvik = rmse.deskdata.sd,
-       IQR = rmse..interkvart.)
-normrmse
-```
-
-En lettere veg i R er gjennom pakken tdr (hensikten med utregning ovenfor er å vise - utregningen):
 ```{r warning = FALSE, message = FALSE}
 library(tdr)
-normrmse2 <- tdStats(pred, btestsett$medv)
+normrmse2 <- tdStats(pred4, btestsett$medv)
 normrmse2
 ```
-Merk at "tdr"-pakken bruker snitt til å normalisere i kolonnen "cvrmse" og MaksMin for å normalisere i kolonnen "nrmse" (hvilket vi ser gjennom de like verdiene fra pakken og fra vår manuelle utregning).
 
 Jaha...så hvilken metode skal man bruke siden det gir fire ulike normaliserte verdier?
 
-@ottoHowNormalizeRMSE2019 finner i sin simulering at "there is no normalization method (of the one tested here) that is obviously superior", men gir følgende råd:
 
-- Gjennomsnitt er ok hvis man sammenlikner modeller som baserer seg på samme responsvariabel. Hvis ikke, bruk en av de andre tre.
-- Maks-min metoden sies å være mer sensitiv for utvalgsstørrelse, men Otto fant ingen større forskjeller for utvalg helt ned til 5
-- IQR sies å være mindre sensitiv for ekstreme verdier
 
 I vårt datasett har vi ikke noe problem med utvalgsstørrelsen. Hvis vi ser på et boksplott vil vi se at vi har endel uteliggere og kanskje ekstreme verdier:
 

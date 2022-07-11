@@ -303,6 +303,9 @@ approximate-fit-index---rmsea-cfi-og-tli
 kryssvalidering-cross-validation
 maskinlæring-machine-learning
 regresjon
+manglende-verdier-i-datasettet-nas
+uteligger
+deling-av-datasettet-i-trenings--og-testdatasett
 enkel-lineær-regresjon
 multippel-regresjon
 polynomisk-regresjon-1
