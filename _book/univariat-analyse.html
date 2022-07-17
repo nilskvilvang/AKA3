@@ -105,7 +105,7 @@
 <span class="header-section-number">Kapittel 4</span> Univariat analyse<a class="anchor" aria-label="anchor" href="#univariat-analyse"><i class="fas fa-link"></i></a>
 </h1>
 <p>R-pakker brukt i dette kapittelet:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">summarytools</span><span class="op">)</span></span></code></pre></div>
 <p>Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler i sammenheng eller i forhold til hverandre). I hovedsak gjør vi dette på tre måter:</p>
 <ol style="list-style-type: decimal">
@@ -152,7 +152,7 @@
 <span class="header-section-number">4.2</span> Frekvenstabell<a class="anchor" aria-label="anchor" href="#frekvenstabell"><i class="fas fa-link"></i></a>
 </h2>
 <p>Det gir ikke særlig mening å lage en frekvenstabell for de genererte høydedataene siden alle verdeiene er unike (altså får vi frekvens 1 på alle 100 observasjonene). La oss derfor lage et enkelt eksempel:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3.5</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">6.5</span>, <span class="fl">7</span>, <span class="fl">7.4</span>, <span class="fl">8</span>, <span class="fl">13</span>, <span class="fl">14.2</span><span class="op">)</span></span>
 <span><span class="fu">summarytools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/summarytools/man/freq.html">freq</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Frequencies  </span></span>
@@ -190,22 +190,22 @@
 <span class="header-section-number">4.3.1.1</span> Stolpediagram (“bar chart”)<a class="anchor" aria-label="anchor" href="#stolpediagram-bar-chart"><i class="fas fa-link"></i></a>
 </h4>
 <p>Histogram:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fl">8</span>, main <span class="op">=</span> <span class="st">"Histogram inndelt med bredde = 8"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="04_files/figure-html/unnamed-chunk-4-1.png" width="672"></div>
 <p>Histogrammet viser søyler av kontinuerlige data gruppert etter en gitt bredde på søylene - antall søyler definerer vi selv ut fra hvor stor del av bredden av observasjoner vi “putter inn i” søyla. I histogrammet over har vi delt dataene inn i åtte deler (søylene har alltid lik bredde). Vi kan også dele inn annerledes.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fl">3</span>, main <span class="op">=</span> <span class="st">"Histogram inndelt med bredde = 3"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="04_files/figure-html/unnamed-chunk-5-1.png" width="672"></div>
 <p>Fordeling (“density”):</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dens</span>, <span class="va">x</span>, frame <span class="op">=</span> <span class="cn">FALSE</span>, col <span class="op">=</span> <span class="st">"steelblue"</span>, main <span class="op">=</span> <span class="st">"Densityplott"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span><span class="op">(</span><span class="va">dens</span>, col <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="04_files/figure-html/unnamed-chunk-6-1.png" width="672"></div>
 <p>Et densityplott viser distribusjonen til en numerisk variabel. Det er på en måte en “smooth” versjon av histogrammet. Densityplott kan være et alternativ når man skal se på dataene og hvilken distribusjon den har. Det kan være enklere å se om distribusjonen f.eks. er bimodal eller unimodal (en eller to topper).</p>
 <p>Boxplott:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="04_files/figure-html/unnamed-chunk-7-1.png" width="672"></div>
 <p>Boxplott ble ganske grundig gjennomgått i kapittel 1.7.1.4.</p>

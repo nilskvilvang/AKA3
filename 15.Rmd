@@ -736,7 +736,7 @@ print(northridge_box, vp = viewport(0.85, 0.21, width = 0.35 * ames_ratio, heigh
 dev.off()
 ```
 
-![Kart over Ames med salgsobjektene plottet inn etter nabolag - @kuhnTidyModeling2022](ames.png){width=75%}
+![Kart over Ames med salgsobjektene plottet inn etter nabolag - @kuhnTidyModeling2022](ames.png){width=85%}
 
 Vi kan så se på hvordan salgsprisen i gjennomsnitt ser ut for de ulike nabolagene.
 

@@ -4,6 +4,10 @@ csl: chicago-author-date.csl
 always_allow_html: true
 ---
 
+```{r echo = FALSE}
+options(scipen = 999)
+```
+
 # Grunnleggende begreper og sammenhenger
 
 R-pakker brukt i dette kapittelet:
@@ -62,7 +66,7 @@ Vi måler altså verdien på variabler. Men variabler er forskjellige, det vil s
 ```{r echo = FALSE}
 
 nivå <- data.frame(Nivå = c("Kategorisk", "Kategorisk", "Kategorisk", "Kontinuerlige", "Kontinuerlige"),
-                            Data = c("Binær/dikotom", "Nomiell", "Ordinal", "Intervall", "Skala/ratio/ forholdstall"),
+                            Data = c("Binær/dikotom", "Nominell", "Ordinal", "Intervall", "Skala/ratio/ forholdstall"),
                       Forklaring = c("Kun to muligheter/to kategorier", "Mer enn to kategorier som er gjensidig utelukkende. Tallverdi er en 'merkelapp' som ikke sier noe om egenskaper.", "Kategorier som kan rangeres/ordnes, men der avstanden mellom kategoriene er betydningsløs.", "Kan rangeres og man kan si noe kvantitativt om avstanden mellom verdier. Fast avstand mellom måleverdier – lik avstand på måleskalaen representerer lik avstand i fenomenet som måles. Har et kunstig nullpunkt", "Kan rangere, måle avstand og beregne forholdstall mellom verdier. Har et faktisk nullpunkt"),
                       Operasjoner = c("Telle frekvenser.", "Telle frekvenser.", "Arrangere i rekkefølge.", "Addere, subtrahere og regne ut gjennomsnitt", "Regne ut ratio/forholdstall og prosenter"),
                       Eksempel = c("Til stede/ikke til stede, død/levende, ja/nei, på/av", "Nasjonalitet, politiske partier, yrke, studieretning", "Likertskalaer (sterkt uenig-sterkt enig), Utdanningsnivå", "Temperatur: 10°C er dobbelt så mye som 5°C, men man kan ikke si at 10°C er dobbelt så varmt som 5°C.", "Inntekt: 200000 er dobbelt så mye som 100000, og 200000 er dobbelt så stor inntekt som 100000. Samtidig er 400000 dobbelt så høy inntekt som 200000."))
@@ -94,7 +98,7 @@ En regresjonsanalyse lager en modell, en kjikvadrattest er en modell, og som vi 
 
 > Models are mathematical tools that can describe a system and capture relationships in the data given to them. Models can be used for various purposes, including predicting future events, determining if there is a difference between several groups, aiding map-based visualization, discovering novel patterns in the data that could be further investigated, and more. The utility of a model hinges on its ability to be reductive, or to reduce complex relationships to simpler terms. The primary influences in the data can be captured mathematically in a useful way, such as in a relationship that can be expressed as an equation.
 
-For oss er dette kjernen i modeller og modellering: Ta noe komplekst, kanskje uoversiktlig, og kanskje vanskelig å tolke (eller med andre ord: slik virkeligheten som regel er) og forsøk å framstille det på en måte som gjør det lettere å forstå og lettere å bruke til å si noe om både hvordan og hvorfor ting er som de er og hvordan de vil bli framover. Tilgangen til data som kan hjelpe oss i dette har eksplodert, jfr tall fra @statistaTotalDataVolume2022 (se @wikipediaZettabyte2021).
+For oss er dette kjernen i modeller og modellering: Ta noe komplekst, kanskje uoversiktlig, og kanskje vanskelig å tolke (eller med andre ord: slik virkeligheten som regel er) og forsøk å framstille det på en måte som gjør det lettere å forstå og lettere å bruke til å si noe om både hvordan og hvorfor ting er som de er og hvordan de vil bli framover. Tilgangen til data som kan hjelpe oss i dette har eksplodert, jfr tall fra @statistaTotalDataVolume (se @wikipediaZettabyte2021).
 
 [Volume of data/information created, captured, copied, and consumed worldwide from 2010 to 2025 (in zettabytes)](https://www.statista.com/statistics/871513/worldwide-data-created/)
 
@@ -109,7 +113,9 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_smooth(method = "loess", span = 0.3) + 
   theme_bw()
 ```
+
 2. Inferensielle modeller/Slutningsmodeller ("inferential models"). Der beskrivende modeller skal - vel - beskrive, formålet med slutningsmodeller å undersøke spesifikke hypoteser og/eller virke som beslutningsgrunnlag (kanskje er ok ord er "beslutningsmodeller"?). Vi kan f.eks. være interessert i å undersøke om en ny covid-19 vaksine er mer effektiv enn eksisterende vaksiner. Hypotesen vår vil være at den er det, mens det vi vil kalle nullhypotesen er at den ikke er det. Så bruker vi data for å se om nullhypotesen vår kan forkastes (mer om hypotesetesting på mange stedere senere i boka). Vi bruker altså en modell for å se på dataene og treffe en beslutning om effektene av den nye vaksinen. Slutningsmodeller sier derfor noe om det vi "vet" (data fra forsøkene rundt den nye vaksinen) og gir oss en eller annen sikkerhet for vår konklusjon.
+
 3. Prediktive modeller. Her bruker vi data for å lage modeller som skal kunne si oss noe om hvilke verdier tilsvarende data med en eller annen form for sikkerhet vil være i framtiden. Et apotek kan bruke salgsdata for en gitt medisin (og tilhørende data som ikke er rene salgstall, men som kan være med på å forklare salgstallene) til å predikere hvor store mengder av den gitte medisin de skal bestille før sommersesongen. Dette gjøres som regel ved å "trene opp" en modell på en del av de foreliggende salgstallene og deretter teste modellen på en annen del av de samme salgstallene. På den måten kan man anslå hvor god modellen er (= hvor stor feilmargin vil prediksjonene i gjennomsnitt ha = hvor nære observerte verdier er de predikerte verdiene). En modell kan enten underestimere eller overestimere antallet bokser av den respektive medisinen man bestiller. Prediktive modeller komemr vi sterkt tilbake til i kapittelet om maskinlæring.
 
 Om en modell er beskrivende, inferensiell eller prediktiv kommer i mange sammenhenger an på hvordan den brukes. En regresjonsanalyse kan f.eks. være alle tre (jfr. @kuhnTidyModeling2022) - men ikke alle modeller er slik. 
@@ -150,13 +156,24 @@ Vi kommer til å snakke mye om modeller. Vi kommer også itl å snakke mye om "h
 
 ## Normalfordeling
 
-Når vi snakker om distribusjonen av et datasett tenker vi på hvordan dataene vi har samlet inn fordeler seg i forhold til hverandre etter gitte egenskaper. Vi kan for eksempel ha målt høyden på 100 mennesker. Disse dataene utgjør da en observert fordeling som vi kan sette inn i et histogram for å visualisere hvordan datasettet ser ut:
+Når vi snakker om distribusjonen av et datasett tenker vi på hvordan dataene vi har samlet inn fordeler seg i forhold til hverandre etter gitte egenskaper. Vi kan for eksempel ha målt høyden på 100 mennesker. 
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 tilfeldige menn, genererte data"}
-
+```{r}
 set.seed(30)
 x <- rnorm(100, 179, 16)
-hist(x, xlab = "Hoyde", ylab = "Antall", main = "Histogram for genererte hoydedata")
+y <- rep("Mann",each=100)
+hoyde <- bind_cols( y, x)
+colnames(hoyde) <- c("Kjonn", "Hoyde")
+```
+
+Dataene kan vi sette inn i et histogram for å se på fordelingen.
+
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 tilfeldige menn, genererte data"}
+p <- ggplot(hoyde, aes(x = Hoyde)) + 
+  geom_histogram(color="black", fill="lightblue", bins = 10) + 
+    theme_bw() + 
+    ylab("Antall")
+p
 ```
 
 Hvis vi tar et utvalg på 100 andre personer kan fordelingen se slik ut:
@@ -168,9 +185,16 @@ data2 <- sample(170:180, 30, replace=TRUE)
 data3 <- sample(180:185, 15, replace = TRUE)
 data4 <- sample(185:190, 5, replace = TRUE)
 
-data <- c(data1, data2, data3, data4)
+data <- as_tibble(c(data1, data2, data3, data4))
+y <- rep("Mann",each=100)
+hoyde2 <- bind_cols( y, data)
+colnames(hoyde2) <- c("Kjonn", "Hoyde")
 
-hist(data, xlab = "Hoyde", ylab = "Antall", main = "Histogram for genererte hoydedata")
+p2 <- ggplot(hoyde2, aes(x = Hoyde)) + 
+  geom_histogram(color="black", fill="lightblue", bins = 10) + 
+    theme_bw() + 
+    ylab("Antall")
+p2
 ```
 
 Hver gang vi måler høyden på 100 tilfeldig utvalgte menn vil fordelingen se ulik ut siden de er observerte fordelinger i et utvalg av populasjonen (alle) «norske menn». Hvis vi imidlertid økte antallet i utvalget vi målte til 1000 eller 10000 vil vi med større sikkerhet kunne si at vi faktisk viser populasjonens fordeling (mulighetene for at vi tilfeldigvis måler 10000 veldig lave eller veldig høye menn er svært liten). Vi kan derfor, gitt visse forutsetninger om utvalget, si noe om hele populasjonen ut fra utvalget.
@@ -185,46 +209,29 @@ Vi skal her ikke bry oss om det matematisk uttrykket for sannsynlighetstetthetsf
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Genererte standard normalfordelte data"}
 
-set.seed(100)
+set.seed(321)
 
-normalfordeling <- rnorm(100, mean = 0, sd = 1)
+data2 <- as_tibble(rnorm(10000, mean = 0, sd = 1))
+y <- rep("y",each=10000)
+normalfordeling <- bind_cols( y, data2)
+colnames(normalfordeling) <- c("f(x)", "x")
 
-hist(normalfordeling, 
-     main = "Genererte, normalfordelte data", 
-     xlab = "x", 
-     ylab = "f(x)",
-     border = "black", 
-     col = "gray",
-     xlim = c(-4,4),
-     ylim = c(0,0.5),
-     las = 1, 
-     probability = TRUE)
+p3 <- ggplot(normalfordeling, aes(x = x)) + 
+  geom_histogram(color="black", fill="lightblue", bins = 20) + 
+    theme_bw() + 
+    ylab("f(x)")
+p3
 ```
 
 Her kan vi legge på en forventningskurve – en teoretisk kurve som viser en standard normalfordeling:
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Genererte standard normalfordelte data med normalfordelingskurve"}
-
-set.seed(100)
-
-normalfordeling <- rnorm(100, mean = 0, sd = 1)
-
-hist(normalfordeling, 
-     main = "Genererte, normalfordelte data", 
-     xlab = "x", 
-     ylab = "f(x)",
-     border = "black", 
-     col = "gray",
-     xlim = c(-4,4),
-     ylim = c(0,0.5),
-     las = 1, 
-     probability = TRUE)
-
-m <- mean(normalfordeling)
-std <- sqrt(var(normalfordeling))
-
-curve(dnorm(x, mean = m, sd = std), 
-      col="darkblue", lwd = 3, add = TRUE, yaxt = "n")
+p4 <- ggplot(normalfordeling, aes(x)) + 
+    geom_histogram(aes(y = ..density..), fill='lightblue', col='black') + 
+    stat_function(fun = dnorm, args = list(mean=mean(normalfordeling$x),
+                                         sd=sd(normalfordeling$x))) + 
+    theme_bw()
+p4
 ```
 
 Vi kan ta bort det genererte datasettet og sitte igjen med bare forventningskurven:
@@ -383,10 +390,7 @@ Vi vil se senere at mange tester har en forutsetning om at dataene er normalford
 
 Som tidligere vist kan vi få et inntrykk av fordelingen gjennom et histogram:
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 tilfeldige menn, genererte data"}
-
-set.seed(30)
-x = rnorm(100, 179, 16)
-hist(x, xlab = "Høyde", ylab = "Antall", main = "Histogram for genererte høydedata")
+p
 ```
 
 #### QQ-plott
@@ -394,7 +398,6 @@ hist(x, xlab = "Høyde", ylab = "Antall", main = "Histogram for genererte høyde
 ```{r echo = FALSE}
 Field_OLS_data <- read_excel("Field_datasett_OLS.xlsx")
 ```
-
 
 Q-Q plottet (“quantile-quantile plot”) kan tolkes ved å se om dataverdiene ligger langs en rett linje med ca 45 graders vinkel. Q-Q plottet (se video for forklaring på utregning) innebærer å se to distribusjoner mot hverandre – empirisk fordeling (dataene) og teoretisk forventning ut fra en fordelingsmodell (som normalfordeling om vi snakker om “normal Q-Q plott - dvs vi ser om vår empiriske datafordeling og normalfordelingen er lik). Om de samsvarer perfekt ligger de på en helt rett linje (x = y). I eksempelet under vil da alle punktene ligge perfekt oppå den rette linjen. Siden vi vet den teoretiske distribusjonen til normalfordelingen, kan vi bruke denne teoretiske fordelingen til å plotte den mot datasettet vi sitter med.
 
@@ -405,6 +408,9 @@ Under viser vi typiske mønstre for histogram og "tilhørende" qq-plott som kan 
 ```{r}
 set.seed(89)
 qqnorm <- as_tibble(rnorm(10000, mean=90, sd=5))
+```
+
+```{r echo = FALSE}
 write_xlsx(qqnorm,"QQ_norm.xlsx")
 ```
 
@@ -413,7 +419,9 @@ xfun::embed_file('QQ_norm.xlsx')
 ```
 
 ```{r fig.cap = "Q-Q plott normalfordeling"}
-ggqqplot(qqnorm$value) + ggtitle("Normal Q-Q plott") + labs(x = "Teoretisk forventning", y = "Data")
+ggqqplot(qqnorm$value) + 
+    ggtitle("Normal Q-Q plott") + 
+    labs(x = "Teoretisk forventning", y = "Data")
 ```
 
 Vi ser at dette Q-Q plottet viser oss at vi kan være ganske sikre på at dette datasettet er normalfordelt (noe som gir meninig siden vi har brukt R til å lage et normalfordelt datasett).
@@ -425,7 +433,9 @@ Vi ser at dette Q-Q plottet viser oss at vi kan være ganske sikre på at dette 
 set.seed(90)
 N <- 5000
 qqrightskew <- as_tibble(rnbinom(N, 10, .1))
-# Eksportere datasettet
+```
+
+```{r echo = FALSE}
 write_xlsx(qqrightskew,"QQ_norm_rs.xlsx")
 ```
 
@@ -434,9 +444,11 @@ xfun::embed_file('QQ_norm_rs.xlsx')
 ```
 
 ```{r fig.cap = "Q-Q plott - fordeling skjevhet høyre", message = FALSE}
-# Plotte histogram og Q-Q plott"
-qqrighthist <- ggplot(qqrightskew, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
-qqrightskew_plott <- ggqqplot(qqrightskew$value) + ggtitle("Normal Q-Q plott - skjevhet høyre") + labs(x = "Teoretisk forventning", y = "Data")
+qqrighthist <- ggplot(qqrightskew, aes(x=value)) + 
+    geom_histogram(color="black", fill="lightblue")
+qqrightskew_plott <- ggqqplot(qqrightskew$value) + 
+    ggtitle("Normal Q-Q plott - skjevhet høyre") + 
+    labs(x = "Teoretisk forventning", y = "Data")
 grid.arrange(qqrighthist, qqrightskew_plott, ncol=2)
 ```
 
@@ -449,7 +461,9 @@ I et datasett med høyreskjevhet vil ofte Q-Q plottet vise en bananform med bunn
 set.seed(91)
 N=5000
 qqleftskew <- as_tibble(rbeta(N,5,1,ncp=0))
-# Eksportere datasettet
+```
+
+```{r echo = FALSE}
 write_xlsx(qqleftskew,"QQ_norm_ls.xlsx")
 ```
 
@@ -457,12 +471,13 @@ write_xlsx(qqleftskew,"QQ_norm_ls.xlsx")
 xfun::embed_file('QQ_norm_ls.xlsx')
 ```
 
-
 ```{r fig.cap = "Q-Q plott - fordeling skjevhet venstre", message = FALSE}
 # Plotte histogram og Q-Q plott
-qqlefthist <- ggplot(qqleftskew, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
-
-qqleftskew_plott <- ggqqplot(qqleftskew$value) + ggtitle("Normal Q-Q plott - skjevhet venstre") + labs(x = "Teoretisk forventning", y = "Data")
+qqlefthist <- ggplot(qqleftskew, aes(x=value)) + 
+    geom_histogram(color="black", fill="lightblue")
+qqleftskew_plott <- ggqqplot(qqleftskew$value) + 
+    ggtitle("Normal Q-Q plott - skjevhet venstre") + 
+    labs(x = "Teoretisk forventning", y = "Data")
 grid.arrange(qqlefthist, qqleftskew_plott, ncol=2)
 ```
 
@@ -474,6 +489,9 @@ I dette datasettet har vi generert en kraftig skjevhet til venstre. Q-Q plottet 
 set.seed(14)
 N=100
 qqcauchy <- as_tibble(rcauchy(N, scale = 5)) 
+```
+
+```{r echo = FALSE}
 write_xlsx(qqcauchy,"QQ_ht.xlsx")
 ```
 
@@ -482,8 +500,11 @@ xfun::embed_file('QQ_ht.xlsx')
 ```
 
 ```{r fig.cap = "Q-Q plott - 'heavy-tail'", message = FALSE}
-qqcauchyhist <- ggplot(qqcauchy, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
-qqcauchy_plott <- ggqqplot(qqcauchy$value) + ggtitle("Normal Q-Q plott - tung hale") + labs(x = "Teoretisk forventning", y = "Data")
+qqcauchyhist <- ggplot(qqcauchy, aes(x=value)) + 
+    geom_histogram(color="black", fill="lightblue")
+qqcauchy_plott <- ggqqplot(qqcauchy$value) + 
+    ggtitle("Normal Q-Q plott - tung hale") + 
+    labs(x = "Teoretisk forventning", y = "Data")
 grid.arrange(qqcauchyhist, qqcauchy_plott, ncol=2)
 ```
 
@@ -494,6 +515,9 @@ grid.arrange(qqcauchyhist, qqcauchy_plott, ncol=2)
 ```{r}
 set.seed(81)
 qqlt <- as_tibble(runif(n = 1000, min = -1, max = 1))
+```
+
+```{r echo = FALSE}
 write_xlsx(qqlt,"QQ_lt.xlsx")
 ```
 
@@ -502,8 +526,11 @@ xfun::embed_file('QQ_lt.xlsx')
 ```
 
 ```{r fig.cap = "Q-Q plott - 'light-tail'", message = FALSE}
-qqlthist <- ggplot(qqlt, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
-qqlt_plott <- ggqqplot(qqlt$value) + ggtitle("Normal Q-Q plott - lett hale") + labs(x = "Teoretisk forventning", y = "Data")
+qqlthist <- ggplot(qqlt, aes(x=value)) + 
+    geom_histogram(color="black", fill="lightblue")
+qqlt_plott <- ggqqplot(qqlt$value) + 
+    ggtitle("Normal Q-Q plott - lett hale") + 
+    labs(x = "Teoretisk forventning", y = "Data")
 grid.arrange(qqlthist, qqlt_plott, ncol=2)
 ```
 
@@ -518,6 +545,9 @@ mode1 <- mode1[mode1 > 0]
 mode2 <- rnorm(50,6,1)
 mode2 <- mode2[mode2 > 0] 
 qqbimod <- as_tibble(sort(c(mode1,mode2)))
+```
+
+```{r echo = FALSE}
 write_xlsx(qqbimod,"QQ_bimod.xlsx")
 ```
 
@@ -526,8 +556,11 @@ xfun::embed_file('QQ_bimod.xlsx')
 ```
 
 ```{r fig.cap = "Q-Q plott - bimodal", message = FALSE}
-qqbimodhist <- ggplot(qqbimod, aes(x=value)) + geom_histogram(color="black", fill="lightblue")
-qqbimod_plott <- ggqqplot(qqbimod$value) + ggtitle("Normal Q-Q plott - bimodial") + labs(x = "Teoretisk forventning", y = "Data")
+qqbimodhist <- ggplot(qqbimod, aes(x=value)) + 
+    geom_histogram(color="black", fill="lightblue")
+qqbimod_plott <- ggqqplot(qqbimod$value) + 
+    ggtitle("Normal Q-Q plott - bimodial") + 
+    labs(x = "Teoretisk forventning", y = "Data")
 grid.arrange(qqbimodhist, qqbimod_plott, ncol=2)
 ```
 
@@ -537,6 +570,9 @@ Den bimodiale fordelingen viser ofte et brudd eller et distinkt knekkpunkt rundt
 
 ```{r}
 qqmultimod <- as_tibble(read_xlsx("Multimodal.xlsx"))
+```
+
+```{r echo = FALSE}
 write_xlsx(qqmultimod,"QQ_multimod.xlsx")
 ```
 
@@ -545,8 +581,11 @@ xfun::embed_file('QQ_multimod.xlsx')
 ```
 
 ```{r fig.cap = "Q-Q plott - multimodal", message = FALSE}
-qqmultimodhist <- ggplot(qqmultimod, aes(x=Verdi)) + geom_histogram(color="black", fill="lightblue")
-qqmultimod_plott <- ggqqplot(qqmultimod$Verdi) + ggtitle("Normal Q-Q plott - multimodial") + labs(x = "Teoretisk forventning", y = "Data")
+qqmultimodhist <- ggplot(qqmultimod, aes(x=Verdi)) + 
+    geom_histogram(color="black", fill="lightblue")
+qqmultimod_plott <- ggqqplot(qqmultimod$Verdi) + 
+    ggtitle("Normal Q-Q plott - multimodial") + 
+    labs(x = "Teoretisk forventning", y = "Data")
 grid.arrange(qqmultimodhist, qqmultimod_plott, ncol=2)
 ```
 
@@ -575,7 +614,7 @@ Siden vi vet at nullhypotesen er at datasettet **har** en normalfordeling vil vi
 
 Generisk ser dette slik ut [@hartmannELearningProjectSOGA2018]:
 
-![](Hartman1.png)
+![Nyllhypoteser - aksept/forkastsoner](Hartman1.png)
 
 Det er verdt å merke seg at Anderson-Darling testen egentlig ikke forteller deg at dataene dine er normalfordelte, men at det er usannsynlig at de ikke er det om testen viser det. Dette synes kanskje som samme sak, men er i realiteten en viktig erkjennelse – en tørr gressplen er et bevis for at det ikke har regnet, men en våt gressplen er ikke bevis for at det har regnet. En våt gressplen kan skyldes andre ting enn regn. Altså – en signifikant p-verdi på testen gjør at vi forkaster $H_0$ og antar at fordelingen er ikke-normal. En ikke-signifikant p-verdi på gjør at vi med f.eks. 95% konfidens kan si at vi ikke har funnet avvik fra normalfordelingen. 
 
@@ -595,7 +634,6 @@ kable(adbet,
 Det finnes flere andre statistiske tester som kan kjøres for å teste for normalitet, f.eks. Kolmogorov-Smirnov, Shapiro-Wilks og Cramer Von-Mises test. Anderson-Darling er en modifisering/videreutvikling av Kolmogorov-Smirnov og anses ofte som en bedre test av de to. Andre kilder (se f.eks. @razaliPowerComparisonsShapiroWilk2011) finner at Shapiro-Wilks presterer best i 10 000 simuleringer på ulike distribusjoner. 
 
 ```{r}
-options(scipen=999)
 addata5 <- as_tibble(read_excel("Anderson-Darling_raw.xlsx"))
 ks.test(addata5, "pnorm")
 ```
@@ -629,7 +667,7 @@ Dette er altså ikke så enkelt. Det finnes mange statistiske tester, som kan gi
 
 #### Boxplott
 
-```{r}
+```{r fig.cap = "Boksplott for variablene Adverts og Sales"}
 par(mfrow=(c(1,2)))
 Boxplot(Field_OLS_data$Adverts, id = list(n=Inf), ylab = "", main = "Adverts", col = "Blue")
 Boxplot(Field_OLS_data$Sales, id = list(n=Inf), ylab = "", main = "Sales", col = "Green")
@@ -644,20 +682,21 @@ Et boxplott forteller oss mye om dataenes distribusjon.
 
 @galarnykUnderstandingBoxplots2018 illustrerer boxplott slik:
 
-![](Boxplott.png){width=50%}
+![Illustrasjon av boksplott](Boxplott.png){width=50%}
 
 #### Scatterplott
 
-```{r}
+```{r fig.cap = "Eksempel scatterplott"}
 ggplot(Field_OLS_data, aes(x = Adverts, y = Sales)) +
-  geom_point(colour = 4)
+  geom_point(colour = "red") +
+  theme_bw()
 ```
 
 Et scatterplott viser oss på en god visuell måte hvordan de to variablene forholder seg til hverandre (vi plotter hver enkelt observasjon gjennom verdiene de har på de to variablene). Mønsteret kan derfor si oss mye om sammenhengen mellom de to. 
 
 En god måte å fremstille et scatterplott på i R (gjennom pakken *car*) er denne:
 
-```{r}
+```{r fig.cap = "Eksempel scatterplott fra pakken 'car'"}
 scatterplot(Adverts ~ Sales, data = Field_OLS_data, id = list(n=4))
 ```
 
@@ -669,63 +708,52 @@ En distribusjon hvor det kun er to mulige utfall av en hendelse kalles en binomi
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Binomialfordeling med lik sannsynlighet"}
 
-success <- 0:20
+suksess <- 0:20
 
-plot(success,dbinom(success,size=20,prob=.5),
-     type='h',
-     main="Binomial distribusjon (n=20, p=0.5)",
-     ylab="Sannsynlighet",
+plot(suksess, dbinom(suksess, size = 20, prob = .5),
+     type = 'h',
+     main = "Binomial distribusjon (n = 20, p = 0.5)",
+     ylab = "Sannsynlighet",
      xlab = "Suksess",
-     lwd=10)
+     lwd = 10)
 ```
 
 I diagrammet over vises en sannsynlighetsfordeling for en binomial fordeling der utfallene suksess/fiasko har lik sannsynlighet. Hvis vi gjennomfører en aktivitet med disse karakteristika 20 ganger kan vi bruke sannsynlighetsfordelingen til å skape en forventning om sannsynligheten for antall suksesser/fiaskoer. Hver gang vi gjennomfører aktiviteten blir det enten suksess eller fiasko. Hvis vi har 50% sjanse for suksess eller feil hver gang vi gjennomfører aktiviteten er sannsynligheten for suksess lik som sannsynligheten for fiasko. Vi kan da forvente at det er størst sannsynlighet at vi i 10 av 20 tilfeller får suksess. Det er liten sannsynlighet for at vi enten får suksess i 0 eller 20 av 20 ganger vi gjør aktiviteten.
 
 Det er imidlertid verdt å merke seg at de to utfallene ikke trenger å ha lik sannsynlighet. Da vil den binomiale distribusjonen se annerledes ut:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Binomialfordeling med ulik sannsynlighet"}
-
-success <- 0:20
-
-plot(success,dbinom(success,size=20,prob=.2),
-     type='h',
-     main="Binomial distribusjon (n=20, p=0.2)",
-     ylab="Sannsynlighet",
+```{r message = FALSE, warning=FALSE, fig.cap = "Binomialfordeling med ulik sannsynlighet"}
+plot(suksess,dbinom(suksess, size = 20, prob = .2),
+     type = 'h',
+     main = "Binomial distribusjon (n = 20, p = 0.2)",
+     ylab = "Sannsynlighet",
      xlab = "Suksess",
-     lwd=10)
+     lwd = 10)
 ```
 
 Her har vi bare 20% sannsynlighet for suksess, og fordelingen av sannsynligheter vil se annerledes ut. Med 20% sannsynlighet for suksess er det veldig liten sannsynlighet for at vi vil få 10 eller flere suksesser hvis vi gjør forsøket 20 ganger. Det er størst sannsynlighet for å få 4 suksesser.
 
 Et terningkast (med en vanlig terning med 6 sider) – som ikke er tuklet med – har lik sannsynlighet for å lande på hhv 1,2,3,4,5 og 6. Det vil si det er 1/6 sannsynlighet for 1, 1/6 sannsynlighet for 2 osv. Hvis vi kaster denne terningen 10 ganger kan resultatet se slik ut:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "10 terningkast"}
-
+```{r message = FALSE, warning=FALSE, fig.cap = "10 terningkast"}
 set.seed(32)
-
 terning10 <- sample(1:6, 10, replace = TRUE)
-
 stripchart(terning10, method = "stack", offset = .5, at = 0, pch = 19,
            col = "steelblue", main = "10 terningkast", xlab = "Verdi på terning", ylab = "Antall")
 ```
 
 Vi ser at vi ikke fikk noen 2’ere og 5’ere. Dette kan vi forvente når vi bare har 10 terningkast. Hvis vi imidlertid kaster terningen 100 ganger vil det være svært liten sannsynlighet for å ikke få «treff» på alle 6 verdiene på terningen, og vi burde kunne forvente at vi får en ganske jevn fordeling på alle 6 verdiene. Nedenfor vises resultatet av 100 terningkast.
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "100 terningkast"}
-
+```{r message = FALSE, warning=FALSE, fig.cap = "100 terningkast"}
 set.seed(33)
-
 terning10 <- sample(1:6, 100, replace = TRUE)
-
 stripchart(terning10, method = "stack", offset = .5, at = 0, pch = 19, col = "steelblue", main = "100 terningkast", xlab = "Verdi på terning", ylab = "Antall")
-
 ```
 
 Vi ser at vi har en relativt jevn fordeling. Noe ulikhet er det selvsagt, noe vi vil forvente fra en tilfeldig prosess. Hvis vi gjennomførte 1000 eller 10000 terningkast vil fordelingen bli nærmere og nærmere den teoretisk forventede fordelingen. Vi kan burde, teoretisk, forvente 100 treff på hver mulighet hvis vi kaster terningen 600 ganger, men vi vil sjelden se akkurat 100 treff på hver slik vi ser hvis vi kjører tre runder med 600 terningkast:
 
 Runde 1:  
-```{r echo = FALSE, message = FALSE, warning=FALSE}
-
+```{r message = FALSE, warning=FALSE}
 set.seed(43)
 terning_runde1 <- sample(1:6, 600, replace = TRUE)
 table(terning_runde1)
@@ -758,11 +786,11 @@ Hvis vi setter resultatet fra 6 000 000 terningkast inn i et histogram ser vi at
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "6 000 000 terningkast"}
 
-options(scipen=999)
 hist(minterning,
      main="Histogram for 6 000 000 terningkast",
      ylab="Antall",
-     xlab = "Verdi på terning")
+     xlab = "Verdi på terning",
+     col = "lightblue")
 ```
 
 ## Poissonfordeling
@@ -773,48 +801,32 @@ Poissonfordeling uttrykker sannsynligheten for at et gitt antall hendelser inntr
 
 Eksempelet under er hentet fra @soagePoissonDistribution2020:
 
-
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Poissonfordelinger"}
-
+```{r message = FALSE, warning=FALSE, fig.cap = "Poissonfordelinger"}
 # Grid of X-axis values
 x <- 0:50
-
-#-----------
 # lambda: 5
-#-----------
 lambda <- 5
 plot(dpois(x, lambda), type = "h", lwd = 2,
      main = "Poisson sannsynlighetsfordeling",
      ylab = "P(X = x)", xlab = "Antall hendelser")
-
-#-----------
 # lambda: 10
-#-----------
 lambda <- 10
-lines(dpois(x, lambda), type = "h", lwd = 2, col = rgb(1,0,0, 0.7))
-
-#-----------
+lines(dpois(x, lambda), type = "h", lwd = 2, col = rgb(1, 0, 0, 0.7))
 # lambda: 20
-#-----------
-
 lambda <- 20
 lines(dpois(x, lambda), type = "h", lwd = 2, col = rgb(0, 1, 0, 0.7))
-
 # Legend
 legend("topright", legend = c("5", "10", "20"),
        title = expression(lambda), title.adj = 0.75,
        lty = 1, col = 1:3, lwd = 2, box.lty = 0)
-
 ```
 
 Ut fra hvilken $\lambda$-verdi vi setter kan vi si noe om sannsynligheten for at et antall hendelser inntreffer. 
 
 @ugarteProbabilityStatistics2016 eksemplifiserer Poissonfordeling ved å vise til at det i gjennomsnitt skåres 2,5 mål i en VM-kamp i fotball. Denne situasjonen tilfredsstiller forutsetningene for å bruke Possionfordeling.Vi kan grafisk framstille sannsynlighetsfordeingen slik:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Poissonfordeling mål i VM-kamp fotball"}
-
+```{r message = FALSE, warning=FALSE, fig.cap = "Poissonfordeling mål i VM-kamp fotball"}
 maal <- 0:10
-
 plot(maal, dpois(maal, lambda=2.5),
      type='h',
      main='Poissonfordeling (lambda = 2.5)',
@@ -823,7 +835,7 @@ plot(maal, dpois(maal, lambda=2.5),
      lwd=3)
 ```
 
-I R kan vi også enkelt regne ut den nøyaktige sannsynligheten for x antall mål gitt forutsetningen om at det i snitt skåres 2.5 mål pr kamp til å være `r dpois(x = 2.5, lambda = 2.5) `. Vi kan bruke sannsynlighetsfordelingen til å regne ut sannsynligheten for et gitt antall mål, f.eks.:
+I R kan vi også enkelt regne ut den nøyaktige sannsynligheten for x antall mål gitt forutsetningen om at det i snitt skåres 2.5 mål pr kamp. Vi kan bruke sannsynlighetsfordelingen til å regne ut sannsynligheten for et gitt antall mål, f.eks.:
 
 * Sannsynligheten for 0 mål = `r dpois(x = 0, lambda = 2.5) `
 * Sannsynligheten for 1 mål = `r dpois(x = 1, lambda = 2.5) `
@@ -831,23 +843,20 @@ I R kan vi også enkelt regne ut den nøyaktige sannsynligheten for x antall må
 * Sannsynligheten for 3 mål = `r dpois(x = 3, lambda = 2.5) `
 * Sannsynligheten for 4 mål = `r dpois(x = 4, lambda = 2.5) `
 
-eller f.eks. sannsynligheten for at det skåres mellom 1 og 3 mål (= `r dpois(x = 1, lambda = 2.5) + dpois(x=2, lambda = 2.5) + dpois(x=3, lambda = 2.5)`).
+eller f.eks. sannsynligheten for at det skåres mellom 1 og 3 mål = `r dpois(x = 1, lambda = 2.5) + dpois(x=2, lambda = 2.5) + dpois(x=3, lambda = 2.5)`.
 
 ## Geometrisk fordeling
 
 En geometrisk fordeling er en diskret fordeling der man teller antall hendelser/forsøk inntil et gitt resultat forekommer. Resultatet er suksess eller feil, altså hvor mange ganger man har en hendelse før man får en suksess eller feil (avhengig av hva man måler). Et eksempel er hvor mange ganger man må kaste to terninger for å få 11 i sum. Man kaster da to terninger til første gang man får 11 (= suksess). En geometrisk distribusjon kan se slik ut (p = 0,4):
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Geometrisk fordeling"}
-
+```{r message = FALSE, warning=FALSE, fig.cap = "Geometrisk fordeling"}
 x_dgeom <- seq(1, 20, by = 1)
-
 y_dgeom <- dgeom(x_dgeom, prob = 0.4) 
-
 plot(y_dgeom,
-type="l",     
-main="Geometrisk fordeling for p = 0.4",
-ylab="f(x)",
-xlab = "x")
+    type = "l",     
+    main = "Geometrisk fordeling for p = 0.4",
+    ylab = "f(x)",
+    xlab = "x")
 ```
 
 I statistisk prosesskontroll er denne typen fordeling til stede når man f.eks. teller antall dager mellom sjeldne hendelser. Man teller antall dager før man f.eks. får et alvorlig avvik på en medisinering, en operasjon e.l. I geometrisk fordeling er sannsynligheten for et gitt utfall uavhengig av om det har skjedd før. Man kan bruke geometrisk fordeling f.eks. til å estimere hvor mange dager man normalt vil forvente det går mellom en sjelden hendelse. Hvis man gjennom erfaringstall vet at sannsynligheten for en sjelden hendelse er p = 0.035 vil man forvente at det går 1/0.035 $\approx$ 29 dager mellom hver hendelse. Geometrisk distribusjon kan hjelpe oss i en statistisk prosesskontroll for å finne normal/unormal variasjon ved sjeldne hendelser.
@@ -858,36 +867,34 @@ Det kan være verdt å merke seg at binomial og geometrisk fordeling skiller seg
 
 En tilfeldig kontinuerlig variabel kan sies å være analog til den geometriske distribusjonen, men for kontinuerlige data. Den eksponensielle distribusjonen brukes ofte for å modellere tid mellom to hendelser. I statistisk prosesskontroll vil vi typisk bruke denne distribusjonen hvis vi måler tid mellom to sjeldne hendelser. Hvis vi f.eks. måler tiden mellom uventet dødsfall som følge av en type rutineoperasjon på et sykehus vil den ha en eksponensiell distribusjon hvis sannsynligheten for at hendelsen inntreffer innenfor t gitt tidsintervall er omtrentlig proporsjonal med lengde på tidsintervallet [@Taboga2017]. Eksponensielle fordelinger har samme grunnform, men kan ha ulik bratthet avhengig av den såkalte lamdaverdien (= en parameter for raten av hendelser). Lambdaverdi er en parameter for hvor ofte hendelsene forventes å skje. 
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Eksponensiell fordeling"}
-
-pacman::p_load(ggpubr)
-
+```{r message = FALSE, warning=FALSE, fig.cap = "Eksponensiell fordeling"}
 eksford <- seq(0, 20, length.out=1000)
-
-dat1 <- data.frame(x=eksford, fx=dexp(eksford, rate=0.2)) %>%
+dat1 <- data.frame(x = eksford, fx = dexp(eksford, rate = 0.2)) %>%
   add_column(ID = 1:1000) %>%
   relocate(3)
-             
-dat2 <- data.frame(x=eksford, fx=dexp(eksford, rate=1)) %>%
+dat2 <- data.frame(x = eksford, fx = dexp(eksford, rate = 1)) %>%
   add_column(ID = 1:1000) %>%
   relocate(3)
-             
-dat3 <- data.frame(x=eksford, fx=dexp(eksford, rate=1.5)) %>%
+dat3 <- data.frame(x = eksford, fx = dexp(eksford, rate = 1.5)) %>%
   add_column(ID = 1:1000) %>%
   relocate(3)
-             
-dat4 <- data.frame(x=eksford, fx=dexp(eksford, rate=2)) %>%
+dat4 <- data.frame(x = eksford, fx = dexp(eksford, rate = 2)) %>%
   add_column(ID = 1:1000) %>%
   relocate(3)
-             
-
-dat1plot <- ggplot(dat1, aes(x=x, y=fx)) + geom_line() + ggtitle(expression( ~ lambda ~ " = 0.2"))
-dat2plot <- ggplot(dat2, aes(x=x, y=fx)) + geom_line() + ggtitle(expression( ~ lambda ~ " = 1.0"))
-dat3plot <- ggplot(dat3, aes(x=x, y=fx)) + geom_line() + ggtitle(expression( ~ lambda ~ " = 1.5"))
-dat4plot <- ggplot(dat4, aes(x=x, y=fx)) + geom_line() + ggtitle(expression( ~ lambda ~ " = 2.0"))
-
-ggarrange(dat1plot, dat2plot, dat3plot, dat4plot + rremove("x.text"), ncol = 2, nrow = 2,  widths = c(1, 1))
-
+dat1plot <- ggplot(dat1, aes(x=x, y=fx)) + 
+    geom_line() + 
+    ggtitle(expression( ~ lambda ~ " = 0.2"))
+dat2plot <- ggplot(dat2, aes(x=x, y=fx)) + 
+    geom_line() + 
+    ggtitle(expression( ~ lambda ~ " = 1.0"))
+dat3plot <- ggplot(dat3, aes(x=x, y=fx)) + 
+    geom_line() + 
+    ggtitle(expression( ~ lambda ~ " = 1.5"))
+dat4plot <- ggplot(dat4, aes(x=x, y=fx)) + 
+    geom_line() + 
+    ggtitle(expression( ~ lambda ~ " = 2.0"))
+ggarrange(dat1plot, dat2plot, dat3plot, dat4plot + 
+              rremove("x.text"), ncol = 2, nrow = 2,  widths = c(1, 1))
 ```
 
 ## Nullhypotese
@@ -906,7 +913,7 @@ $Statistisk\ styrke = 1 - \beta$
 
 En ofte sitert og brukt vurdering rundt nivået på statistisk styrke (som altså er et tall mellom 0 og 1) er @cohenStatisticalPowerAnalysis1988. Cohen foreslår 0,8 som et nivå på statistisk styrke som god avveining mellom sannsynligheten for type I og type II feil. Type I feil forekommer når man feilaktig forkaster $H_0$ når den er sann, mens type II feil innebærer å feilaktig beholde $H_0$når den er usann (eller: vi konkluderer med at det ikke er noen effekt når det faktisk er en) [@mayrShortTutorialGPower2007]. Vi kan oppsummere dette slik:
 
-![](Modul_2_Feil1.png){width=75%}
+![Type 1 og type 2 feil #1](Modul_2_Feil1.png){width=75%}
 
 Vi kan med andre ord treffe riktig konklusjon i to av de fire mulighetene, men også feil i to av de fire mulighetene. For å huske forskjellen på type I og type II feil pleier jeg å huske:
 
@@ -915,7 +922,7 @@ Vi kan med andre ord treffe riktig konklusjon i to av de fire mulighetene, men o
 
 @ellisAlwaysGetConfused2010 illustrerer dette slik:
 
-![](Modul_2_Feil2.png){width=75%}
+![Type 1 og type 2 feil #2](Modul_2_Feil2.png){width=75%}
 
 Cohen postulerer at de fleste forskere vil anse type I som langt verre enn type II, faktisk 4 ganger så ille. Dersom man velger $\alpha=0.05$ (95% konfindensnivå) må da $\beta = 0.05*4=0.2$. Vi får da:
 
@@ -959,7 +966,7 @@ Et eksempel: Vi planlegger å gjennomføre en undersøkelse der vi skal kjøre e
 
 G*Power vil kunne gi oss et plott der vi kan vurdere utvalgsstørrelse:
 
-![](GPower.png){width=75%}
+![Eksempel på utvalgsstørrelse og statistisk styrke fra GPower](GPower.png){width=75%}
 
 Dette plottet kan vi bruke i planlegging av en undersøkelse. Det viser oss nødvendig N (y-aksen) for en gitt statistisk styrke med den valgte effektstørrelsen. Vi kan visuelt se hvordan en endring i statistisk styrke vil gi utslag i nødvendig N. Som vi skal komme tilbake til andre steder i notatet er planlegging av en studie viktig slik at vi får tilstrekkelig stort utvalg i forhold til hva vi ønsker å undersøke (ut fra parametrene ovenfor), men samtidig at vi ikke "overdriver" utvalgsstørrelsen. Dette kan også få uønskede konsekvenser (som vi kommer tilbake til allerede i neste delkapittel).
 
@@ -1038,13 +1045,13 @@ La oss anta at vi har normalfordelte data for en variabel x. Gjennomsnittsverdie
 
 I grafen til under er dette illustrert.
 
-![](zscore1.png){width=75%}
+![Normalfordeling #1](zscore1.png){width=75%}
 
 Den blå linjen viser en normalfordelt datamengde som har en gjennomsnittsverdi $\mu$ og standardavviket $\sigma$. I dette eksempelet er dataene høyde for norske kvinner i 2012 målt på sesjon^[()[https://www.ssb.no/a/aarbok/tab/tab-109.html]]. I medisinske kretser regnes ofte et standardavvik på høydefordeling som 6 cm^[()[https://www.dagensmedisin.no/artikler/2000/09/14/hoydespesialisten/]]. Tallene i eksempelet reflekterer dette. Fordelingskurven for kvinners høyde i 2012 viser altså en gjennomsnittshøyde på 167 cm (egentlig 167,1 cm) og et standardavvik på 6 cm.
 
 Vi antar at høyden målt på kvinner på sesjon er representative for populasjonen norske kvinner, og kan si for eksempel at 68 % av norske kvinner er mellom 161 cm og 173 cm høye. 95 % av norske kvinner har en høyde på mellom 156 cm og 179 cm. På bakgrunn av dette kan vi gjøre sannsynlighetsberegninger gjennom å bruke standardverdien z. Vi kan for eksempel være interessert i å vite hva sannsynligheten er for at en tilfeldig norsk kvinne er over 175 cm.
 
-![](Modul_3_Standard5.png){width=75%}
+![Normalfordeling #2](Modul_3_Standard5.png){width=75%}
 
 I dette tilfellet er det det rødskraverte området av distribusjonen vi er interessert i, formulert slik:
 
@@ -1064,13 +1071,13 @@ $p=z>\frac{175-167}{6}\ som\ gir\ p=z>1.33$
 
 Med andre ord kan vi si at sannsynligheten for at x er større enn 175 er den samme som sannsynligheten for at z > 1,33. Vi kan illustrere dette med figuren under, der fordelingen er standardisert med gjennomsnitt 0 og standardavvik 1. Området vi er interessert i er det rødskraverte som ligger til høyre for z = 1,33.
 
-![](Modul_3_Standard6.png){width=75%}
+![Z-score](Modul_3_Standard6.png){width=75%}
 
 Siden vi vet at en standardisert normalfordeling har $\sigma=1$ betyr det at vi kan se visuelt at det området vi er interessert i, sannsynligheten for at en tilfeldig norsk kvinne er høyere enn 175 cm, ligger utenfor 1 standardavvik.
 
-Vi kan bruke en tabell for standard normalforfordeling (f.eks. ![her](https://www.math.arizona.edu/~rsims/ma464/standardnormaltable.pdf).
+Vi kan bruke en tabell for standard normalfordeling (f.eks. [her](https://www.math.arizona.edu/~rsims/ma464/standardnormaltable.pdf).
 
-![](Modul_3_Standard7.png){width=75%}
+![Tabell for standard normalfordeling](Modul_3_Standard7.png){width=75%}
 
 Merk: På toppen av tabellen står det «Table Values Represent AREA to the LEFT of the Z score». Vi er jo interessert i området til høyre, så vi kan da si:
 
@@ -1080,7 +1087,7 @@ Vi kan derfor si at det er cirka 9,2 % sannsynlighet for at en norsk kvinne er o
 
 Tilsvarende kan vi finne sannsynligheten for at en tilfeldig norsk kvinne er mellom 165 cm og 175 cm.
 
-![](Modul_3_Standard8.png){width=75%}
+![Normalfordeling #3](Modul_3_Standard8.png){width=75%}
 
 Vi kan uttrykke dette som
 
