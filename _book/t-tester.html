@@ -4,13 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kapittel 6 T-tester | Anvendt kvantitativ analyse</title>
+<title>Kapittel 6 T-tester | Untitled</title>
 <meta name="author" content="Nils Kvilvang">
 <meta name="generator" content="bookdown 0.27 with bs4_book()">
-<meta property="og:title" content="Kapittel 6 T-tester | Anvendt kvantitativ analyse">
+<meta property="og:title" content="Kapittel 6 T-tester | Untitled">
 <meta property="og:type" content="book">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kapittel 6 T-tester | Anvendt kvantitativ analyse">
+<meta name="twitter:title" content="Kapittel 6 T-tester | Untitled">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -48,9 +48,9 @@
     }
   </style>
 <link rel="stylesheet" href="style.css">
-<meta name="description" content="En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er relativt lite. Vi kan se for oss tre tilfeller: Vi sammenlikner en gruppe mot en kjent gjennomsnittsstørelse og...">
-<meta property="og:description" content="En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er relativt lite. Vi kan se for oss tre tilfeller: Vi sammenlikner en gruppe mot en kjent gjennomsnittsstørelse og...">
-<meta name="twitter:description" content="En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er relativt lite. Vi kan se for oss tre tilfeller: Vi sammenlikner en gruppe mot en kjent gjennomsnittsstørelse og...">
+<meta name="description" content="R-pakker brukt i dette kapittelet: pacman::p_load(tidyverse, readxl, summarytools, ggpubr, nortest, tseries) En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er...">
+<meta property="og:description" content="R-pakker brukt i dette kapittelet: pacman::p_load(tidyverse, readxl, summarytools, ggpubr, nortest, tseries) En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er...">
+<meta name="twitter:description" content="R-pakker brukt i dette kapittelet: pacman::p_load(tidyverse, readxl, summarytools, ggpubr, nortest, tseries) En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er...">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -60,7 +60,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">Anvendt kvantitativ analyse</a>
+        <a href="index.html" title="">Untitled</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -88,6 +88,7 @@
 <li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">13</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
 <li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">14</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
 <li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">16</span> Maskinlæring gjennom “tidymodels”</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-a---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-b---chebyshevs-teorem.html">Vedlegg B - Chebyshevs teorem</a></li>
@@ -103,6 +104,9 @@
 <h1>
 <span class="header-section-number">Kapittel 6</span> T-tester<a class="anchor" aria-label="anchor" href="#t-tester"><i class="fas fa-link"></i></a>
 </h1>
+<p>R-pakker brukt i dette kapittelet:</p>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">tidyverse</span>, <span class="va">readxl</span>, <span class="va">summarytools</span>, <span class="va">ggpubr</span>, <span class="va">nortest</span>, <span class="va">tseries</span><span class="op">)</span></span></code></pre></div>
 <p>En t-test brukes når man vil sammenlikne to gjennomsnittsverdier og utvalget er relativt lite. Vi kan se for oss tre tilfeller:</p>
 <p>Vi sammenlikner en gruppe mot en kjent gjennomsnittsstørelse og tester om gruppas gjennomsnitt er signifikant forskjellig fra det kjente gjennomsnittet («One sample t-test»).
 Vi sammenlikner to uavhengige gruppers gjennomsnitt for å se om det er signifikant forskjell på gjennomsnittene for en variabel («Independent samples t-test»)
@@ -116,14 +120,14 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <span class="header-section-number">6.1</span> Students t-test<a class="anchor" aria-label="anchor" href="#students-t-test"><i class="fas fa-link"></i></a>
 </h2>
 <p>T-test, eller “Student’s t-test” som den ofte omtales som, baserer seg på en såkalt t-fordeling. En t-fordeling er ganske lik en normaldistribusjon, men har tyngre haler. Fordelingen vil variere med antall frihetsgrader, men likere og likere en normaldistribusjon ettersom utvalgsstørrelsen øker:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, from <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.41</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, from <span class="op">=</span><span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"brown"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="fl">20</span><span class="op">)</span>, from <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"black"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">dnorm</span>, <span class="op">-</span><span class="fl">4</span>, <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="fl">.3</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"df=2"</span>, <span class="st">"df=10"</span>, <span class="st">"df=20"</span>, <span class="st">"Normal"</span><span class="op">)</span>,
-       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"brown"</span>, <span class="st">"black"</span>, <span class="st">"red"</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">1</span>, cex <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="06_Kap_6_files/figure-html/unnamed-chunk-2-1.png" width="672"></div>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, from <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"blue"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.41</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, from <span class="op">=</span><span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"brown"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">dt</a></span><span class="op">(</span><span class="va">x</span>, df<span class="op">=</span><span class="fl">20</span><span class="op">)</span>, from <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>, to <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"black"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html">curve</a></span><span class="op">(</span><span class="va">dnorm</span>, <span class="op">-</span><span class="fl">4</span>, <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"red"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span>, <span class="fl">.3</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"df=2"</span>, <span class="st">"df=10"</span>, <span class="st">"df=20"</span>, <span class="st">"Normal"</span><span class="op">)</span>,</span>
+<span>       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"brown"</span>, <span class="st">"black"</span>, <span class="st">"red"</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">1</span>, cex <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="06_files/figure-html/unnamed-chunk-2-1.png" width="672"></div>
 <p>Så hvorfor behovet for en t-distribusjon? William Sealy Gosset, a.k.a. “Student”, fant ut at hvis man ikke er helt sikker på hva standardavviket er må man bruke et estimat på standardavviket som gjør at fordelingen endrer seg litt fra normalfordelingen. Det vi omtaler som t-test er en test av en statistisk hypotese som baserer seg på Students t-distribusjon.</p>
 </div>
 <div id="one-sample-t-test" class="section level2" number="6.2">
@@ -141,50 +145,49 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <p><span class="math inline">\(s = standardavviket\ i\ utvalget/observerte\)</span></p>
 <p><span class="math inline">\(n=utvalgsstørrelse/antall\ observerte\)</span></p>
 <p>Vi henter nødvendige verdier fra datasettet:</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Bruker pakken: summarytools</span>
-<span class="fu">descr</span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span><span class="op">)</span>
-<span class="co">#&gt; Descriptive Statistics  </span>
-<span class="co">#&gt; ttestonesample$Score  </span>
-<span class="co">#&gt; N: 20  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;                      Score</span>
-<span class="co">#&gt; ----------------- --------</span>
-<span class="co">#&gt;              Mean    72.30</span>
-<span class="co">#&gt;           Std.Dev     9.52</span>
-<span class="co">#&gt;               Min    50.00</span>
-<span class="co">#&gt;                Q1    66.00</span>
-<span class="co">#&gt;            Median    75.00</span>
-<span class="co">#&gt;                Q3    79.00</span>
-<span class="co">#&gt;               Max    89.00</span>
-<span class="co">#&gt;               MAD     9.64</span>
-<span class="co">#&gt;               IQR    13.00</span>
-<span class="co">#&gt;                CV     0.13</span>
-<span class="co">#&gt;          Skewness    -0.45</span>
-<span class="co">#&gt;       SE.Skewness     0.51</span>
-<span class="co">#&gt;          Kurtosis    -0.50</span>
-<span class="co">#&gt;           N.Valid    20.00</span>
-<span class="co">#&gt;         Pct.Valid   100.00</span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">descr</span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Descriptive Statistics  </span></span>
+<span><span class="co">#&gt; ttestonesample$Score  </span></span>
+<span><span class="co">#&gt; N: 20  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                      Score</span></span>
+<span><span class="co">#&gt; ----------------- --------</span></span>
+<span><span class="co">#&gt;              Mean    72.30</span></span>
+<span><span class="co">#&gt;           Std.Dev     9.52</span></span>
+<span><span class="co">#&gt;               Min    50.00</span></span>
+<span><span class="co">#&gt;                Q1    66.00</span></span>
+<span><span class="co">#&gt;            Median    75.00</span></span>
+<span><span class="co">#&gt;                Q3    79.00</span></span>
+<span><span class="co">#&gt;               Max    89.00</span></span>
+<span><span class="co">#&gt;               MAD     9.64</span></span>
+<span><span class="co">#&gt;               IQR    13.00</span></span>
+<span><span class="co">#&gt;                CV     0.13</span></span>
+<span><span class="co">#&gt;          Skewness    -0.45</span></span>
+<span><span class="co">#&gt;       SE.Skewness     0.51</span></span>
+<span><span class="co">#&gt;          Kurtosis    -0.50</span></span>
+<span><span class="co">#&gt;           N.Valid    20.00</span></span>
+<span><span class="co">#&gt;         Pct.Valid   100.00</span></span></code></pre></div>
 <p>Dette gir da:</p>
 <p><span class="math inline">\(t=\frac{72.3-67.5}{\frac{9.52}{\sqrt{20}}}=\frac{4.8}{2.129}=2.255\)</span></p>
 <p>Vi sammenlikner t-verdien 2.255 med kritisk verdi, f.eks. <a href="https://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">her</a>. Vi finner verdien 1.729. Hvis t-verdien er større enn kritisk verdi: forkast nullhypotesen. Her forkaster vi nullhypotsesen fordi 2.255 er større enn 1.729. Vår alternative hypotese om at det er signifikant forskjell er styrket.</p>
 <p>I R bruker vi:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span>, mu <span class="op">=</span> <span class="fl">67.5</span>, alternative <span class="op">=</span> <span class="st">"two.sided"</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  One Sample t-test</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; data:  ttestonesample$Score</span>
-<span class="co">#&gt; t = 2.2547, df = 19, p-value = 0.03615</span>
-<span class="co">#&gt; alternative hypothesis: true mean is not equal to 67.5</span>
-<span class="co">#&gt; 95 percent confidence interval:</span>
-<span class="co">#&gt;  67.84422 76.75578</span>
-<span class="co">#&gt; sample estimates:</span>
-<span class="co">#&gt; mean of x </span>
-<span class="co">#&gt;      72.3</span></code></pre></div>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">qt</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">19</span>, lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; [1] 1.729133</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span>, mu <span class="op">=</span> <span class="fl">67.5</span>, alternative <span class="op">=</span> <span class="st">"two.sided"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  One Sample t-test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; data:  ttestonesample$Score</span></span>
+<span><span class="co">#&gt; t = 2.2547, df = 19, p-value = 0.03615</span></span>
+<span><span class="co">#&gt; alternative hypothesis: true mean is not equal to 67.5</span></span>
+<span><span class="co">#&gt; 95 percent confidence interval:</span></span>
+<span><span class="co">#&gt;  67.84422 76.75578</span></span>
+<span><span class="co">#&gt; sample estimates:</span></span>
+<span><span class="co">#&gt; mean of x </span></span>
+<span><span class="co">#&gt;      72.3</span></span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html">qt</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">19</span>, lower.tail<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1.729133</span></span></code></pre></div>
 <p>Vi ser også her at t-testveridien er større enn kritisk verdi (2.255 &gt; 1.729). I tillegg ser vi at p-verdien er &lt; 0.05 (“If p is low, the null must go”).</p>
 <div id="sjekk-av-forutsetninger-for-one-sample-t-test" class="section level3" number="6.2.1">
 <h3>
@@ -196,14 +199,14 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <li>Populasjonen er normalfordelt</li>
 </ol>
 <p>Vi ser spesielt på nr 3. Det finnes flere måter å se på normalitetsforutsetningen, både grafisk og formelle statistiske tester. Vi skal vise en formell test - Shapiro-Wilks som ofte brukes. Andre eksempler er Kolmogorov-Smirnov og Anderson-Darling. <span class="citation">Razali and Wah (2011)</span> finner i en sammenlinende studie at Shapiro-WIlks fungerer bra.</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">shapirotest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span><span class="op">)</span>
-<span class="va">shapirotest</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  Shapiro-Wilk normality test</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; data:  ttestonesample$Score</span>
-<span class="co">#&gt; W = 0.96205, p-value = 0.5856</span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">shapirotest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">ttestonesample</span><span class="op">$</span><span class="va">Score</span><span class="op">)</span></span>
+<span><span class="va">shapirotest</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Shapiro-Wilk normality test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; data:  ttestonesample$Score</span></span>
+<span><span class="co">#&gt; W = 0.96205, p-value = 0.5856</span></span></code></pre></div>
 <p>Vi sammenlikner testverdien med 0,05 (gitt at vi bruker 0,05 som signifikansnivå). Dersom testverdien er over 0,05 indikerer det at dataene er normalfordelte. Hvis testeverdien er under 0,05 indikerer det at dataene avviker fra normalfordelingen. Dette er ikke tilfelle her (0.5855703).</p>
 </div>
 </div>
@@ -215,31 +218,30 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <p>Paired samples t-test og one sample t-test er på en måte “samme sak” - altså, der en one sample t-test sammenlikner gjennomsnittet fra et utvalg med en kjent størrelse kalkulerer en paired samples t-test forskjellen mellom de to gjennomsnittene for deretter å gjennomføre en one sample t-test på forskjellen.</p>
 <p>La oss anta at vi har en gruppe på 15 studenter som vi har testet to ganger. Imellom testene har de gjennomført en aktivitet som skal trigge hukommelsen.</p>
 <p><a href="data:text/csv;base64,IlByZSIsIlBvc3QiDQo3My4xNjM0OTg3NTY2NTQ0LDgzLjAyMDQzNTUyMDI4MzEyDQo3OC45MTAxNDk4NjAwOTcxOSw3Ni45NzE1MzQ0MTEwMjE2NA0KNzguMjc0MDcxMDk3NTMxODcsNzkuMzkyMTIwNTk0NjY5ODkNCjc3LjExNDA1NTQyMTIyNjI3LDc3LjM2OTM3ODY5NzMyNDMNCjgxLjY3NzA4NzA0ODI5OTMzLDc5LjY3OTg4NTkxNTk2NTkNCjc3Ljk2NjQyMTE1OTczOTQzLDc4LjYyNzQwMzg2MDQyMTINCjY3LjgyNDU1OTU1ODMwOTU2LDczLjUxNDY1NDAzMTk2NTUNCjcwLjgwODA4MzE2NzM5NjQzLDcwLjc1NjMzOTM0MDQwMDgzDQo3OS41NjkyMjc4NDY0NzE5LDc4LjY3NTM1OTg4MTMyOTE0DQo3Ny42MDE4NDIzMzg5NTkwMiw3Ny42NjI2OTc4NTQxMDQ3NQ0KODAuOTg1ODI5MDg2Nzg2MjUsNzQuOTgwOTE5MzQxMDYxODINCjY5LjcyOTYwMjA4OTQ3OTU2LDc3LjMzODMwOTczMTc2NA0KODMuMzU4NDY4NTg4MTQwMTEsNzEuMjI4OTk3MDU2NTUyMTUNCjY5LjI2NDcxNTg5NTc0NjgsNzAuNzgzNDM4Mzk4MzY3OTINCjc2Ljk2MzUyMjY2NDc5MTgyLDcyLjc3OTQxNzA3ODM0Nzk1DQo=" download="t-test_paired.csv">Download t-test_paired.csv</a></p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pairedsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"t-test_paired.csv"</span><span class="op">)</span>
-<span class="co"># Bruker pakken: summarytools</span>
-<span class="fu">descr</span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">)</span>
-<span class="co">#&gt; Descriptive Statistics  </span>
-<span class="co">#&gt; pairedsamples  </span>
-<span class="co">#&gt; N: 15  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;                       Post      Pre</span>
-<span class="co">#&gt; ----------------- -------- --------</span>
-<span class="co">#&gt;              Mean    76.19    76.21</span>
-<span class="co">#&gt;           Std.Dev     3.69     4.87</span>
-<span class="co">#&gt;               Min    70.76    67.82</span>
-<span class="co">#&gt;                Q1    72.78    70.81</span>
-<span class="co">#&gt;            Median    77.34    77.60</span>
-<span class="co">#&gt;                Q3    78.68    79.57</span>
-<span class="co">#&gt;               Max    83.02    83.36</span>
-<span class="co">#&gt;               MAD     3.47     5.02</span>
-<span class="co">#&gt;               IQR     5.50     7.25</span>
-<span class="co">#&gt;                CV     0.05     0.06</span>
-<span class="co">#&gt;          Skewness    -0.09    -0.39</span>
-<span class="co">#&gt;       SE.Skewness     0.58     0.58</span>
-<span class="co">#&gt;          Kurtosis    -1.18    -1.31</span>
-<span class="co">#&gt;           N.Valid    15.00    15.00</span>
-<span class="co">#&gt;         Pct.Valid   100.00   100.00</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pairedsamples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"t-test_paired.csv"</span><span class="op">)</span></span>
+<span><span class="fu">descr</span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Descriptive Statistics  </span></span>
+<span><span class="co">#&gt; pairedsamples  </span></span>
+<span><span class="co">#&gt; N: 15  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                       Post      Pre</span></span>
+<span><span class="co">#&gt; ----------------- -------- --------</span></span>
+<span><span class="co">#&gt;              Mean    76.19    76.21</span></span>
+<span><span class="co">#&gt;           Std.Dev     3.69     4.87</span></span>
+<span><span class="co">#&gt;               Min    70.76    67.82</span></span>
+<span><span class="co">#&gt;                Q1    72.78    70.81</span></span>
+<span><span class="co">#&gt;            Median    77.34    77.60</span></span>
+<span><span class="co">#&gt;                Q3    78.68    79.57</span></span>
+<span><span class="co">#&gt;               Max    83.02    83.36</span></span>
+<span><span class="co">#&gt;               MAD     3.47     5.02</span></span>
+<span><span class="co">#&gt;               IQR     5.50     7.25</span></span>
+<span><span class="co">#&gt;                CV     0.05     0.06</span></span>
+<span><span class="co">#&gt;          Skewness    -0.09    -0.39</span></span>
+<span><span class="co">#&gt;       SE.Skewness     0.58     0.58</span></span>
+<span><span class="co">#&gt;          Kurtosis    -1.18    -1.31</span></span>
+<span><span class="co">#&gt;           N.Valid    15.00    15.00</span></span>
+<span><span class="co">#&gt;         Pct.Valid   100.00   100.00</span></span></code></pre></div>
 <p>Vi kan regne ut testverdien slik:</p>
 <p><span class="math inline">\(t=\frac{\sum{d}}{\frac{n(\sum{d^2})-(\sum{d}^2)}{(n-1)}}\)</span></p>
 <p>der</p>
@@ -248,71 +250,68 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <p><span class="math inline">\(n=antall\ i\ utvalget\)</span></p>
 <p>Gjennom en manuell utregning finner vi <span class="math inline">\(t=0.02\)</span></p>
 <p>Vi gjennomfører en t-test i R:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">$</span><span class="va">Pre</span>, <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Post</span>, paired <span class="op">=</span> <span class="cn">TRUE</span>, alternative <span class="op">=</span> <span class="st">"two.sided"</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  Paired t-test</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; data:  pairedsamples$Pre and pairedsamples$Post</span>
-<span class="co">#&gt; t = 0.020764, df = 14, p-value = 0.9837</span>
-<span class="co">#&gt; alternative hypothesis: true mean difference is not equal to 0</span>
-<span class="co">#&gt; 95 percent confidence interval:</span>
-<span class="co">#&gt;  -2.934057  2.991423</span>
-<span class="co">#&gt; sample estimates:</span>
-<span class="co">#&gt; mean difference </span>
-<span class="co">#&gt;      0.02868286</span></code></pre></div>
-<p>Her ser vi at p er over 0,05. Dvs vi kan ikke forkaste nullhypotesen. Vi kan derfor ikke si at det er en signifikant forskjell mellom de to gruppene.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">ggpaired</span><span class="op">(</span><span class="va">pairedsamples</span>, cond1 <span class="op">=</span> <span class="st">"Pre"</span>, cond2 <span class="op">=</span> <span class="st">"Post"</span>,
-    fill <span class="op">=</span> <span class="st">"condition"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="06_Kap_6_files/figure-html/unnamed-chunk-12-1.png" width="672"></div>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Bruker pakken: summarytools</span>
-<span class="fu">descr</span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">)</span>
-<span class="co">#&gt; Descriptive Statistics  </span>
-<span class="co">#&gt; pairedsamples  </span>
-<span class="co">#&gt; N: 15  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;                       Post      Pre</span>
-<span class="co">#&gt; ----------------- -------- --------</span>
-<span class="co">#&gt;              Mean    76.19    76.21</span>
-<span class="co">#&gt;           Std.Dev     3.69     4.87</span>
-<span class="co">#&gt;               Min    70.76    67.82</span>
-<span class="co">#&gt;                Q1    72.78    70.81</span>
-<span class="co">#&gt;            Median    77.34    77.60</span>
-<span class="co">#&gt;                Q3    78.68    79.57</span>
-<span class="co">#&gt;               Max    83.02    83.36</span>
-<span class="co">#&gt;               MAD     3.47     5.02</span>
-<span class="co">#&gt;               IQR     5.50     7.25</span>
-<span class="co">#&gt;                CV     0.05     0.06</span>
-<span class="co">#&gt;          Skewness    -0.09    -0.39</span>
-<span class="co">#&gt;       SE.Skewness     0.58     0.58</span>
-<span class="co">#&gt;          Kurtosis    -1.18    -1.31</span>
-<span class="co">#&gt;           N.Valid    15.00    15.00</span>
-<span class="co">#&gt;         Pct.Valid   100.00   100.00</span></code></pre></div>
-<p>Av grafen og tabellen over ser vi at spredningen er mindre etter aktiviteten (se f.eks. på standardavviket i tabellen).</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">forskjell</span> <span class="op">&lt;-</span> <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Post</span> <span class="op">-</span> <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Pre</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  Shapiro-Wilk normality test</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; data:  forskjell</span>
-<span class="co">#&gt; W = 0.94997, p-value = 0.5239</span>
-<span class="co">#Bruker pakken: nortest</span>
-<span class="fu">ad.test</span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  Anderson-Darling normality test</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; data:  forskjell</span>
-<span class="co">#&gt; A = 0.44249, p-value = 0.2483</span>
-<span class="co"># Bruker pakken: tseries</span>
-<span class="fu">jarque.bera.test</span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  Jarque Bera Test</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; data:  forskjell</span>
-<span class="co">#&gt; X-squared = 0.26188, df = 2, p-value = 0.8773</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">$</span><span class="va">Pre</span>, <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Post</span>, paired <span class="op">=</span> <span class="cn">TRUE</span>, alternative <span class="op">=</span> <span class="st">"two.sided"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Paired t-test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; data:  pairedsamples$Pre and pairedsamples$Post</span></span>
+<span><span class="co">#&gt; t = 0.020764, df = 14, p-value = 0.9837</span></span>
+<span><span class="co">#&gt; alternative hypothesis: true mean difference is not equal to 0</span></span>
+<span><span class="co">#&gt; 95 percent confidence interval:</span></span>
+<span><span class="co">#&gt;  -2.934057  2.991423</span></span>
+<span><span class="co">#&gt; sample estimates:</span></span>
+<span><span class="co">#&gt; mean difference </span></span>
+<span><span class="co">#&gt;      0.02868286</span></span></code></pre></div>
+<p>Her ser vi at p er over 0,05. Dvs vi kan ikke forkaste nullhypotesen. Vi kan derfor ikke si at det er en signifikant forskjell mellom de to gruppene.</p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">ggpaired</span><span class="op">(</span><span class="va">pairedsamples</span>, cond1 <span class="op">=</span> <span class="st">"Pre"</span>, cond2 <span class="op">=</span> <span class="st">"Post"</span>,</span>
+<span>    fill <span class="op">=</span> <span class="st">"condition"</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="06_files/figure-html/unnamed-chunk-12-1.png" width="672"></div>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">descr</span><span class="op">(</span><span class="va">pairedsamples</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Descriptive Statistics  </span></span>
+<span><span class="co">#&gt; pairedsamples  </span></span>
+<span><span class="co">#&gt; N: 15  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                       Post      Pre</span></span>
+<span><span class="co">#&gt; ----------------- -------- --------</span></span>
+<span><span class="co">#&gt;              Mean    76.19    76.21</span></span>
+<span><span class="co">#&gt;           Std.Dev     3.69     4.87</span></span>
+<span><span class="co">#&gt;               Min    70.76    67.82</span></span>
+<span><span class="co">#&gt;                Q1    72.78    70.81</span></span>
+<span><span class="co">#&gt;            Median    77.34    77.60</span></span>
+<span><span class="co">#&gt;                Q3    78.68    79.57</span></span>
+<span><span class="co">#&gt;               Max    83.02    83.36</span></span>
+<span><span class="co">#&gt;               MAD     3.47     5.02</span></span>
+<span><span class="co">#&gt;               IQR     5.50     7.25</span></span>
+<span><span class="co">#&gt;                CV     0.05     0.06</span></span>
+<span><span class="co">#&gt;          Skewness    -0.09    -0.39</span></span>
+<span><span class="co">#&gt;       SE.Skewness     0.58     0.58</span></span>
+<span><span class="co">#&gt;          Kurtosis    -1.18    -1.31</span></span>
+<span><span class="co">#&gt;           N.Valid    15.00    15.00</span></span>
+<span><span class="co">#&gt;         Pct.Valid   100.00   100.00</span></span></code></pre></div>
+<p>Av grafen og tabellen over ser vi at spredningen er mindre etter aktiviteten (se f.eks. på standardavviket i tabellen).</p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">forskjell</span> <span class="op">&lt;-</span> <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Post</span> <span class="op">-</span> <span class="va">pairedsamples</span><span class="op">$</span><span class="va">Pre</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Shapiro-Wilk normality test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; data:  forskjell</span></span>
+<span><span class="co">#&gt; W = 0.94997, p-value = 0.5239</span></span>
+<span><span class="fu">ad.test</span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Anderson-Darling normality test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; data:  forskjell</span></span>
+<span><span class="co">#&gt; A = 0.44249, p-value = 0.2483</span></span>
+<span><span class="fu">jarque.bera.test</span><span class="op">(</span><span class="va">forskjell</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Jarque Bera Test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; data:  forskjell</span></span>
+<span><span class="co">#&gt; X-squared = 0.26188, df = 2, p-value = 0.8773</span></span></code></pre></div>
 <p>Vi kan se fra ulike tester ovenfor at forutsetningen om normalfordeling ser ut til å være innfridd. Normalt trenger vi ikke gjøre alle tre testene, men vi har tatt de med for å vise relevant kode om man skulle ha behov for den ene eller den andre - de tester normalitet fra ulike vinkler, og i svært mange tilfeller vil man se Shapiro-Wilks brukt. Robusthetstester viser også at Shapiro-Wilks viser bra robusthet og egenskaper sammenliknet med alternativer <span class="citation">(Razali and Wah 2011)</span>.</p>
 </div>
 <div id="independent-samples-t-test" class="section level2" number="6.4">
@@ -321,23 +320,23 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 </h2>
 <p>En vanlig situasjon er at vi har to grupper som skal sammenliknes. Hvis gruppene er uavhengige av hverandre (i motsetning til paired samples t-test), kan vi bruke independent samples t-test.</p>
 <p>I eksempelet ønsker vi å sammenlikne to grupper studenter: en gruppe har ren nettundervisning, mens den andre gruppa har hybrid undervisning (nett og fysisk). Vi har eksamensresultater for begge gruppene. Kan vi ut fra eksamensresultatene si om gruppene er signifikant forskjellige fra hverandre?</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">independent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"t-test_independent.csv"</span><span class="op">)</span>
-<span class="va">HeadTail</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">independent</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">independent</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">independent</span><span class="op">)</span><span class="op">)</span><span class="op">}</span>
-<span class="fu">HeadTail</span><span class="op">(</span><span class="va">independent</span><span class="op">)</span>
-<span class="co">#&gt;     Studentnr   Type    Score</span>
-<span class="co">#&gt; 1           1   Nett 77.36150</span>
-<span class="co">#&gt; 2           2   Nett 79.39069</span>
-<span class="co">#&gt; 3           3   Nett 71.88117</span>
-<span class="co">#&gt; 4           4   Nett 80.00219</span>
-<span class="co">#&gt; 5           5   Nett 81.99973</span>
-<span class="co">#&gt; 6           6   Nett 73.35320</span>
-<span class="co">#&gt; 195       195 Hybrid 93.46116</span>
-<span class="co">#&gt; 196       196 Hybrid 83.60819</span>
-<span class="co">#&gt; 197       197 Hybrid 79.41945</span>
-<span class="co">#&gt; 198       198 Hybrid 78.83346</span>
-<span class="co">#&gt; 199       199 Hybrid 94.84745</span>
-<span class="co">#&gt; 200       200 Hybrid 86.55348</span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">independent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"t-test_independent.csv"</span><span class="op">)</span></span>
+<span><span class="va">HeadTail</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">independent</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">independent</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="va">independent</span><span class="op">)</span><span class="op">)</span><span class="op">}</span></span>
+<span><span class="fu">HeadTail</span><span class="op">(</span><span class="va">independent</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     Studentnr   Type    Score</span></span>
+<span><span class="co">#&gt; 1           1   Nett 77.36150</span></span>
+<span><span class="co">#&gt; 2           2   Nett 79.39069</span></span>
+<span><span class="co">#&gt; 3           3   Nett 71.88117</span></span>
+<span><span class="co">#&gt; 4           4   Nett 80.00219</span></span>
+<span><span class="co">#&gt; 5           5   Nett 81.99973</span></span>
+<span><span class="co">#&gt; 6           6   Nett 73.35320</span></span>
+<span><span class="co">#&gt; 195       195 Hybrid 93.46116</span></span>
+<span><span class="co">#&gt; 196       196 Hybrid 83.60819</span></span>
+<span><span class="co">#&gt; 197       197 Hybrid 79.41945</span></span>
+<span><span class="co">#&gt; 198       198 Hybrid 78.83346</span></span>
+<span><span class="co">#&gt; 199       199 Hybrid 94.84745</span></span>
+<span><span class="co">#&gt; 200       200 Hybrid 86.55348</span></span></code></pre></div>
 <p>Vi ser at datasettet består av 200 observasjoner av studenter som enten har gjennomført ren nettundervisning eller en hybrid undervisning (nett og fysisk undervisning).</p>
 <p>Vi kan regne ut testverdien:</p>
 <p><span class="math inline">\(t=\frac{\overline{x}_A - \overline{x}_B}{\sqrt{\biggl({\frac{(\sum A^2-\frac{(\sum A)^2}{n_A})+(\sum B^2-\frac{(\sum B)^2}{n_B})}{n_A+n_B-2}\biggr)}*\biggl(\frac{1}{n_A}+\frac{1}{n_B}\biggr)}}\)</span></p>
@@ -354,28 +353,28 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <p><span class="math inline">\(\overline{x}_B = Gjennomsnitt\ for\ variabel\ B\)</span></p>
 <p><span class="math inline">\(n_A = antall\ i\ variabelen\ A\)</span></p>
 <p><span class="math inline">\(n_B = antall\ i\ variabelen\ B\)</span></p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ttestind</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">Score</span> <span class="op">~</span> <span class="va">Type</span>, <span class="va">independent</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ttestind</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">Score</span> <span class="op">~</span> <span class="va">Type</span>, <span class="va">independent</span><span class="op">)</span></span></code></pre></div>
 <p>Vi kan legge merke til at t-testen i R velger Welch t-test i stedet for Student t-test. Forskjellen ligger i at Welch t-test ikke forutsetter lik varians, mens Student t-test gjør dette.</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">Score</span> <span class="op">~</span> <span class="va">Type</span>, <span class="va">independent</span>, var.equal<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  Two Sample t-test</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; data:  Score by Type</span>
-<span class="co">#&gt; t = 10.98, df = 198, p-value &lt; 2.2e-16</span>
-<span class="co">#&gt; alternative hypothesis: true difference in means between group Hybrid and group Nett is not equal to 0</span>
-<span class="co">#&gt; 95 percent confidence interval:</span>
-<span class="co">#&gt;   7.216698 10.376497</span>
-<span class="co">#&gt; sample estimates:</span>
-<span class="co">#&gt; mean in group Hybrid   mean in group Nett </span>
-<span class="co">#&gt;             84.58566             75.78906</span></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">Score</span> <span class="op">~</span> <span class="va">Type</span>, <span class="va">independent</span>, var.equal<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Two Sample t-test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; data:  Score by Type</span></span>
+<span><span class="co">#&gt; t = 10.98, df = 198, p-value &lt; 2.2e-16</span></span>
+<span><span class="co">#&gt; alternative hypothesis: true difference in means between group Hybrid and group Nett is not equal to 0</span></span>
+<span><span class="co">#&gt; 95 percent confidence interval:</span></span>
+<span><span class="co">#&gt;   7.216698 10.376497</span></span>
+<span><span class="co">#&gt; sample estimates:</span></span>
+<span><span class="co">#&gt; mean in group Hybrid   mean in group Nett </span></span>
+<span><span class="co">#&gt;             84.58566             75.78906</span></span></code></pre></div>
 <p>I dette eksempelet har vi ingen forskjell mellom Welch og Student t-test. Noen programmer vil automatisk gi deg den ene eller den andre, alternativt begge to. Forskjellen Forskjellen på Student’s t og Welch’s t er altså at førstnevnte forutsetter at begge gruppene har likt standardavvik (“«”the assumption of equal variances”). I virkeligheten er dette ofte ikke tilfelle (det er liten grunn til å tro at gruppene har likt standardavvik hvis de ikke har lik gjennomsnittsverdi). I slike tilfeller er Welch’s t en mer robust test.</p>
 <p>Ut fra testen kan vi si at det er en statistisk signifikant forskjell mellom de to gruppene. Hvis vi ser på resultatet fra testen ser vi hybridgruppa har høyere snitt enn nettgruppa. Dette forteller oss at hybridgruppa skårer signifikant høyere enn nettgruppa.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ttestind</span><span class="op">$</span><span class="va">estimate</span>
-<span class="co">#&gt; mean in group Hybrid   mean in group Nett </span>
-<span class="co">#&gt;             84.58566             75.78906</span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ttestind</span><span class="op">$</span><span class="va">estimate</span></span>
+<span><span class="co">#&gt; mean in group Hybrid   mean in group Nett </span></span>
+<span><span class="co">#&gt;             84.58566             75.78906</span></span></code></pre></div>
 
 </div>
 </div>
@@ -396,8 +395,8 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/06_Kap_6.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/06_Kap_6.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/06.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/06.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -409,7 +408,7 @@ En t-test handler altså om å undersøke om det er signifikant forskjell på gj
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 11 juli, 2022.</p>
+    <p>"<strong>Untitled</strong>" was written by Nils Kvilvang. It was last built on 2022-07-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

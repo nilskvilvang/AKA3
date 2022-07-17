@@ -1,0 +1,420 @@
+---
+bibliography: bibliografi.bib
+csl: chicago-author-date.csl
+always_allow_html: true
+---
+
+# Logistisk regresjon
+
+R-pakker brukt i dette kapittelet:
+
+```{r}
+pacman::p_load(tidyverse, haven, writexl, aod, pscl, DescTools, reshape2, foreign, nnet, MASS)
+```
+
+Som vi vil se i kapittelet om regresjonsforutsetninger er det en forutsetning at den avhengige variabelen er kontinuerlig. Så langt har vi hatt det. Men det kan gjerne tenkes at vi sitter med en avhengig variabel som er kategorisk. Logistisk regresjon er regresjonsanalyse der de uavhengige variablene er kontinuerlige eller kategoriske og den avhengige kategorisk. Av den grunn bygger logistisk regresjon på andre prinsipper og teknikker enn «vanlig» regresjon. Der lineær regresjon er en regresjonsalgoritme (bestemmer/predikere en kontonuerlig variabel) er logistisk regresjon en klassifiseringsalgoritme (bestemme/predikere en binær klassifiering - f.eks. sant/usant) dersom analysen kobles til en verdi/terskel for beslutninger.  [@vyasUnderstandingLogisticRegression2020]. 
+
+Et viktig poeng med logistisk regresjon er at det er et viktig element i temaer som maskinlæring og kunstige nevrale nettverk (@monroeLogisticRegression2017). Dette går vi ikke nærmere inn på i dette kapittelet.
+
+Det er vanlig å snakke om tre typer logistisk regresjon:
+
+1. Binær logistisk regresjon (ofte omtalt kun som "logistisk regresjon") der vi den avhangige variabelen kun har to mulige utfall (f.eks. 0,1 - ja/nei - død/levende o.l.).
+
+2. Ordinal logistisk regresjon (noen steder omtalt som "ordinal regresjon") er en forlengelse av binær logistisk regresjon. Dette brukes når vi har en avhengig variabel med rangerte ("ordered") kategorier - f.eks. en svarskala (sterkt uenig - uenig - nøytral - enig - sterkt enig). 
+
+3. Multinomial logistisk regresjon der den avhengige variabelen kan ha tre eller flere mulige utfall (f.eks. gruppe 1, gruppe 2, gruppe 3 - klasse A, klasse B, klasse C o.l.), men der det ikke er rangerte kategorier i forhold til hverandre (som i ordinal logistisk regresjon).
+
+Selve begrepet "logistisk" har sitt utspring i "logit-funksjonen" (der begrepet "logit" i sin opprinnelse er en kortform for "logistic unit" [@berksonApplicationLogisticFunction1944]). Matematikken bak logistisk regresjon er noe mer komplisert enn for lineær regresjon. @fieldDiscoveringStatisticsUsing2009 skriver (s.265) at "I don’t wish to dwell on the underlying principles of logistic regression because they aren’t necessary to understand the test (I am living proof of this fact)”. Likevel forsøker vi under å gi en kort (og ufullstendig) beskrivelse. Et ok sted å lese mer detaljert om dette er f.eks. @milesApplyingRegressionCorrelation2001.
+
+Fra lineær regresjon kjenner vi at den avhengige variabelen er kontinuerlig (med mulig utfall $-\infty, \infty$). I en binær avhengig variabel er utfallet en sannsynlighetsverdi mellom $0,1$. Utfordringen er da å transformere $0,1$ til $-\infty, \infty$ for å kunne kjøre (lineær) regresjon på de transformerte verdiene. Veien til dette går om "log odds". Enhver sannsynlighet kan konverteres til log odds gjennom å ta logaritmen til odds ratioen (vår gjennomgang lener seg på @glenLogOddsSimple2021). Sannsynlighet, odds og log odds er (litt upresist sagt) samme sak uttrykt på ulik måte:
+
+$Sannsynlighet = uttrykk\ for\ hvor\ trolig\ det\ er\ at\ en\ hendelse\ vil\ inntreffe$ ^[Uttrykkes ofte som % av 100, eller matematisk som en verdi mellom 0 og 1] 
+
+$Odds\ ("odds\ of\ success") =\frac{sannsynlighet\ for\ suksess}{sannsynlighet\ for\ ikke-suksess}= f.eks.\ \frac{sannsynlighet\ for\ regn}{sannsynlighet\ for\ oppholdsvær}$
+
+$Odds-ratio = \frac{sannsynlighet\ for\ regn}{sannsynlighet\ for\ oppholdsvær}= \frac{80\%}{20\%}=4$
+
+$log-odds=ln(4)\approx1.386$
+
+På en mer generell form kan log-odds uttrykkes:
+
+$log-odds = log\left[\frac{p}{p-1}\right] (=logit(p))$
+
+der $p$ er sannsynligheten for en hendelse.
+
+Logistisk regresjon innebærer å konvertere sannsynligheter til log-odds, og deretter tilbake til sannsynligheter (se eksempel litt lenger ned). Logitfunksjonen estimerer sannsynligheter mellom 0 og 1 for våre hendelser/data. I en binær logistisk regresjon kalukulerer vi dermed den betingede sannsynligheten for variabelen (Y) gitt variabelen (X). Dette kan uttrykkes slik:
+
+$P(Y=1|X), dvs.\ den\ betingede\ sannsynligheten\ for\ Y=1\ gitt\ X$  
+
+eller
+
+$P(Y=0|X), dvs.\ den\ betingede\ sannsynligheten\ for\ Y=0\ gitt\ X$
+
+P(Y|X) er estimert som en såkalt sigmoid-funksjon. En sigmoid funksjon
+
+$p=\frac{e^{log(odds)}}{1+e^{log(odds)}} = \frac{1}{e^{-log(odds)}} = \frac{1}{1+e^{-x}} (= Sigmoid\ funksjon)$ 
+
+Sigmoid-funksjon er (som del av logistisk regresjon) også et sentralt element i f.eks. maskinlæring. Vi kan visualisere en sigmoid-funksjon slik:
+
+```{r}
+sigmoid <- function(x) {
+   1 / (1 + exp(-x))
+}
+x <- seq(-5, 5, 0.01)
+plot(x, sigmoid(x), col='darkgreen')
+```
+
+Dette gjør at vi kan plotte verdier i spennet $(0,1)$ som $-\infty, \infty$. 
+
+La oss se på et enkelt eksempel på hvordan logistisk regresjon kan brukes (basert på @starmerLogisticRegressionDetails2018).
+
+Vi vil klassifisere en person som enten smittet eller ikke smittet av en sykdom. Output er enten 1 (= smittet) eller 0 (ikke smittet) - basert på en eller annen test/kriterium. La oss si vi har 10 tilfeller:
+
+```{r warning=FALSE, message=FALSE}
+smitte <- data.frame(x1 = 1:10,
+                   x2 = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1))
+smitteplott <- ggplot(smitte, aes(x1, x2)) +
+    geom_point(col = ifelse(1:nrow(smitte) == 1:5, "red", "blue"))
+smitteplott <- smitteplott + scale_x_discrete(name ="Pasient", 
+                    limits=c("1":"10")) + ylab("Smittet")
+smitteplott 
+```
+
+Målet vårt er altså å finne den linjen som best passer til disse dataene (slik vi gjennom OLS-regresjon forsøker å finne den linja som passer best til dataene i lineær regresjon). I logistisk regresjon bruker vi imidlertid ikke minste kvadratsums metode (OLS), men det som kalles "Maximum Likelihood" (ML). Grunnen til dette er at transformasjonen (gjennom logit funksjonen) gir uendelig store kvadratsummer fordi punktene etter transformasjonen har uendelig verdi.
+
+Første steg er å konvertere sannsynlighetene for smitte til  log(odds) for smitte og bruke log(odds) på y-aksen. Vi legger på en "kandidatlinje" til regresjonslinja ("kandidatlinje" som i: vi trekker en linje som er ca. riktig visuelt og bruker den videre). 
+
+![](logodds.png){width=75%}
+
+Ved å trekke vertikale linjer fra hvert punkt til kandidatlinjen finner vi hvert punkts log(odds) punkt (y-verdien der punktets vertikale linje treffer kandidatlinjen). Deretter brukes sigmoid-funksjonen til å konvertere log(odds) verdiene til hver observasjon til sannsynligheter. Det gir oss y-verdien på linja fra sigmoid-funksjonen for den første observasjonen:
+
+```{r}
+sigmoid <- function(x) {
+   1 / (1 + exp(-x))
+}
+x <- seq(-5, 5, 0.01)
+sigmoidplott <- plot(x, sigmoid(x), col='darkgreen', xaxt='n')
+points(-4, 0.02, col = "red", pch=16)
+sigmoidplott
+```
+
+Som repeteres for alle observasjonene. Dette gjør at vi kan regne ut samlet sannsynlighet (y-verdien for på sigmoid-linja for det enkelt punkt er det samme som sannsynligheten for y-verdien for dette punktet). Dette gjør vi enten ved å multiplisere alle observasjonenes sannsynlighet, eller å addere log(sannsynlighet) for alle observasjonene (gir samme resultat). Verdien vi får er altså samlet sannsynlighet for dataene gitt kandidatlinja. 
+
+Deretter roteres kandidatlinja og prosedyren gjentas inntil man får linja med høyest sannsynlighet (= Maximum likelihood). Algoritmen som gjør dette for oss roterer kun på en måte som øker sannsynligheten (= tids- og ressursbesparende). 
+
+Når vi har funnet linja som best forklarer dataen kan vi bruke denne i prediksjon. Dersom vi har en gitt test elelr indikasjon på om en ny perosn er smittet kan vi bruke testverdien til å predikere om vi tror vedkommende er smittet eller ikke. Hvilken cut-off verdi vi setter er kontekstavhengig, men hvis vi f.eks. setter 0.5 vil en måling på 0.51 gjøre at vi klassifiserer vedkommende som smittet, mens en verdi på 0.49 vil klassifisere som ikke-smittet. Man kan selvsagt legge til flere målinger (=flere uavhengige variabler) for å fange opp flere forhold som gjør at vi kan si noe sikrere om smitte/ikke-smitte. Akkurat dette - muligheten til å bruke sannsynlighet for å klassifisere nye tilfeller/observasjoner som kan være både kategoriske og kontinuerlige - gjør metoden særlig egnet i teknikker som maskinlæring. @tabachnikUsingMultivariateStatistics2007 beskriver logistisk regresjon som relativt fri for begrensninger og i stand til å analysere en miks av kontinuerlige og kategoriske variabler ("the variety and complexity of data sets that can be analyzed are almost unlimited" - s.441).
+
+Imidlertid er det litt mer komplisert å se om en uavhengig variabel bidrar i modellen. I lineær regresjon er dette relativt enkelt. Det vi gjør i logistisk regresjon er å teste om en variabels effekt på prediksjonen er signifikant forskjellig fra 0 (gjennom en såkalt Walds test). Hvis effekten til en variabel er 0 gir den åpenbart ingen hjelp i prediksjonen (og er unødvendig i modellen). 
+
+## Binær logistisk regresjon
+
+I dette eksempelet følger vi @pallantSPSSSurvivalManual2010. 
+
+```{r}
+sovn <- read_sav("sleep4ED.sav")
+write_sav(sovn, "sovn.sav")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('sovn.sav')
+```
+
+Som Pallant beskriver er det vesentlig for enklere tolkning av resultatene at variablene kodes fornuftig. For en dikotom variabler bør 0 brukes på det alternativet som indikerer fravær av det du spør om, mens 1 brukes om tilstedeværelse. F.eks.: Hvis spørsmålet er "Spiller du tennis?" så bør "Nei" kodes 0 og "Ja" kodes 1. 
+
+![](sovn.png){width=75%}
+
+```{r}
+head(sovn)
+```
+
+```{r}
+sovnlogit <- glm(probsleeprec ~ sex + getsleprec + stayslprec + hourwnit + age, data = sovn, family = "binomial")
+summary(sovnlogit)
+```
+
+### "Deviance Residuals"
+
+Det første vi kan se på i output fra modellen er "Deviance Residuals". Dette forteller oss noe om modellens "fit". 
+
+### Koeffisientene
+
+```{r}
+summary(sovnlogit)$coefficients
+```
+
+Her kan vi først se på p-verdiene. Vi ser at getsleprec, stayslprec og hourwnit er statistisk signifikante. Med andre ord, de tre variablene som signifikant påvirker søvnproblemer er "Falle i søvn", "Ikke våkne" og "Timer søvn ukedager". 
+
+Tolkningen av koeffisientene er ikke like rett fram som for lineær regresjon. Her viser de til endring i log(odds) til den avhengige variabelen for en enhet økning i den respektive uavhengige variabelen:
+
+- For hver enhet økning i "Falle i søvn" (der 0 er "nei" og 1 er "ja") øker log(odds) for søvnproblemer med 0.72
+- For hver enhet økning i "Ikke våkne" (der 0 er "nei" og 1 er "ja") øker log(odds) for søvnproblemer med 1.98
+- For hver enhet økning i "Timer søvn hverdager" (timer søvn i gjennomsnitt hver ukedag) reduseres log(odds) for søvnproblemer med 0.44 (øker med -0.44)
+
+### ANOVA på residualene
+
+```{r}
+anova(sovnlogit, test="Chisq")
+```
+
+Her ser vi på kolonnen "Resid. Dev". Vi ser på hvor stor nedgang det er for hver variabel som legges inn i modellen. Vi ser at forskjellene er størst for de signifikante variablene. Vi har et markert dropp når "getsleprec" legges inn og når "stayslprec" legges inn, og et noe mindre dropp når "hourwnit" inkluderes. 
+
+### Fit indekser
+
+Vi har ingen eksakt ekvivalent til $R^2$ som vi vil ha i lineær regresjon, men McFadden $\rho^2$ indeks kan gi oss verdifull informasjon [@mcfaddenConditionalLogitAnalysis1974;@mcfaddenQuantitativeMethodsAnalyzing1977].
+
+```{r}
+DescTools::PseudoR2(sovnlogit, which = "all")
+```
+
+McFaddens $\rho^2$ kalles en $pseudo\ R^2$. Verdiene på $R^2$ og $\rho^2$ er imidlertid ikke direkte sammenliknbare. 
+
+![McFadden (1974), s.124, figur 5.5](McFadden.png)
+
+Vi kan se av illustrasjonen over at forholdet ikke er lineært, og at $\rho^2-verdiene$ er betraktelig lavere enn $R^2-verdiene$ [se feks. @smithComparisonLogisticRegression2013]. McFadden uttrykte selv [@mcfaddenQuantitativeMethodsAnalyzing1979] at verdier mellom 0.2 og 0.4 ga uttrykk for en utmerket fit. I så fall har vi med 0.23 en god modell.
+
+@smithComparisonLogisticRegression2013 finner i sin studie av ulike $pseudo-R^2$ indekser at "Aldrich-Nelson" ligger nærmest $R^2$. Man skal likevel være observant på at $pseudo-R^2$ indekser er en tilnærming til $R^2$ og at man uansett skal være forsiktig med å tolke en $pseudo-R^2$ helt likt som en $R^2$ selv om det gir oss en indikasjon på hva modellen forklarer slik $R^2$ gir i lineær regresjon.
+
+### Total effekt (Wald test)
+
+```{r}
+options(scipen = 999)
+aod::wald.test(b = coef(sovnlogit), Sigma = vcov(sovnlogit), Terms = 3:5)
+```
+
+Vi ser at Walds test indikerer at den totale effekten er statistisk signifikant. 
+
+### Forskjeller mellom de signifikante uavhengige variablene
+
+```{r}
+# Forskjell mellom variabel 3 og 4 i modellen
+diff1 <- cbind(0, 0, 1, -1, 0, 0)
+wald.test(b = coef(sovnlogit), Sigma = vcov(sovnlogit), L = diff1)
+```
+
+```{r}
+# Forskjell mellom variabel 4 og 5 i modellen
+diff2 <- cbind(0, 0, 0, 1, -1, 0)
+wald.test(b = coef(sovnlogit), Sigma = vcov(sovnlogit), L = diff2)
+```
+
+```{r}
+# Forskjell mellom variabel 3 og 5 i modellen
+diff3 <- cbind(0, 0, 1, 0, -1, 0)
+wald.test(b = coef(sovnlogit), Sigma = vcov(sovnlogit), L = diff3)
+```
+
+Vi kan se av de tre kjikvadrattestene at det er statistisk signifikant forskjell mellom varaibelparrene 3-4, 4-5 og 3-5 (som var de tre statistisk signifikante variablene i modellen).
+
+### Fra log(odds) til odds-ratios
+
+Odds-ratios er enklere å tolke enn log(odds). Derfor ønsker vi å konvertere log(odds) til odds-ratio.
+
+```{r}
+exp(cbind(OR = coef(sovnlogit), confint(sovnlogit)))
+```
+
+Dette kan vi tolke slik:
+
+```{r}
+exp(coefficients(sovnlogit)[3])
+```
+- For hver enhet økning i "Falle i søvn" øker oddsene for søvnproblemer med en faktor på 2.05. 
+
+```{r}
+exp(coefficients(sovnlogit)[4])
+```
+
+- For hver enhet økning i "Ikke våkne" øker oddsene for søvnproblemer med en faktor på 7.28
+
+```{r}
+exp(coefficients(sovnlogit)[5])
+```
+- For hver enhet økning i "Timer søvn hverdager" reduseres oddsene for søvnproblemer med en faktor på 0.64
+
+Størst odds for å få søvnproblemer får vi altså hvis vi våkner opp i løpet av søvnen. Det er imidlertid "gode odds" for at vi får søvnproblemer også av å ikek få sove, mens - ikke uventet - oddsene for å få søvnproblemer synker med lengden (antall timer) på søvnen.
+
+## Ordinal logistisk regresjon
+
+Ordinal logistisk regresjon er en utvidelse av binær logistisk regresjon når vi har en avhengig variabel som er kategorisk, men der kategoriene er ordnet i forhold til hverandre og der analysen bør beholde dette innbyrdes forholdet.
+
+Vi bruker her et datasett fra UCLA [@OrdinalLogisticRegression].
+
+```{r}
+orddata <- foreign::read.dta("https://stats.idre.ucla.edu/stat/data/ologit.dta")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+writexl::write_xlsx(orddata, "orddata.xlsx")
+xfun::embed_file('orddata.xlsx')
+```
+
+```{r}
+names(orddata)
+dim(orddata)
+```
+
+Variabelen "apply" er en rangert kategorisk variabel der studenter har svart på en undersøkelse som kategoriserer dem etter hvor sannsynlig det er at de søker høyere akademiske studier (Usannsynlig = 1, Mulig = 2, Sannsynlig = 3). Variabelen "pared" er binær der 0 betyr at ingen av foreldrene har gjennomført høyere akademisk utdannelse, og 1 betyr at minst en av foreldrene har det. "public" er også binær, der 0 betyr privat institusjon, 1 betyr offentlig. "gps" ("Grade Point Average") måler gjennomsnittskarakter i lavere akademisk utdannelse. 
+
+Vi kan se på dataene:
+
+```{r}
+lapply(orddata[, c("apply", "pared", "public")], table)
+ftable(xtabs(~ public + apply + pared, data = orddata))
+summary(orddata$gpa)
+round(sd(orddata$gpa),3)
+```
+
+Visuelt:
+
+```{r}
+ggplot(orddata, aes(x = apply, y = gpa)) +
+  geom_boxplot(size = .75) +
+  geom_jitter(alpha = .5) +
+  facet_grid(pared ~ public, margins = TRUE) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+Lager modellen:
+
+```{r}
+ordlogmod <- polr(apply ~ pared + public + gpa, data = orddata, Hess=TRUE)
+summary(ordlogmod)
+```
+
+Koeffisientene er (log)odds. For "pared" (foreldre) vil vi si at for en enhets økning i "pared" (dcs fra 0 til 1 siden det er en binær variabel) vil vi forvente en økning på 1.048 i den forvente verdien på "apply" *på (log)odds skalaen. Dette er selvsagt noe kludrete å tolke. Det vil være lettere å tolke odds (odds ratio).
+
+```{r}
+round(exp(coef(ordlogmod)),3)
+```
+
+Her kan vi tolke:
+
+- For studenter med foreldre som har høyere utdannelse er oddsene for å søke dersom man tilhører kategoriene "very likely" eller "somewhat likely" 2.85 ganger høyere enn om man har foreldre som ikke har høyere utdannelse, gitt at alle andre variabler holdes konstant. 
+
+- For studenter som er i offentlig skole er oddsene for å være i kategorien "very likely" eller "somewhat likely" 5.7% høyere enn de som går på privat skole ($(1-0.943)*100$).
+
+- For hver enhet økning i "gpa" øker oddsene for å være i kategoriene "very likely" eller "somewhat likely" med 85% (eller øker med en faktor på 1.85). 
+
+Og se p-verdiene.
+
+```{r}
+options(scipen = 999)
+koefftabell <- coef(summary(ordlogmod))
+sanns <- pnorm(abs(koefftabell[, "t value"]), lower.tail = FALSE) * 2
+koefftabell <- cbind(koefftabell, "p value" = sanns)
+round(koefftabell, 3)
+```
+
+Vi ser at variabelen "public" ikke er statistisk signifikant, mens "pared" og "gpa" har p < 0.05. 
+
+## Multinomial logistisk regresjon
+
+I motsetning til binær logistisk regresjon er multinomial logistisk regresjon klassifisering i tilfeller der en kategorisk avhengig variabel kan anta tre eller flere utfall, men der de ikke er rangerte som i ordinal logistisk regresjon.
+
+Eksempelet er hentet fra @MultinomialLogisticRegression2014, og går på hvilke valg elever som skal inn på videregående skole (min oversettelse, dataene omtaler "high school students", men det spiller ikke noen stor betydning for eksempelets skyld). Disse elevene velger mellom studieforberedende ("general program"), yrkesfag ("vocational program") og et akademisk program ("academic program", ingen klar norsk oversettelse, men som vi her kaller "IB" fra International Baccalaureate for å skille det fra studieforberedende).
+
+Her kan vi vise hvordan vi laster ned data direkte fra nett i R:
+```{r}
+multinommod <- foreign::read.dta("https://stats.idre.ucla.edu/stat/data/hsbdemo.dta")
+```
+
+For vårt formål trenger vi den avhengige variabelen "prog", og de to uavhengige variablene "ses" (sosio-økononmisk status) og "write" (score på skrivetest). Vi døper også om variablene til norsk.
+```{r echo = FALSE}
+multinommod <- rename(multinommod, program = prog)
+multinommod <- rename(multinommod, skrivetest = write)
+multinommod$ses <- recode(multinommod$ses, low = "Lav",
+                            middle = "Middels",
+                            high = "Høy")
+multinommod$program <- recode(multinommod$program, vocation = "Yrkesfag", general = "Studieforb", academic = "IB")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+writexl::write_xlsx(multinommod, "multinommod.xlsx")
+xfun::embed_file('multinommod.xlsx')
+```
+
+Vi kan se litt på dataene:
+```{r}
+with(multinommod, table(ses, program))
+```
+
+```{r}
+round(with(multinommod, do.call(rbind, tapply(skrivetest, program, function(x) c(M = mean(x), SD = sd(x))))),2)
+```
+
+Første skritt i å lage modellen er å lage en basline, altså en av kategoriene i den avhengige variabelen vi "sammenlikner med". Vi ser på oddsene for å være i en kategori (i den avhengige variabelen) relativt til oddsene for å være i baselinekategorien. 
+
+```{r}
+multinommod$program2 <- relevel(multinommod$program, ref = "IB")
+```
+
+```{r}
+modell1 <- nnet::multinom(program2 ~ ses + skrivetest, data = multinommod)
+summary(modell1)
+```
+
+Vi trenger også å se på p-verdiene for koeffisientene gjennom Walds test:
+
+```{r}
+options(scipen = 999)
+zverdier <- summary(modell1)$coefficients/summary(modell1)$standard.errors
+pverdier <- (1 - pnorm(abs(zverdier), 0, 1)) * 2
+round(pverdier, 3)
+```
+
+Hvis vi først ser på koeffisientene ser vi i første linje "Studieforberedende" sammenliknet med baseline "IB", og på andre linjer "Yrkesfag" sammenliknet med baseline "IB". 
+
+Vi ser først på første linje. En enhets økning i skrivetesten er forbundet med en nedgang i (log)oddsene for å være i studieforberedende i forhold til IB på 0.058. Likeledes - en enhets økning i skrivetesten er assosiert med en nedgang i (log)oddsene for å være i yrkesfag i forhold til IB på 0.114.
+
+(Log)oddsene for å være i studieforberedende vs. IB synker med 1.163 dersom man går fra lav til høy sosioøkonmisk status. 
+
+(Log)oddsene for å være i studieforberedende vs. IB synker med 0.533 dersom man går fra lav til middels sosioøkonmisk status, men forskjellen er ikke signifikant.
+
+(Log)oddsene for å være i yrkesfag vs. IB synker med 0.983 dersom man går fra lav til høy sosioøkonomisk status.
+
+(Log)oddsene for å være i yrkesfag vs. IB øker med 0.291 dersom man går fra lav til middels sosioøkonomisk status, men forskjellen er ikke signifikant.
+
+Vi kan også se på den relative risken - oddsene - for å være i en kategori i forhold til å være i baselinekateogrien IB:
+
+```{r}
+round(exp(coef(modell1)),3)
+```
+
+Oddsene for en enhets økning på skrivetesten er 0.944 for å være i studieforberedende vs. IB.
+
+Oddsene for å endre fra lav til høy sosioøkonomisk status er 0.313 ved å være i studieforberedende vs. IB.
+
+### Predikerte sannsynligheter i modellen
+
+```{r}
+predsann <- fitted(modell1)
+```
+
+Vi genererer datasett der vi varierer en variabel mens vi holder de andre konstant (ved å låse den/de som skal holdes konstante til gjennomsnittsverdien). 
+
+```{r}
+dses <- data.frame(ses = c("Lav", "Middels", "Høy"), skrivetest = mean(multinommod$skrivetest))
+predict(modell1, newdata = dses, "probs")
+```
+
+Tabellen over inneholder altså de predikerte verdiene for nivåene av sosioøkonomisk status (lav, middels, høy) når skrivetest holdes konstant. Modellen predikerer altså at f.eks. for de som har lav sosioøkonomisk status vil ca. 44% være i kateogrien IB, ca. 36% være i kateogrien studieforberedende og ca. 20% være i kategorien yrkesfag. For de med høy sosioøkonomisk status predikerer modellen at ca. 70% vil være i kateogrien IB, ca. 18% i studieforberedende og ca. 12% i yrkesfag. 
+
+Vi kan snu på prediksjonene og se på hva forventet score på skrivetesten for hvert nivå av sosioøkonomisk status:
+
+```{r}
+dskrivetest <- data.frame(ses = rep(c("Lav", "Middels", "Høy"), each = 41), skrivetest = rep(c(30:70),
+    3))
+pred_skrivetest <- cbind(dskrivetest, predict(modell1, newdata = dskrivetest, type = "probs", se = TRUE))
+by(pred_skrivetest[, 3:5], pred_skrivetest$ses, colMeans)
+```
+
+For hvert nivå av sosioøkonomisk status ser vi predikerte gjennomsnittlige sannsynligheter for skrivetesten for de ulike kategoriene. 
+
+Vi kan visualisere det samme (ofte er tolkning lettere visuelt):
+
+```{r}
+longpred <- melt(pred_skrivetest, id.vars = c("ses", "skrivetest"), value.name = "sannsynlighet")
+ggplot(longpred, aes(x = skrivetest, y = sannsynlighet, colour = ses)) + geom_line() + facet_grid(variable ~
+    ., scales = "free")
+```
+

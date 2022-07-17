@@ -1,0 +1,99 @@
+---
+bibliography: bibliografi.bib  
+csl: chicago-author-date.csl
+always_allow_html: true
+---
+# Univariat analyse
+
+R-pakker brukt i dette kapittelet:
+
+```{r}
+pacman::p_load(summarytools)
+```
+
+Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler i sammenheng eller i forhold til hverandre). I hovedsak gjør vi dette på tre måter:
+
+1. Deskriptiv statistikk ("Summary statistics")
+2. Frekvenstabeller
+3. Diagrammer / plott
+
+## Deskriptiv statistikk
+
+Deskriptiv statistikk kan vi gjerne gruppere i to hovedgrupper: 
+
+1. Tendens ("location measures")
+2. Spredning ("dispersion measuresd")
+
+Typiske karakteristika vi kan være interessert i å se på er gjennomsnitt, median, maksimums- og minimumsverdier ("range"), kvartiler / interkvartil avstand ("IQR"), varians / standardavvik, manglende verdier ("missing values" / "NAs"), skjevhet og kurtosis.
+
+Vi fram igjen datasettet vi brukte i kapittel 2 der vi hadde genererte høydedata for 100 tilfeldige menn.
+
+```{r echo = FALSE, message = FALSE, warning=FALSE}
+
+set.seed(30)
+hoyde100 <- rnorm(100, 179, 16)
+descr(hoyde100)
+```
+
+Et statistikkprogrgam vil lett gi oss en rekke utregninger som sier noe deskriptivt (beskrivende) om dataene. I resultatet ovenfor ser vi typiske ting som gjennomsnittsverdi, medianverdi, minimums- og maksimumsverdi, kvartiler (mer om det under boksplott), men også litt mer ukjente forhold som skjevhet og kurtosis. Skjevhet var vi en god del inne på når vi snakket om normalfordelingen i kapittel 1. Kurtosis handler om hvor "tunge eller lette haler" en datafordeling har (ofte omtales kurtosis som "hvor spiss fordelignen er", men det er egentlig unøyaktig). 
+
+## Frekvenstabell
+
+Det gir ikke særlig mening å lage en frekvenstabell for de genererte høydedataene siden alle verdeiene er unike (altså får vi frekvens 1 på alle 100 observasjonene). La oss derfor lage et enkelt eksempel:
+
+```{r}
+x <- c(1, 1, 2, 3.5, 4, 4, 4, 5, 5, 6.5, 7, 7.4, 8, 13, 14.2)
+summarytools::freq(x)
+```
+
+En frekvenstabell teller enkelt opp hvor mange forekomster vi har av ulike verdier, grupper e.l. Vi kan se at i tabellen over at verdien fire forekommer tre ganger. Et statistikkprogram gir oss også (som regel autmatisk, evt. at vi må be om det) hvor mange prosent det respektive antall forekomster utgjør av totalt antall forekomster (f.eks. utgjør de tre forekomstene av verdien fire 20% av totalt antall forekomster). Videre har vi ofte kumulativ prosent - som er en summering av prosentandelene fra første verdi til siste (summen blir åpenbart alltid 100). For verdien fire ser vi kumulativt 46.67%. Altså utgjør forekomstene av verdiene 1, 2, 3.5 og 4 tilsammen 46.67% av alle forekomster. 
+
+## Diagrammer / plott
+
+Det er en rekke diagrammer / plott vi kan lage som gir oss informasjon om en enkelt variabel. 
+
+### Kateogriske data
+
+#### Stolpediagram ("bar chart")
+
+
+
+
+
+
+
+
+
+Histogram:
+
+```{r}
+hist(x, breaks = 8, main = "Histogram inndelt med bredde = 8")
+```
+
+Histogrammet viser søyler av kontinuerlige data gruppert etter en gitt bredde på søylene - antall søyler definerer vi selv ut fra hvor stor del av bredden av observasjoner vi "putter inn i" søyla. I histogrammet over har vi delt dataene inn i åtte deler (søylene har alltid lik bredde). Vi kan også dele inn annerledes.
+
+```{r}
+hist(x, breaks = 3, main = "Histogram inndelt med bredde = 3")
+```
+
+Fordeling ("density"):
+
+```{r}
+dens <- density(x)
+plot(dens, x, frame = FALSE, col = "steelblue", main = "Densityplott")
+polygon(dens, col = "steelblue")
+```
+
+Et densityplott viser distribusjonen til en numerisk variabel. Det er på en måte en "smooth" versjon av histogrammet. Densityplott kan være et alternativ når man skal se på dataene og hvilken distribusjon den har. Det kan være enklere å se om distribusjonen f.eks. er bimodal eller unimodal (en eller to topper). 
+
+Boxplott:
+
+```{r}
+boxplot(x)
+```
+
+Boxplott ble ganske grundig gjennomgått i kapittel 1.7.1.4.
+
+
+
+Vi kommer tilbake flere steder til mer utførlig tolkning av ulike diagrammer i ulike kapitler der de brukes i en kontekst. 

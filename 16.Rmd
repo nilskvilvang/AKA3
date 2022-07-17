@@ -1,0 +1,96 @@
+---
+bibliography: bibliografi.bib
+csl: chicago-author-date.csl
+always_allow_html: true
+---
+```{r echo = FALSE}
+options(scipen=999)
+```
+
+# Maskinlæring gjennom "tidymodels"
+
+R-pakker brukt i dette kapittelet:
+
+```{r}
+pacman::p_load(tidyverse, tidymodels, sf, patchwork, RColorBrewer, grid, ragg)
+```
+
+Formålet i dette kapittelet er å utvikle ulike modeller for å predikere salgspris på hus basert på datasettet Ames Housing Data. Vi bruker et bearbeidet [datasett](https://github.com/topepo/AmesHousing/blob/master/R/make_ames.R). Datasettet ligger ferdig bearbeidet (rådata, hvilket ikke betyr klar til analyse...) i pakken "tidymodels". 
+
+
+
+Datasett:
+
+```{r echo = FALSE}
+data(ames, package = "modeldata")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("ames.csv")
+```
+
+```{r}
+dim(ames)
+```
+
+Vi ser på distribusjonen av den avhengige variabelen - salgsprisen:
+
+```{r}
+tidymodels_prefer()
+ggplot(ames, aes(x=Sale_Price)) + 
+    geom_histogram(color="black",
+                   fill="lightblue",
+                   bins = 50) +
+    labs(x = "Salgspris i $",
+         y = "Antall",
+         caption = "Salgspris for boliger i Ames, Iowa i perioden 2006-2010") +
+    theme_bw()
+```
+
+Vi kan belyse det samme i et boksplott:
+
+```{r}
+ggplot(data = ames, aes(x = "", y = Sale_Price)) + 
+  geom_boxplot(fill = 'lightblue') +
+  labs(y = "Verdi",
+       caption = "Salgspris for boliger i Ames, Iowa i perioden 2006-2010")
+```
+
+I situasjoner som dette foreskrives det ofte at man ser på en transformasjon av variabelen. @fengLogtransformationItsImplications2014 finner imidlertid at
+
+> Using transformations in general and log transformation in particular can be quite problematic. If such an approach is used, the researcher must be mindful about its limitations, particularly when interpreting the relevance of the analysis of  transformed data for the hypothesis of interest about the original data. For example, we have demonstrated that in most  circumstances the log transformation does not help make data less variable or more normal and may, in some circumstances, make data more variable and more skewed. Furthermore, log-transformed data cannot usually facilitate inferences concerning the  original data, since it shares little in common with the original data (s.108). 
+
+Det finnes likevel andre gode, og praktiske, grunner til at nettopp anvendt analyse bruker f.eks. log transformasjoner. En god redegjørelse finner du [her](https://stats.stackexchange.com/questions/107610/what-is-the-reason-the-log-transformation-is-used-with-right-skewed-distribution). Vi går ikke dypere inn i diskusjonen utover å si at log transformasjon kan være et svært godt verktøy, men at man skal anvende det bevisst (som alt annet...). Et viktig poeng å tenke på før man går for en log transformasjon er at testverdier vi senere vil være interessert i - f.eks. RMSE, jfr. forrige kapittel - også vil være på log skala og dermed vanskeligere å tolke. 
+
+```{r warning = FALSE, message = FALSE}
+ggplot(ames, aes(x=Sale_Price)) + 
+    geom_histogram(color="black",
+                   fill="lightblue",
+                   bins = 50) +
+    labs(x = "Salgspris i $",
+         y = "Antall",
+         caption = "Salgspris for boliger i Ames, Iowa i perioden 2006-2010 etter log 10 transformasjon") +
+    theme_bw() +
+    scale_x_log10()
+```
+
+Siden fordelingen ser ut til å være ganske nær en normalfordeling transformerer vi variabelen.
+
+```{r}
+ames <- ames %>% 
+    mutate(Sale_Price = log10(Sale_Price))
+```
+
+Datafordelingen ser da (selvsagt) annerledes ut.
+
+```{r}
+ggplot(data = ames, aes(x = "", y = Sale_Price)) + 
+  geom_boxplot(fill = 'lightblue') +
+  labs(y = "Verdi",
+       caption = "Salgspris for boliger i Ames, Iowa i perioden 2006-2010 etter log 10 transformasjon") +
+  theme_bw()
+```
+
+
+
+

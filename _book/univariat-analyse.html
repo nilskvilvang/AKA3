@@ -4,13 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kapittel 4 Univariat analyse | Anvendt kvantitativ analyse</title>
+<title>Kapittel 4 Univariat analyse | Untitled</title>
 <meta name="author" content="Nils Kvilvang">
 <meta name="generator" content="bookdown 0.27 with bs4_book()">
-<meta property="og:title" content="Kapittel 4 Univariat analyse | Anvendt kvantitativ analyse">
+<meta property="og:title" content="Kapittel 4 Univariat analyse | Untitled">
 <meta property="og:type" content="book">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kapittel 4 Univariat analyse | Anvendt kvantitativ analyse">
+<meta name="twitter:title" content="Kapittel 4 Univariat analyse | Untitled">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -48,9 +48,9 @@
     }
   </style>
 <link rel="stylesheet" href="style.css">
-<meta name="description" content="Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler...">
-<meta property="og:description" content="Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler...">
-<meta name="twitter:description" content="Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler...">
+<meta name="description" content="R-pakker brukt i dette kapittelet: pacman::p_load(summarytools) Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser...">
+<meta property="og:description" content="R-pakker brukt i dette kapittelet: pacman::p_load(summarytools) Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser...">
+<meta name="twitter:description" content="R-pakker brukt i dette kapittelet: pacman::p_load(summarytools) Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser...">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -60,7 +60,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">Anvendt kvantitativ analyse</a>
+        <a href="index.html" title="">Untitled</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -88,6 +88,7 @@
 <li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">13</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
 <li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">14</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
 <li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">16</span> Maskinlæring gjennom “tidymodels”</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-a---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-b---chebyshevs-teorem.html">Vedlegg B - Chebyshevs teorem</a></li>
@@ -103,6 +104,9 @@
 <h1>
 <span class="header-section-number">Kapittel 4</span> Univariat analyse<a class="anchor" aria-label="anchor" href="#univariat-analyse"><i class="fas fa-link"></i></a>
 </h1>
+<p>R-pakker brukt i dette kapittelet:</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">summarytools</span><span class="op">)</span></span></code></pre></div>
 <p>Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler i sammenheng eller i forhold til hverandre). I hovedsak gjør vi dette på tre måter:</p>
 <ol style="list-style-type: decimal">
 <li>Deskriptiv statistikk (“Summary statistics”)</li>
@@ -148,29 +152,28 @@
 <span class="header-section-number">4.2</span> Frekvenstabell<a class="anchor" aria-label="anchor" href="#frekvenstabell"><i class="fas fa-link"></i></a>
 </h2>
 <p>Det gir ikke særlig mening å lage en frekvenstabell for de genererte høydedataene siden alle verdeiene er unike (altså får vi frekvens 1 på alle 100 observasjonene). La oss derfor lage et enkelt eksempel:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3.5</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">6.5</span>, <span class="fl">7</span>, <span class="fl">7.4</span>, <span class="fl">8</span>, <span class="fl">13</span>, <span class="fl">14.2</span><span class="op">)</span>
-<span class="co"># Bruker pakken: summarytools</span>
-<span class="fu">summarytools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/summarytools/man/freq.html">freq</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="co">#&gt; Frequencies  </span>
-<span class="co">#&gt; x  </span>
-<span class="co">#&gt; Type: Numeric  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;               Freq   % Valid   % Valid Cum.   % Total   % Total Cum.</span>
-<span class="co">#&gt; ----------- ------ --------- -------------- --------- --------------</span>
-<span class="co">#&gt;           1      2     13.33          13.33     13.33          13.33</span>
-<span class="co">#&gt;           2      1      6.67          20.00      6.67          20.00</span>
-<span class="co">#&gt;         3.5      1      6.67          26.67      6.67          26.67</span>
-<span class="co">#&gt;           4      3     20.00          46.67     20.00          46.67</span>
-<span class="co">#&gt;           5      2     13.33          60.00     13.33          60.00</span>
-<span class="co">#&gt;         6.5      1      6.67          66.67      6.67          66.67</span>
-<span class="co">#&gt;           7      1      6.67          73.33      6.67          73.33</span>
-<span class="co">#&gt;         7.4      1      6.67          80.00      6.67          80.00</span>
-<span class="co">#&gt;           8      1      6.67          86.67      6.67          86.67</span>
-<span class="co">#&gt;          13      1      6.67          93.33      6.67          93.33</span>
-<span class="co">#&gt;        14.2      1      6.67         100.00      6.67         100.00</span>
-<span class="co">#&gt;        &lt;NA&gt;      0                               0.00         100.00</span>
-<span class="co">#&gt;       Total     15    100.00         100.00    100.00         100.00</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3.5</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">6.5</span>, <span class="fl">7</span>, <span class="fl">7.4</span>, <span class="fl">8</span>, <span class="fl">13</span>, <span class="fl">14.2</span><span class="op">)</span></span>
+<span><span class="fu">summarytools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/summarytools/man/freq.html">freq</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Frequencies  </span></span>
+<span><span class="co">#&gt; x  </span></span>
+<span><span class="co">#&gt; Type: Numeric  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;               Freq   % Valid   % Valid Cum.   % Total   % Total Cum.</span></span>
+<span><span class="co">#&gt; ----------- ------ --------- -------------- --------- --------------</span></span>
+<span><span class="co">#&gt;           1      2     13.33          13.33     13.33          13.33</span></span>
+<span><span class="co">#&gt;           2      1      6.67          20.00      6.67          20.00</span></span>
+<span><span class="co">#&gt;         3.5      1      6.67          26.67      6.67          26.67</span></span>
+<span><span class="co">#&gt;           4      3     20.00          46.67     20.00          46.67</span></span>
+<span><span class="co">#&gt;           5      2     13.33          60.00     13.33          60.00</span></span>
+<span><span class="co">#&gt;         6.5      1      6.67          66.67      6.67          66.67</span></span>
+<span><span class="co">#&gt;           7      1      6.67          73.33      6.67          73.33</span></span>
+<span><span class="co">#&gt;         7.4      1      6.67          80.00      6.67          80.00</span></span>
+<span><span class="co">#&gt;           8      1      6.67          86.67      6.67          86.67</span></span>
+<span><span class="co">#&gt;          13      1      6.67          93.33      6.67          93.33</span></span>
+<span><span class="co">#&gt;        14.2      1      6.67         100.00      6.67         100.00</span></span>
+<span><span class="co">#&gt;        &lt;NA&gt;      0                               0.00         100.00</span></span>
+<span><span class="co">#&gt;       Total     15    100.00         100.00    100.00         100.00</span></span></code></pre></div>
 <p>En frekvenstabell teller enkelt opp hvor mange forekomster vi har av ulike verdier, grupper e.l. Vi kan se at i tabellen over at verdien fire forekommer tre ganger. Et statistikkprogram gir oss også (som regel autmatisk, evt. at vi må be om det) hvor mange prosent det respektive antall forekomster utgjør av totalt antall forekomster (f.eks. utgjør de tre forekomstene av verdien fire 20% av totalt antall forekomster). Videre har vi ofte kumulativ prosent - som er en summering av prosentandelene fra første verdi til siste (summen blir åpenbart alltid 100). For verdien fire ser vi kumulativt 46.67%. Altså utgjør forekomstene av verdiene 1, 2, 3.5 og 4 tilsammen 46.67% av alle forekomster.</p>
 </div>
 <div id="diagrammer-plott" class="section level2" number="4.3">
@@ -187,24 +190,24 @@
 <span class="header-section-number">4.3.1.1</span> Stolpediagram (“bar chart”)<a class="anchor" aria-label="anchor" href="#stolpediagram-bar-chart"><i class="fas fa-link"></i></a>
 </h4>
 <p>Histogram:</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fl">8</span>, main <span class="op">=</span> <span class="st">"Histogram inndelt med bredde = 8"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="04_Kap_4_files/figure-html/unnamed-chunk-4-1.png" width="672"></div>
-<p>Histogrammet viser søyler av kontinuerlige data gruppert etter en gitt bredde på søylene - antall søyler definerer vi selv ut fra hvor stor del av bredden av observasjoner vi “putter inn i” søyla. I histogrammet over har vi delt dataene inn i åtte deler (søylene har alltid lik bredde). Vi kan også dele inn annerledes.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fl">3</span>, main <span class="op">=</span> <span class="st">"Histogram inndelt med bredde = 3"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="04_Kap_4_files/figure-html/unnamed-chunk-5-1.png" width="672"></div>
-<p>Fordeling (“density”):</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fl">8</span>, main <span class="op">=</span> <span class="st">"Histogram inndelt med bredde = 8"</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="04_files/figure-html/unnamed-chunk-4-1.png" width="672"></div>
+<p>Histogrammet viser søyler av kontinuerlige data gruppert etter en gitt bredde på søylene - antall søyler definerer vi selv ut fra hvor stor del av bredden av observasjoner vi “putter inn i” søyla. I histogrammet over har vi delt dataene inn i åtte deler (søylene har alltid lik bredde). Vi kan også dele inn annerledes.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dens</span>, <span class="va">x</span>, frame <span class="op">=</span> <span class="cn">FALSE</span>, col <span class="op">=</span> <span class="st">"steelblue"</span>, main <span class="op">=</span> <span class="st">"Densityplott"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span><span class="op">(</span><span class="va">dens</span>, col <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="04_Kap_4_files/figure-html/unnamed-chunk-6-1.png" width="672"></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">x</span>, breaks <span class="op">=</span> <span class="fl">3</span>, main <span class="op">=</span> <span class="st">"Histogram inndelt med bredde = 3"</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="04_files/figure-html/unnamed-chunk-5-1.png" width="672"></div>
+<p>Fordeling (“density”):</p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/density.html">density</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dens</span>, <span class="va">x</span>, frame <span class="op">=</span> <span class="cn">FALSE</span>, col <span class="op">=</span> <span class="st">"steelblue"</span>, main <span class="op">=</span> <span class="st">"Densityplott"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span><span class="op">(</span><span class="va">dens</span>, col <span class="op">=</span> <span class="st">"steelblue"</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="04_files/figure-html/unnamed-chunk-6-1.png" width="672"></div>
 <p>Et densityplott viser distribusjonen til en numerisk variabel. Det er på en måte en “smooth” versjon av histogrammet. Densityplott kan være et alternativ når man skal se på dataene og hvilken distribusjon den har. Det kan være enklere å se om distribusjonen f.eks. er bimodal eller unimodal (en eller to topper).</p>
 <p>Boxplott:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="04_Kap_4_files/figure-html/unnamed-chunk-7-1.png" width="672"></div>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-figure"><img src="04_files/figure-html/unnamed-chunk-7-1.png" width="672"></div>
 <p>Boxplott ble ganske grundig gjennomgått i kapittel 1.7.1.4.</p>
 <p>Vi kommer tilbake flere steder til mer utførlig tolkning av ulike diagrammer i ulike kapitler der de brukes i en kontekst.</p>
 
@@ -228,8 +231,8 @@
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/04_Kap_4.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/04_Kap_4.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/04.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/04.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -241,7 +244,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 11 juli, 2022.</p>
+    <p>"<strong>Untitled</strong>" was written by Nils Kvilvang. It was last built on 2022-07-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

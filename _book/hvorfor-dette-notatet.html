@@ -4,13 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kapittel 1 Hvorfor dette notatet? | Anvendt kvantitativ analyse</title>
+<title>Kapittel 1 Hvorfor dette notatet? | Untitled</title>
 <meta name="author" content="Nils Kvilvang">
 <meta name="generator" content="bookdown 0.27 with bs4_book()">
-<meta property="og:title" content="Kapittel 1 Hvorfor dette notatet? | Anvendt kvantitativ analyse">
+<meta property="og:title" content="Kapittel 1 Hvorfor dette notatet? | Untitled">
 <meta property="og:type" content="book">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kapittel 1 Hvorfor dette notatet? | Anvendt kvantitativ analyse">
+<meta name="twitter:title" content="Kapittel 1 Hvorfor dette notatet? | Untitled">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -60,7 +60,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">Anvendt kvantitativ analyse</a>
+        <a href="index.html" title="">Untitled</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -88,6 +88,7 @@
 <li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">13</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
 <li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">14</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
 <li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">16</span> Maskinlæring gjennom “tidymodels”</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-a---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-b---chebyshevs-teorem.html">Vedlegg B - Chebyshevs teorem</a></li>
@@ -123,8 +124,6 @@
 <p>Vi har lite fokus på matematikk og formler i den forstand at vi mange steder ikke utleder i dybden forklaring på ulike formler. Vi tror det er fullt mulig å ha en praktisk forståelse og anvendt bruk av kvantitative analyser uten å ha dyptgående kjennskap til de matematiske eller statistiske forklaringene. Likevel, det er heller ikke slik at vi absolutt skal unngå dette. Vi har derfor inkludert noe bakgrunnskunnskap for å skape en ramme rundt kjernen i notatet der vi tenker det kan være interessant for de som ønsker å fordype seg noe mer. Mange vil kanskje velge å hoppe lett over det mer tekniske og matematiske. Det er på mange måter helt greit, men samtidig tilbyr vi også noe mer redegjørelse for ulike konsepter.</p>
 <p>Vi skrev litt lenger opp i denne innledningen at dette ikke er en lærebok i R. Det er riktig, men med en viss modifikasjon. Vi tror at R er et godt alternativ (vi har jo valgt å bruke det selv…). For de som likevel ønsker litt inputs på R og RStudio har vi inkludert et kapittel tidlig der vi tar endel grunnleggende ting som kan gjøre oppstarten med R litt mer myk og anvendelsen av dette notatet enklere. Man kan godt hoppe over dette kapittelet, ignorere all kode undervegs, og forhåpentligvis likevel tilnærme seg stoffet.</p>
 
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">flextable</span>, <span class="va">tidyverse</span>, <span class="va">officer</span>, <span class="va">readxl</span>, <span class="va">knitr</span>, <span class="va">kableExtra</span>, <span class="va">writexl</span>, <span class="va">car</span>, <span class="va">readxl</span>, <span class="va">effects</span>, <span class="va">ggplot2</span>, <span class="va">writexl</span>, <span class="va">ggpubr</span>, <span class="va">tidyverse</span>, <span class="va">gridExtra</span>, <span class="va">nortest</span>, <span class="va">knitr</span>, <span class="va">kableExtra</span>, <span class="va">tseries</span>, <span class="va">normtest</span>, <span class="va">flextable</span>, <span class="va">magrittr</span>, <span class="va">ISLR</span>, <span class="va">olsrr</span>, <span class="va">lmtest</span>, <span class="va">rnorsk</span>, <span class="va">qwraps2</span>, <span class="va">sjPlot</span>, <span class="va">sjmisc</span>, <span class="va">sjlabelled</span>, <span class="va">xtable</span>, <span class="va">Hmisc</span>, <span class="va">gt</span>, <span class="va">gtsummary</span>, <span class="va">sjPlot</span>, <span class="va">modelsummary</span>, <span class="va">table1</span>, <span class="va">jtools</span>, <span class="va">interactions</span>, <span class="va">outliers</span>, <span class="va">EnvStats</span>, <span class="va">qqplotr</span>, <span class="va">summarytools</span>, <span class="va">caret</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
   <div class="chapter-nav">
@@ -139,8 +138,8 @@
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/01_Kap_1.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/01_Kap_1.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/01.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/01.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -152,7 +151,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 11 juli, 2022.</p>
+    <p>"<strong>Untitled</strong>" was written by Nils Kvilvang. It was last built on 2022-07-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

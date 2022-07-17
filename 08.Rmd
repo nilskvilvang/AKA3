@@ -1,0 +1,264 @@
+---
+bibliography: bibliografi.bib  
+csl: chicago-author-date.csl
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+options(scipen=999)
+```
+
+# Variansanalyse - MANOVA ("Multivariate Analysis of Variance")
+
+R-pakker brukt i dette kapittelet:
+
+```{r}
+pacman::p_load(readxl, writexl, tidyverse, summarytools, gridExtra, lsr, rstatix, mvnormalTest, heplots, plyr, xtable, broom, ggpubr, car, GGally)
+```
+
+## Enveis MANOVA
+
+Forskjellen mellom de analysene vi har gjort til nå og MANOVA er at vi kan ønske å se på effekter av ulike påvirkninger på flere enn en avhengig variabel. MANOVA er således en ANOVA med to eller flere kontinuerlige avhengige variabler, der flere avhengige variabler testes for statistiske forskjeller gjennom en "grouping variable".
+
+Vi kan se for oss at vi forventer at en påvirkning har effekt på flere avhengige variabler. På en måte er MANOVA en analyse som kjører gjentatte ANOVAer (fordi vi har mer enn en avhengig variabel), men som samtidig korrigerer for risikoen for type 1 feil (at vi tror det er en signifikant forskjell mellom grupper uten at det er det). Hvis vi gjennomfører gjentatte ANOVAer øker sannsynligheten for at vi får signifikante resultater (kort fortalt fordi sjansen for tilfeldig signifikant resultat øker med antall ganger vi kjører testen [@mittelhammerEconometricFoundations2000] og får type 1 feil. Det skal sies at man kan gjennomføre flere ANOVAer, men et tiltak for å redusere type 1 feil kan være å sette en strengere alfaverdi. En relativt enkel korrigering er å ta den vanlige alfaverdien og dele på antall avhengige variabler (dvs antall ganger du vil kjøre ANOVA) [@pallantSPSSSurvivalManual2010]. Dette kalles en Bonferroni justering:
+
+$Justert\ \alpha = \frac{0.05}{Antall\ variabler}, f.eks:\ Justert\ \alpha=\frac{0.05}{3}=0.17$
+
+Nedsiden ved å korrigere slik er at man øker sjansen for type II feil (sjansene for type 1 og type 2 feil er dessverre omvendt korrelerte). Det finnes alternativer, men vi går ikke inn i disse her [se f.eks. @franeArePerFamilyType2015].
+
+Det vi ønsker å undersøke er:
+
+![](manova1.png){width=75%}
+
+```{r echo = FALSE}
+manova1 <- readxl::read_excel("Pallant_Survey.xlsx")
+manova1 <- manova1[ ,c("sex", "tnegaff", "tposaff", "tpstress")]
+manova1 <- na.omit(manova1)
+manova1 <- dplyr::rename(manova1, Kjonn = sex)
+manova1$Kjonn <- as.factor(manova1$Kjonn)
+manova1$Kjonn <- plyr::mapvalues(manova1$Kjonn, from = c("1", "2"), to = c("Mann", "Kvinne"))
+writexl::write_xlsx(manova1, "Pallant_Survey_MANOVA.xlsx")
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('Pallant_Survey_MANOVA.xlsx')
+```
+
+Vi kan se på variablene gruppert etter kjønn:
+```{r}
+manova1 %>%
+  group_by(Kjonn) %>%
+  rstatix::get_summary_stats(tnegaff, tposaff, tpstress, type = "mean_sd")
+```
+
+Grafisk ser de avhengige variablene slik ut:
+```{r}
+p1 <- ggplot(manova1, aes(x = Kjonn, y = tnegaff, fill = Kjonn)) + geom_boxplot(outlier.shape = NA) + geom_jitter(width = 0.2) + theme(legend.position="top")
+p2 <- ggplot(manova1, aes(x = Kjonn, y = tposaff, fill = Kjonn)) + geom_boxplot(outlier.shape = NA) + geom_jitter(width = 0.2) + theme(legend.position="top")
+p3 <- ggplot(manova1, aes(x = Kjonn, y = tpstress, fill = Kjonn)) + geom_boxplot(outlier.shape = NA) + geom_jitter(width = 0.2) + theme(legend.position="top")
+gridExtra::grid.arrange(p1, p2, p3, ncol=3)
+```
+
+Gruppert på en litt annen måte kan vi også framstille dataene grafisk slik:
+
+```{r warning = FALSE, message = FALSE}
+ggpubr::ggboxplot(
+  manova1, x = "Kjonn", y = c("tnegaff", "tposaff", "tpstress"), 
+  merge = TRUE, palette = "jco", xlab = "Verdi")
+```
+
+Vi kan se ut fra de grafiske framstillingene (og tabellen lenger opp) at for variabelen "tposaff" ser gjennomsnittsverdien og spredningen ut til å være veldig lik mellom kjønnene, mens for begge de to andre ser ut til å ha høyere gjennomsnittsverdi for kvinner. Vi vet imidlertid ikke om dette er statistisk signifikant eller sannsynligvis tilfeldig. 
+
+Vi kan så lage en MANOVA der vi tester følgende:
+
+$H_0: De\ multivariate\ vektorene\ av\ gjennomsnittsverdier\ for\ to\ eller\ flere\ grupperer\ like$
+
+$H_A: Minst\ en\ er\ ulik$
+
+```{r}
+avhengige <- cbind(manova1$tnegaff, manova1$tposaff, manova1$tpstress)
+manovares1 <- manova(avhengige ~ Kjonn, data = manova1)
+summary(manovares1)
+```
+
+Pillais testverdi er statistisk signifikant [Pillais Trace = 0.0244, *F*(3, 428) = 3.569, p < 0.05]. Det er grunn til å tro at det er forskjeller mellom gruppene. Vi finner med andre ord en signifikant forskjell mellom menn og kvinner (men kan ikke ut fra dette si noe om hvor forskjellene er).
+
+```{r warning = FALSE, message = FALSE}
+effectsize::eta_squared(manovares1)
+```
+
+$\eta^2 = 0.02$ viser imidlertid at effekten er liten.
+
+```{r}
+summary.aov(manovares1)
+```
+
+Vi kan se at kun en av variablene - betegnet "Response 3" (= "tpstress" siden den er lagt inn som tredje variabel i vår modell) - er statistisk signifikant (p < 0.05). Vi omtalte imidlertid behovet for å foreta en justering av $\alpha$ til 0.17 gjennom en Bonferronikorreksjon (det finnes andre måter å korrigere for, men det går vi ikke videre inn på her). Med justering blir også "Response 1" ("tnegaff") statistisk signifikant. 
+
+Vi kan gå tilbake til de to signifikante variablene:
+
+```{r}
+manova1 %>% group_by(Kjonn) %>%  dplyr::summarise(n = n(), mean = mean(tnegaff), sd = sd(tnegaff))
+manova1 %>% group_by(Kjonn) %>%  dplyr::summarise(n = n(), mean = mean(tpstress), sd = sd(tpstress)) 
+```
+
+Ut fra våre funn kan vi si at kvinner er statistisk signifikant mer stresset enn menn i denne undersøkelsen på 2 av 3 variabler, men forskjellen er liten.
+
+## Sjekk av forutsetninger
+
+### Teoretisk begrunnede variabler
+
+Dette er kanskje en litt «merkelig» forutsetning, og strengt tatt er det vel ikke en forutsetning, men heller en forsiktighetsregel mot å misbruke MANOVA. MANOVA kan synes som en type analyse der man kan slenge inn en rekke variabler og får et statistikkprogram til å kjøre gjentatte ANOVAer. Som @fieldDiscoveringStatisticsUsing2012 presisierer må det være en grunn til å kjøre en MANOVA. Så kan man selvsat si at dette er - vel, selvsagt - men det er likevel slik at dette kanskje ikke er - vel, selvsagt - så derfor nevnes det her. Dette poenget er selvsagt i den forstand at det bør gjelde alle analyser vi gjør. 
+
+### Utvalgsstørrelse
+
+```{r}
+manova1 %>%
+  group_by(Kjonn) %>%
+  dplyr::summarise(N = n())
+```
+
+Dette er godt over "nødvendig" utvalgsstørrelse. Litteraturen gir ingen entydige retningslinjer for hva som er "stort nok", men en tommelfingerregel som gjengis flere steder er:
+
+$n\ i\ hver\ celle\ > antall\ avhengige\ variabler$
+
+@wilsonvanvoorhisUnderstandingPowerRules2007 angir for ANOVA at hver celle bør ha 30. Dette er uansett ingen utfordring i vårt eksempel.
+
+### Univariat normalitet
+
+```{r}
+manova1 %>%
+  group_by(Kjonn) %>%
+  rstatix::shapiro_test(tnegaff, tposaff, tpstress) %>%
+  arrange(variable)
+```
+
+Vi ser at vi har gjentatte problemer med signifikante verdier på shapiros test, noe som er problematisk ift. normalitet. Vi kan også sjekke skjevhet og kurtosis:
+
+```{r}
+options(scipen = 999)
+mvnormalTest::mardia(manova1[, c("tnegaff", "tposaff", "tpstress")])$mv.test
+```
+
+Dette ser også ut til å bekrefte brudd på forutsetning om univariat normalitet.
+
+Siden vi har store utvalg (`r nrow(manova1)`) vil vi imidlertid kunne vise til sentralgrenseteoremet (se vedlegg B) og anta at vi har multivariat normalitet [@bedreMANOVAUsingExamples2018 angir n > 20 for hver kombinasjon av variabler], og gjerne se på dataene gjennom QQ-plott:
+
+```{r}
+diagram1 <- ggpubr::ggqqplot(manova1, "tnegaff", facet.by = "Kjonn", title = "tnegaff")
+diagram2 <- ggpubr::ggqqplot(manova1, "tposaff", facet.by = "Kjonn", title = "tposaff")
+diagram3 <- ggpubr::ggqqplot(manova1, "tpstress", facet.by = "Kjonn", title = "tpstress")
+diagram1
+diagram2
+diagram3
+```
+
+Vi ser at spesielt "tnegaff" viser avvik fra normalitet. 
+
+### Multivariat normalitet
+
+```{r}
+manova1 %>%
+  select(tnegaff, tposaff, tpstress) %>%
+  rstatix::mshapiro_test()
+```
+
+Vi ser ut til å ha en utfordring også med multivariat normalitet (men jfr. pkt. om sentralgrenseteoremet og utvalgsstørrelse ovenfor).
+
+### Homogenitet i varians-kovariansmatrisene
+
+```{r}
+boxM(Y = manova1[, c("tnegaff", "tposaff", "tpstress")], group = manova1$Kjonn)
+```
+
+Siden p > 0.05 kan vi si at varians-kovariansmatrisene er like for alle kombinasjoner av de avhengige variablene gitt av de ulike gruppene i den uavhengige variabelen.
+
+### Univariate uteliggere
+
+Her sjekker vi for uteliggere med ekstrem påvirkning i de enkelte avhengige variablene:
+
+```{r}
+manova1 %>%
+    group_by(Kjonn) %>%
+    rstatix::identify_outliers(tnegaff)
+```
+
+```{r}
+manova1 %>%
+    group_by(Kjonn) %>%
+    rstatix::identify_outliers(tposaff)
+```
+
+```{r}
+manova1 %>%
+    group_by(Kjonn) %>%
+    rstatix::identify_outliers(tpstress)
+```
+
+Vi observerer ingen uteliggere med ekstrem påvirkning. Pakken "rstatix" definerer her uteliggere som observasjoner som ligger over $Q3 + 1.5 * IQR$ eller under $Q1 - 1.5*IQR$ der
+
+$Q1\ og\ Q3\ er\ første\ og\ tredje\ kvartil$
+
+$IQR = Interquartile\ range\ (IQR = Q3-Q1)$
+
+Uteliggere med ekstrem påvirkning er definert som observasjoner over $Q3 + 3 * IQR$ eller under $Q1 - 3*IQR$.
+
+### Multivariate uteliggere
+
+Multivariate uteliggere er observasjoner som har en uvanlig kombinasjon av verdier ift. de avhengige variablene. En vanlig måte å sjekke for multivariate uteliggere er gjennom den såkalte "Mahalanobis distance". Mahalanobis' avstand er et mål på en observasjons avstand til et tenkt senterpunkt ("centroid") i et multivariat rom der gjennomsnittet for alle variablene møtes. Hvis vi tenker oss alle observasjonene for alle de avhengige variabene plottet i en sky - og vi har et senterpunkt i denne skyen - er Mahalanobis' avstand avstanden fra en observajson til senterpunktet i skyen. Multivariate uteliggere utgjøres av eventuelle observasjoner som har uvanlige kombinasjoner av skårer, f.eks. veldig høyt på en variabel og veldig lavt på en annen. 
+
+```{r}
+mvuteliggere <- rstatix::mahalanobis_distance(data = manova1[, c("tnegaff", "tposaff", "tpstress")])$is.outlier
+which(mvuteliggere, arr.ind = TRUE)
+```
+
+Vi ser vi har en multivariat uteligger - observasjon nr. 185. Vi kan se om MANOVA endrer seg mye om denne tas vekk:
+
+```{r}
+manova2 <- manova1[-c(185), ]
+dim(manova2)
+```
+
+```{r}
+avhengige2 <- cbind(manova2$tnegaff, manova2$tposaff, manova2$tpstress)
+manovares2 <- manova(avhengige2 ~ Kjonn, data = manova2)
+summary(manovares2)
+```
+
+```{r warning = FALSE, message = FALSE}
+effectsize::eta_squared(manovares2)
+```
+
+Sammenliknet med verdier fra den opprinnelige modellen har vi i praksis ingen endring ved å ta bort den ene definerte multivariate uteliggeren. Den kan derfor ikke ha nevneverdig innflytelse på modellen.
+
+### Linearitet
+
+De parvise sammenhengene mellom de avhengige variablene bør være lineære for hver av gruppene i den uavhengige variabelen.
+
+```{r}
+linearitet <- manova1 %>%
+  select(tnegaff, tposaff, tpstress, Kjonn) %>%
+  group_by(Kjonn) %>%
+  doo(~ggpairs(.) + theme_bw(), result = "plots")
+linearitet$plots
+```
+
+Det vi kan se er at det muligens er en utfordring med variabelen "tnegaff". Vi så også under sjekk av normalitet at tnegaff var problematisk.
+
+### Multikolinearitet
+
+```{r}
+manova3 <- manova1[ ,c("tnegaff", "tposaff", "tpstress")]
+manovacor <- round(cor(manova3),2)
+upper <- manovacor
+upper[upper.tri(manovacor)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+@tabachnikUsingMultivariateStatistics2007 forslår r=0.90 som en øvre grense for korrelasjon mellom to variabler, mens @pallantSPSSSurvivalManual2010 opererer med 0.8 som en grense for bekymring. Ut fra dette ser det ikke ut til at vi har noen bekymringer for dette i eksempelet.
+
+
+
+
+

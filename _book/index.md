@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "11 juli, 2022"
+date: "17 juli, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl

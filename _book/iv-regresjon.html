@@ -4,13 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kapittel 10 IV regresjon | Anvendt kvantitativ analyse</title>
+<title>Kapittel 10 IV regresjon | Untitled</title>
 <meta name="author" content="Nils Kvilvang">
 <meta name="generator" content="bookdown 0.27 with bs4_book()">
-<meta property="og:title" content="Kapittel 10 IV regresjon | Anvendt kvantitativ analyse">
+<meta property="og:title" content="Kapittel 10 IV regresjon | Untitled">
 <meta property="og:type" content="book">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kapittel 10 IV regresjon | Anvendt kvantitativ analyse">
+<meta name="twitter:title" content="Kapittel 10 IV regresjon | Untitled">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -48,9 +48,9 @@
     }
   </style>
 <link rel="stylesheet" href="style.css">
-<meta name="description" content="10.1 Innledning Multippel OLS-regresjon av tverrsnittsdata kan kalles en tradisjonell empirisk metode for å se på sammenhengen mellom en uavhengig variabel og en eller flere avhengige variabler. I...">
-<meta property="og:description" content="10.1 Innledning Multippel OLS-regresjon av tverrsnittsdata kan kalles en tradisjonell empirisk metode for å se på sammenhengen mellom en uavhengig variabel og en eller flere avhengige variabler. I...">
-<meta name="twitter:description" content="10.1 Innledning Multippel OLS-regresjon av tverrsnittsdata kan kalles en tradisjonell empirisk metode for å se på sammenhengen mellom en uavhengig variabel og en eller flere avhengige variabler. I...">
+<meta name="description" content="R-pakker brukt i dette kapittelet: pacman::p_load(haven, tidyverse, readxl, AER, lmtest, jtools, summarytools)  10.1 Innledning Multippel OLS-regresjon av tverrsnittsdata kan kalles en...">
+<meta property="og:description" content="R-pakker brukt i dette kapittelet: pacman::p_load(haven, tidyverse, readxl, AER, lmtest, jtools, summarytools)  10.1 Innledning Multippel OLS-regresjon av tverrsnittsdata kan kalles en...">
+<meta name="twitter:description" content="R-pakker brukt i dette kapittelet: pacman::p_load(haven, tidyverse, readxl, AER, lmtest, jtools, summarytools)  10.1 Innledning Multippel OLS-regresjon av tverrsnittsdata kan kalles en...">
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -60,7 +60,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">Anvendt kvantitativ analyse</a>
+        <a href="index.html" title="">Untitled</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -88,6 +88,7 @@
 <li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">13</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
 <li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">14</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
 <li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">16</span> Maskinlæring gjennom “tidymodels”</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-a---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-b---chebyshevs-teorem.html">Vedlegg B - Chebyshevs teorem</a></li>
@@ -103,6 +104,9 @@
 <h1>
 <span class="header-section-number">Kapittel 10</span> IV regresjon<a class="anchor" aria-label="anchor" href="#iv-regresjon"><i class="fas fa-link"></i></a>
 </h1>
+<p>R-pakker brukt i dette kapittelet:</p>
+<div class="sourceCode" id="cb274"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">haven</span>, <span class="va">tidyverse</span>, <span class="va">readxl</span>, <span class="va">AER</span>, <span class="va">lmtest</span>, <span class="va">jtools</span>, <span class="va">summarytools</span><span class="op">)</span></span></code></pre></div>
 <div id="innledning-1" class="section level2" number="10.1">
 <h2>
 <span class="header-section-number">10.1</span> Innledning<a class="anchor" aria-label="anchor" href="#innledning-1"><i class="fas fa-link"></i></a>
@@ -132,7 +136,7 @@
 #&gt;             Max   1049757.30       17.89
 #&gt;         N.Valid       161.00      161.00
 #&gt;       Pct.Valid       100.00      100.00</code></pre>
-<div class="inline-figure"><img src="10_Kap_10_files/figure-html/unnamed-chunk-2-1.png" width="672"></div>
+<div class="inline-figure"><img src="10_files/figure-html/unnamed-chunk-2-1.png" width="672"></div>
 <p>Vi ser at det er en klar trend i disse dataene at folk med lengre utdanning har høyere inntekt enn folk med kortere utdanning. Betyr det at lengde på utdanning har en kausal effekt på inntekt? Svaret er nei. Fordi lengde på utdanning er ikke tilfeldig (“randomly assigned”) - folk velger hvor lang utdannelse de vil ta. Likevel ser vi jo en klar trend/sammenheng i dataene. Så hvorfor gjør vi det?</p>
 <p>En forklaring kan være at denne sammenhengen skyldes en uobservert variabel som “forstyrrer” bildet. La oss videre i eksempelet si at dette er IQ, og at vi har data på dette.</p>
 <pre><code>#&gt; Descriptive Statistics  
@@ -148,20 +152,20 @@
 #&gt;             Max   134.95       17.89
 #&gt;         N.Valid   161.00      161.00
 #&gt;       Pct.Valid   100.00      100.00</code></pre>
-<div class="inline-figure"><img src="10_Kap_10_files/figure-html/unnamed-chunk-3-1.png" width="672"></div>
+<div class="inline-figure"><img src="10_files/figure-html/unnamed-chunk-3-1.png" width="672"></div>
 <p>Lengde på utdanning ser ut til å henge sammen med IQ.</p>
-<div class="inline-figure"><img src="10_Kap_10_files/figure-html/unnamed-chunk-4-1.png" width="672"></div>
+<div class="inline-figure"><img src="10_files/figure-html/unnamed-chunk-4-1.png" width="672"></div>
 <p>Men også inntekt ser ut til å henge sammen med IQ, uavhengig av hvor mye utdannelse de har. I virkeligheten vil vi kanskje ikke se dette - vi har data på lengde på utdannelse og inntekt (vi har generert dataene her nettopp for å illustrere). Men i virkeligheten kan korrelasjonen vi kanskje faktisk ser og som vi viste i første diagrammet - korrelasjonen mellom lengde på utdanning og inntekt - altså være drevet av en underliggende, uobservert variabel og IKKE av en kausal sammenheng mellom lengde på utdanning og inntekt.</p>
 <p>For å mitigere dette problemet kommer instrumentet inn i bildet. I eksempelet fra <span class="citation">Masten (2015)</span> vises det til at avstand fra hjemadressen til nærmeste studiested (heretter: avstand) kan være et slikt instrument. Vi bygger videre på samme måte.</p>
 <p>Et instrument må altså kunne påvirke Y gjennom X (og ikke direkte), og være korrelert med X. I vårt eksempel betyr det at avstand må påvirke inntekt gjennom lengde på utdannelse, og avstand må være korrelert med lengde på utdannelse.</p>
 <p>Vi må derfor kunne se på X, Y og Z slik:</p>
-<div class="inline-figure"><img src="10_Kap_10_files/figure-html/unnamed-chunk-5-1.png" width="672"></div>
+<div class="inline-figure"><img src="10_files/figure-html/unnamed-chunk-5-1.png" width="672"></div>
 <p>Lav avstand har sammenheng med lengre utdannelse. Forhold som trekkes fram for denne sammenhengen kan være større kjennskap til universitetet, lavere kostnad for bolig og reise, større påvirkning av eldre studenter i nærmiljøet gjennom oppveksten (og sikkert flere) - som i sum antyder at det kan være en kausal sammenheng mellom avstand og om folk studerer og hvor lenge. Altså en korrelasjon mellom Z og X (som vi sa var en forutsetning).</p>
-<div class="inline-figure"><img src="10_Kap_10_files/figure-html/unnamed-chunk-6-1.png" width="672"></div>
+<div class="inline-figure"><img src="10_files/figure-html/unnamed-chunk-6-1.png" width="672"></div>
 <p>Sammenhengen mellom IQ og avstand er imidlertid tilfeldig. Vi antar det ikke er noen grunn til at IQ har sammenheng med avstand. Folk er født “her og der” med ulik IQ. Vi ser bort fra at det kanskje faktisk kan være en sammenheng… ved at universitets ansatte bor i nærheten av iuniversitete, og om IQ er arvelig kan man kanskje tenke seg at det bor flere unge med høyere IQ i nærheten av nuviersitetet enn lenger unna - vi går ikke inn i denne “problemstillingen” her, men legger til grunn at dataene våre viser at det ikke er slik. Om det faktisk er sånn at det er en sammenheng vil det gjøre det vanskelig å bruke avstand som et instrument.</p>
 <p>Den siste forutsetningen er at avstand ikke kan ha en <em>direkte kausal effekt</em> på inntekt. Dette virker rimelig, da det er vanskelig å se at arbeidsgivere har noe forhold til hvor langt unna et unviersitet folk har vokst opp, og at avstand dermed skulle kunne ha en kausal effekt på inntekt.</p>
 <p>Vi kan si at instrumentet “avstand” tilfredsstiller forutsetningene, og vi kan se på korrelasjonen mellom avstand og inntekt.</p>
-<div class="inline-figure"><img src="10_Kap_10_files/figure-html/unnamed-chunk-7-1.png" width="672"></div>
+<div class="inline-figure"><img src="10_files/figure-html/unnamed-chunk-7-1.png" width="672"></div>
 <p>Vi ser at avstand og inntekt korrelerer. Vi kan dermed si at korrelasjonen mellom avstand og inntekt representerer en kausal effekt av lengde på utdanning og inntekt. Vi ser en kausal effekt mellom X og Y gjennom korrelasjonen mellom Z og Y.</p>
 </div>
 <div id="eksempel-1-med-data-fra-pakken-aer" class="section level2" number="10.3">
@@ -169,63 +173,61 @@
 <span class="header-section-number">10.3</span> Eksempel 1 med data fra pakken “AER”<a class="anchor" aria-label="anchor" href="#eksempel-1-med-data-fra-pakken-aer"><i class="fas fa-link"></i></a>
 </h2>
 <p>I datasettet har vi en rekke variabler:</p>
-<div class="sourceCode" id="cb271"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"CigarettesSW"</span><span class="op">)</span>
-
-<span class="co"># Bruker pakken: summarytools</span>
-<span class="fu">summarytools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/summarytools/man/descr.html">descr</a></span><span class="op">(</span><span class="va">CigarettesSW</span>, stats <span class="op">=</span> <span class="st">"common"</span><span class="op">)</span>
-<span class="co">#&gt; Non-numerical variable(s) ignored: state, year</span>
-<span class="co">#&gt; Descriptive Statistics  </span>
-<span class="co">#&gt; CigarettesSW  </span>
-<span class="co">#&gt; N: 96  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;                      cpi         income    packs    population    price      tax     taxs</span>
-<span class="co">#&gt; --------------- -------- -------------- -------- ------------- -------- -------- --------</span>
-<span class="co">#&gt;            Mean     1.30    99878735.74   109.18    5168866.32   143.45    42.68    48.33</span>
-<span class="co">#&gt;         Std.Dev     0.23   120541138.18    25.87    5442344.66    43.89    16.14    19.33</span>
-<span class="co">#&gt;             Min     1.08     6887097.00    49.27     478447.00    84.97    18.00    21.27</span>
-<span class="co">#&gt;          Median     1.30    61661644.00   110.16    3697471.50   137.72    37.00    41.05</span>
-<span class="co">#&gt;             Max     1.52   771470144.00   197.99   31493524.00   240.85    99.00   112.63</span>
-<span class="co">#&gt;         N.Valid    96.00          96.00    96.00         96.00    96.00    96.00    96.00</span>
-<span class="co">#&gt;       Pct.Valid   100.00         100.00   100.00        100.00   100.00   100.00   100.00</span></code></pre></div>
+<div class="sourceCode" id="cb277"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"CigarettesSW"</span><span class="op">)</span></span>
+<span><span class="fu">summarytools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/summarytools/man/descr.html">descr</a></span><span class="op">(</span><span class="va">CigarettesSW</span>, stats <span class="op">=</span> <span class="st">"common"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Non-numerical variable(s) ignored: state, year</span></span>
+<span><span class="co">#&gt; Descriptive Statistics  </span></span>
+<span><span class="co">#&gt; CigarettesSW  </span></span>
+<span><span class="co">#&gt; N: 96  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                      cpi         income    packs    population    price      tax     taxs</span></span>
+<span><span class="co">#&gt; --------------- -------- -------------- -------- ------------- -------- -------- --------</span></span>
+<span><span class="co">#&gt;            Mean     1.30    99878735.74   109.18    5168866.32   143.45    42.68    48.33</span></span>
+<span><span class="co">#&gt;         Std.Dev     0.23   120541138.18    25.87    5442344.66    43.89    16.14    19.33</span></span>
+<span><span class="co">#&gt;             Min     1.08     6887097.00    49.27     478447.00    84.97    18.00    21.27</span></span>
+<span><span class="co">#&gt;          Median     1.30    61661644.00   110.16    3697471.50   137.72    37.00    41.05</span></span>
+<span><span class="co">#&gt;             Max     1.52   771470144.00   197.99   31493524.00   240.85    99.00   112.63</span></span>
+<span><span class="co">#&gt;         N.Valid    96.00          96.00    96.00         96.00    96.00    96.00    96.00</span></span>
+<span><span class="co">#&gt;       Pct.Valid   100.00         100.00   100.00        100.00   100.00   100.00   100.00</span></span></code></pre></div>
 <p>Vi skal her se på sammenhengen mellom “packs” (= y -&gt; antall sigarettpakker per capita)som avhengig variabel, “price” (= x -&gt; gjennomsnittlig pris pr år inkl skatter og avgifter) som uavhengig variabel, og “taxs” (= z -&gt; gjennomsnittlig skatt pr år) som instrumentvariabel.</p>
 <p>Forutsetningene er altså:</p>
 <ol style="list-style-type: decimal">
 <li>z og x må være korrelerte: at pris og skatte-/avgiftsnivå korrelerer virker rimelig</li>
 <li>z må ikke påvirke y direkte: at skatte-/avgiftsnivået ikke i seg selv påvirker antall sigarettpakker som selges direkte virker rimelig, men at skatte-/avgiftsnivået påvirker antall sigarettpakker som selges gjennom prisnivåt virker også rimelig (dette er en forutsetning som alltid kan diskuteres, men for eksempelets skyld antar vi dette).</li>
 </ol>
-<div class="sourceCode" id="cb272"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">CigarettesSW</span><span class="op">$</span><span class="va">price</span>, <span class="va">CigarettesSW</span><span class="op">$</span><span class="va">taxs</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.9203278</span></code></pre></div>
+<div class="sourceCode" id="cb278"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">CigarettesSW</span><span class="op">$</span><span class="va">price</span>, <span class="va">CigarettesSW</span><span class="op">$</span><span class="va">taxs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.9203278</span></span></code></pre></div>
 <div id="modell-1" class="section level3" number="10.3.1">
 <h3>
 <span class="header-section-number">10.3.1</span> Modell 1<a class="anchor" aria-label="anchor" href="#modell-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb273"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model1</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">packs</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">|</span> <span class="va">taxs</span>, data <span class="op">=</span> <span class="va">CigarettesSW</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; ivreg(formula = log(packs) ~ log(price) | taxs, data = CigarettesSW)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residuals:</span>
-<span class="co">#&gt;       Min        1Q    Median        3Q       Max </span>
-<span class="co">#&gt; -0.597468 -0.105477 -0.008609  0.101021  0.525352 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;             Estimate Std. Error t value</span>
-<span class="co">#&gt; (Intercept)  7.66548    0.34514  22.210</span>
-<span class="co">#&gt; log(price)  -0.60993    0.07004  -8.708</span>
-<span class="co">#&gt;                         Pr(&gt;|t|)    </span>
-<span class="co">#&gt; (Intercept) &lt; 0.0000000000000002 ***</span>
-<span class="co">#&gt; log(price)     0.000000000000103 ***</span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  </span>
-<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residual standard error: 0.1845 on 94 degrees of freedom</span>
-<span class="co">#&gt; Multiple R-Squared: 0.4324,  Adjusted R-squared: 0.4264 </span>
-<span class="co">#&gt; Wald test: 75.83 on 1 and 94 DF,  p-value: 0.0000000000001025</span></code></pre></div>
+<div class="sourceCode" id="cb279"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model1</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">packs</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">|</span> <span class="va">taxs</span>, data <span class="op">=</span> <span class="va">CigarettesSW</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; ivreg(formula = log(packs) ~ log(price) | taxs, data = CigarettesSW)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residuals:</span></span>
+<span><span class="co">#&gt;       Min        1Q    Median        3Q       Max </span></span>
+<span><span class="co">#&gt; -0.597468 -0.105477 -0.008609  0.101021  0.525352 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;             Estimate Std. Error t value</span></span>
+<span><span class="co">#&gt; (Intercept)  7.66548    0.34514  22.210</span></span>
+<span><span class="co">#&gt; log(price)  -0.60993    0.07004  -8.708</span></span>
+<span><span class="co">#&gt;                         Pr(&gt;|t|)    </span></span>
+<span><span class="co">#&gt; (Intercept) &lt; 0.0000000000000002 ***</span></span>
+<span><span class="co">#&gt; log(price)     0.000000000000103 ***</span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residual standard error: 0.1845 on 94 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-Squared: 0.4324,  Adjusted R-squared: 0.4264 </span></span>
+<span><span class="co">#&gt; Wald test: 75.83 on 1 and 94 DF,  p-value: 0.0000000000001025</span></span></code></pre></div>
 <p>Vi ser på koeffisientene at log(price) er signifikant, og at pris påvirker salget (antall sigarettpakker) negativt (negativ koeffisient).</p>
 </div>
 <div id="modell-2" class="section level3" number="10.3.2">
@@ -233,34 +235,34 @@
 <span class="header-section-number">10.3.2</span> Modell 2<a class="anchor" aria-label="anchor" href="#modell-2"><i class="fas fa-link"></i></a>
 </h3>
 <p>Her legger vi inn en eksogen variabel - inntekt - altså en variabel hvis verdi er bestemt utenfor modellen for så å legges inn i modellen. Pris ser vi på som en endogen variabel, altså en variabel hvis verdi bestemmes i modellen. En tilfeldig endogen variabel i en modell korrelerer med feilleddet (som vi forsåvidt har beskrevet i begynnelsen av dette kapittelet), mens en eksogen variabel ikke er korrelert med feilleddet (hvilket er naturlig siden vi sier verdien er bestemt utenfor modellen).</p>
-<div class="sourceCode" id="cb274"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model2</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">packs</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">income</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">income</span><span class="op">)</span> <span class="op">+</span> <span class="va">taxs</span>, data <span class="op">=</span> <span class="va">CigarettesSW</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model2</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; ivreg(formula = log(packs) ~ log(price) + log(income) | log(income) + </span>
-<span class="co">#&gt;     taxs, data = CigarettesSW)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residuals:</span>
-<span class="co">#&gt;       Min        1Q    Median        3Q       Max </span>
-<span class="co">#&gt; -0.599938 -0.104454 -0.007223  0.101973  0.525855 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;              Estimate Std. Error t value</span>
-<span class="co">#&gt; (Intercept)  7.698702   0.399560  19.268</span>
-<span class="co">#&gt; log(price)  -0.605735   0.075878  -7.983</span>
-<span class="co">#&gt; log(income) -0.003015   0.018990  -0.159</span>
-<span class="co">#&gt;                         Pr(&gt;|t|)    </span>
-<span class="co">#&gt; (Intercept) &lt; 0.0000000000000002 ***</span>
-<span class="co">#&gt; log(price)      0.00000000000368 ***</span>
-<span class="co">#&gt; log(income)                0.874    </span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  </span>
-<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residual standard error: 0.1853 on 93 degrees of freedom</span>
-<span class="co">#&gt; Multiple R-Squared: 0.4335,  Adjusted R-squared: 0.4214 </span>
-<span class="co">#&gt; Wald test: 37.67 on 2 and 93 DF,  p-value: 0.000000000001038</span></code></pre></div>
+<div class="sourceCode" id="cb280"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model2</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">packs</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">price</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">income</span><span class="op">)</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">income</span><span class="op">)</span> <span class="op">+</span> <span class="va">taxs</span>, data <span class="op">=</span> <span class="va">CigarettesSW</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">model2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; ivreg(formula = log(packs) ~ log(price) + log(income) | log(income) + </span></span>
+<span><span class="co">#&gt;     taxs, data = CigarettesSW)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residuals:</span></span>
+<span><span class="co">#&gt;       Min        1Q    Median        3Q       Max </span></span>
+<span><span class="co">#&gt; -0.599938 -0.104454 -0.007223  0.101973  0.525855 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;              Estimate Std. Error t value</span></span>
+<span><span class="co">#&gt; (Intercept)  7.698702   0.399560  19.268</span></span>
+<span><span class="co">#&gt; log(price)  -0.605735   0.075878  -7.983</span></span>
+<span><span class="co">#&gt; log(income) -0.003015   0.018990  -0.159</span></span>
+<span><span class="co">#&gt;                         Pr(&gt;|t|)    </span></span>
+<span><span class="co">#&gt; (Intercept) &lt; 0.0000000000000002 ***</span></span>
+<span><span class="co">#&gt; log(price)      0.00000000000368 ***</span></span>
+<span><span class="co">#&gt; log(income)                0.874    </span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residual standard error: 0.1853 on 93 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-Squared: 0.4335,  Adjusted R-squared: 0.4214 </span></span>
+<span><span class="co">#&gt; Wald test: 37.67 on 2 and 93 DF,  p-value: 0.000000000001038</span></span></code></pre></div>
 <p>Vi kan legge merke til at log(income) ikke er signifikant.</p>
 </div>
 </div>
@@ -269,126 +271,126 @@
 <span class="header-section-number">10.4</span> Eksempel 2<a class="anchor" aria-label="anchor" href="#eksempel-2"><i class="fas fa-link"></i></a>
 </h2>
 <p>Data for dette eksempelet er hentet fra <span class="citation">Becker and Lincoln (2021)</span> (“Mroz.csv”).</p>
-<div class="sourceCode" id="cb275"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">Mrozdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">'Mroz.csv'</span>, na.strings <span class="op">=</span> <span class="st">"."</span><span class="op">)</span>
-<span class="va">Mrozdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">Mrozdata</span>, <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">wage</span><span class="op">)</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> 
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">Mrozdata</span><span class="op">)</span>
-<span class="co">#&gt;   inlf hours kidslt6 kidsge6 age educ   wage repwage hushrs</span>
-<span class="co">#&gt; 1    1  1610       1       0  32   12 3.3540    2.65   2708</span>
-<span class="co">#&gt; 2    1  1656       0       2  30   12 1.3889    2.65   2310</span>
-<span class="co">#&gt; 3    1  1980       1       3  35   12 4.5455    4.04   3072</span>
-<span class="co">#&gt; 4    1   456       0       3  34   12 1.0965    3.25   1920</span>
-<span class="co">#&gt; 5    1  1568       1       2  31   14 4.5918    3.60   2000</span>
-<span class="co">#&gt; 6    1  2032       0       0  54   12 4.7421    4.70   1040</span>
-<span class="co">#&gt;   husage huseduc huswage faminc    mtr motheduc fatheduc</span>
-<span class="co">#&gt; 1     34      12  4.0288  16310 0.7215       12        7</span>
-<span class="co">#&gt; 2     30       9  8.4416  21800 0.6615        7        7</span>
-<span class="co">#&gt; 3     40      12  3.5807  21040 0.6915       12        7</span>
-<span class="co">#&gt; 4     53      10  3.5417   7300 0.7815        7        7</span>
-<span class="co">#&gt; 5     32      12 10.0000  27300 0.6215       12       14</span>
-<span class="co">#&gt; 6     57      11  6.7106  19495 0.6915       14        7</span>
-<span class="co">#&gt;   unem city exper  nwifeinc     lwage expersq</span>
-<span class="co">#&gt; 1  5.0    0    14 10.910060 1.2101540     196</span>
-<span class="co">#&gt; 2 11.0    1     5 19.499980 0.3285121      25</span>
-<span class="co">#&gt; 3  5.0    0    15 12.039910 1.5141380     225</span>
-<span class="co">#&gt; 4  5.0    0     6  6.799996 0.0921233      36</span>
-<span class="co">#&gt; 5  9.5    1     7 20.100060 1.5242720      49</span>
-<span class="co">#&gt; 6  7.5    1    33  9.859054 1.5564800    1089</span></code></pre></div>
+<div class="sourceCode" id="cb281"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">Mrozdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span>file <span class="op">=</span> <span class="st">'Mroz.csv'</span>, na.strings <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span>
+<span><span class="va">Mrozdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">Mrozdata</span>, <span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">wage</span><span class="op">)</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">Mrozdata</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   inlf hours kidslt6 kidsge6 age educ   wage repwage hushrs</span></span>
+<span><span class="co">#&gt; 1    1  1610       1       0  32   12 3.3540    2.65   2708</span></span>
+<span><span class="co">#&gt; 2    1  1656       0       2  30   12 1.3889    2.65   2310</span></span>
+<span><span class="co">#&gt; 3    1  1980       1       3  35   12 4.5455    4.04   3072</span></span>
+<span><span class="co">#&gt; 4    1   456       0       3  34   12 1.0965    3.25   1920</span></span>
+<span><span class="co">#&gt; 5    1  1568       1       2  31   14 4.5918    3.60   2000</span></span>
+<span><span class="co">#&gt; 6    1  2032       0       0  54   12 4.7421    4.70   1040</span></span>
+<span><span class="co">#&gt;   husage huseduc huswage faminc    mtr motheduc fatheduc</span></span>
+<span><span class="co">#&gt; 1     34      12  4.0288  16310 0.7215       12        7</span></span>
+<span><span class="co">#&gt; 2     30       9  8.4416  21800 0.6615        7        7</span></span>
+<span><span class="co">#&gt; 3     40      12  3.5807  21040 0.6915       12        7</span></span>
+<span><span class="co">#&gt; 4     53      10  3.5417   7300 0.7815        7        7</span></span>
+<span><span class="co">#&gt; 5     32      12 10.0000  27300 0.6215       12       14</span></span>
+<span><span class="co">#&gt; 6     57      11  6.7106  19495 0.6915       14        7</span></span>
+<span><span class="co">#&gt;   unem city exper  nwifeinc     lwage expersq</span></span>
+<span><span class="co">#&gt; 1  5.0    0    14 10.910060 1.2101540     196</span></span>
+<span><span class="co">#&gt; 2 11.0    1     5 19.499980 0.3285121      25</span></span>
+<span><span class="co">#&gt; 3  5.0    0    15 12.039910 1.5141380     225</span></span>
+<span><span class="co">#&gt; 4  5.0    0     6  6.799996 0.0921233      36</span></span>
+<span><span class="co">#&gt; 5  9.5    1     7 20.100060 1.5242720      49</span></span>
+<span><span class="co">#&gt; 6  7.5    1    33  9.859054 1.5564800    1089</span></span></code></pre></div>
 <div id="modell-1-standard-ols" class="section level3" number="10.4.1">
 <h3>
 <span class="header-section-number">10.4.1</span> Modell 1: Standard OLS<a class="anchor" aria-label="anchor" href="#modell-1-standard-ols"><i class="fas fa-link"></i></a>
 </h3>
 <p>Vi ønsker å kjøre en regresjon med kvinners lønn (lwage) som avhengig variabel og utdanning (educ) som uavhengig variabel. Eksempelet tar utgangspunkt i <span class="citation">Wooldridge (2016)</span> (se kap. 15).</p>
-<div class="sourceCode" id="cb276"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">IVregmod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod1</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; lm(formula = lwage ~ educ, data = Mrozdata)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residuals:</span>
-<span class="co">#&gt;      Min       1Q   Median       3Q      Max </span>
-<span class="co">#&gt; -3.10256 -0.31473  0.06434  0.40081  2.10029 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;             Estimate Std. Error t value          Pr(&gt;|t|)</span>
-<span class="co">#&gt; (Intercept)  -0.1852     0.1852  -1.000             0.318</span>
-<span class="co">#&gt; educ          0.1086     0.0144   7.545 0.000000000000276</span>
-<span class="co">#&gt;                </span>
-<span class="co">#&gt; (Intercept)    </span>
-<span class="co">#&gt; educ        ***</span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  </span>
-<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residual standard error: 0.68 on 426 degrees of freedom</span>
-<span class="co">#&gt; Multiple R-squared:  0.1179, Adjusted R-squared:  0.1158 </span>
-<span class="co">#&gt; F-statistic: 56.93 on 1 and 426 DF,  p-value: 0.0000000000002761</span></code></pre></div>
+<div class="sourceCode" id="cb282"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">IVregmod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; lm(formula = lwage ~ educ, data = Mrozdata)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residuals:</span></span>
+<span><span class="co">#&gt;      Min       1Q   Median       3Q      Max </span></span>
+<span><span class="co">#&gt; -3.10256 -0.31473  0.06434  0.40081  2.10029 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;             Estimate Std. Error t value          Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; (Intercept)  -0.1852     0.1852  -1.000             0.318</span></span>
+<span><span class="co">#&gt; educ          0.1086     0.0144   7.545 0.000000000000276</span></span>
+<span><span class="co">#&gt;                </span></span>
+<span><span class="co">#&gt; (Intercept)    </span></span>
+<span><span class="co">#&gt; educ        ***</span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residual standard error: 0.68 on 426 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.1179, Adjusted R-squared:  0.1158 </span></span>
+<span><span class="co">#&gt; F-statistic: 56.93 on 1 and 426 DF,  p-value: 0.0000000000002761</span></span></code></pre></div>
 <p>Vi ser at vi får et statistisk signifikant resultat og at et års lengre utdanning øker lønn med nesten 11 % (Esitmate = 0.1086). Vi kan imidlertid forvente at utdanning korrelerer med mange individuelle karakteristika hos et individ som er viktige for den personens lønn, men som ikke fanges opp av utdanningsvariabelen og derfor ikke fanges opp i denne modellen. I dette tilfellet, og for å følge eksempelet i <span class="citation">Wooldridge (2016)</span> velger vi fars utdanning (fatheduc) som instrument (vi diskuterer ikke instrumentet og forutsetningene her).</p>
 </div>
 <div id="modell-2-iv-regresjon" class="section level3" number="10.4.2">
 <h3>
 <span class="header-section-number">10.4.2</span> Modell 2: IV regresjon<a class="anchor" aria-label="anchor" href="#modell-2-iv-regresjon"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb277"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">IVregmod2</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span> <span class="op">|</span> <span class="va">fatheduc</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod2</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; ivreg(formula = lwage ~ educ | fatheduc, data = Mrozdata)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residuals:</span>
-<span class="co">#&gt;     Min      1Q  Median      3Q     Max </span>
-<span class="co">#&gt; -3.0870 -0.3393  0.0525  0.4042  2.0677 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)  </span>
-<span class="co">#&gt; (Intercept)  0.44110    0.44610   0.989   0.3233  </span>
-<span class="co">#&gt; educ         0.05917    0.03514   1.684   0.0929 .</span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  </span>
-<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residual standard error: 0.6894 on 426 degrees of freedom</span>
-<span class="co">#&gt; Multiple R-Squared: 0.09344, Adjusted R-squared: 0.09131 </span>
-<span class="co">#&gt; Wald test: 2.835 on 1 and 426 DF,  p-value: 0.09294</span></code></pre></div>
+<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">IVregmod2</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span> <span class="op">|</span> <span class="va">fatheduc</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; ivreg(formula = lwage ~ educ | fatheduc, data = Mrozdata)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residuals:</span></span>
+<span><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
+<span><span class="co">#&gt; -3.0870 -0.3393  0.0525  0.4042  2.0677 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)  </span></span>
+<span><span class="co">#&gt; (Intercept)  0.44110    0.44610   0.989   0.3233  </span></span>
+<span><span class="co">#&gt; educ         0.05917    0.03514   1.684   0.0929 .</span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residual standard error: 0.6894 on 426 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-Squared: 0.09344, Adjusted R-squared: 0.09131 </span></span>
+<span><span class="co">#&gt; Wald test: 2.835 on 1 and 426 DF,  p-value: 0.09294</span></span></code></pre></div>
 <p>Vi kan se at “verdien” av et års ekstra utdanning nå kun er 5.9% økning, og signifikant p &lt; 0.1.</p>
 </div>
 <div id="modell-3-ols-med-flere-prediktorer" class="section level3" number="10.4.3">
 <h3>
 <span class="header-section-number">10.4.3</span> Modell 3: OLS med flere prediktorer<a class="anchor" aria-label="anchor" href="#modell-3-ols-med-flere-prediktorer"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb278"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">IVregmod3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod3</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; lm(formula = lwage ~ educ + age + exper + expersq, data = Mrozdata)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residuals:</span>
-<span class="co">#&gt;      Min       1Q   Median       3Q      Max </span>
-<span class="co">#&gt; -3.08521 -0.30587  0.04946  0.37523  2.37077 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;               Estimate Std. Error t value          Pr(&gt;|t|)</span>
-<span class="co">#&gt; (Intercept) -0.5333762  0.2778430  -1.920           0.05557</span>
-<span class="co">#&gt; educ         0.1075228  0.0141745   7.586 0.000000000000212</span>
-<span class="co">#&gt; age          0.0002836  0.0048553   0.058           0.95344</span>
-<span class="co">#&gt; exper        0.0415623  0.0131909   3.151           0.00174</span>
-<span class="co">#&gt; expersq     -0.0008152  0.0003996  -2.040           0.04195</span>
-<span class="co">#&gt;                </span>
-<span class="co">#&gt; (Intercept) .  </span>
-<span class="co">#&gt; educ        ***</span>
-<span class="co">#&gt; age            </span>
-<span class="co">#&gt; exper       ** </span>
-<span class="co">#&gt; expersq     *  </span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  </span>
-<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residual standard error: 0.6672 on 423 degrees of freedom</span>
-<span class="co">#&gt; Multiple R-squared:  0.1568, Adjusted R-squared:  0.1489 </span>
-<span class="co">#&gt; F-statistic: 19.67 on 4 and 423 DF,  p-value: 0.000000000000007328</span></code></pre></div>
+<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">IVregmod3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; lm(formula = lwage ~ educ + age + exper + expersq, data = Mrozdata)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residuals:</span></span>
+<span><span class="co">#&gt;      Min       1Q   Median       3Q      Max </span></span>
+<span><span class="co">#&gt; -3.08521 -0.30587  0.04946  0.37523  2.37077 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;               Estimate Std. Error t value          Pr(&gt;|t|)</span></span>
+<span><span class="co">#&gt; (Intercept) -0.5333762  0.2778430  -1.920           0.05557</span></span>
+<span><span class="co">#&gt; educ         0.1075228  0.0141745   7.586 0.000000000000212</span></span>
+<span><span class="co">#&gt; age          0.0002836  0.0048553   0.058           0.95344</span></span>
+<span><span class="co">#&gt; exper        0.0415623  0.0131909   3.151           0.00174</span></span>
+<span><span class="co">#&gt; expersq     -0.0008152  0.0003996  -2.040           0.04195</span></span>
+<span><span class="co">#&gt;                </span></span>
+<span><span class="co">#&gt; (Intercept) .  </span></span>
+<span><span class="co">#&gt; educ        ***</span></span>
+<span><span class="co">#&gt; age            </span></span>
+<span><span class="co">#&gt; exper       ** </span></span>
+<span><span class="co">#&gt; expersq     *  </span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residual standard error: 0.6672 on 423 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-squared:  0.1568, Adjusted R-squared:  0.1489 </span></span>
+<span><span class="co">#&gt; F-statistic: 19.67 on 4 and 423 DF,  p-value: 0.000000000000007328</span></span></code></pre></div>
 <p>Estiemrt koeffisient for educ er nå 0.1075 med standardfeil 0.0141</p>
 </div>
 <div id="modell-4-iv-regresjon-med-flere-to-instrumenter" class="section level3" number="10.4.4">
@@ -396,31 +398,31 @@
 <span class="header-section-number">10.4.4</span> Modell 4: IV regresjon med flere (to) instrumenter<a class="anchor" aria-label="anchor" href="#modell-4-iv-regresjon-med-flere-to-instrumenter"><i class="fas fa-link"></i></a>
 </h3>
 <p>Vi legger til både fars og mors utdannelse som instrumenter:</p>
-<div class="sourceCode" id="cb279"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">IVregmod4</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span>  <span class="op">+</span><span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span> <span class="op">|</span> <span class="va">fatheduc</span> <span class="op">+</span> <span class="va">motheduc</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod4</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; ivreg(formula = lwage ~ educ + exper + expersq | fatheduc + motheduc + </span>
-<span class="co">#&gt;     exper + expersq, data = Mrozdata)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residuals:</span>
-<span class="co">#&gt;     Min      1Q  Median      3Q     Max </span>
-<span class="co">#&gt; -3.0986 -0.3196  0.0551  0.3689  2.3493 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;               Estimate Std. Error t value Pr(&gt;|t|)   </span>
-<span class="co">#&gt; (Intercept)  0.0481003  0.4003281   0.120  0.90442   </span>
-<span class="co">#&gt; educ         0.0613966  0.0314367   1.953  0.05147 . </span>
-<span class="co">#&gt; exper        0.0441704  0.0134325   3.288  0.00109 **</span>
-<span class="co">#&gt; expersq     -0.0008990  0.0004017  -2.238  0.02574 * </span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  </span>
-<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Residual standard error: 0.6747 on 424 degrees of freedom</span>
-<span class="co">#&gt; Multiple R-Squared: 0.1357,  Adjusted R-squared: 0.1296 </span>
-<span class="co">#&gt; Wald test: 8.141 on 3 and 424 DF,  p-value: 0.00002787</span></code></pre></div>
+<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">IVregmod4</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="va">lwage</span> <span class="op">~</span> <span class="va">educ</span>  <span class="op">+</span><span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span> <span class="op">|</span> <span class="va">fatheduc</span> <span class="op">+</span> <span class="va">motheduc</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">IVregmod4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; ivreg(formula = lwage ~ educ + exper + expersq | fatheduc + motheduc + </span></span>
+<span><span class="co">#&gt;     exper + expersq, data = Mrozdata)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residuals:</span></span>
+<span><span class="co">#&gt;     Min      1Q  Median      3Q     Max </span></span>
+<span><span class="co">#&gt; -3.0986 -0.3196  0.0551  0.3689  2.3493 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;               Estimate Std. Error t value Pr(&gt;|t|)   </span></span>
+<span><span class="co">#&gt; (Intercept)  0.0481003  0.4003281   0.120  0.90442   </span></span>
+<span><span class="co">#&gt; educ         0.0613966  0.0314367   1.953  0.05147 . </span></span>
+<span><span class="co">#&gt; exper        0.0441704  0.0134325   3.288  0.00109 **</span></span>
+<span><span class="co">#&gt; expersq     -0.0008990  0.0004017  -2.238  0.02574 * </span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Residual standard error: 0.6747 on 424 degrees of freedom</span></span>
+<span><span class="co">#&gt; Multiple R-Squared: 0.1357,  Adjusted R-squared: 0.1296 </span></span>
+<span><span class="co">#&gt; Wald test: 8.141 on 3 and 424 DF,  p-value: 0.00002787</span></span></code></pre></div>
 <p>fatheduc og motheduc er instrumentene, exper og expersq er eksogene uavhengige variabler.</p>
 <p>Også her ser vi en vesentlig reduksjon i estimatet for educ fra OLS til IV regresjon; fra 0.1075 med standardfeil 0.0141 til 0.0613 med standardfeil 0.0314. IV estiamtene vil ha større standardfeil enn OLS estimater.</p>
 </div>
@@ -429,25 +431,25 @@
 <span class="header-section-number">10.4.5</span> Test av relevansen av instrumentene<a class="anchor" aria-label="anchor" href="#test-av-relevansen-av-instrumentene"><i class="fas fa-link"></i></a>
 </h3>
 <p>Det er selvsagt avgjørende at instrumentet/-ene er relevante. Som beskrevet må instrumentene være tilstrekkelig sterkt korrelerte med den/de endogene uavhengige variablene. I dette eksempelet (modell 4) må altså fatheduc og motheduc forklare en tilstrekkelig del av variasjonen i educ for å kunne være relevant instrumenter. Dette kan vi gjøre gjennom en vanlig F-test:</p>
-<div class="sourceCode" id="cb280"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">steg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">educ</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span> <span class="op">+</span> <span class="va">fatheduc</span> <span class="op">+</span> <span class="va">motheduc</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span>
-
-<span class="va">instrumentF</span> <span class="op">&lt;-</span> <span class="fu">waldtest</span><span class="op">(</span><span class="va">steg1</span>, <span class="va">.</span><span class="op">~</span><span class="va">.</span> <span class="op">-</span><span class="va">fatheduc</span> <span class="op">-</span><span class="va">motheduc</span><span class="op">)</span>
-<span class="va">instrumentF</span>
-<span class="co">#&gt; Wald test</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Model 1: educ ~ age + exper + expersq + fatheduc + motheduc</span>
-<span class="co">#&gt; Model 2: educ ~ age + exper + expersq</span>
-<span class="co">#&gt;   Res.Df Df      F                Pr(&gt;F)    </span>
-<span class="co">#&gt; 1    422                                    </span>
-<span class="co">#&gt; 2    424 -2 54.943 &lt; 0.00000000000000022 ***</span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  </span>
-<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre></div>
+<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">steg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">educ</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">exper</span> <span class="op">+</span> <span class="va">expersq</span> <span class="op">+</span> <span class="va">fatheduc</span> <span class="op">+</span> <span class="va">motheduc</span>, data <span class="op">=</span> <span class="va">Mrozdata</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">instrumentF</span> <span class="op">&lt;-</span> <span class="fu">waldtest</span><span class="op">(</span><span class="va">steg1</span>, <span class="va">.</span><span class="op">~</span><span class="va">.</span> <span class="op">-</span><span class="va">fatheduc</span> <span class="op">-</span><span class="va">motheduc</span><span class="op">)</span></span>
+<span><span class="va">instrumentF</span></span>
+<span><span class="co">#&gt; Wald test</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model 1: educ ~ age + exper + expersq + fatheduc + motheduc</span></span>
+<span><span class="co">#&gt; Model 2: educ ~ age + exper + expersq</span></span>
+<span><span class="co">#&gt;   Res.Df Df      F                Pr(&gt;F)    </span></span>
+<span><span class="co">#&gt; 1    422                                    </span></span>
+<span><span class="co">#&gt; 2    424 -2 54.943 &lt; 0.00000000000000022 ***</span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  </span></span>
+<span><span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <p>F-verdien er 54.943 med p &lt; .001. Vi kan finne kritisk F-verdi:</p>
-<div class="sourceCode" id="cb281"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/Fdist.html">qf</a></span><span class="op">(</span><span class="fl">0.05</span>, df1 <span class="op">=</span> <span class="fl">422</span>, df2 <span class="op">=</span> <span class="fl">424</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.8520168</span></code></pre></div>
+<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/Fdist.html">qf</a></span><span class="op">(</span><span class="fl">0.05</span>, df1 <span class="op">=</span> <span class="fl">422</span>, df2 <span class="op">=</span> <span class="fl">424</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.8520168</span></span></code></pre></div>
 <p>Vi kan klart forkaste nullhypotesen om at instrumentene er irrelevante.</p>
 
 </div>
@@ -481,8 +483,8 @@
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/10_Kap_10.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/10_Kap_10.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/10.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/10.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -494,7 +496,7 @@
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 11 juli, 2022.</p>
+    <p>"<strong>Untitled</strong>" was written by Nils Kvilvang. It was last built on 2022-07-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
