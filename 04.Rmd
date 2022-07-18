@@ -8,7 +8,7 @@ always_allow_html: true
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(summarytools)
+pacman::p_load(summarytools, tidyverse)
 ```
 
 Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler i sammenheng eller i forhold til hverandre). I hovedsak gjør vi dette på tre måter:
@@ -28,7 +28,7 @@ Typiske karakteristika vi kan være interessert i å se på er gjennomsnitt, med
 
 Vi fram igjen datasettet vi brukte i kapittel 2 der vi hadde genererte høydedata for 100 tilfeldige menn.
 
-```{r echo = FALSE, message = FALSE, warning=FALSE}
+```{r message = FALSE, warning=FALSE, fig.cap = "Deskriptiv statistikk for tilfeldig generert data"}
 
 set.seed(30)
 hoyde100 <- rnorm(100, 179, 16)
@@ -39,9 +39,9 @@ Et statistikkprogrgam vil lett gi oss en rekke utregninger som sier noe deskript
 
 ## Frekvenstabell
 
-Det gir ikke særlig mening å lage en frekvenstabell for de genererte høydedataene siden alle verdeiene er unike (altså får vi frekvens 1 på alle 100 observasjonene). La oss derfor lage et enkelt eksempel:
+Det gir ikke særlig mening å lage en frekvenstabell for de genererte høydedataene siden alle verdiene er unike (altså får vi frekvens 1 på alle 100 observasjonene). La oss derfor lage et enkelt eksempel:
 
-```{r}
+```{r fig.cap = "Frekvenstabell"}
 x <- c(1, 1, 2, 3.5, 4, 4, 4, 5, 5, 6.5, 7, 7.4, 8, 13, 14.2)
 summarytools::freq(x)
 ```
@@ -56,44 +56,151 @@ Det er en rekke diagrammer / plott vi kan lage som gir oss informasjon om en enk
 
 #### Stolpediagram ("bar chart")
 
+```{r fig.cap = "Stolpediagram ensfarget"}
+liksomdata <- tibble(
+  Karakter = c("A", "B" ,"C" ,"D" ,"E", "F"),  
+  Antall = c(3, 8, 18, 16, 13, 4)
+  )
+stolpe <- ggplot(liksomdata, aes(x=Karakter, y=Antall)) + 
+  geom_bar(fill = "#0073C2FF", stat = "identity") + 
+  theme_bw()
+stolpe
+```
+
+```{r fig.cap = "Stolpediagram flerfarget"}
+stolpe2 <- ggplot(liksomdata, aes(x=Karakter, y=Antall, fill=Karakter)) + 
+  geom_bar(stat = "identity") + 
+  theme_bw()
+stolpe2
+```
+
+En alternativ måte å framstille i det samme som i et stolpediagram:
+
+```{r fig.cap = "Alternativ til stolpediagram"}
+ggplot(liksomdata, aes(Karakter, Antall)) +
+  geom_linerange(
+    aes(x = Karakter, ymin = 0, ymax = Antall), 
+    color = "lightgray", size = 1.5
+    )+
+  geom_point(aes(color = Karakter), size = 2)+
+  ggpubr::color_palette("jco")+
+  theme_bw()
+```
 
 
+#### Kakediagram ("pie chart")
 
+```{r fig.cap = "Kakediagram"}
+ggplot(liksomdata, aes(x = "", y = Antall, fill = Karakter)) +
+  geom_col(color = "black") +
+  geom_text(aes(label = Antall),
+            position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  scale_fill_brewer() +
+  theme_void()
+```
 
+#### Histogram:
 
-
-
-
-Histogram:
-
-```{r}
-hist(x, breaks = 8, main = "Histogram inndelt med bredde = 8")
+```{r fig.cap = "Histogram med 10 søyler"}
+set.seed(35)
+x <- rnorm(100, 179, 16)
+y <- rep("Mann", each = 100)
+hoyde <- bind_cols( y, x)
+colnames(hoyde) <- c("Kjonn", "Hoyde")
+h <- ggplot(hoyde, aes(x = Hoyde)) + 
+  geom_histogram(color = "black", fill = "lightblue", bins = 10) + 
+    theme_bw() + 
+    ylab("Antall")
+h
 ```
 
 Histogrammet viser søyler av kontinuerlige data gruppert etter en gitt bredde på søylene - antall søyler definerer vi selv ut fra hvor stor del av bredden av observasjoner vi "putter inn i" søyla. I histogrammet over har vi delt dataene inn i åtte deler (søylene har alltid lik bredde). Vi kan også dele inn annerledes.
 
-```{r}
-hist(x, breaks = 3, main = "Histogram inndelt med bredde = 3")
+```{r fig.cap = "Histogram med 4søyler"}
+h2 <- ggplot(hoyde, aes(x = Hoyde)) + 
+  geom_histogram(color = "black", fill = "lightblue", bins = 4) + 
+    theme_bw() + 
+    ylab("Antall")
+h2
 ```
 
-Fordeling ("density"):
+Vi kan også være interessert i å vise histogram for en variabel - høyde - for to grupper (f.eks. kjønn).
 
-```{r}
-dens <- density(x)
-plot(dens, x, frame = FALSE, col = "steelblue", main = "Densityplott")
-polygon(dens, col = "steelblue")
+```{r fig.cap = "Histogram for høyde for to grupper"}
+x2 <- as_tibble(rnorm(100, 172, 17))
+y2 <- rep("Kvinne", each = 100)
+hoyde2 <- bind_cols( y2, x2)
+colnames(hoyde2) <- c("Kjonn", "Hoyde")
+hoydefelles <- rbind(hoyde, hoyde2)
+ggplot(hoydefelles, aes(x = Hoyde)) +
+    geom_histogram(aes(color = Kjonn, fill = Kjonn),
+                         alpha = 0.4, position = "identity") +
+  scale_color_manual(values = c("steelblue", "orange"))+
+  scale_fill_manual(values = c("steelblue", "orange")) +
+  theme_bw()
 ```
 
-Et densityplott viser distribusjonen til en numerisk variabel. Det er på en måte en "smooth" versjon av histogrammet. Densityplott kan være et alternativ når man skal se på dataene og hvilken distribusjon den har. Det kan være enklere å se om distribusjonen f.eks. er bimodal eller unimodal (en eller to topper). 
+#### Frekvenspolygon
+
+Dette er svært likt histogram, men bruker linjer i stedet for stolper.
+
+```{r fig.cap = "Frekvenspolygon"}
+ggplot(hoyde, aes(x = Hoyde)) +
+    geom_area( stat = "bin", bins = 30,
+               color = "black", fill = "lightblue") +
+    theme_bw() +
+    ylab("Antall")
+```
+
+Og for to grupper:
+
+```{r fig.cap = "Frekvenspolygon for to grupper"}
+ggplot(hoydefelles, aes(x = Hoyde)) +
+    geom_freqpoly( aes(color = Kjonn, linetype = Kjonn),
+                   bins = 30, size = 1.5) +
+  scale_color_manual(values = c("steelblue", "orange")) +
+  theme_bw() +
+  ylab("Antall")
+```
+
+
+#### "Density":
+
+```{r fig.cap = "Density kurve med gjennomsnittsverdi"}
+ggplot(hoyde, aes(x = Hoyde)) +
+    geom_density(fill = "lightblue") + 
+    theme_bw() + 
+    geom_vline(aes(xintercept = mean(Hoyde)), 
+             linetype = "dashed", size = 0.6,
+             color = "#FC4E07")
+```
+
+Et densityplott viser distribusjonen til en numerisk variabel. Det er på en måte en "smooth" versjon av histogrammet. Densityplott kan være et alternativ når man skal se på dataene og hvilken distribusjon den har. Det kan være enklere å se om distribusjonen f.eks. er bimodal eller unimodal (en eller to topper). Det kan også være en god visualisering av en variabel med to grupper.
+
+```{r fig.cap = "Density kurve med gjennomsnittsverdi for to grupper"}
+snitt <- hoydefelles %>% 
+  group_by(Kjonn) %>%
+  summarise(grp.mean = mean(Hoyde))
+ggplot(hoydefelles, aes(x = Hoyde)) +
+    geom_density(aes(fill = Kjonn), alpha = 0.4) +
+      geom_vline(aes(xintercept = grp.mean, color = Kjonn),
+             data = snitt, linetype = "dashed") +
+  scale_color_manual(values = c("red", "red"))+
+  scale_fill_manual(values = c("steelblue", "orange")) +
+  theme_bw()
+    
+```
+
 
 Boxplott:
 
-```{r}
-boxplot(x)
+```{r fig.cap = "Boxplott"}
+ggplot(hoydefelles, aes(x = Kjonn, y = Hoyde, fill = Kjonn)) +
+    geom_boxplot() +
+    theme_bw()
 ```
 
-Boxplott ble ganske grundig gjennomgått i kapittel 1.7.1.4.
-
-
+Boxplott ble ganske grundig gjennomgått i kapittel \@ref(Boxplott).
 
 Vi kommer tilbake flere steder til mer utførlig tolkning av ulike diagrammer i ulike kapitler der de brukes i en kontekst. 

@@ -152,7 +152,7 @@ $e = x - \overline{x}$
 
 Residualbegrepet kommer vi sterkt tilbake til når vi skal ta for oss regresjonsanalyse. 
 
-Vi kommer til å snakke mye om modeller. Vi kommer også itl å snakke mye om "hvor god er modellen" - eller med andre ord: har vi klart å lage en modell som representerer "virkeligheten" på en god måte. Vi skal imidlertid huske på at "All models are wrong, but some are useful" [@boxScienceStatistics1976]. En statistisk modell vil aldri klare å representere den komplekse virkeligheten - vi må alltid forsøke å finne måter å måle og representere enkelte deler av virkeligeheten og lage modeller som kan fortelle oss noe fornuftig og nyttig om denne virkeligheten. Men selv om modellen alltid er feil og imperfekt kan den fortsatt være nyttig. 
+Vi kommer til å snakke mye om modeller. Vi kommer også til å snakke mye om "hvor god er modellen" - eller med andre ord: har vi klart å lage en modell som representerer "virkeligheten" på en god måte. Vi skal imidlertid huske på at "All models are wrong, but some are useful" [@boxScienceStatistics1976]. En statistisk modell vil aldri klare å representere den komplekse virkeligheten - vi må alltid forsøke å finne måter å måle og representere enkelte deler av virkeligeheten og lage modeller som kan fortelle oss noe fornuftig og nyttig om denne virkeligheten. Men selv om modellen alltid er feil og imperfekt kan den fortsatt være nyttig. 
 
 ## Normalfordeling
 
@@ -161,16 +161,16 @@ Når vi snakker om distribusjonen av et datasett tenker vi på hvordan dataene v
 ```{r}
 set.seed(30)
 x <- rnorm(100, 179, 16)
-y <- rep("Mann",each=100)
+y <- rep("Mann", each = 100)
 hoyde <- bind_cols( y, x)
 colnames(hoyde) <- c("Kjonn", "Hoyde")
 ```
 
 Dataene kan vi sette inn i et histogram for å se på fordelingen.
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 tilfeldige menn, genererte data"}
+```{r message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 tilfeldige menn, genererte data"}
 p <- ggplot(hoyde, aes(x = Hoyde)) + 
-  geom_histogram(color="black", fill="lightblue", bins = 10) + 
+  geom_histogram(color = "black", fill = "lightblue", bins = 10) + 
     theme_bw() + 
     ylab("Antall")
 p
@@ -178,10 +178,10 @@ p
 
 Hvis vi tar et utvalg på 100 andre personer kan fordelingen se slik ut:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 andre tilfeldige menn, genererte data"}
+```{r message = FALSE, warning=FALSE, fig.cap = "Høydefordeling for 100 andre tilfeldige menn, genererte data"}
 
-data1 <- sample(165:175, 50, replace=TRUE)
-data2 <- sample(170:180, 30, replace=TRUE)
+data1 <- sample(165:175, 50, replace = TRUE)
+data2 <- sample(170:180, 30, replace = TRUE)
 data3 <- sample(180:185, 15, replace = TRUE)
 data4 <- sample(185:190, 5, replace = TRUE)
 
@@ -191,8 +191,7 @@ hoyde2 <- bind_cols( y, data)
 colnames(hoyde2) <- c("Kjonn", "Hoyde")
 
 p2 <- ggplot(hoyde2, aes(x = Hoyde)) + 
-  geom_histogram(color="black", fill="lightblue", bins = 10) + 
-    theme_bw() + 
+  geom_histogram(color = "black", fill = "lightblue", bins = 10) +     theme_bw() + 
     ylab("Antall")
 p2
 ```
@@ -207,7 +206,7 @@ En normalfordeling er en sannsynlighetsfunksjon der flesteparten av verdiene fra
 
 Vi skal her ikke bry oss om det matematisk uttrykket for sannsynlighetstetthetsfunksjonen. Hvis vi derimot genererer et tenkt datasett etter standard normalfordelingsfunksjon vil det kunne se slik ut:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Genererte standard normalfordelte data"}
+```{r message = FALSE, warning=FALSE, fig.cap = "Genererte standard normalfordelte data"}
 
 set.seed(321)
 
@@ -225,23 +224,25 @@ p3
 
 Her kan vi legge på en forventningskurve – en teoretisk kurve som viser en standard normalfordeling:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Genererte standard normalfordelte data med normalfordelingskurve"}
+```{r message = FALSE, warning=FALSE, fig.cap = "Genererte standard normalfordelte data med normalfordelingskurve"}
 p4 <- ggplot(normalfordeling, aes(x)) + 
     geom_histogram(aes(y = ..density..), fill='lightblue', col='black') + 
-    stat_function(fun = dnorm, args = list(mean=mean(normalfordeling$x),
-                                         sd=sd(normalfordeling$x))) + 
+    stat_function(fun = dnorm, 
+                  args = list(mean=mean(normalfordeling$x), 
+                              sd=sd(normalfordeling$x))) + 
     theme_bw()
 p4
 ```
 
 Vi kan ta bort det genererte datasettet og sitte igjen med bare forventningskurven:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Normalfordelingskurve"}
+```{r message = FALSE, warning=FALSE, fig.cap = "Normalfordelingskurve"}
 
 ggplot(data.frame(x = c(-4, 4)), aes(x)) +
   geom_function(fun = dnorm, colour = "darkblue", size = 1.5) +
   theme_classic() +
-  scale_y_continuous(limits = c(0, 0.5), breaks = seq(0, 0.5, by = 0.1))
+  scale_y_continuous(limits = c(0, 0.5), 
+                     breaks = seq(0, 0.5, by = 0.1))
 ```
 
 Det den standardiserte normalfordelingskurven (også kjent som Gausskurven eller også Bellkurven – "Klokkekurven" - fordi den har en klokkeform) – kan brukes til er å si noe om spredningen på forventede verdier – eller hvor langt fra gjennomsnittsverdien man kan forvente å finne de enkelte verdiene. 
@@ -276,105 +277,96 @@ Som regel snakker vi imidlertid om standardavviket. Dette finner vi ved å ta kv
 
 Vi kan nå se nærmere på normalfordelingen. 
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med 1 standardavvik"}
-
-x <- seq(-4, 4, length=200)
+```{r message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med 1 standardavvik"}
+x <- seq(-4, 4, length = 200)
 y <- dnorm(x)
-
-plot(x, y, type="l", lty=1, lwd = 2, col = "red", xlab="x",
-  ylab="f(x)")
-
-x <- seq(-1,1,length=100)
+plot(x, y, 
+     type = "l", 
+     lty = 1, 
+     lwd = 2, 
+     col = "red", 
+     xlab = "x",
+     ylab = "f(x)")
+x <- seq(-1, 1, length = 100)
 y <- dnorm(x)
-
-polygon(c(-1,x,1),c(0,y,0),col="lightblue")
-
-abline(v=-1, col="green", lwd = 2)
+polygon(c(-1, x, 1),c(0, y, 0),col = "lightblue")
+abline(v = -1, col = "green", lwd = 2)
 text(1.3, 0.38, "1 SD", col = "black")
 text(-1.35, 0.38, "-1 SD", col = "black")
-abline(v=1, col="green", lwd = 2)
-
+abline(v = 1, col = "green", lwd = 2)
 text(0, 0.2, "68 %", col = "black")
-
 ```
 
 Ett standardavvik "over og under" 0 (= det skraverte området i grafen over) innebærer at i et normalfordelt datasett vil 68 % av tilfeldig valgte x-verdier befinner seg i dette intervallet. Vi kan vise det samme for 2 og 3 standardavvik:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med 2 standardavvik"}
-
-x <- seq(-4,4,length=200)
+```{r message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med 2 standardavvik"}
+x <- seq(-4,4, length = 200)
 y <- dnorm(x)
-
-plot(x, y, type="l", lty=1, lwd = 2, col = "red", xlab="x",
-  ylab="f(x)")
-
-x <- seq(-2,2,length=200)
+plot(x, y, 
+     type = "l", 
+     lty = 1, 
+     lwd = 2, 
+     col = "red", 
+     xlab="x",
+     ylab="f(x)")
+x <- seq(-2, 2, length = 200)
 y <- dnorm(x)
-
-polygon(c(-2,x,2),c(0,y,0),col="lightblue")
-
-abline(v=-2, col="green", lwd = 2)
+polygon(c(-2, x, 2),c(0, y, 0),col = "lightblue")
+abline(v = -2, col = "green", lwd = 2)
 text(2.3, 0.38, "2 SD", col = "black")
 text(-2.35, 0.38, "-2 SD", col = "black")
-abline(v=2, col="green", lwd = 2)
-
+abline(v = 2, col = "green", lwd = 2)
 text(0, 0.2, "95 %", col = "black")
-
 ```
 
 To standardavvik "over og under" 0 (= det skraverte området i grafen over) innebærer at i et normalfordelt datasett vil 95 % av tilfeldig valgte x-verdier befinner seg i dette intervallet. Vi kan finne arealet mellom x=-2 og x=2, som er `r pnorm(2,mean=0,sd=1)-pnorm(-2,mean=0,sd=1)`^[R-kode for utregning av areal mellom to x-verdier i en normalfordeing (=sannsynlighet for at en gitt x-verdi ligger i intervallet mellom de to x-verdiene): pnorm(2,mean=0,sd=1)-pnorm(-2,mean=0,sd=1)].
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med 3 standardavvik"}
-
-x <- seq(-4,4,length=200)
+```{r message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med 3 standardavvik"}
+x <- seq(-4, 4, length = 200)
 y <- dnorm(x)
-
-plot(x,y,type="l",lwd=2,col="red", xlab="x",
-  ylab="f(x)")
-
-x <- seq(-3,3,length=200)
+plot(x, y, 
+     type = "l",
+     lwd = 2,
+     col = "red", 
+     xlab = "x",
+     ylab="f(x)")
+x <- seq(-3, 3, length = 200)
 y <- dnorm(x)
-
-polygon(c(-3,x,3),c(0,y,0),col="lightblue")
-
-abline(v=-3, col="green", lwd = 2)
+polygon(c(-3, x, 3),c(0, y, 0), col = "lightblue")
+abline(v = -3, col = "green", lwd = 2)
 text(3.3, 0.38, "3 SD", col = "black")
 text(-3.35, 0.38, "-3 SD", col = "black")
-abline(v=3, col="green", lwd = 2)
-
+abline(v = 3, col ="green", lwd = 2)
 text(0, 0.2, "99.7 %", col = "black")
-
 ```
 
 Tre standardavvik "over og under" 0 (= det skraverte området i grafen over) innebærer at i et normalfordelt datasett vil 99.7 % av tilfeldig valgte x-verdier befinner seg i dette intervallet. Vi kan finne arealet mellom x=-3 og x=3, som er `r pnorm(3,mean=0,sd=1)-pnorm(-3,mean=0,sd=1)`^[pnorm(3,mean=0,sd=1)-pnorm(-3,mean=0,sd=1)]. Dette utgjør et kjernepunkt i statistisk prosesskontroll som vi vil komme mye tilbake til.
 
 Oppsummert kan vi framstille normalfodeling og standardavvik slik [@hartmannVarianceStandardDeviation2018]:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med standardavvik"}
-
-y.norm <- rnorm(n= 100000, mean = 0, sd = 1)
+```{r message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med standardavvik"}
+y.norm <- rnorm(n = 100000, mean = 0, sd = 1)
 h <- hist(y.norm, breaks = 100, plot = F)
-cuts <- cut(h$breaks, c(-Inf,-3,-2,-1,1,2,3,Inf), right = F) # right=False; sets intervals to be open on the right closed on the left
+cuts <- cut(h$breaks, c(-Inf, -3, -2, -1, 1, 2, 3, Inf), right = F)
 plot(h, 
-     col = rep(c("white", "4","3","2","3","4", "white"))[cuts], 
+     col = rep(c("white", "4", "3", "2", "3", "4", "white"))[cuts], 
      main = 'Normalfordeling', 
      xlab = '', 
      freq = F, 
      ylim = c(0,0.6))
-
 lwd = 3
-# horzintal lines
+# Horisontale linjer
 lines(x = c(2,-2), y = c(0.48,0.48), type = "l", col=3, lwd = lwd)
 lines(x = c(3,-3), y = c(0.55,0.55), type = "l", col=4, lwd = lwd)
 lines(x = c(1,-1), y = c(0.41,0.41), type = "l", col=2, lwd = lwd)
-# vertical lines
+# Vertikale linjer
 lines(x = c(1,1), y = c(0,0.41), type = "l", col=2, lwd = lwd)
 lines(x = c(-1,-1), y = c(0,0.41), type = "l", col=2, lwd = lwd)
 lines(x = c(2,2), y = c(0,0.48), type = "l", col=3, lwd = lwd)
 lines(x = c(-2,-2), y = c(0,0.48), type = "l", col=3, lwd = lwd)
 lines(x = c(3,3), y = c(0,0.55), type = "l", col=4, lwd = lwd)
 lines(x = c(-3,-3), y = c(0,0.55), type = "l", col=4, lwd = lwd)
-# text
+# tekst
 text(0, 0.44, "68%", cex = 1.5, col=2)
 text(0, 0.51, "95%", cex = 1.5, col=3)
 text(0, 0.58, "99.7%", cex = 1.5, col=4)
@@ -419,8 +411,8 @@ xfun::embed_file('QQ_norm.xlsx')
 ```
 
 ```{r fig.cap = "Q-Q plott normalfordeling"}
-ggqqplot(qqnorm$value) + 
-    ggtitle("Normal Q-Q plott") + 
+ggqqplot(qqnorm$value) +
+    ggtitle("Normal Q-Q plott") +
     labs(x = "Teoretisk forventning", y = "Data")
 ```
 
@@ -445,7 +437,9 @@ xfun::embed_file('QQ_norm_rs.xlsx')
 
 ```{r fig.cap = "Q-Q plott - fordeling skjevhet høyre", message = FALSE}
 qqrighthist <- ggplot(qqrightskew, aes(x=value)) + 
-    geom_histogram(color="black", fill="lightblue")
+    geom_histogram(color="black", 
+                   fill="lightblue") +
+    theme_bw()
 qqrightskew_plott <- ggqqplot(qqrightskew$value) + 
     ggtitle("Normal Q-Q plott - skjevhet høyre") + 
     labs(x = "Teoretisk forventning", y = "Data")
@@ -474,7 +468,9 @@ xfun::embed_file('QQ_norm_ls.xlsx')
 ```{r fig.cap = "Q-Q plott - fordeling skjevhet venstre", message = FALSE}
 # Plotte histogram og Q-Q plott
 qqlefthist <- ggplot(qqleftskew, aes(x=value)) + 
-    geom_histogram(color="black", fill="lightblue")
+    geom_histogram(color="black", 
+                   fill="lightblue") +
+    theme_bw()
 qqleftskew_plott <- ggqqplot(qqleftskew$value) + 
     ggtitle("Normal Q-Q plott - skjevhet venstre") + 
     labs(x = "Teoretisk forventning", y = "Data")
@@ -501,7 +497,9 @@ xfun::embed_file('QQ_ht.xlsx')
 
 ```{r fig.cap = "Q-Q plott - 'heavy-tail'", message = FALSE}
 qqcauchyhist <- ggplot(qqcauchy, aes(x=value)) + 
-    geom_histogram(color="black", fill="lightblue")
+    geom_histogram(color="black", 
+                   fill="lightblue") +
+    theme_bw()
 qqcauchy_plott <- ggqqplot(qqcauchy$value) + 
     ggtitle("Normal Q-Q plott - tung hale") + 
     labs(x = "Teoretisk forventning", y = "Data")
@@ -527,7 +525,9 @@ xfun::embed_file('QQ_lt.xlsx')
 
 ```{r fig.cap = "Q-Q plott - 'light-tail'", message = FALSE}
 qqlthist <- ggplot(qqlt, aes(x=value)) + 
-    geom_histogram(color="black", fill="lightblue")
+    geom_histogram(color="black", 
+                   fill="lightblue") +
+    theme_bw()
 qqlt_plott <- ggqqplot(qqlt$value) + 
     ggtitle("Normal Q-Q plott - lett hale") + 
     labs(x = "Teoretisk forventning", y = "Data")
@@ -557,7 +557,9 @@ xfun::embed_file('QQ_bimod.xlsx')
 
 ```{r fig.cap = "Q-Q plott - bimodal", message = FALSE}
 qqbimodhist <- ggplot(qqbimod, aes(x=value)) + 
-    geom_histogram(color="black", fill="lightblue")
+    geom_histogram(color="black", 
+                   fill="lightblue") +
+    theme_bw()
 qqbimod_plott <- ggqqplot(qqbimod$value) + 
     ggtitle("Normal Q-Q plott - bimodial") + 
     labs(x = "Teoretisk forventning", y = "Data")
@@ -582,7 +584,9 @@ xfun::embed_file('QQ_multimod.xlsx')
 
 ```{r fig.cap = "Q-Q plott - multimodal", message = FALSE}
 qqmultimodhist <- ggplot(qqmultimod, aes(x=Verdi)) + 
-    geom_histogram(color="black", fill="lightblue")
+    geom_histogram(color="black", 
+                   fill="lightblue") +
+    theme_bw()
 qqmultimod_plott <- ggqqplot(qqmultimod$Verdi) + 
     ggtitle("Normal Q-Q plott - multimodial") + 
     labs(x = "Teoretisk forventning", y = "Data")
@@ -669,8 +673,16 @@ Dette er altså ikke så enkelt. Det finnes mange statistiske tester, som kan gi
 
 ```{r fig.cap = "Boksplott for variablene Adverts og Sales"}
 par(mfrow=(c(1,2)))
-Boxplot(Field_OLS_data$Adverts, id = list(n=Inf), ylab = "", main = "Adverts", col = "Blue")
-Boxplot(Field_OLS_data$Sales, id = list(n=Inf), ylab = "", main = "Sales", col = "Green")
+Boxplot(Field_OLS_data$Adverts, 
+        id = list(n=Inf), 
+        ylab = "", 
+        main = "Adverts", 
+        col = "Blue")
+Boxplot(Field_OLS_data$Sales, 
+        id = list(n=Inf), 
+        ylab = "", 
+        main = "Sales", 
+        col = "Green")
 ```
 Vi ser at vi får først ut en liste over uteliggerne identifisert ved id/case/observasjonsnummer (43, 87 og 184) for variabelen Adverts. Dette vises også som tre små sirkler i boxplottet. 
 
@@ -697,7 +709,9 @@ Et scatterplott viser oss på en god visuell måte hvordan de to variablene forh
 En god måte å fremstille et scatterplott på i R (gjennom pakken *car*) er denne:
 
 ```{r fig.cap = "Eksempel scatterplott fra pakken 'car'"}
-scatterplot(Adverts ~ Sales, data = Field_OLS_data, id = list(n=4))
+scatterplot(Adverts ~ Sales, 
+            data = Field_OLS_data, 
+            id = list(n=4))
 ```
 
 Her kombinerer vi scatterplott og boxplott. Den rette blå linja er en minste kvadratssums regresjonslinje (OLS). Den stiplede blå linja bruker en ikke-parametrisk tilnærming. I tillegg får vi visualisert de fire mest ekstreme tilfellene (lengst vekk fra gjennomsnitt). 
@@ -706,11 +720,12 @@ Her kombinerer vi scatterplott og boxplott. Den rette blå linja er en minste kv
 
 En distribusjon hvor det kun er to mulige utfall av en hendelse kalles en binomial fordeling. Et myntkast er en slik hendelse (gitt at vi ser bort fra den fysiske muligheten at mynten kan lande stående på høykant). Levende eller død kan også være et eksempel på dette. Det ene utfallet utelukker det andre, men de er uavhengige fordi resultatet i ett myntkast ikke påvirker resultatet i neste myntkast. Alle myntkastene må derimot være identiske, det vil si sannsynligheten for det ene eller det andre resultatet er lik hver gang forsøket eller myntkastet gjennomføres. Hvis vi har lik sannsynlighet, kan en tilfeldig generert binomial distribusjon se slik ut:
 
-```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Binomialfordeling med lik sannsynlighet"}
-
+```{r message = FALSE, warning=FALSE, fig.cap = "Binomialfordeling med lik sannsynlighet"}
 suksess <- 0:20
-
-plot(suksess, dbinom(suksess, size = 20, prob = .5),
+plot(suksess, 
+     dbinom(suksess, 
+            size = 20, 
+            prob = .5),
      type = 'h',
      main = "Binomial distribusjon (n = 20, p = 0.5)",
      ylab = "Sannsynlighet",
@@ -723,7 +738,10 @@ I diagrammet over vises en sannsynlighetsfordeling for en binomial fordeling der
 Det er imidlertid verdt å merke seg at de to utfallene ikke trenger å ha lik sannsynlighet. Da vil den binomiale distribusjonen se annerledes ut:
 
 ```{r message = FALSE, warning=FALSE, fig.cap = "Binomialfordeling med ulik sannsynlighet"}
-plot(suksess,dbinom(suksess, size = 20, prob = .2),
+plot(suksess,
+     dbinom(suksess, 
+            size = 20,
+            prob = .2),
      type = 'h',
      main = "Binomial distribusjon (n = 20, p = 0.2)",
      ylab = "Sannsynlighet",
@@ -738,8 +756,15 @@ Et terningkast (med en vanlig terning med 6 sider) – som ikke er tuklet med �
 ```{r message = FALSE, warning=FALSE, fig.cap = "10 terningkast"}
 set.seed(32)
 terning10 <- sample(1:6, 10, replace = TRUE)
-stripchart(terning10, method = "stack", offset = .5, at = 0, pch = 19,
-           col = "steelblue", main = "10 terningkast", xlab = "Verdi på terning", ylab = "Antall")
+stripchart(terning10, 
+           method = "stack", 
+           offset = .5, 
+           at = 0, 
+           pch = 19,
+           col = "steelblue", 
+           main = "10 terningkast", 
+           xlab = "Verdi på terning", 
+           ylab = "Antall")
 ```
 
 Vi ser at vi ikke fikk noen 2’ere og 5’ere. Dette kan vi forvente når vi bare har 10 terningkast. Hvis vi imidlertid kaster terningen 100 ganger vil det være svært liten sannsynlighet for å ikke få «treff» på alle 6 verdiene på terningen, og vi burde kunne forvente at vi får en ganske jevn fordeling på alle 6 verdiene. Nedenfor vises resultatet av 100 terningkast.
@@ -747,7 +772,15 @@ Vi ser at vi ikke fikk noen 2’ere og 5’ere. Dette kan vi forvente når vi ba
 ```{r message = FALSE, warning=FALSE, fig.cap = "100 terningkast"}
 set.seed(33)
 terning10 <- sample(1:6, 100, replace = TRUE)
-stripchart(terning10, method = "stack", offset = .5, at = 0, pch = 19, col = "steelblue", main = "100 terningkast", xlab = "Verdi på terning", ylab = "Antall")
+stripchart(terning10, 
+           method = "stack", 
+           offset = .5, 
+           at = 0, 
+           pch = 19, 
+           col = "steelblue", 
+           main = "100 terningkast", 
+           xlab = "Verdi på terning", 
+           ylab = "Antall")
 ```
 
 Vi ser at vi har en relativt jevn fordeling. Noe ulikhet er det selvsagt, noe vi vil forvente fra en tilfeldig prosess. Hvis vi gjennomførte 1000 eller 10000 terningkast vil fordelingen bli nærmere og nærmere den teoretisk forventede fordelingen. Vi kan burde, teoretisk, forvente 100 treff på hver mulighet hvis vi kaster terningen 600 ganger, men vi vil sjelden se akkurat 100 treff på hver slik vi ser hvis vi kjører tre runder med 600 terningkast:
@@ -806,19 +839,32 @@ Eksempelet under er hentet fra @soagePoissonDistribution2020:
 x <- 0:50
 # lambda: 5
 lambda <- 5
-plot(dpois(x, lambda), type = "h", lwd = 2,
+plot(dpois(x, lambda), 
+     type = "h", 
+     lwd = 2,
      main = "Poisson sannsynlighetsfordeling",
-     ylab = "P(X = x)", xlab = "Antall hendelser")
+     ylab = "P(X = x)", 
+     xlab = "Antall hendelser")
 # lambda: 10
 lambda <- 10
-lines(dpois(x, lambda), type = "h", lwd = 2, col = rgb(1, 0, 0, 0.7))
+lines(dpois(x, lambda), 
+      type = "h", 
+      lwd = 2, 
+      col = rgb(1, 0, 0, 0.7))
 # lambda: 20
 lambda <- 20
-lines(dpois(x, lambda), type = "h", lwd = 2, col = rgb(0, 1, 0, 0.7))
+lines(dpois(x, lambda), 
+      type = "h", 
+      lwd = 2, 
+      col = rgb(0, 1, 0, 0.7))
 # Legend
-legend("topright", legend = c("5", "10", "20"),
+legend("topright", 
+       legend = c("5", "10", "20"),
        title = expression(lambda), title.adj = 0.75,
-       lty = 1, col = 1:3, lwd = 2, box.lty = 0)
+       lty = 1, 
+       col = 1:3, 
+       lwd = 2, 
+       box.lty = 0)
 ```
 
 Ut fra hvilken $\lambda$-verdi vi setter kan vi si noe om sannsynligheten for at et antall hendelser inntreffer. 

@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "17 juli, 2022"
+date: "18 juli, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -140,6 +140,10 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   <tr>
    <td style="text-align:left;width: 8em; "> 11.juli 2022 </td>
    <td style="text-align:left;width: 40em; "> Endret i regresjonsdel ML </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 18.juli 2022 </td>
+   <td style="text-align:left;width: 40em; "> Lagt til i ML. Ryddet opp i kap 2, 3 og 4. Lagt til nytt stoff i kap.4 </td>
   </tr>
 </tbody>
 </table>

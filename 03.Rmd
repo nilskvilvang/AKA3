@@ -7,7 +7,7 @@ always_allow_html: true
 
 R-pakker brukt i dette kapittelet:
 
-```{r echo = FALSE}
+```{r}
 pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra, writexl, car, corrplot)
 ```
 
@@ -81,7 +81,7 @@ cohend <- data.frame(Veldig = c("0.90 - 1.00"),
 colnames(cohend) <- c("Veldig høy", "Høy", "Moderat", "Lav", "Svært lav (om noe)")
 
 cohend<- cohend %>%
-  kbl(caption = "Korrelasjonskoeffisient - Pearsons r, modifisert fra Hinkle et al. (2003)") %>%
+  kbl(caption = "Korrelasjonskoeffisient - Pearsons r. Modifisert fra Hinkle et al. (2003)") %>%
   kable_classic(full_width = F, position = "left", html_font = "Cambria")
 
 column_spec(cohend, 1:3, width = "3.5cm")
@@ -139,25 +139,32 @@ xfun::embed_file('Pallantmod.xlsx')
 Datasettet inneholder opprinnelig flere variabler, men det jeg skal se på nå er om oppfattelse av stress ("tpstress") korrelerer med variabelen "tpcoiss" ("Total perceived control over internal states"). Jeg ønsker altså å se på sammenhengen mellom oppfattet stress og hvordan man oppfatter at man har "indre kontroll". 
 
 ```{r}
-cor.test(Pallantmod$Pallantmod.tpstress, Pallantmod$Pallantmod.tpcoiss)
+korr <- cor.test(Pallantmod$Pallantmod.tpstress, Pallantmod$Pallantmod.tpcoiss)
+korr
 ```
 
-I resultatet kan vi se at $r = - 0.581$. Siden vi har et negativt fortegn betyr det at vi har en negativ korrelasjon mellom variablene – altså en høy verdi på den ene variabelen er forbundet med en lav verdi på den andre. Vi ser at korrelasjonen er signifikant ($p < .001$). Vi kan også si noe om styrken på korrelasjonen (uavhengig av fortegn på koeffisienten). 
+I resultatet kan vi se at `r korr$estimate`. Siden vi har et negativt fortegn betyr det at vi har en negativ korrelasjon mellom variablene – altså en høy verdi på den ene variabelen er forbundet med en lav verdi på den andre. Vi ser at korrelasjonen er signifikant (`r korr$p.value`). Vi kan også si noe om styrken på korrelasjonen (uavhengig av fortegn på koeffisienten). 
 
 Lenger opp har vi gjengitt forslag til tokning av størrelsen på korrelasjonskoeffisienten. Etter disse har vi en sterk negativ korrelasjon mellom disse to variablene ut fra Cohens inndeling, men en moderat korrelasjon ut fra @hinkleAppliedStatisticsBehavioral2003. 
 
 ```{r}
 
 plot(Pallantmod$Pallantmod.tpcoiss, Pallantmod$Pallantmod.tpstress, main = 'Spredningsplott ', xlab = 'tpcoiss', ylab = 'tpstress')
+
+korrplott <- ggplot(Pallantmod, aes(x=Pallantmod.tpcoiss, y=Pallantmod.tpstress)) + 
+    geom_point(col = "red") +
+    theme_bw() +
+    labs(caption = "Scatterplott for Pallantmod.tpcoiss og Pallantmod.tpstress")
+korrplott
 ```
 
 Det er vanligvis ikke nødvendig å vise resultater av en korrelasjonsanalyse dersom det ikke er mer enn to variabler. I eksempelet over kan man rapportere (vi har ikke sjekket forutsetninger, men for eksempelets skyld antar vi at vi ikke har funnet problemer der):
 
-> Forholdet mellom oppfattelse av indre kontroll (målt med PCOISS) og oppfattelse av stress (målt med Perceived Stress Scale) ble undersøkt med Pearsons korrelasjonskoeffisient. Innledende analyser avdekket ingen brudd på forutsetningene om normalitet, linearitet og homoskedastisitet. Basert på resultatene av studien er oppfattelse av indre kontroll sterkt negativt korrelert med oppfattelse av stress, r = -.58, n = 426, p < .001
+> Forholdet mellom oppfattelse av indre kontroll (målt med PCOISS) og oppfattelse av stress (målt med Perceived Stress Scale) ble undersøkt med Pearsons korrelasjonskoeffisient. Innledende analyser avdekket ingen brudd på forutsetningene om normalitet, linearitet og homoskedastisitet. Basert på resultatene av studien er oppfattelse av indre kontroll sterkt negativt korrelert med oppfattelse av stress, r = `r korr$estimate`, n = `rnrow(Pallantmod)`, p = `r korr$p.value`.
 
 ## Multivariat korrelasjonsanalyse
 
-Eksempelet her er hentet fra @coghlanUsingMultivariateAnalysis2010 ([Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/). Datasettet inneholder data på mengde av 13 ulike kjemikalier i vin fra en region i Italia fra tre ulike produsenter. 
+Eksempelet her er hentet fra @coghlanUsingMultivariateAnalysis2010 ([Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/)). Datasettet inneholder data på mengde av 13 ulike kjemikalier i vin fra en region i Italia fra tre ulike produsenter. 
 
 ```{r echo = FALSE}
 wine <- read.table("http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data",
@@ -171,12 +178,13 @@ vinkorrelasjon <- as.matrix(cor(wine[2:5]))
 upper <- round(vinkorrelasjon, 2)
 upper[upper.tri(vinkorrelasjon)] <- ""
 upper <- as.data.frame(upper)
-upper
+# upper
+kable(upper)
 ```
 
-Og et sammensatt spredninsgplott:
+Og et sammensatt plott:
 
-```{r}
+```{r fig.cap = "Korrelasjonsplott for 5 kjemikalier"}
 scatterplotMatrix(wine[2:5])
 ```
 
