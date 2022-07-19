@@ -669,7 +669,7 @@ Tolkningen er lik som før - hvis p-verdien er mindre enn valgte signifikansniv�
 
 Dette er altså ikke så enkelt. Det finnes mange statistiske tester, som kan gi motsatte indikasjoner på om et datasett er normalfordelt eller ikke siden de ser på dataene fra "ulik vinkel" (fokuserer på ulike aspekter ved dataene). **Vårt råd blir:** Start alltid med Q-Q plott. Velg evt en teststatistikk, men vær klar over at alle teststatistikker bygger på forutsetninger eller tester ulike sider av distribusjonen. Det vi også kan huske på er at i henhold til sentralgrenseteoremet ("Central Limit Theorem") vil populasjonens fordeling være av mindre interesse dersom utvalgsstørrelsen er stor nok. Hva er stor nok? De fleste kilder peker mot at over 30 er "stort nok". 
 
-#### Boxplott
+#### Boxplott {#boxplott}
 
 ```{r fig.cap = "Boksplott for variablene Adverts og Sales"}
 par(mfrow=(c(1,2)))

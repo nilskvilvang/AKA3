@@ -52,9 +52,7 @@ En frekvenstabell teller enkelt opp hvor mange forekomster vi har av ulike verdi
 
 Det er en rekke diagrammer / plott vi kan lage som gir oss informasjon om en enkelt variabel. 
 
-### Kateogriske data
-
-#### Stolpediagram ("bar chart")
+### Stolpediagram ("bar chart")
 
 ```{r fig.cap = "Stolpediagram ensfarget"}
 liksomdata <- tibble(
@@ -88,7 +86,7 @@ ggplot(liksomdata, aes(Karakter, Antall)) +
 ```
 
 
-#### Kakediagram ("pie chart")
+### Kakediagram ("pie chart")
 
 ```{r fig.cap = "Kakediagram"}
 ggplot(liksomdata, aes(x = "", y = Antall, fill = Karakter)) +
@@ -100,7 +98,7 @@ ggplot(liksomdata, aes(x = "", y = Antall, fill = Karakter)) +
   theme_void()
 ```
 
-#### Histogram:
+### Histogram:
 
 ```{r fig.cap = "Histogram med 10 søyler"}
 set.seed(35)
@@ -141,7 +139,7 @@ ggplot(hoydefelles, aes(x = Hoyde)) +
   theme_bw()
 ```
 
-#### Frekvenspolygon
+### Frekvenspolygon
 
 Dette er svært likt histogram, men bruker linjer i stedet for stolper.
 
@@ -165,7 +163,7 @@ ggplot(hoydefelles, aes(x = Hoyde)) +
 ```
 
 
-#### "Density":
+### "Density":
 
 ```{r fig.cap = "Density kurve med gjennomsnittsverdi"}
 ggplot(hoyde, aes(x = Hoyde)) +
@@ -186,14 +184,13 @@ ggplot(hoydefelles, aes(x = Hoyde)) +
     geom_density(aes(fill = Kjonn), alpha = 0.4) +
       geom_vline(aes(xintercept = grp.mean, color = Kjonn),
              data = snitt, linetype = "dashed") +
-  scale_color_manual(values = c("red", "red"))+
-  scale_fill_manual(values = c("steelblue", "orange")) +
+  scale_color_manual(values = c("steelblue", "red"))+
+  scale_fill_manual(values = c("lightblue", "orange")) +
   theme_bw()
     
 ```
 
-
-Boxplott:
+### Boksplott
 
 ```{r fig.cap = "Boxplott"}
 ggplot(hoydefelles, aes(x = Kjonn, y = Hoyde, fill = Kjonn)) +
@@ -201,6 +198,6 @@ ggplot(hoydefelles, aes(x = Kjonn, y = Hoyde, fill = Kjonn)) +
     theme_bw()
 ```
 
-Boxplott ble ganske grundig gjennomgått i kapittel \@ref(Boxplott).
+Boxplott ble ganske grundig gjennomgått i kapittel \@ref(boxplott).
 
 Vi kommer tilbake flere steder til mer utførlig tolkning av ulike diagrammer i ulike kapitler der de brukes i en kontekst. 

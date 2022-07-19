@@ -5,6 +5,11 @@ always_allow_html: true
 ---
 # T-tester
 
+```{r echo = FALSE}
+options(scipen = 999)
+```
+
+
 R-pakker brukt i dette kapittelet:
 
 ```{r}
@@ -28,7 +33,7 @@ I en t-test får vi en testverdi. Dersom p-verdien for denne testen er mindre en
 
 T-test, eller "Student’s t-test" som den ofte omtales som, baserer seg på en såkalt t-fordeling. En t-fordeling er ganske lik en normaldistribusjon, men har tyngre haler. Fordelingen vil variere med antall frihetsgrader, men likere og likere en normaldistribusjon ettersom utvalgsstørrelsen øker:
 
-```{r}
+```{r fig.cap = "t-fordeling med ulike frihetsgrader"}
 curve(dt(x, df = 2), from = -4, to = 4, col = "blue", ylim = c(0, 0.41))
 curve(dt(x, df = 5), from =-4, to = 4, col = "brown", add = TRUE)
 curve(dt(x, df=20), from = -4, to = 4, col = "black", add = TRUE)
@@ -68,7 +73,7 @@ $s = standardavviket\ i\ utvalget/observerte$
 $n=utvalgsstørrelse/antall\ observerte$
 
 Vi henter nødvendige verdier fra datasettet:
-```{r}
+```{r fig.kap = "Deskriptiv statistikk for t-test"}
 descr(ttestonesample$Score)
 ```
 
@@ -79,15 +84,17 @@ $t=\frac{72.3-67.5}{\frac{9.52}{\sqrt{20}}}=\frac{4.8}{2.129}=2.255$
 Vi sammenlikner t-verdien 2.255 med kritisk verdi, f.eks. [her](https://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm). Vi finner verdien 1.729. Hvis t-verdien er større enn kritisk verdi: forkast nullhypotesen. Her forkaster vi nullhypotsesen fordi 2.255 er større enn 1.729. Vår alternative hypotese om at det er signifikant forskjell er styrket.
 
 I R bruker vi:
-```{r}
-t.test(ttestonesample$Score, mu = 67.5, alternative = "two.sided")
+```{r fig.kap = "T-test"}
+ttest <- t.test(ttestonesample$Score, mu = 67.5, alternative = "two.sided")
+ttest
 ```
 
-```{r}
-qt(0.05, 19, lower.tail=FALSE)
+```{r fig.cap = "Kritisk verdi for t-test"}
+ttestqt <- qt(0.05, 19, lower.tail=FALSE)
+ttestqt
 ```
 
-Vi ser også her at t-testveridien er større enn kritisk verdi (2.255 > 1.729). I tillegg ser vi at p-verdien er < 0.05 ("If p is low, the null must go"). 
+Vi ser også her at t-testverdien er større enn kritisk verdi `r ttest$statistic` > `r ttestqt`). I tillegg ser vi at p-verdien er `r ttest$p.value` ("If p is low, the null must go"). 
 
 ### Sjekk av forutsetninger for one sample t-test
 
@@ -97,7 +104,7 @@ Vi ser også her at t-testveridien er større enn kritisk verdi (2.255 > 1.729).
 
 Vi ser spesielt på nr 3. Det finnes flere måter å se på normalitetsforutsetningen, både grafisk og formelle statistiske tester. Vi skal vise en formell test - Shapiro-Wilks som ofte brukes. Andre eksempler er Kolmogorov-Smirnov og Anderson-Darling. @razaliPowerComparisonsShapiroWilk2011 finner i en sammenlinende studie at Shapiro-WIlks fungerer bra.
 
-```{r}
+```{r fig.cap = "Shapiro-Wilks test"}
 shapirotest <- shapiro.test(ttestonesample$Score)
 shapirotest
 ```
@@ -116,7 +123,7 @@ La oss anta at vi har en gruppe på 15 studenter som vi har testet to ganger. Im
 xfun::embed_file('t-test_paired.csv')
 ```
 
-```{r }
+```{r fig.cap = "Deskriptiv statistikk for 'paired samples' t-test"}
 pairedsamples <- read.csv("t-test_paired.csv")
 descr(pairedsamples)
 ```
@@ -137,27 +144,33 @@ Gjennom en manuell utregning finner vi $t=0.02$
 
 Vi gjennomfører en t-test i R:
 
-```{r}
+```{r fig.cap = "T-test 'paired samples'"}
 t.test(pairedsamples$Pre, pairedsamples$Post, paired = TRUE, alternative = "two.sided")
 ```
 
 Her ser vi at p er over 0,05. Dvs vi kan ikke forkaste nullhypotesen. Vi kan derfor ikke si at det er en signifikant forskjell mellom de to gruppene. 
 
-```{r warning = FALSE}
+```{r warning = FALSE, fig.cap = "Pre-Post sammenlikning"}
 ggpaired(pairedsamples, cond1 = "Pre", cond2 = "Post",
     fill = "condition")
 ```
 
-```{r}
+```{r fig.cap = "Deskriptiv statistikk pre-post"}
 descr(pairedsamples)
 ```
 
 Av grafen og tabellen over ser vi at spredningen er mindre etter aktiviteten (se f.eks. på standardavviket i tabellen).
 
-```{r}
+```{r fig.cap = "Shapiro-Wilks test 'paired samples'"}
 forskjell <- pairedsamples$Post - pairedsamples$Pre
 shapiro.test(forskjell)
+```
+
+```{r fig.cap = "Anderson-Darling test 'paired samples'"}
 ad.test(forskjell)
+```
+
+```{r fig.cap = "Jarque-Bera test 'paired samples'"}
 jarque.bera.test(forskjell)
 ```
 
@@ -169,7 +182,7 @@ En vanlig situasjon er at vi har to grupper som skal sammenliknes. Hvis gruppene
 
 I eksempelet ønsker vi å sammenlikne to grupper studenter: en gruppe har ren nettundervisning, mens den andre gruppa har hybrid undervisning (nett og fysisk). Vi har eksamensresultater for begge gruppene. Kan vi ut fra eksamensresultatene si om gruppene er signifikant forskjellige fra hverandre?
 
-```{r}
+```{r fig.cap = "Ti første og ti siste observasjoner"}
 independent <- read.csv("t-test_independent.csv")
 HeadTail <- function(independent){rbind(head(independent),tail(independent))}
 HeadTail(independent)
@@ -207,17 +220,19 @@ $n_A = antall\ i\ variabelen\ A$
 
 $n_B = antall\ i\ variabelen\ B$
 
-```{r}
+```{r fig.cap = "T-test - Welch's t-test"}
 ttestind <- t.test(Score ~ Type, independent)
+ttestind
 ```
 
 Vi kan legge merke til at t-testen i R velger Welch t-test i stedet for Student t-test. Forskjellen ligger i at Welch t-test ikke forutsetter lik varians, mens Student t-test gjør dette. 
 
-```{r}
-t.test(Score ~ Type, independent, var.equal=TRUE)
+```{r fig.cap = "T-test - Students t-test"}
+ttestind2 <- t.test(Score ~ Type, independent, var.equal=TRUE)
+ttestind2
 ```
 
-I dette eksempelet har vi ingen forskjell mellom Welch og Student t-test. Noen programmer vil automatisk gi deg den ene eller den andre, alternativt begge to. Forskjellen Forskjellen på Student’s t og Welch’s t er altså at førstnevnte forutsetter at begge gruppene har likt standardavvik ("«"the assumption of equal variances").  I virkeligheten er dette ofte ikke tilfelle (det er liten grunn til å tro at gruppene har likt standardavvik hvis de ikke har lik gjennomsnittsverdi). I slike tilfeller er Welch’s t en mer robust test. 
+I dette eksempelet har vi ingen forskjell mellom Welch og Student t-test (`r ttestind$statistic`vs. `r ttestind2$statistic`). Noen programmer vil automatisk gi deg den ene eller den andre, alternativt begge to. Forskjellen på Student’s t og Welch’s t er altså at førstnevnte forutsetter at begge gruppene har likt standardavvik ("the assumption of equal variances").  I virkeligheten er dette ofte ikke tilfelle (det er liten grunn til å tro at gruppene har likt standardavvik hvis de ikke har lik gjennomsnittsverdi). I slike tilfeller er Welch’s t en mer robust test. 
 
 Ut fra testen kan vi si at det er en statistisk signifikant forskjell mellom de to gruppene. Hvis vi ser på resultatet fra testen ser vi hybridgruppa har høyere snitt enn nettgruppa. Dette forteller oss at hybridgruppa skårer signifikant høyere enn nettgruppa.
 ```{r}

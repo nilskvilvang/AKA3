@@ -35,9 +35,13 @@ tab:unnamed-chunk-3
 fig:unnamed-chunk-4
 fig:unnamed-chunk-5
 fig:unnamed-chunk-11
-tab:unnamed-chunk-15
-tab:unnamed-chunk-18
+tab:unnamed-chunk-16
 tab:unnamed-chunk-19
+tab:unnamed-chunk-20
+fig:unnamed-chunk-3
+fig:unnamed-chunk-22
+fig:unnamed-chunk-39
+fig:unnamed-chunk-49
 tab:unnamed-chunk-13
 tab:unnamed-chunk-78
 tab:unnamed-chunk-82
@@ -60,7 +64,6 @@ tab:unnamed-chunk-52
 tab:unnamed-chunk-73
 fig:unnamed-chunk-1
 fig:unnamed-chunk-2
-fig:unnamed-chunk-3
 hvorfor-dette-notatet
 grunnleggende-begreper-og-sammenhenger
 populasjon-og-utvalg
@@ -113,12 +116,12 @@ univariat-analyse
 deskriptiv-statistikk
 frekvenstabell
 diagrammer-plott
-kateogriske-data
 stolpediagram-bar-chart
 kakediagram-pie-chart
 histogram-1
 frekvenspolygon
 density
+boksplott
 kjikvadrattest---analyse-av-kategoriske-data
 test-of-association---sammenheng-mellom-to-kategorisek-variabler
 utregning-av-kjikvadratverdi

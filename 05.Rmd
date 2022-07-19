@@ -28,26 +28,26 @@ Vi skal vise tre tilfeller, det vil si tre måter å gjør kjikvadrattester:
 
 Vi bruker et generert datasett:
 
-```{r echo = FALSE}
-kji1 <- read_excel("Modul 5_Krysstabell_Fargeblind2.xlsx")
-```
-
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
 xfun::embed_file('Modul 5_Krysstabell_Fargeblind2.xlsx')
 ```
 
+```{r}
+kji1 <- read_excel("Modul 5_Krysstabell_Fargeblind2.xlsx")
+```
+
 Dette datasettet består av 1626 observasjoner av gutter og jenter der vi også har registrert fargeblindhet. Vi ønsker å se om det er en sammenheng mellom disse to variablene - altså om det er en statistisk signifikant sammenheng. 
 
-```{r}
+```{r fig.caption = "Dimensjoner ved datasettet for kjikvadrattest"}
 dim(kji1)
-table(kji1$Kjønn)
+table(kji1$Kjonn)
 table(kji1$Fargeblind)
 ```
 
 Vi kan sette opp en krysstabell ("contigency table"/"crosstab").
 
-```{r}
-krysstab <- addmargins(table(kji1$Kjønn, kji1$Fargeblind),c(1,2))
+```{r fig.caption = "Krysstabell for kjikvadrattest"}
+krysstab <- addmargins(table(kji1$Kjonn, kji1$Fargeblind),c(1,2))
 krysstab
 ```
 
@@ -59,8 +59,8 @@ $H_0 = Ingen\ sammenheng\ mellom\ kjønn\ og\ fargeblindhet$
 
 $H_a = Sammenheng\ mellom\ kjønn\ og\ fargeblindhet$
 
-```{r}
-kjitest1 <- chisq.test(kji1$Kjønn, kji1$Fargeblind)
+```{r fig.caption = "Kjikvadrattest med Yates korreksjon"}
+kjitest1 <- chisq.test(kji1$Kjonn, kji1$Fargeblind)
 kjitest1
 ```
 
@@ -68,8 +68,8 @@ R gir oss som default test med en såkalt "Yates continuity correction" som gjø
 
 I vårt konkrete tilfelle ser vi at med korreksjon er p-verdien `r kjitest1$p.value`. Hvis vi kjører testen uten korreksjonen får vi: 
 
-```{r}
-kjitest2 <- chisq.test(kji1$Kjønn, kji1$Fargeblind, correct = FALSE)
+```{r fig.caption = "Kjikvadrattest uten Yates korreksjon"}
+kjitest2 <- chisq.test(kji1$Kjonn, kji1$Fargeblind, correct = FALSE)
 kjitest2
 ```
 
@@ -85,16 +85,16 @@ $df = (rader - 1) * (kolonner - 1) = (2-1)*(2-1)=1$
 
 Mange programmer vil uansett lett gi deg den kritiske verdien:
 
-```{r}
+```{r fig.caption = "Kritisk verdi ved kjikvadrattest"}
 kritiskverdi <- qchisq(p=.05, df=1, lower.tail=FALSE)
 kritiskverdi
 ```
 
-Hvis kjikvadratverdien er større eller lik den kritiske verdien er resultatene våre statistisk signifikante. Den kritiske verdien i dette eksempelet er 3.84, mens kjikvadratverdien er hhv. 3.75 og 4.43. 
+Hvis kjikvadratverdien er større eller lik den kritiske verdien er resultatene våre statistisk signifikante. Den kritiske verdien i dette eksempelet er `r kritiskverdi`, mens kjikvadratverdien er hhv. `r kjitest1$p.value` og `r kjitest2$p.value`. 
 
 Vi kan altså bruke både p-verdien og kjikvadratverdien til å vurdere om vi skal forkaste nullhypotesen eller ikke. Hvis vi tar fram igjen krysstabellen vår:
 
-```{r}
+```{r fig.caption = "Krysstabell"}
 krysstab
 ```
 
@@ -102,8 +102,14 @@ Vi vet at dersom antall forventede i hver celle er minst 5, og gjerne over 10, e
 
 En mulighet er også å kjøre en såkalt "Fisher's exact test" dersom de forventede celletallene er under 5. Det er ikke tilfelle her, men vi viser likevel prosedyren. Først vil vi sjekke hva forventede celletall er:
 
-```{r}
-kjitest1$expected
+```{r fig.caption = "Forventede verdier ved kjikvadrattest"}
+forventet <- as_tibble(kjitest1$expected)
+forventet
+min(forventet)
+```
+
+```{r fig.caption = "Minimum forventede celleverdi ved kjikvadrattest"}
+min(forventet)
 ```
 
 Forventede verdier er regnet ut matematisk ved:
@@ -111,7 +117,7 @@ Forventede verdier er regnet ut matematisk ved:
 $\frac{radsum * kolonnesum}{totalsum}$
 
 Vi har krysstabellen:
-```{r}
+```{r fig.caption = "Krysstabell"}
 krysstab
 ```
 
@@ -119,9 +125,11 @@ I vårt tilfelle for gutt - fargeblind:
 
 $\frac{802*36}{1626}=17.75$
 
+som er samme verdi (heldigivs...) som den R regner ut for oss lenger opp.
+
 Dersom vi får forventede under 5 kan vi altså kjøre en kjikvadrattest med korreksjon, eller en Fishers eksakt test.
-```{r}
-test <- fisher.test(table(kji1$Kjønn, kji1$Fargeblind))
+```{r fig.caption = "Fishers eksakt test"}
+test <- fisher.test(table(kji1$Kjonn, kji1$Fargeblind))
 test
 ```
 
@@ -129,14 +137,14 @@ Tolkningen er den samme som for kjikvadrattesten.
 
 En siste vurdering vi kan gjøre er å se på den såkalte phi-koeffisienten.
 
-```{r}
-krysstab2 <- table(kji1$Kjønn, kji1$Fargeblind) 
-phi(krysstab2, digits = 3)
+```{r fig.caption = "Phi-koeffisient"}
+krysstab2 <- table(kji1$Kjonn, kji1$Fargeblind) 
+phikoeff <- phi(krysstab2, digits = 3)
 ```
 
 Phi-koeffisienten kan tolkes som en korrelasjonskoeffisient (Pearson r). 
 
-```{r echo = FALSE, message = FALSE, warning=FALSE}
+```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Tolkning av phi-koeffisient"}
 
 phikoeff <- data.frame(r = c(".70 eller høyere", "0.40 - 0.69", "0.30 - 0.39", "0.20 - 0.29", "0.01 - 0.19", "0"),
                      verdi = c("Veldig sterk sammenheng", "Sterk sammenheng", "Moderat sammenheng", "Svak sammenheng", "Ingen eller neglisjerbar sammenheng", "Ingen sammenheng"))
@@ -150,9 +158,9 @@ phikoeff <- phikoeff%>%
 column_spec(phikoeff, 2, width = "8cm")
 ```
 
-I dette eksempelet har vi altså ingen eller neglisjerbar sammenheng.
+I dette eksempelet har vi verdien `r phikoeff`, altså ingen eller neglisjerbar sammenheng.
 
-Oppsummert for vårt eksempel: Når vi undersøker forventede verdier i hver celle ser vi at det minste forventede tallet er 17.75. Det er godt over et minimum på 5 og en anbefalt grense på 10. Derfor kan vi gjennomføre en kjikvadrattest *uten* Yates korreksjon. I vårt tilfelle forkaster vi altså nullhypotesen. Selv om vi finner en statistisk sammengeng mellom kjønn og fargeblindhet er denne liten eller neglisjerbar. 
+Oppsummert for vårt eksempel: Når vi undersøker forventede verdier i hver celle ser vi at det minste forventede tallet er `r min(forventet)`. Det er godt over et minimum på 5 og en anbefalt grense på 10. Derfor kan vi gjennomføre en kjikvadrattest *uten* Yates korreksjon. I vårt tilfelle forkaster vi altså nullhypotesen. Selv om vi finner en statistisk sammengeng mellom kjønn og fargeblindhet er denne liten eller neglisjerbar. 
 
 ### Utregning av kjikvadratverdi
 
@@ -161,7 +169,7 @@ Når vi vet faktisk tall og forventet tall, og har krysstabell med rad- og kolon
 ![](kjikvadratverdi.png){width=75%}
 
 Siste steg er å summere $2.19 + 2.13 + 0.05 + 0.05 = 4.42$. 
-Differansen mellom 4.43 og 4.42 sjykdes avrundinger.
+Differansen mellom $4.43$ og $4.42$ skydes avrundinger.
 
 ## Goodness of fit - sammenheng mellom kategorisk variabel og kjent/forventet datafordeling
 
@@ -238,18 +246,18 @@ der O = Observert og E = Forventet ("Expected")
 $\chi^2=\frac{(85-80)^2}{80}+\frac{(10-15)^2}{15}+\frac{(3-4)^2}{4}+\frac{(2-1)^2}{1} = 0.31 + 1.67 + 0.25 + 1 = 3.23$
 
 Vi kan sammenlikne denne med kritisk verdi:
-```{r}
+```{r fig.cap = "Sammenlikning kjikvadratverdi og kritisk verdi"}
 kritiskverdi2 <- qchisq(p=.05, df=3, lower.tail=FALSE)
 kritiskverdi2
 ```
 
 Hvis kjikvadratverdien er større eller lik den kritiske verdien er resultatene våre statistisk signifikante. Den kritiske verdien i dette eksempelet er 7.81, mens kjikvadratverdien er 3.23. Vi vil derfor anta at resultatene ikke er statistisk signifikante. Dette viser seg også i p-verdien. Her vil vi vise en nettressurs for å regne ut p-verdien. Den finner du [her](https://www.statology.org/chi-square-p-value-calculator/). 
 
-![](kjip.png){width=75%}
+![](kjip.png){width=65%}
 
 Vi kan også kjøre testen i R:
 
-```{r}
+```{r fig.cap = "Kjivadrattest"}
 observed <- c(85, 10, 3, 2) 
 expected <- c(.8, .15, .04, .01)
 
@@ -270,7 +278,7 @@ xfun::embed_file('Modul 5_McNemar.xlsx')
 
 McNemars test brukes når vi ikke har uavhengige variabler, men derimot har tilfeller der vi har "paired data"/"repreated measures" av kategoriske data. Et eksempel på dette er en pasientgruppe som er testet ved to anledninger. I tabellen under har vi laget data som viser et tenkt forsøk med en ny type behandling for en gruppe mennesker. De er spurt om de har smerter før og etter de er gitt en behandling. 
 
-```{r}
+```{r fig.cap = "Krysstabell for McNemars test"}
 krysstab2 <- addmargins(table(mcnemar$Før, mcnemar$Etter),c(1,2))
 krysstab2
 ```
@@ -279,7 +287,7 @@ Det vi jo vil undersøke er om man kan si at behandlingen har en effekt.
 
 Vi kan tilnærme oss dette først litt teoretisk ved å sette opp samme tabell uten tall:
 
-![](mcnemar2.png){width=75%}
+![Teoretisk blikk på McNemars test](mcnemar2.png){width=75%}
 
 I denne testen er rutene med a og d ikke interessante, for de svarte det samme før og etter behandling. Hvis behandlingen ikke har noen effekt bør antallet respondenter som går fra ja til nei, og fra nei til ja, være likt. Derfor er vi interessert i cellene b og c, for dette er respondentene som beveget seg fra ja til nei eller motsatt. Hvis behandlingen har en effekt kan vi forvente at antallet som går fra ja til nei vil være større, og hvis behandlingen har en negativ effekt vil vi forvente motsatt (flere fra ja til nei enn andre veg).
 
@@ -294,7 +302,7 @@ der p er sannsynligheten for tallet i cellene med b og c. Nullhypotesen, altså 
 Når vi kjører testen vil vi altså forkaste $H_0$ dersom p-verdien er under terskelverdien ("if p is low, the null must go". Hvis vi forkaster nullhypotesen betyr det at vi mener hypotesen om at behandlingen har en effekt er styrket.  
 
 Vi kan regne ut testverdien manuelt ganske enkelt ut fra krysstabellen:
-```{r}
+```{r "Krysstabell for McNemars test"}
 krysstab2
 ```
 
@@ -302,15 +310,15 @@ $\chi^2=\frac{(b-c)^2}{b+c}=\frac{(75-785)^2}{75+785}=586.163$
 
 Testverdien kan sammenliknes med kritisk verdi.
 
-```{r}
+```{r fig.kap = "Kritisk verdi for kjikvadrattest"}
 qchisq(p=.05, df=1, lower.tail=FALSE)
 ```
 
-```{r}
-mcnemar3 <- matrix(c(215, 785, 75, 380), nrow = 2,
+```{r fig.cap = "McNemars test"}
+mcnemar3 <- matrix(c(215, 785, 75, 380), 
+                   nrow = 2,
                    dimnames = list("Før behandling" = c("Nei", "Ja"),
                                    "Etter behandling" = c("Nei", "Ja")))
-
 mcnemar.test(mcnemar3, correct=FALSE) 
 ```
 
