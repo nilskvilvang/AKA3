@@ -4,13 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kapittel 4 Univariat analyse | Untitled</title>
+<title>Kapittel 4 Univariat analyse | Anvendt kvantitativ analyse</title>
 <meta name="author" content="Nils Kvilvang">
 <meta name="generator" content="bookdown 0.27 with bs4_book()">
-<meta property="og:title" content="Kapittel 4 Univariat analyse | Untitled">
+<meta property="og:title" content="Kapittel 4 Univariat analyse | Anvendt kvantitativ analyse">
 <meta property="og:type" content="book">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kapittel 4 Univariat analyse | Untitled">
+<meta name="twitter:title" content="Kapittel 4 Univariat analyse | Anvendt kvantitativ analyse">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -60,7 +60,7 @@
 
     <div class="d-flex align-items-start justify-content-between">
       <h1>
-        <a href="index.html" title="">Untitled</a>
+        <a href="index.html" title="">Anvendt kvantitativ analyse</a>
       </h1>
       <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
     </div>
@@ -105,7 +105,7 @@
 <span class="header-section-number">Kapittel 4</span> Univariat analyse<a class="anchor" aria-label="anchor" href="#univariat-analyse"><i class="fas fa-link"></i></a>
 </h1>
 <p>R-pakker brukt i dette kapittelet:</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">summarytools</span>, <span class="va">tidyverse</span>, <span class="va">car</span>, <span class="va">carData</span><span class="op">)</span></span></code></pre></div>
 <p>Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler i sammenheng eller i forhold til hverandre). I hovedsak gjør vi dette på tre måter:</p>
 <ol style="list-style-type: decimal">
@@ -124,7 +124,7 @@
 </ol>
 <p>Typiske karakteristika vi kan være interessert i å se på er gjennomsnitt, median, maksimums- og minimumsverdier (“range”), kvartiler / interkvartil avstand (“IQR”), varians / standardavvik, manglende verdier (“missing values” / “NAs”), skjevhet og kurtosis.</p>
 <p>Vi fram igjen datasettet vi brukte i kapittel 2 der vi hadde genererte høydedata for 100 tilfeldige menn.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span></span>
 <span><span class="va">hoyde100</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">179</span>, <span class="fl">16</span><span class="op">)</span></span>
@@ -157,7 +157,7 @@
 <span class="header-section-number">4.2</span> Frekvenstabell<a class="anchor" aria-label="anchor" href="#frekvenstabell"><i class="fas fa-link"></i></a>
 </h2>
 <p>Det gir ikke særlig mening å lage en frekvenstabell for de genererte høydedataene siden alle verdiene er unike (altså får vi frekvens 1 på alle 100 observasjonene). La oss derfor lage et enkelt eksempel:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3.5</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">6.5</span>, <span class="fl">7</span>, <span class="fl">7.4</span>, <span class="fl">8</span>, <span class="fl">13</span>, <span class="fl">14.2</span><span class="op">)</span></span>
 <span><span class="fu">summarytools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/summarytools/man/freq.html">freq</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Frequencies  </span></span>
@@ -190,7 +190,7 @@
 <h3>
 <span class="header-section-number">4.3.1</span> Stolpediagram (“bar chart”)<a class="anchor" aria-label="anchor" href="#stolpediagram-bar-chart"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">liksomdata</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="op">(</span></span>
 <span>  Karakter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span> ,<span class="st">"C"</span> ,<span class="st">"D"</span> ,<span class="st">"E"</span>, <span class="st">"F"</span><span class="op">)</span>,  </span>
 <span>  Antall <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">8</span>, <span class="fl">18</span>, <span class="fl">16</span>, <span class="fl">13</span>, <span class="fl">4</span><span class="op">)</span></span>
@@ -202,10 +202,10 @@
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-4"></span>
 <img src="04_files/figure-html/unnamed-chunk-4-1.png" alt="Stolpediagram ensfarget" width="672"><p class="caption">
-Figure 4.1: Stolpediagram ensfarget
+Figure 2.1: Stolpediagram ensfarget
 </p>
 </div>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stolpe2</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">liksomdata</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">Karakter</span>, y<span class="op">=</span><span class="va">Antall</span>, fill<span class="op">=</span><span class="va">Karakter</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">geom_bar</span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span>
@@ -213,11 +213,11 @@ Figure 4.1: Stolpediagram ensfarget
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-5"></span>
 <img src="04_files/figure-html/unnamed-chunk-5-1.png" alt="Stolpediagram flerfarget" width="672"><p class="caption">
-Figure 4.2: Stolpediagram flerfarget
+Figure 4.1: Stolpediagram flerfarget
 </p>
 </div>
 <p>En alternativ måte å framstille i det samme som i et stolpediagram:</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">liksomdata</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">Karakter</span>, <span class="va">Antall</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_linerange</span><span class="op">(</span></span>
 <span>    <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Karakter</span>, ymin <span class="op">=</span> <span class="fl">0</span>, ymax <span class="op">=</span> <span class="va">Antall</span><span class="op">)</span>, </span>
@@ -229,7 +229,7 @@ Figure 4.2: Stolpediagram flerfarget
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-6"></span>
 <img src="04_files/figure-html/unnamed-chunk-6-1.png" alt="Alternativ til stolpediagram" width="672"><p class="caption">
-Figure 2.1: Alternativ til stolpediagram
+Figure 2.2: Alternativ til stolpediagram
 </p>
 </div>
 </div>
@@ -237,7 +237,7 @@ Figure 2.1: Alternativ til stolpediagram
 <h3>
 <span class="header-section-number">4.3.2</span> Kakediagram (“pie chart”)<a class="anchor" aria-label="anchor" href="#kakediagram-pie-chart"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">liksomdata</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="st">""</span>, y <span class="op">=</span> <span class="va">Antall</span>, fill <span class="op">=</span> <span class="va">Karakter</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_col</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_text</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>label <span class="op">=</span> <span class="va">Antall</span><span class="op">)</span>,</span>
@@ -248,7 +248,7 @@ Figure 2.1: Alternativ til stolpediagram
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-7"></span>
 <img src="04_files/figure-html/unnamed-chunk-7-1.png" alt="Kakediagram" width="672"><p class="caption">
-Figure 2.2: Kakediagram
+Figure 2.3: Kakediagram
 </p>
 </div>
 </div>
@@ -256,7 +256,7 @@ Figure 2.2: Kakediagram
 <h3>
 <span class="header-section-number">4.3.3</span> Histogram:<a class="anchor" aria-label="anchor" href="#histogram-1"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">35</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">179</span>, <span class="fl">16</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Mann"</span>, each <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
@@ -273,11 +273,11 @@ Figure 2.2: Kakediagram
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-8"></span>
 <img src="04_files/figure-html/unnamed-chunk-8-1.png" alt="Histogram med 10 søyler" width="672"><p class="caption">
-Figure 2.3: Histogram med 10 søyler
+Figure 2.4: Histogram med 10 søyler
 </p>
 </div>
 <p>Histogrammet viser søyler av kontinuerlige data gruppert etter en gitt bredde på søylene - antall søyler definerer vi selv ut fra hvor stor del av bredden av observasjoner vi “putter inn i” søyla. I histogrammet over har vi delt dataene inn i åtte deler (søylene har alltid lik bredde). Vi kan også dele inn annerledes.</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">h2</span> <span class="op">&lt;-</span> <span class="fu">ggplot</span><span class="op">(</span><span class="va">hoyde</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Hoyde</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu">geom_histogram</span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span>, fill <span class="op">=</span> <span class="st">"lightblue"</span>, bins <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -286,11 +286,11 @@ Figure 2.3: Histogram med 10 søyler
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-9"></span>
 <img src="04_files/figure-html/unnamed-chunk-9-1.png" alt="Histogram med 4søyler" width="672"><p class="caption">
-Figure 2.4: Histogram med 4søyler
+Figure 2.5: Histogram med 4søyler
 </p>
 </div>
 <p>Vi kan også være interessert i å vise histogram for en variabel - høyde - for to grupper (f.eks. kjønn).</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">172</span>, <span class="fl">17</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"Kvinne"</span>, each <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">hoyde2</span> <span class="op">&lt;-</span> <span class="fu">bind_cols</span><span class="op">(</span> <span class="va">y2</span>, <span class="va">x2</span><span class="op">)</span></span>
@@ -309,7 +309,7 @@ Figure 2.4: Histogram med 4søyler
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-10"></span>
 <img src="04_files/figure-html/unnamed-chunk-10-1.png" alt="Histogram for høyde for to grupper" width="672"><p class="caption">
-Figure 2.5: Histogram for høyde for to grupper
+Figure 2.6: Histogram for høyde for to grupper
 </p>
 </div>
 </div>
@@ -318,7 +318,7 @@ Figure 2.5: Histogram for høyde for to grupper
 <span class="header-section-number">4.3.4</span> Frekvenspolygon<a class="anchor" aria-label="anchor" href="#frekvenspolygon"><i class="fas fa-link"></i></a>
 </h3>
 <p>Dette er svært likt histogram, men bruker linjer i stedet for stolper.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">hoyde</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Hoyde</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">geom_area</span><span class="op">(</span> stat <span class="op">=</span> <span class="st">"bin"</span>, bins <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>               color <span class="op">=</span> <span class="st">"black"</span>, fill <span class="op">=</span> <span class="st">"lightblue"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -327,11 +327,11 @@ Figure 2.5: Histogram for høyde for to grupper
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-11"></span>
 <img src="04_files/figure-html/unnamed-chunk-11-1.png" alt="Frekvenspolygon" width="672"><p class="caption">
-Figure 4.3: Frekvenspolygon
+Figure 4.2: Frekvenspolygon
 </p>
 </div>
 <p>Og for to grupper:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">hoydefelles</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Hoyde</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">geom_freqpoly</span><span class="op">(</span> <span class="fu">aes</span><span class="op">(</span>color <span class="op">=</span> <span class="va">Kjonn</span>, linetype <span class="op">=</span> <span class="va">Kjonn</span><span class="op">)</span>,</span>
 <span>                   bins <span class="op">=</span> <span class="fl">30</span>, size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -341,7 +341,7 @@ Figure 4.3: Frekvenspolygon
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-12"></span>
 <img src="04_files/figure-html/unnamed-chunk-12-1.png" alt="Frekvenspolygon for to grupper" width="672"><p class="caption">
-Figure 2.6: Frekvenspolygon for to grupper
+Figure 2.7: Frekvenspolygon for to grupper
 </p>
 </div>
 </div>
@@ -349,7 +349,7 @@ Figure 2.6: Frekvenspolygon for to grupper
 <h3>
 <span class="header-section-number">4.3.5</span> “Density”:<a class="anchor" aria-label="anchor" href="#density"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">hoyde</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Hoyde</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">geom_density</span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"lightblue"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -359,11 +359,11 @@ Figure 2.6: Frekvenspolygon for to grupper
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-13"></span>
 <img src="04_files/figure-html/unnamed-chunk-13-1.png" alt="Density kurve med gjennomsnittsverdi" width="672"><p class="caption">
-Figure 2.7: Density kurve med gjennomsnittsverdi
+Figure 2.8: Density kurve med gjennomsnittsverdi
 </p>
 </div>
 <p>Et densityplott viser distribusjonen til en numerisk variabel. Det er på en måte en “smooth” versjon av histogrammet. Densityplott kan være et alternativ når man skal se på dataene og hvilken distribusjon den har. Det kan være enklere å se om distribusjonen f.eks. er bimodal eller unimodal (en eller to topper). Det kan også være en god visualisering av en variabel med to grupper.</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">snitt</span> <span class="op">&lt;-</span> <span class="va">hoydefelles</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">Kjonn</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">summarise</span><span class="op">(</span>grp.mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Hoyde</span><span class="op">)</span><span class="op">)</span></span>
@@ -377,11 +377,11 @@ Figure 2.7: Density kurve med gjennomsnittsverdi
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-14"></span>
 <img src="04_files/figure-html/unnamed-chunk-14-1.png" alt="Densitykurver med gjennomsnittsverdi for to grupper" width="672"><p class="caption">
-Figure 2.8: Densitykurver med gjennomsnittsverdi for to grupper
+Figure 2.9: Densitykurver med gjennomsnittsverdi for to grupper
 </p>
 </div>
 <p>Vi kan også utvide til flere grupper - her gjennom et eksempel fra et datasett som ligger i pakken “car”:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">Salaries</span>, package <span class="op">=</span> <span class="st">"carData"</span><span class="op">)</span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">Salaries</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">salary</span>, fill <span class="op">=</span> <span class="va">rank</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_density</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">.3</span><span class="op">)</span> <span class="op">+</span></span>
@@ -389,7 +389,7 @@ Figure 2.8: Densitykurver med gjennomsnittsverdi for to grupper
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-15"></span>
 <img src="04_files/figure-html/unnamed-chunk-15-1.png" alt="Densitykurver for tre grupper for en variabel" width="672"><p class="caption">
-Figure 2.9: Densitykurver for tre grupper for en variabel
+Figure 2.10: Densitykurver for tre grupper for en variabel
 </p>
 </div>
 </div>
@@ -397,14 +397,14 @@ Figure 2.9: Densitykurver for tre grupper for en variabel
 <h3>
 <span class="header-section-number">4.3.6</span> Boksplott<a class="anchor" aria-label="anchor" href="#boksplott"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">hoydefelles</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">Kjonn</span>, y <span class="op">=</span> <span class="va">Hoyde</span>, fill <span class="op">=</span> <span class="va">Kjonn</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-16"></span>
 <img src="04_files/figure-html/unnamed-chunk-16-1.png" alt="Boxplott" width="672"><p class="caption">
-Figure 2.10: Boxplott
+Figure 2.11: Boxplott
 </p>
 </div>
 <p>Boxplott ble ganske grundig gjennomgått i kapittel <a href="grunnleggende-begreper-og-sammenhenger.html#boxplott">2.7.1.4</a>.</p>
@@ -449,7 +449,7 @@ Figure 2.10: Boxplott
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Untitled</strong>" was written by Nils Kvilvang. It was last built on 2022-07-13.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 23 juli, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

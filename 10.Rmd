@@ -6,10 +6,15 @@ always_allow_html: true
 
 # IV regresjon
 
+```{r echo = FALSE}
+options(scipen=999)
+```
+
+
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(haven, tidyverse, readxl, AER, lmtest, jtools, summarytools)
+pacman::p_load(haven, tidyverse, readxl, AER, lmtest, jtools, summarytools, ggpubr)
 ```
 
 ## Innledning
@@ -26,52 +31,73 @@ Det hviler to forutsetninger for dette: Z må være korrelert med X (det såkalt
 
 La oss tenke oss at vi ønsker å undersøke sammenhengen mellom lengde på utdanning og inntekt. Er det slik at et år ekstra utdanning gir deg x mer i inntekt, eller x+...? mer i inntekt? Dette eksempelet er basert på @mastenCausalInferenceBootcamp2015.
 
-La oss videre tenke oss at vi har data:
+La oss videre tenke oss at vi har disse dataene:
 
-```{r echo = FALSE, warning = FALSE}
-
-options(scipen=999)
-
-IVregrdata1 <- read_sav("IVregrdata1.sav")
-
-summarytools::descr(IVregrdata1, stats = "common")
-
-IVregrdata1$Inntekt <- round(IVregrdata1$Inntekt, digits = 0)
-
-test <- ggplot(IVregrdata1, aes(Utdanning, Inntekt)) +
-    geom_point()
-
-test + labs(y = "Inntekt", x = "Lengde utdanning") + theme(plot.title=element_text(hjust=0.5))
-
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('IVregrdata1.sav')
 ```
 
-Vi ser at det er en klar trend i disse dataene at folk med lengre utdanning har høyere inntekt enn folk med kortere utdanning. Betyr det at lengde på utdanning har en kausal effekt på inntekt? Svaret er nei. Fordi lengde på utdanning er ikke tilfeldig ("randomly assigned") - folk velger hvor lang utdannelse de vil ta. Likevel ser vi jo en klar trend/sammenheng i dataene. Så hvorfor gjør vi det?
+```{r}
+IVregrdata1 <- read_sav("IVregrdata1.sav")
+descr(IVregrdata1, stats = "common")
+```
+
+```{r fig.cap = "Lengde utdanning og inntekt"}
+IVregrdata1$Inntekt <- round(IVregrdata1$Inntekt, digits = 0)
+IVplott1 <- ggplot(IVregrdata1, aes(Utdanning, Inntekt)) +
+    geom_point() +
+    labs(y = "Inntekt", x = "Lengde utdanning") +
+    theme_bw()
+IVplott1
+```
+
+Vi ser at det er en klar trend i disse dataene at folk med lengre utdanning har høyere inntekt enn folk med kortere utdanning. Betyr det at lengde på utdanning har en kausal effekt på inntekt? Svaret er nei. Fordi lengde på utdanning er ikke tilfeldig ("randomly assigned") - folk velger (i hvert fall til en viss grad som vil variere fra land/kontekst til land/kontekst) hvor lang utdannelse de vil ta. Likevel ser vi jo en klar trend/sammenheng i dataene. Så hvorfor gjør vi det?
 
 En forklaring kan være at denne sammenhengen skyldes en uobservert variabel som "forstyrrer" bildet. La oss videre i eksempelet si at dette er IQ, og at vi har data på dette.
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('IVregrdata2.xlsx')
+```
+
+```{r}
 IVregrdata2 <- read_excel("IVregrdata2.xlsx")
-
-summarytools::descr(IVregrdata2, stats = "common")
-
-test2 <- ggplot(IVregrdata2, aes(IQ, Utdanning)) +
-    geom_point()
-
-test2 + labs(y = "Utdanning", x = "IQ") + theme(plot.title=element_text(hjust=0.5))
+descr(IVregrdata2, stats = "common")
 ```
 
-Lengde på utdanning ser ut til å henge sammen med IQ.
+```{r fig.cap = "IQ og lengde på utdanning"}
+IVplott2 <- ggplot(IVregrdata2, aes(IQ, Utdanning)) +
+    geom_point() +
+    labs(y = "Utdanning", x = "IQ") +
+    theme_bw()
+IVplott2
+```
 
-```{r echo = FALSE}
+Lengde på utdanning ser ut til å henge sammen med IQ. Men også inntekt ser ut til å henge sammen med IQ, uavhengig av hvor mye utdannelse de har:
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('IVregrdata3.xlsx')
+```
+
+```{r}
 IVregrdata3 <- read_excel("IVregrdata3.xlsx")
-
-test3 <- ggplot(IVregrdata3, aes(IQ, Inntekt)) +
-    geom_point()
-
-test3 + labs(y = "Inntekt", x = "IQ") + theme(plot.title=element_text(hjust=0.5))
+descr(IVregrdata3, stats = "common")
 ```
 
-Men også inntekt ser ut til å henge sammen med IQ, uavhengig av hvor mye utdannelse de har. I virkeligheten vil vi kanskje ikke se dette - vi har data på lengde på utdannelse og inntekt (vi har generert dataene her nettopp for å illustrere). Men i virkeligheten kan korrelasjonen vi kanskje faktisk ser og som vi viste i første diagrammet - korrelasjonen mellom lengde på utdanning og inntekt - altså være drevet av en underliggende, uobservert variabel og IKKE av en kausal sammenheng mellom lengde på utdanning og inntekt. 
+```{r fig.cap = "IQ og inntekt"}
+IVplott3 <- ggplot(IVregrdata3, aes(IQ, Inntekt)) +
+    geom_point() +
+    labs(y = "Inntekt", x = "IQ") +
+    theme_bw()
+IVplott3
+```
+
+Samlet har vi sammenhengene:
+
+```{r fig.cap = "Sammenstilling av tre sammenhenger"}
+ggarrange(IVplott1, IVplott3, IVplott2, ncol = 1, nrow = 3)
+```
+
+I virkeligheten vil vi kanskje ikke se dette - vi har data på lengde på utdannelse og inntekt (vi har generert dataene her nettopp for å illustrere). Men i virkeligheten kan korrelasjonen vi faktisk ser og som vi viste i første diagrammet - korrelasjonen mellom lengde på utdanning og inntekt - altså være drevet av en underliggende, uobservert variabel og IKKE av en kausal sammenheng mellom lengde på utdanning og inntekt. 
 
 For å mitigere dette problemet kommer instrumentet inn i bildet. I eksempelet fra @mastenCausalInferenceBootcamp2015 vises det til at avstand fra hjemadressen til nærmeste studiested (heretter: avstand) kan være et slikt instrument. Vi bygger videre på samme måte. 
 
@@ -79,39 +105,62 @@ Et instrument må altså kunne påvirke Y gjennom X (og ikke direkte), og være 
 
 Vi må derfor kunne se på X, Y og Z slik:
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('IVregrdata4.xlsx')
+```
+
+```{r}
 IVregrdata4 <- read_excel("IVregrdata4.xlsx")
-
-test4 <- ggplot(IVregrdata4, aes(Utdanning, Avstand)) +
-    geom_point()
-
-test4 + labs(y = "Utdanning", x = "Avstand") + theme(plot.title=element_text(hjust=0.5))
 ```
 
-Lav avstand har sammenheng med lengre utdannelse. Forhold som trekkes fram for denne sammenhengen kan være større kjennskap til universitetet, lavere kostnad for bolig og reise, større påvirkning av eldre studenter i nærmiljøet gjennom oppveksten (og sikkert flere) - som i sum antyder at det kan være en kausal sammenheng mellom avstand og om folk studerer og hvor lenge. Altså en korrelasjon mellom Z og X (som vi sa var en forutsetning). 
+```{r fig.cap = "Avstand og utdanning"}
+IVplott4 <- ggplot(IVregrdata4, aes(Utdanning, Avstand)) +
+    geom_point() +
+    labs(y = "Utdanning", x = "Avstand") +
+    theme_bw()
+IVplott4
+```
 
-```{r echo = FALSE}
+Lav avstand har sammenheng med lengre utdannelse. Forhold som trekkes fram for denne sammenhengen kan være større kjennskap til universitetet, lavere kostnad for bolig og reise, større påvirkning av eldre studenter i nærmiljøet gjennom oppveksten, foreldre med universtitetsutdannelse bor nærmere universiteter og påvirker sine barn (og sikkert flere) - som i sum antyder at det kan være en kausal sammenheng mellom avstand og om folk studerer og hvor lenge. Altså en korrelasjon mellom Z og X (som vi sa var en forutsetning). 
+
+Sammenhengen mellom IQ og avstand er imidlertid tilfeldig.
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('IVregrdata5.xlsx')
+```
+
+```{r}
 IVregrdata5 <- read_excel("IVregrdata5.xlsx")
-
-test5 <- ggplot(IVregrdata5, aes(IQ, Avstand)) +
-    geom_point()
-
-test5 + labs(y = "Avstand", x = "IQ") + theme(plot.title=element_text(hjust=0.5))
 ```
 
-Sammenhengen mellom IQ og avstand er imidlertid tilfeldig. Vi antar det ikke er noen grunn til at IQ har sammenheng med avstand. Folk er født "her og der" med ulik IQ. Vi ser bort fra at det kanskje faktisk kan være en sammenheng... ved at universitets ansatte bor i nærheten av iuniversitete, og om IQ er arvelig kan man kanskje tenke seg at det bor flere unge med høyere IQ i nærheten av nuviersitetet enn lenger unna - vi går ikke inn i denne "problemstillingen" her, men legger til grunn at dataene våre viser at det ikke er slik. Om det faktisk er sånn at det er en sammenheng vil det gjøre det vanskelig å bruke avstand som et instrument. 
+```{r fig.cap = "IQ og avstand"}
+IVplott5 <- ggplot(IVregrdata5, aes(IQ, Avstand)) +
+    geom_point() +
+    labs(y = "Avstand", x = "IQ") +
+    theme_bw()
+IVplott5
+```
 
-Den siste forutsetningen er at avstand ikke kan ha en *direkte kausal effekt* på inntekt. Dette virker rimelig, da det er vanskelig å se at arbeidsgivere har noe forhold til hvor langt unna et unviersitet folk har vokst opp, og at avstand dermed skulle kunne ha en kausal effekt på inntekt. 
+Vi antar det ikke er noen grunn til at IQ har sammenheng med avstand. Folk er født "her og der" med ulik IQ. Vi ser bort fra at det kanskje faktisk kan være en sammenheng... ved at universitets ansatte bor i nærheten av universitetet, og om IQ er arvelig kan man kanskje tenke seg at det bor flere unge med høyere IQ i nærheten av nuviersitetet enn lenger unna - vi går ikke inn i denne "problemstillingen" her ([se f.eks. Wikipedia](https://en.wikipedia.org/wiki/Heritability_of_IQ)), men legger til grunn at dataene våre viser at det ikke er slik. Om det faktisk er sånn at det er en sammenheng vil det gjøre det vanskelig å bruke avstand som et instrument. 
+
+Den siste forutsetningen er at avstand ikke kan ha en *direkte kausal effekt* på inntekt. Dette virker rimelig, da det er vanskelig å se at arbeidsgivere har noe forhold til hvor langt unna et universitet folk har vokst opp, og at avstand dermed skulle kunne ha en kausal effekt på inntekt. 
 
 Vi kan si at instrumentet "avstand" tilfredsstiller forutsetningene, og vi kan se på korrelasjonen mellom avstand og inntekt. 
 
-```{r echo = FALSE}
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('IVregrdata6.xlsx')
+```
+
+```{r}
 IVregrdata6 <- read_excel("IVregrdata6.xlsx")
+```
 
-test6 <- ggplot(IVregrdata6, aes(Avstand, Inntekt)) +
-    geom_point()
-
-test6 + labs(y = "Inntekt", x = "Avstand") + theme(plot.title=element_text(hjust=0.5))
+```{r fig.cap = "Avstand og inntekt"}
+IVplott6 <- ggplot(IVregrdata6, aes(Avstand, Inntekt)) +
+    geom_point() +
+    labs(y = "Inntekt", x = "Avstand") +
+    theme_bw()
+IVplott6
 ```
 
 Vi ser at avstand og inntekt korrelerer. Vi kan dermed si at korrelasjonen mellom avstand og inntekt representerer en kausal effekt av lengde på utdanning og inntekt. Vi ser en kausal effekt mellom X og Y gjennom korrelasjonen mellom Z og Y. 
@@ -121,28 +170,41 @@ Vi ser at avstand og inntekt korrelerer. Vi kan dermed si at korrelasjonen mello
 I datasettet har vi en rekke variabler:
 ```{r}
 data("CigarettesSW")
-summarytools::descr(CigarettesSW, stats = "common")
+descr(CigarettesSW, stats = "common")
 ```
 
-Vi skal her se på sammenhengen mellom "packs" (= y -> antall sigarettpakker per capita)som avhengig variabel, "price" (= x -> gjennomsnittlig pris pr år inkl skatter og avgifter) som uavhengig variabel, og "taxs" (= z -> gjennomsnittlig skatt pr år) som instrumentvariabel.
+Vi skal her se på sammenhengen mellom "packs" (= y -> antall sigarettpakker per capita) som avhengig variabel, "price" (= x -> gjennomsnittlig pris pr år inkl skatter og avgifter) som uavhengig variabel, og "tax" (= z -> gjennomsnittlig skatt pr år) som instrumentvariabel.
 
 Forutsetningene er altså:
 
 1. z og x må være korrelerte: at pris og skatte-/avgiftsnivå korrelerer virker rimelig
-2. z må ikke påvirke y direkte: at skatte-/avgiftsnivået ikke i seg selv påvirker antall sigarettpakker som selges direkte virker rimelig, men at skatte-/avgiftsnivået påvirker antall sigarettpakker som selges gjennom prisnivåt virker også rimelig (dette er en forutsetning som alltid kan diskuteres, men for eksempelets skyld antar vi dette).
+2. z må ikke påvirke y direkte: at skatte-/avgiftsnivået ikke i seg selv påvirker antall sigarettpakker som selges direkte virker rimelig, men at skatte-/avgiftsnivået påvirker antall sigarettpakker som selges gjennom prisnivået virker også rimelig (dette er en forutsetning som alltid kan diskuteres, men for eksempelets skyld antar vi dette).
 
 ```{r}
-cor(CigarettesSW$price, CigarettesSW$taxs)
+korr_pris_skatt <- cor(CigarettesSW$price, CigarettesSW$taxs)
+korr_pris_skatt
 ```
+
+Korrelasjonen mellom prisnivået og skattenivået er `r format(round(korr_pris_skatt, 3), nsmall = 3)`.
 
 ### Modell 1
 
 ```{r}
-model1 <- ivreg(log(packs) ~ log(price) | taxs, data = CigarettesSW)
+model1 <- ivreg(log(packs) ~ log(price) | tax, data = CigarettesSW)
 summary(model1)
 ```
 
-Vi ser på koeffisientene at log(price) er signifikant, og at pris påvirker salget (antall sigarettpakker) negativt (negativ koeffisient). 
+```{r echo = FALSE}
+regverdier <- summary(model1)
+p_verdi <- regverdier$coefficients[ 2, 4]
+koeffisient <- regverdier$coefficients[ 2,1]
+p_verdi <- scales::pvalue(p_verdi,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+Vi ser på koeffisientene at log(price) er signifikant (`r p_verdi`), og at pris påvirker salget (antall sigarettpakker) negativt (negativ koeffisient - `r round(koeffisient, 3)`). 
 
 ### Modell 2
 
@@ -153,11 +215,25 @@ model2 <- ivreg(log(packs) ~ log(price) + log(income) | log(income) + taxs, data
 summary(model2)
 ```
 
-Vi kan legge merke til at log(income) ikke er signifikant. 
+```{r echo = FALSE}
+regverdier2 <- summary(model2)
+p_verdi2 <- regverdier2$coefficients[ 3, 4]
+koeffisient <- regverdier2$coefficients[ 2,1]
+p_verdi2 <- scales::pvalue(p_verdi2,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+Vi kan legge merke til at log(income) ikke er signifikant (`r p_verdi2`. 
 
 ## Eksempel 2 
 
 Data for dette eksempelet er hentet fra @beckerECLR2021 ("Mroz.csv"). 
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('Mroz.csv')
+```
+
 ```{r}
 Mrozdata <- read.csv(file = 'Mroz.csv', na.strings = ".")
 Mrozdata <- subset(Mrozdata, is.na(wage) == FALSE) 
@@ -166,23 +242,43 @@ head(Mrozdata)
 
 ### Modell 1: Standard OLS
 
-Vi ønsker å kjøre en regresjon med kvinners lønn (lwage) som avhengig variabel og utdanning (educ) som uavhengig variabel. Eksempelet tar utgangspunkt i @wooldridgeIntroductoryEconometricsModern2016 (se kap. 15).
+Vi ønsker å kjøre en regresjon med kvinners lønn ("lwage") som avhengig variabel og utdanning (educ) som uavhengig variabel. Eksempelet tar utgangspunkt i @wooldridgeIntroductoryEconometricsModern2016 (se kap. 15).
 
 ```{r}
 IVregmod1 <- lm(lwage ~ educ, data = Mrozdata)
 summary(IVregmod1)
 ```
 
-Vi ser at vi får et statistisk signifikant resultat og at et års lengre utdanning øker lønn med nesten 11 % (Esitmate = 0.1086). Vi kan imidlertid forvente at utdanning korrelerer med mange individuelle karakteristika hos et individ som er viktige for den personens lønn, men som ikke fanges opp av utdanningsvariabelen og derfor ikke fanges opp i denne modellen. I dette tilfellet, og for å følge eksempelet i @wooldridgeIntroductoryEconometricsModern2016 velger vi fars utdanning (fatheduc) som instrument (vi diskuterer ikke instrumentet og forutsetningene her).
+```{r echo = FALSE}
+regverdier3 <- summary(IVregmod1)
+p_verdi3 <- regverdier3$coefficients[ 2, 4]
+koeffisient3 <- regverdier3$coefficients[ 2,1]
+p_verdi3 <- scales::pvalue(p_verdi3,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+Vi ser at vi får et statistisk signifikant resultat (`r p_verdi3`) og at et års lengre utdanning øker lønn med nesten `r round(koeffisient3, 2)*100`% (Estimate =  `r round(koeffisient3, 4)`. Vi kan imidlertid forvente at utdanning korrelerer med mange individuelle karakteristika hos et individ som er viktige for den personens lønn, men som ikke fanges opp av utdanningsvariabelen og derfor ikke fanges opp i denne modellen. I dette tilfellet, og for å følge eksempelet i @wooldridgeIntroductoryEconometricsModern2016, velger vi fars utdanning (fatheduc) som instrument (vi diskuterer ikke instrumentet i seg selv og forutsetningene her).
 
 ### Modell 2: IV regresjon
 
 ```{r}
 IVregmod2 <- ivreg(lwage ~ educ | fatheduc, data = Mrozdata)
-print(summary(IVregmod2))
+summary(IVregmod2)
 ```
 
-Vi kan se at "verdien" av et års ekstra utdanning nå kun er 5.9% økning, og signifikant p < 0.1.
+```{r echo = FALSE}
+regverdier4 <- summary(IVregmod2)
+p_verdi4 <- regverdier4$coefficients[ 2, 4]
+koeffisient4 <- regverdier4$coefficients[ 2,1]
+p_verdi4 <- scales::pvalue(p_verdi4,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+Vi kan se at "verdien" av et års ekstra utdanning nå kun er `r round(koeffisient4, 3)*100`% økning, men ikke signifikant (`r p_verdi4`) - dvs. hvis man setter signifikansnivået til 0.1 er også dette resultatet signifikant, men vi går ikke inn i diskusjon om signifikansnivå her utover at et svært vanlig nivå er 0.05. 
 
 ### Modell 3: OLS med flere prediktorer
 
@@ -191,19 +287,41 @@ IVregmod3 <- lm(lwage ~ educ + age + exper + expersq, data = Mrozdata)
 summary(IVregmod3)
 ```
 
-Estiemrt koeffisient for educ er nå 0.1075 med standardfeil 0.0141
+```{r echo = FALSE}
+regverdier5 <- summary(IVregmod3)
+p_verdi5 <- regverdier5$coefficients[ 2, 4]
+koeffisient5 <- regverdier5$coefficients[ 2,1]
+koeffisient5_se <- regverdier5$coefficients[ 2,2]
+p_verdi5 <- scales::pvalue(p_verdi5,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+Estimert koeffisient for educ er nå `r round(koeffisient5, 4)`, `r p_verdi5`.
 
 ### Modell 4: IV regresjon med flere (to) instrumenter
 
 Vi legger til både fars og mors utdannelse som instrumenter:
 ```{r}
 IVregmod4 <- ivreg(lwage ~ educ  +exper + expersq | fatheduc + motheduc + exper + expersq, data = Mrozdata)
-print(summary(IVregmod4))
+summary(IVregmod4)
+```
+
+```{r echo = FALSE}
+regverdier6 <- summary(IVregmod4)
+p_verdi6 <- regverdier6$coefficients[ 2, 4]
+koeffisient6 <- regverdier6$coefficients[ 2,1]
+koeffisient6_se <- regverdier6$coefficients[ 2,2]
+p_verdi6 <- scales::pvalue(p_verdi6,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
 ```
 
 fatheduc og motheduc er instrumentene, exper og expersq er eksogene uavhengige variabler.
 
-Også her ser vi en vesentlig reduksjon i estimatet for educ fra OLS til IV regresjon; fra 0.1075 med standardfeil 0.0141 til 0.0613 med standardfeil 0.0314. IV estiamtene vil ha større standardfeil enn OLS estimater. 
+Også her ser vi en vesentlig reduksjon i estimatet for educ fra OLS til IV regresjon; fra `r round(koeffisient5, 4)` med standardfeil `r round(koeffisient5_se, 4)` til `r round(koeffisient6, 4)` med standardfeil `r round(koeffisient6_se, 4)`. IV estimatene vil ha større standardfeil enn OLS estimater. 
 
 ### Test av relevansen av instrumentene
 
@@ -214,10 +332,22 @@ steg1 <- lm(educ ~ age + exper + expersq + fatheduc + motheduc, data = Mrozdata)
 instrumentF <- waldtest(steg1, .~. -fatheduc -motheduc)
 instrumentF
 ```
-F-verdien er 54.943 med p < .001. Vi kan finne kritisk F-verdi:
+
+```{r echo = FALSE}
+regverdier7 <- summary(steg1)
+p_verdi7 <- instrumentF[2,4]
+p_verdi7 <- scales::pvalue(p_verdi7,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+F-verdien er `r instrumentF[2,3]` med `r p_verdi7`. Vi kan finne kritisk F-verdi:
+
 ```{r}
 qf(0.05, df1 = 422, df2 = 424)
 ```
+
 Vi kan klart forkaste nullhypotesen om at instrumentene er irrelevante. 
 
 

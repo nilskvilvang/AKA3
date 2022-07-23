@@ -6,38 +6,70 @@ always_allow_html: true
 
 # Polynomisk regresjon
 
+```{r echo = FALSE}
+options(scipen = 999)
+```
+
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(tidyverse, readxl)
+pacman::p_load(tidyverse, readxl, ggpubr, sjPlot)
 ```
 
 Anta at vi har lønnsdata fra en bedrift som har regnet ut snittlønn for de 10 stillingskategoriene de har av ansatte. 
-
-```{r}
-polydata <- read_excel("polydata.xlsx")
-```
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
 xfun::embed_file("polydata.xlsx")
 ```
 
 ```{r}
+polydata <- read_excel("polydata.xlsx")
+```
+
+```{r}
 glimpse(polydata)
 ```
 
-Vi kan se på disse dataene og se en klar ikke-lineær trend:
-```{r}
+Vi kan se på disse dataene og se en klar ikke-lineær trend. Vi har i koden under vist en modifisert funksjon fra @johnstonQuickEasyFunction2012 som trekker ut parametre fra regresjonslikningen og legger det inn på toppen av plottet. Vi inkluderer også kode til "vanlig plott" kommentert ut med # slik at man kan bruke dette hvis man foretrekker det.
+
+```{r fig.cap = "Ikke-linear forhold mellom stillingskategori og snittlonn", warning = FALSE, message = FALSE}
 enkelOLS <- lm(Snittlonn ~ Stillingskategori, data = polydata)
-ggplot() +
-    geom_point(aes(x = polydata$Stillingskategori, y = polydata$Snittlonn), col = "red") +
-    theme_bw() +
-    xlab("Stillingskategori") +
-    ylab("Gjennomsnittslonn") +
-    labs(caption = "Ikke-linear forhold mellom stillingskategori og snittlonn")
+# Kode modifisert fra Susan Johnstone (2012)
+ggplotRegression <- function (fit) {
+require(ggplot2)
+ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) + 
+    geom_point() +
+    stat_smooth(method = "lm", col = "red") +
+    labs(title = paste("R2 = ",signif(summary(fit)$r.squared, 3),
+                     ", Intercept =",signif(fit$coef[[1]], 5),
+                     ", Slope =",signif(fit$coef[[2]], 5),
+                     ", P =",signif(summary(fit)$coef[2,4], 3))) +
+    theme_bw()
+}
+ggplotRegression(lm(Snittlonn ~ Stillingskategori, data = polydata))
+
+# "Vanlig kode for plott:
+# ggplot(polydata, aes(x = Stillingskategori, y = Snittlonn), col = "red") +
+#     geom_point() +
+#     stat_smooth(method = "lm", col = "red") +
+#     xlab("Stillingskategori") +
+#     ylab("Gjennomsnittslonn") +
+#     theme_bw()
 ```
 
-Vi kunne kanskje ane dette ut fra dataene (og fordi det selvsagt er et eksempel der vanlig lineær regresjon ikke skal funke så bra...). Det synes i hvert fall klart at den lineære regresjonslinja sannsynligvis er en dårlig modell for lønnsdataene. 
+Siden vi er inne på modifisering av plott med data fra regresjonslikningen kan vi også vise et alternativ til funksjonen fra @johnstonQuickEasyFunction2012. Observante lesere vil se at koden nedenfor avrunder tall som legge i plottet, mens funksjonen i plottet over ikke gjøre det. 
+
+```{r fig.cap = "Alternativt plott med parametere", warning = FALSE, message = FALSE}
+ggplot(polydata, aes(x = Stillingskategori, y = Snittlonn), col = "red") + 
+    geom_point() + 
+    stat_smooth(method = "lm", col = "red") +
+    stat_regline_equation() +
+    stat_cor(label.y = 900000, 
+             aes(label = paste(..rr.label.., ..p.label.., sep = "*`,`~"))) +
+    theme_bw()
+```
+
+Vi kunne kanskje ane dette ut fra dataene (og fordi det selvsagt er et eksempel der vanlig lineær regresjon ikke skal funke så bra...). Det synes i hvert fall klart at den lineære regresjonslinja sannsynligvis ikke er en veldig god modell for lønnsdataene. 
 
 Fra kapittelet om enkel, lineær regresjon vet vi at vi kan uttrykke regresjonslinja slik:
 
@@ -53,39 +85,39 @@ $y=\alpha + \beta_1x_1 + \beta_2x_1^2+\ ...\ +\beta_nx_1^n$
 
 Selv om dette sikkert er kjent er det greit å illustrere ulike n'te-ledd grafisk:
 
-```{r, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE, fig.cap ="n'te leddsfunksjoner #1"}
 funksjonsgrafer <- ggplot(data.frame(x = c(-5, 5)), aes(x = x)) + 
-            stat_function(fun = function(x){x^4}, color="red", lwd = 1) +        
-            stat_function(fun = function(x){x^3}, color="blue", lwd = 1) + 
-            stat_function(fun = function(x){4*x^2}, color="orange", lwd = 1) +
-            stat_function(fun = function(x){10*x}, color="purple", lwd = 1) +
-            annotate(geom="text", label = "Quartic", x = -4, y = 200, size = 5) + 
-            annotate(geom="text", label = "Quadratic", x = -4.6, y = 107, size =5) +
-            annotate(geom="text", label = "Cubic", x = -3.8, y = -90, size =5) + 
-            annotate(geom="text", label = "Linear", x = -4.6, y = -32, size =5) +
-            geom_hline(yintercept=0) +
-            geom_vline(xintercept=0) +
-            ylim(-100, 200)
+    stat_function(fun = function(x){x^4}, color="red", lwd = 1) +        
+    stat_function(fun = function(x){x^3}, color="blue", lwd = 1) + 
+    stat_function(fun = function(x){4*x^2}, color="orange", lwd = 1) +
+    stat_function(fun = function(x){10*x}, color="purple", lwd = 1) +
+    annotate(geom="text", label = "Quartic", x = -4, y = 200, size = 5) + 
+    annotate(geom="text", label = "Quadratic", x = -4.6, y = 107, size =5) +
+    annotate(geom="text", label = "Cubic", x = -3.8, y = -90, size =5) + 
+    annotate(geom="text", label = "Linear", x = -4.6, y = -32, size =5) +
+    geom_hline(yintercept=0) +
+    geom_vline(xintercept=0) +
+    ylim(-100, 200) +
+    theme_bw()
 funksjonsgrafer
 ```
 
-
 Imidlertid er vi sjeldent interessert i negative x-verdier i praktisk bruk (matematisk er det selvsagt interessant, men som sagt sjeldent i anvendt analyse som vi driver med). 
-```{r, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE, fig.cap ="n'te leddsfunksjoner #2"}
 funksjonsgrafer2 <- ggplot(data.frame(x = c(0, 5)), aes(x = x)) + 
-            stat_function(fun = function(x){x^4}, color="red", lwd = 1) +        
-            stat_function(fun = function(x){x^3}, color="blue", lwd = 1) + 
-            stat_function(fun = function(x){4*x^2}, color="orange", lwd = 1) +
-            stat_function(fun = function(x){10*x}, color="purple", lwd = 1) +
-            annotate(geom="text", label = "Quartic", x = 4.2, y = 200, size = 5) + 
-            annotate(geom="text", label = "Quadratic", x = 4.8, y = 75, size =5) +
-            annotate(geom="text", label = "Cubic", x = 4.5, y = 120, size =5) + 
-            annotate(geom="text", label = "Linear", x = 4.8, y = 40, size =5) +
-            geom_hline(yintercept=0) +
-            geom_vline(xintercept=0) +
-            ylim(-100, 200) +
-            xlim(0, 5)
-
+    stat_function(fun = function(x){x^4}, color="red", lwd = 1) +        
+    stat_function(fun = function(x){x^3}, color="blue", lwd = 1) + 
+    stat_function(fun = function(x){4*x^2}, color="orange", lwd = 1) +
+    stat_function(fun = function(x){10*x}, color="purple", lwd = 1) +
+    annotate(geom="text", label = "Quartic", x = 4.2, y = 200, size = 5) + 
+    annotate(geom="text", label = "Quadratic", x = 4.8, y = 75, size =5) +
+    annotate(geom="text", label = "Cubic", x = 4.5, y = 120, size =5) + 
+    annotate(geom="text", label = "Linear", x = 4.8, y = 40, size =5) +
+    geom_hline(yintercept=0) +
+    geom_vline(xintercept=0) +
+    ylim(-100, 200) +
+    xlim(0, 5) +
+    theme_bw()
 funksjonsgrafer2
 ```
 
@@ -102,14 +134,14 @@ glimpse(polydata)
 
 Vi har altså laget en kvadrert variabel som heter Stillingskategori2. Lager så polynomial modell med ^2 ledd:
 
-```{r}
+```{r fig.cap = "Polynomial regression ^2"}
 poly_reg2 <- lm(Snittlonn ~ ., data = polydata)
 ggplot() +
-    geom_point(aes(x = polydata$Stillingskategori, y = polydata$Snittlonn), col = "red") +
-    geom_line(aes(x = polydata$Stillingskategori, y = predict(poly_reg2, newdata = polydata)), col = "blue") +
-    ggtitle("Polynomial regression ^2") +
+    geom_point(aes(x = polydata$Stillingskategori, y = polydata$Snittlonn), col = "black") +
+    geom_line(aes(x = polydata$Stillingskategori, y = predict(poly_reg2, newdata = polydata)), col = "red") +
     xlab("Stillingskategori") +
-    ylab("Snittlønn")
+    ylab("Snittlønn") +
+    theme_bw()
 ```
 
 ## Modellering av tredjegrads ("cubic") polynomisk regresjon
@@ -119,37 +151,35 @@ polydata$Stillingskategori3 <- polydata$Stillingskategori^3
 glimpse(polydata)
 ```
 
-```{r}
+```{r fig.cap = "Polynomial regression ^3"}
 polydata$Stillingskategori3 <- polydata$Stillingskategori^3
-
 poly_reg3 <- lm(Snittlonn ~ ., data = polydata)
-
 ggplot() +
-    geom_point(aes(x = polydata$Stillingskategori, y = polydata$Snittlonn), col = "red") +
-    geom_line(aes(x = polydata$Stillingskategori, y = predict(poly_reg3, newdata = polydata)), col = "blue") +
+    geom_point(aes(x = polydata$Stillingskategori, y = polydata$Snittlonn)) +
+    geom_line(aes(x = polydata$Stillingskategori, y = predict(poly_reg3, newdata = polydata)), col = "red") +
     ggtitle("Polynomial regression ^3") +
     xlab("Stillingskategori") +
-    ylab("Snittlønn")
+    ylab("Snittlønn") +
+    theme_bw()
 ```
 
 ## Modellering av fjerdegrads ("quartic") polynomisk regresjon
 
-```{r}
+```{r fig.cap = "Polynomial regression ^4"}
 polydata$Stillingskategori4 <- polydata$Stillingskategori^4
-
 poly_reg4 <- lm(Snittlonn ~ ., data = polydata)
-
 ggplot() +
-    geom_point(aes(x = polydata$Stillingskategori, y = polydata$Snittlonn), col = "red") +
-    geom_line(aes(x = polydata$Stillingskategori, y = predict(poly_reg4, newdata = polydata)), col = "blue") +
+    geom_point(aes(x = polydata$Stillingskategori, y = polydata$Snittlonn)) +
+    geom_line(aes(x = polydata$Stillingskategori, y = predict(poly_reg4, newdata = polydata)), col = "red") +
     ggtitle("Polynomial regression ^4") +
     xlab("Stillingskategori") +
-    ylab("Snittlønn")
+    ylab("Snittlønn") +
+    theme_bw()
 ```
 
 ## Tolkning
 
-Av grafene over får vi en indikasjon på hvilken modell som ser ut til å passe våre data best. Vi kan også se på hvordan de ulike modellene predikerer ulikt. La oss f.eks. anta at man ønsker å innføre en stillingskategori 5.5. Hva er predikert snittlønn for denne kategorien?
+Av grafene over får vi en indikasjon på hvilken modell som ser ut til å passe våre data best. Vi kan også se på hvordan de ulike modellene predikerer ulikt. La oss f.eks. anta at man ønsker å innføre en stillingskategori 5.5. Hva er predikert snittlønn for denne kategorien? Vi viser kun for de to "ytterste" regresjonslikningene vi har vist over - enkel OLS og 4'grads polynomfunksjon.
 
 ```{r}
 # Enkel OLS
@@ -175,13 +205,11 @@ $MSE = \frac{1}{n}*\sum(faktisk\ verdi - predikert\ verdi)$
 
 I eksempelet har vi generert data som ser på timer studenter har brukt på et emne og respektive resultater. 
 
-```{r}
+```{r fig.cap = "Timer og resultat"}
 set.seed(1)
 df <- data.frame(timer = runif(50, 5, 15), resultat=50)
 df$resultat <- df$resultat + df$timer^3/150 + df$timer*runif(50, 1, 2)
 glimpse(df)
-ggplot(df, aes(x = timer, y = resultat)) +
-  geom_point(col = "red")
 ```
 
 Vi kan se på en enkel OLS på datasettet:
@@ -193,7 +221,8 @@ ggplot() +
     geom_line(aes(x = df$timer, y = predict(enkelOLS2, newdata = df)), col = "blue") +
     ggtitle("Enkel OLS") +
     xlab("timer") +
-    ylab("resultat")
+    ylab("resultat") +
+    theme_bw()
 ```
 
 Neste steg er å lage 5 modeller (kan selvsagt lage x antall modeller).
@@ -229,15 +258,16 @@ Modell 2 ser ut til å ha lavest MSE.
 
 Vi kan til slutt visualisere valgt modell og se på modellens parametere. 
 
-```{r}
+```{r fig.cap = "Valgt modell - modell 2"}
 ggplot(df, aes(x=timer, y=resultat)) + 
-          geom_point(col = "red") +
-          stat_smooth(method='lm', formula = y ~ poly(x,2), size = 1) + 
-          xlab('timer') +
-          ylab('resultat')
+    geom_point(col = "red") +
+    stat_smooth(method='lm', formula = y ~ poly(x,2), size = 1) + 
+    xlab('timer') +
+    ylab('resultat') +
+    theme_bw()
 
-bestemodell <- lm(resultat ~ poly(timer,2, raw=T), data=df)
-
+bestemodell <- lm(resultat ~ poly(timer, 2, raw = TRUE), data = df)
 summary(bestemodell)
+tab_model(bestemodell)
 ```
 

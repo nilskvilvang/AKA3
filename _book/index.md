@@ -147,7 +147,7 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   </tr>
   <tr>
    <td style="text-align:left;width: 8em; "> 23.juli 2022 </td>
-   <td style="text-align:left;width: 40em; "> Lagt til i og redigert kap.9 </td>
+   <td style="text-align:left;width: 40em; "> Lagt til i og redigert kap.9. Redigert kap 10, 11 og 12. </td>
   </tr>
 </tbody>
 </table>
