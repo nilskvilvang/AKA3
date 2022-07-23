@@ -5,10 +5,15 @@ always_allow_html: true
 ---
 # Regresjonsanalyse - OLS
 
+```{r echo = FALSE}
+options(scipen = 999)
+```
+
+
 R-pakker brukt i dette kapittelet:
 
 ```{r warning = FALSE, message = FALSE}
-pacman::p_load(car, readxl, effects, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, flextable, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, sjPlot, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, summarytools, caret, gridExtra)
+pacman::p_load(car, readxl, effects, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, flextable, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, sjPlot, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, summarytools, caret, gridExtra, equatiomatic, reshape2)
 ```
 
 ## Innledning
@@ -19,27 +24,27 @@ En regresjonsanalyse er en statistisk analyse som undersøker sammenhengen mello
 
 La oss forsøke å illustrere prinsippet med regresjonsanalyse gjennom et såkalt Venndiagram.
 
-![](Venn1.png){width=50%}
+![Venn-diagram for drivstofforbruk, motorstørrelse og kjørestil #1](Venn1.png){width=50%}
 
 Den gule sirkelen illustrerer det forholdet vi er interessert i å "finne ut noe om". Den representerer det vi kaller den avhengige variabelen - fordi det vi ønsker å finne ut er avhengig av andre forhold (andre variabler). Vi kan si at den gule sirkelen viser variasjonen i drivstofforbruket til alle biler vi har med i undersøkelsen vår, og vi betegner denne variabelen $Y$. Biler har ulikt drivstofforbruk, så vi har altså en variasjon i drivstofforbruket mellom bilene. Den blå sirkelen viser variasjonen i motorstørrelse (vi kaller denne variabelen for $x_1$). Ulike biler har ulik motorstørrelse, og vi tenker at større motor betyr mer drivstofforbruk enn mindre motor. Den grønne sirkelen representerer en variabel vi har kalt kjørestil ($x_2$). 
 
 Vi har en hypotese om at vi kan predikere (forutsi) drifstofforbruket til en gitt bil ut fra motorstørrelse og kjørestil. Så det vi ønsker å se på er hvor mye av korrelasjonen mellom drivstofforbruk og motorstørrelse skyldes faktisk motorstørrelse, og hvor mye skyldes kjørestil. Vi tenker også at kjørestil og drivstofforbruk er korrelert (det er naturlig å tenke seg at personer med en aggresiv kjørestil har biler med større motorer - det er altså en korrelasjon mellom kjørestil og motorstørrelse). Vi ser dette i figuren under. Korrelasjonen mellom drivstofforbruk og motorstørrelse er gitt i områdene merket 1 og 2. Korrelasjonen mellom drivstofforbruk og kjørestil er gitt i områdene 2 og 3. Korrelasjonen mellom kjørestil og motorstørrelse er gitt i 2 og 4. 
 
-![](Venn2.png){width=50%}
+![Venn-diagram for drivstofforbruk, motorstørrelse og kjørestil #2](Venn2.png){width=50%}
 
 Området 2 viser den delte variasjonen mellom drivstofforbruk, motorstørrelse og kjørestil. Det vil innebære at vi kan bruke regresjonsanalsye til å isolere ut område 1 ved å se på motorstørrelsens totale korrelasjon med drivstofforbruk og trekke fra den delen av den totale korrelasjonen som deles med kjørestil (område 2). Da finner vi motorstørrelsens ($x_1$'s) unike bidrag.
 
-![](Venn3.png){width=50%}
+![Venn-diagram for drivstofforbruk, motorstørrelse og kjørestil #3](Venn3.png){width=50%}
 
 Det samme kan vi gjøre for kjørestil, der det unike bidraget utgjøres av område 3. Vi kan selvsagt ha flere prediktorer (uavhengige variabler) - noe vi veldig ofte vil ha. Det vi gjør er i prinsippet det samme: vi tar bort biter av korrelasjonen mellom motorstørrelse og drivstofforbruk som skyldes samvariasjon med andre variabler slik at vi får isolert den delen av korrelasjonen som utelukkende skyldes motorstørelse. Man kan tenke seg en ny variabel med rød sirkel. Igjen - regresjonsanalysen forsøker å isolere den unike delen for korrelasjonen mellom motorstørrelse og drivstofforbruk (og det samme for de andre variablene: den unike delen). Når vi klarer å isolere den unike korrelasjonen kan vi også si at vi har isolert den unike kausale effekten motorstørrelse har på drivstofforbruket (gitt at vi har inkludert alle relevant uavhengige variabler i modellen, noe vi i praksis sjelden vil klare).
 
-![](Venn5.png){width=50%}
+![Venn-diagram for drivstofforbruk, motorstørrelse og kjørestil #4](Venn5.png){width=50%}
 
 Den videre innledningen til regresjonsanalyse tar utgangspunkt i eksempelet i @lovasStatistikkUniversiteterOg2013 (boka kom ut i 4. utgave i 2018). Illustrasjonene som er brukt er hentet fra bokas [nettressurser](www.nettressurser.no/statistikk). Løvås’ bok «Statistikk for universiteter og høgskoler» kan anbefales som introduksjonsbok til statistikk på universitets- og høgskolenivået. En annen bok som fungerer fint til dette formålet er Jan Ubøes "Statistikk for økonomifag" (vi har brukt 4. utgave, 2014 - 5. utgave kom i 2015) [@uboeStatistikkOkonomifag2014].
 
 ## Teori
 
-Eksempelet i @lovasStatistikkUniversiteterOg2013 dreier seg om sammenhengen mellom motorstørrelse og drivstofforbruk. Vi kan måle motorstørrelse i hestekrefter (hk) og drivstofforbruk i liter/mil.
+Eksempelet bygger på @lovasStatistikkUniversiteterOg2013 og dreier seg om sammenhengen mellom motorsytelse og drivstofforbruk. Vi kan måle motorytelse i hestekrefter (hk) og drivstofforbruk i liter/mil.
 
 For å vise sammenhengen kan vi sette opp ligningen $Y_i=\alpha\:+\beta x_i+e_i$ der
 
@@ -53,64 +58,139 @@ $e=forstyrrelsen$ (vi antar at det er flere ting som forstyrrer forholdet mellom
 
 Dersom vi ikke hadde hatt et feilledd kunne vi framstilt denne ligningen slik:
 
-![Løvås (2013), s.287, Fig. 7.6: Den vanlige formelen for en rett linje](Teori_fig1.png)
+![Formelen for en rett linje](regresjonslikning.png)
 
-Når vi plotter inn et antall observasjoner av motorstørrelse og drivstofforbruk kan det se slik ut:
+Man vil se formelen uttrykt på en rekke ulike måter, jfr. eksemplene til høyre for grafen over. Vi foretrekker altså 
 
-![Løvås (2013), s.288, Fig. 7.8: Er det en sammenheng mellom motorstørrelse og bensinforbruk?](Teori_fig2.png)
+$y=\alpha\ +\beta x$
 
-Det vi i en lineær regresjonsanalyse gjør er å finne den rette linja som best passer til disse observasjonene. Vi ønsker altså å finne en rett linje som best «beskriver» observasjonene. Tenk deg at vi trekker den rette linja som samlet sett ligger nærmest punktene og deretter tar bort punktene. Det vi sitter igjen med er regresjonslinja. Denne linja gir oss da "tilgang til" alle punkter som ligger på linja som en modell på sammenhengen mellom de to variablene. Selv om vi bare hadde noen observasjoner på gitte punkter på x-aksen har vi gjennom regresjonslinja fått tilgang til alle tenkelige punkter på x-linja og kan anta et drivstofforbruk ut fra det (ved å gå opp fra x-aksen, finne skjæringspunktet med regresjonslinja, og deretter gå inn på y-aksen og lese av drivstofforbruket). Den prediksjonen vi da gjør er vår beste gjetning på hvor stort drivstofforbruket vil være for en gitt motorstørrelse. Dette vil selvsagt være en kvalifisert gjetning - nettopp fordi det er en modell. Og alle modeller er feil, men noen modeller er nyttige likevel.
+La oss tenke oss at vi har følgende sammenheng mellom disse to variablene:
+
+```{r fig.cap = "Hk og forbruk x antall biler"}
+hk <- c(50, 52, 60, 60, 70, 73, 90, 90, 95, 100, 110, 110, 110, 120, 103, 140, 142, 146, 141, 150, 160, 170, 180, 189, 190, 200, 200)
+forbruk <- c(0.6, 0.6, 0.6, 0.5, 0.5, 0.6, 0.7, 0.75, 0.8, 0.8, 0.65, 0.9, 0.9, 0.8, 1.0, 1.1, 1.2, 1.1, 0.98, 1.2, 1.3, 1.5, 1.4, 1.35, 1.6, 1.7, 1.5)
+data <- tibble(hk, forbruk)
+dataplott <- data %>%
+    ggplot(aes(x = hk, y = forbruk)) +
+    geom_point() +
+    ylab("Drivstofforbruk (l/mil)") +
+    xlab("Motorytelse (hk)") +
+    theme_bw() 
+dataplott
+```
+
+Det vi i en lineær regresjonsanalyse gjør er å finne den rette linja som best passer til disse observasjonene. Vi ønsker altså å finne en rett linje som best "beskriver" observasjonene. Tenk deg at vi trekker den rette linja som samlet sett ligger nærmest punktene og deretter tar bort punktene. Det vi sitter igjen med er regresjonslinja. Denne linja gir oss da "tilgang til" alle punkter som ligger på linja som en modell på sammenhengen mellom de to variablene. Selv om vi bare hadde noen observasjoner på gitte punkter på x-aksen har vi gjennom regresjonslinja fått tilgang til alle tenkelige punkter på x-linja og kan anta et drivstofforbruk ut fra det (ved å gå opp fra x-aksen, finne skjæringspunktet med regresjonslinja, og deretter gå inn på y-aksen og lese av drivstofforbruket). Den prediksjonen vi da gjør er vår beste gjetning på hvor stort drivstofforbruket vil være for en gitt motorytelse. Dette vil selvsagt være en kvalifisert gjetning - nettopp fordi det er en modell. Og alle modeller er feil, men noen modeller er nyttige likevel.
 
 I eksempelet kan vi for eksempel tenke oss to mulige linjer:
 
-![Løvås (2013), s.289, Fig. 7.9: Avvik mellom observasjonspunktene og to vilkårlige linjer](Teori_fig3.png)
+```{r fig.cap = "To tenkte linjer for forholdet mellom hk og forbruk"}
+dataplott2 <- dataplott +
+    geom_segment(x = 10, y = 0.4, xend = 200, yend = 1.35, color = "blue") +
+    geom_segment(x = 25, y = 0.2, xend = 200, yend = 1.55, color = "magenta")    
+dataplott2
+```
 
-Begge linjene er forsøk på å lage en rett linje som har kortest mulig avvik. Vi kan deretter legge sammen de absolutte vertikale avstandene (de stiplede linjene) fra observasjonspunktene ned til den rette linja. I prinsippet er da den rette linja som medfører minst samlet avstand fra observasjonspunktene den rette linja som best representerer observasjonspunktene, og vi kan si vi har laget en modell for sammenhengen mellom motorstørrelse og drivstofforbruk. Siden vi har en sammenhengende rett linje har vi også mulighet til å mene noe om drivstofforbruk på motorstørrelser vi ikke har målt/har observasjoner på. Vi har med andre ord en modell for å predikere drivstofforbruk ut fra motorstørrelse. Uavhengige variabler i regresjonsanalyser kalles også ofte prediktorer, fordi vi bruker de til å predikere en verdi for den avhengige variabelen.
+I prinsippet kan vi tenke oss et stort antall mulige linjer, og målet vårt er altså å finne den linja som best beskriver forholdet mellom motorytelse og forbruk. Men er det den grønne eller den blå linja i plottet ovenfor (eller en rød eller gul linje vi ikke har vist)? Vi må altså ha en måte å vurdere hvilken av linjene som er best. Vi kan (kanskje intuitivt) tenke at en linje som ligger nærmest flest mulig punkter er den beste. Og det er riktig i en lineær regresjonsanalyse. 
+
+```{r fig.cap = "Avstand fra punkt til linje utgjør avviket mellom mulig modell og observasjon"}
+dataplott3 <- dataplott2 +
+    geom_segment(x = 103, y = 0.865, xend = 103, yend = 1.0, color = "red", linetype = "dashed") +
+    geom_segment(x = 141, y = 0.99, xend = 141, yend = 1.05, color = "red", linetype = "dashed")    
+dataplott3
+```
+
+Begge linjene er forsøk på å lage en rett linje som har kortest mulig avvik. Vi kan deretter legge sammen de absolutte vertikale avstandene (illustrert med de to røde stiplede linjene) fra observasjonspunktene ned til den rette linja. Dette gjør vi for alle punkter ned til respektive linje. I prinsippet er da den rette linja som medfører minst samlet avstand fra observasjonspunktene den rette linja som best representerer observasjonspunktene, og vi kan si vi har laget en modell for sammenhengen mellom motorytelse og drivstofforbruk. Siden vi har en sammenhengende rett linje har vi også mulighet til å mene noe om drivstofforbruk på motorsytelser vi ikke har målt/har observasjoner på. Vi har med andre ord en modell for å predikere drivstofforbruk ut fra motorstørrelse. Uavhengige variabler i regresjonsanalyser kalles også ofte prediktorer, fordi vi bruker de til å predikere en verdi for den avhengige variabelen.
 
 ### Minste kvadratsum (Ordinary Least Squares - OLS)
 
-Imidlertid er absoluttverdier matematisk problematiske [@lovasStatistikkUniversiteterOg2013]. Pre-datamaskiner ble det derfor utviklet en alternativ måte som kalles «minste kvadraters metode» - derav begrepet OLS («Ordinary Least Squares»). Det finnes andre måter å tilnærme seg dette, men i dette kurset går vi kun inn på OLS-regresjon. Hvis vi fortsetter eksempelet over kan vi tenke oss en mengde forslag på ulike linjer som forsøker å beskrive sammenhengen mellom de to variablene:
+Imidlertid er absoluttverdier matematisk problematiske [@lovasStatistikkUniversiteterOg2013] fordi punktene vil ligge (stort sett) jevnt fordelt på oversiden og nedsiden av linja. Når man da skal legge sammen avvikene kan man i prinsippet sitte igjen med 0, noe som jo ikke gir mening med mindre alle punktene ligger nøyaktig på linja. Pre-datamaskiner ble det derfor utviklet en alternativ måte som kalles "minste kvadraters metode" - derav begrepet OLS ("Ordinary Least Squares"). Det finnes andre måter å tilnærme seg dette, men i dette kapittelet går vi kun inn på OLS-regresjon. Hvis vi fortsetter eksempelet over kan vi tenke oss en mengde forslag på ulike linjer som forsøker å beskrive sammenhengen mellom de to variablene:
 
-![Løvås (2013), s.289, Fig. 7.10: Illustrasjon av minste kvadraters metode](Teori_fig4.png)
+```{r fig.cap = "Minste kvadraters metode - OLS"}
+dataplott4 <- dataplott3 +
+    geom_rect(aes(xmin = 86, xmax = 103, ymin = 0.8625, ymax = 1.0), fill = "red", alpha = 0.01) +
+    geom_rect(aes(xmin = 141, xmax = 150, ymin = 0.98, ymax = 1.055), fill = "red", alpha = 0.01)
+dataplott4
+```
 
-Man regner deretter ut kvadratene som dannes av hvert punkt og avstanden til den rette linja. Den linja som har den laveste kvadratsummen («least squares») er den linja som best representerer datapunktene og som derfor er den beste lineære modellen av forholdet mellom variablene. Regresjonslinja er således en modell. Som @thraneAppliedRegressionAnalysis2019 beskriver: den diagonale linja oppsummerer den typiske trenden i det statistiske forholdet mellom de to variablene - en linje vi kjenner som regresjonslinja. 
+Her tar man altså hver enete vertikale avstand fra hvert enkelt punkt og lager et kvadrat ut av det. Man regner deretter ut kvadratene som dannes av hvert punkt og avstanden til den rette linja. Den linja som har den laveste kvadratsummen ("least squares") er den linja som best representerer datapunktene og som derfor er den beste lineære modellen av forholdet mellom variablene. Regresjonslinja er således en modell. Som @thraneAppliedRegressionAnalysis2019 beskriver: den diagonale linja oppsummerer den typiske trenden i det statistiske forholdet mellom de to variablene - en linje vi kjenner som regresjonslinja. 
 Hvis vi har et stort antall datapunkter er dette selvsagt en omfattende prosess å gjøre manuelt. Det statistikkprogrammer gjør for oss er å regne ut kvadratsummen for et stort antall mulige linjer og deretter fortelle oss hvilken som har lavest kvadratsum.
 
 Hvis vi tenker tilbake til formelen for modellen vår: $Y_i=\alpha\:+\beta x_i+e_i$ kan vi nå fylle ut med verdier fra eksempelet.
 
-Det vi egentlig har gjort når vi finner den rette linja som gir minste kvadratsum er å identifisere $\alpha$ (skjæringspunktet på y-aksen) og $\beta$ (stigningstallet). Statistikkprogrammer vil gi oss verdiene på dette. Vi går ikke inn på en manuell utregning her, men bruker de to verdiene @lovasStatistikkUniversiteterOg2013 viser ($\alpha=0.211$ og $\beta=0.00576$). Vår modell ser da slik ut: $Y_i=0,211\:+0,00576x_i$.
+Det vi egentlig har gjort når vi finner den rette linja som gir minste kvadratsum er å identifisere $\alpha$ (skjæringspunktet på y-aksen) og $\beta$ (stigningstallet). Statistikkprogrammer vil gi oss verdiene på dette. 
 
-Som sagt har vi ønsket å lage en modell som predikerer drivstofforbruk ut fra motorstørrelse – eller sagt på en annen måte: hvilket drivstofforbruk kan vi forvente med en motor på 100 hk? Vi får da: $$Y_i=0,211\:+0,00576x_i=0,211\:+\:0,00576\times100\:=\:0,787$$
+```{r}
+datamodell <- lm(forbruk ~ hk, data = data)
+tab_model(datamodell)
+```
 
-Dette blir vårt "best guess", vår antakelse (vår prediksjon av verdien på y-aksen som er drivstofforbruket ut fra verdien på x-aksen som er motorstørrelse), om forventet drivstofforbruk for en motor med 100 hk basert på den modellen vi har laget om sammenhengen mellom motorstørrelse og drivstofforbruk (som er basert på de observasjonene vi har).
+$\alpha$ er i tabellen over `r format(round(coef(datamodell)[[1]], 3), nsmall = 3)` og $\beta$ er `r format(round(coef(datamodell)[[2]], 3), nsmall = 3) ` (kolonnen "Estimates"). 
 
-Vi kan naturligvis umiddelbart tenke at drivstofforbruket er avhengig av mange andre faktorer enn motorstørrelse, for eksempel bilens design (luftmotstand), vekt, rullemotstand, temperatur, type motor og så videre. Dette belyser for så vidt et sentralt problem når vi ønsker å lage modeller for prediksjon: Virkeligheten er utrolig sammensatt, mange relevante variabler er vanskelig å måle, og man ønsker en modell som er enkel nok til å kunne brukes og sammensatt nok til å gi relevante prediksjoner. Tenk for eksempel bare på «klimamodellene» som brukes for å analysere og predikere temperatur, issmelting, global oppvarming og liknende. Det er klart at i de fleste tilfeller trenger vi flere prediktorer enn en – og i regresjonssammenheng snakker vi da om multippel regresjonsanalyse. Vi kan ha som en tommelfingerregel at vi skal ha med så mange variabler at modellen har praktisk verdi, men likevel så få som mulig.
+```{r}
+regresjonslikning <- extract_eq(datamodell, use_coefs = TRUE)
+```
 
-#### R^2 ("R squared)
+Vi kan da lage følgende likning:
+
+<div align="center">`r regresjonslikning`.</div>
+
+Som sagt har vi ønsket å lage en modell som predikerer drivstofforbruk ut fra motorstørrelse – eller sagt på en annen måte: hvilket drivstofforbruk kan vi forvente med en motor på 100 hk? Vi får da: $$y=0,092\:+0,007x=0,092\:+\:0,007\times100\:=\:0,792$$
+Uten avrunding ser forventet drivstofforbruk ut til å bli `r coef(datamodell)[1] + 100*coef(datamodell)[2]` l/mil. Merk at med ulike avrundinger blir forventet forbruk litt forskjellig, men dette siste tallet er uten avrunding og mest nøyaktig.
+
+Dette blir vårt "best guess", vår antakelse (vår prediksjon av verdien på y-aksen som er drivstofforbruket ut fra verdien på x-aksen som er motorytelse), om forventet drivstofforbruk for en motor med 100 hk basert på den modellen vi har laget om sammenhengen mellom motorytelse og drivstofforbruk (som er basert på de observasjonene vi har).
+
+Vi kan naturligvis umiddelbart tenke at drivstofforbruket er avhengig av mange andre faktorer enn motormotorytelse, for eksempel bilens design (luftmotstand), vekt, rullemotstand, temperatur, type motor og så videre. Dette belyser for så vidt et sentralt problem når vi ønsker å lage modeller for prediksjon: Virkeligheten er utrolig sammensatt, mange relevante variabler er vanskelig å måle, og man ønsker en modell som er enkel nok til å kunne brukes og sammensatt nok til å gi relevante prediksjoner. Tenk for eksempel bare på "klimamodellene" som brukes for å analysere og predikere temperatur, issmelting, global oppvarming og liknende. Ofte vil det være såkalte interaksjoneffekster også mellom variabler som kan gjøre det vanskelig å se hvordan endring i en eller flere variabler virker tilsammen. Det er klart at i de fleste tilfeller trenger vi flere prediktorer enn en – og i regresjonssammenheng snakker vi da om multippel regresjonsanalyse. Vi kan ha som en tommelfingerregel at vi skal ha med så mange variabler at modellen har praktisk verdi, men likevel så få som mulig.
+
+#### R^2 ("R squared")
 
 Som vi har sett over regnes kvadratsummene ut for avstandene fra datapunktene til en tenkt linje som "går gjennom" dataene. Den linja som gir minst samlet sum av kvadratsummer er vår best modell og det vi vil kalle regresjonslinja. Dette gjør oss i stand til å kalkulere en såkalt $R^2$. Under har vi forsøkt å illustrere hvordan dette skjer:
 
-![Utregning av $R^2$](R2.png)
+![Utregning av $R^2$](R2.png){width=85%}
 
-Til venstre ser vi illustrert avstanden fra det enkelte datapunkt til regresjonslinja. Dette gir oss til sammen $SS_{res}$ - som vi kaller variabelen (y). Gjennomsnittet er som vi kommer tilbake til et par andre steder også en modell for sammenhengen mellom den avhengige og den uavhengige variabelen. Summen av kvadratsummene for gjennomsnittsmodellen er $SS_{tot$} - som vi kaller "total sum of squares". Ut fra disse størrelsene ser vi i den nederste likningen i figuren over hvordan $R^2$ framkommer. 
+Til venstre ser vi illustrert avstanden fra det enkelte datapunkt til regresjonslinja. Dette gir oss til sammen $SS_{res}$ - som vi kaller variabelen (y). Gjennomsnittet er som vi kommer tilbake til et par andre steder også en modell for sammenhengen mellom den avhengige og den uavhengige variabelen. Summen av kvadratsummene for gjennomsnittsmodellen er $SS_{tot}$ - som vi kaller "total sum of squares". Ut fra disse størrelsene ser vi i den nederste likningen i figuren over hvordan $R^2$ framkommer. 
 
 $R^2$ kommer vi tilbake til mange ganger når vi snakker om regresjonsanalyser.
 
 ### Konfidensintervall
 
-Avslutningsvis i denne introduksjonen til regresjonsanalyse kan vi se kort på begrepet konfidensintervall (se for eksempel @lovasStatistikkUniversiteterOg2013 eller @hinkleAppliedStatisticsBehavioral2003). For de som ønsker å fordype seg i effektstørrelser og konfidensintervaller anbefales @cummingIntroductionNewStatistics2017 "Introduction to the new statistics: Estimation, open science, & beyond".
+Avslutningsvis i denne introduksjonen til regresjonsanalyse kan vi se kort på begrepet konfidensintervall (se for eksempel @hinkleAppliedStatisticsBehavioral2003). For de som ønsker å fordype seg i effektstørrelser og konfidensintervaller anbefales @cummingIntroductionNewStatistics2017 "Introduction to the new statistics: Estimation, open science, & beyond".
 
-Man kan si at estimatet på stigningstallet $\beta$ er det viktigste resultatet i en regresjonsanalyse fordi dette sier noe om hvor sterk sammenhengen mellom de to variablene er. @lovasStatistikkUniversiteterOg2013 illustrerer dette slik:
+Man kan si at estimatet på stigningstallet $\beta$ er det viktigste resultatet i en regresjonsanalyse fordi dette sier noe om hvor sterk sammenhengen mellom de to variablene er. Vi kan ta fram plottet over sammenhengen mellom de to variablene med regresjonslinje:
 
-![Løvås (2013), s.287, Fig. 7.6: Et 95% konfidensintervall for forventet bensinforbruk](Teori_fig5.png)
+```{r fig.cap = "Regresjonslinje med konfidensinterval"}
+dataplott5 <- ggplot(data, aes(x = hk, y = forbruk)) + 
+    geom_point() +
+    geom_smooth(method = lm) +
+    theme_bw() +
+    ylab("Drivstofforbruk (l/mil)") +
+    xlab("Motorytelse (hk)")
+```
 
-De røde stiplede linjene utgjør konfidensgrensene for 95 % konfidensintervall. I grafen over har vi kun 5 observasjoner, noe som selvsagt er lite. Vi kan gå litt dypere inn i hvordan konfidensgrensene framkommer i en regresjonsanalyse.
+Det grå området utgjør konfidensgrensene for 95 % konfidensintervall. Vi kan gå litt dypere inn i hvordan konfidensgrensene framkommer i en regresjonsanalyse.
 
-La oss anta at vi har et datasett der vi har plottet korrelasjonen mellom en prediktor (den uavhengige variabelen) på x-aksen og en avhengig varaibel på y-aksen (se graf under). Den røde prikken markerer verdien x=8. Verdien på y-aksen (10,458) er vår prediksjon (vår buest guess) på hva verdien i den avhengige variabelen vil være ved den observerte verdien x=8.
+La oss fortsette eksempelet. Vi har altså plottet verdiene for motorytelse og drivstofforbruk. Den røde prikken markerer verdien x=125. Verdien på y-aksen (ca. 1.0 som vi leser av fra grafen) er vår prediksjon (vår buest guess) på hva verdien i den avhengige variabelen vil være ved den observerte verdien x=125.
 
-![Eksempel på prediksjon](Teori_fig6.png)
 
-I punktet x=8 har vi en hel populasjon av mulige normalfordelte verdier. Vårt beste estimat av gjennomsnittsverdien for denne populasjonen er 10,458. Dette er et punktestimat. Det tilhørende intervallestimatet er vårt konfidensintervall. Vi må her tenke på konfidensintervallet som en vertikal linje. Så i stedet for å tenke punkt- og intervallestimat slik
+```{r fig.cap = "Eksempel på prediksjon", warning = FALSE, message = FALSE}
+data %>%
+  ggplot(aes(x = hk,y = forbruk)) +
+  geom_point() +
+  labs(x = "x", y ="y") +
+  geom_smooth(method = lm, se = FALSE) +
+  theme_bw() +
+  geom_point(aes(x = 125, y = 1.005), colour = "red", size = 3) +
+  geom_segment(x = 125, y = 0, xend = 125, yend = 1.005, color = "red") +
+  geom_segment(x = 0, y = 1.005, xend = 125, yend = 1.005, color = "red")
+```
+
+Vi kan regne ut dette nøyaktig (vi bryr oss foreløpig ikke mer om koden enn at dette funker...):
+```{r}
+modell <- lm(forbruk ~ hk, data = data)
+ykoeff <- coef(modell)[1] + 125*coef(modell)[2]
+ykoeff
+```
+
+I punktet x=125 har vi en hel populasjon av mulige normalfordelte verdier. Vårt beste estimat av gjennomsnittsverdien for denne populasjonen er `r ykoeff`. Dette er et punktestimat. Det tilhørende intervallestimatet er vårt konfidensintervall. Vi må her tenke på konfidensintervallet som en vertikal linje. Så i stedet for å tenke punkt- og intervallestimat slik
 
 ![Punkt- og intervallestimat #1](Teori_fig7.png)
 
@@ -120,13 +200,38 @@ Kan vi tenke det slik:
 
 Overført til vårt eksempel får vi:
 
-![Punkt- og intervallestimat sammen med prediksjon](Teori_fig9.png)
+```{r fig.cap = "Punkt- og intervallestimat sammen med prediksjon", warning = FALSE, message = FALSE}
+# Tar fram verdier for konfidensintervallet for x = 125
+ny <- data.frame(hk = 125)
+x125 <- as_tibble(predict(datamodell, newdata = data.frame(ny), interval="confidence"))
+x125
+# Plotter
+data %>%
+  ggplot(aes(x = hk, y = forbruk)) +
+  geom_point() +
+  labs(x = "Motorytelse (hk)", y ="Drivstofforbruk (l(mil)") +
+  geom_smooth(method = lm) +
+  theme_bw() +
+  geom_point(aes(x = 125, y = 1.00805), colour = "red", size = 3) + 
+  geom_segment(x = 125, y = x125$lwr, xend = 125, yend = x125$upr, color = "red")
+```
 
-Den røde streken er vårt 95 % konfidensintervall for punktestimatet. Hvis vi legger på 95 % konfidensintervaller på alle punktestimatene (alle punktene som utgjør regresjonslinja) kan vi lage de to stiplede linjene som toucher endepunktene på alle konfidensintervallene. Disse to stiplede linjene utgjør da konfidensgrensene for regresjonslinja.
+Den røde streken er vårt 95 % konfidensintervall for punktestimatet. 95% konfidensintervall angir intervallet av verdier for drivstofforbruket vi med 95% sannsynlighet kan si at populasjonsgjennomsnittet vil ligge innenfor. Altså - vi er 95% sikre på at en bil med motorytelse på 125 hk vil ha et drivstofforbruk på mellom `r x125$lwr` og `r x125$upr`, og vårt beste estimat er at drivstofforbruket vil være `r x125$fit` l/mil.
 
-Vi ser at konfidensgrensene er lett buede mot hverandre med minst avstand mellom dem "på midten". Vi skal kort se på hvorfor det er slik. Vi har nå lagt på et nytt kryss i grafen under. Dette krysset markerer punktet der gjennomsnittene av X og Y krysser. Regresjonslinja må gå gjennom dette punktet, slik at alle alternative regresjonslinjer må pivotere rundt dette punktet. Dette medfører at det er litt større usikkerhet rundt punktestimatenes konfidensintervaller i endene i forhold til i midten. Konfidensintervallene for hvert enkelt punkt blir derfor litt lenger jo lenger ut fra krysningspunket vi går, og resultatet blir en form for buet linje.
+Hvis vi legger på 95 % konfidensintervaller på alle punktestimatene (alle punktene som utgjør regresjonslinja) kan vi lage det grå feltet på plottet over som toucher endepunktene på alle konfidensintervallene. Dette gjøres autmatisk om vi ikke velger det bort i pakken "ggplot". 
 
-![Prediksjon og konfidensintervaller](Teori_fig10.png)
+Vi ser at konfidensgrensene er lett buede mot hverandre med minst avstand mellom dem "på midten" (dette ville vært mye mer tydelig om punktene i plottet hadde vært mer spredt). Vi skal kort se på hvorfor det er slik. Vi har nå lagt på et nytt kryss i grafen under. Dette krysset markerer punktet der gjennomsnittene av X og Y krysser. Regresjonslinja må gå gjennom dette punktet, slik at alle alternative regresjonslinjer må pivotere rundt dette punktet. Dette medfører at det er litt større usikkerhet rundt punktestimatenes konfidensintervaller i endene i forhold til i midten. Konfidensintervallene for hvert enkelt punkt blir derfor litt lenger jo lenger ut fra krysningspunket vi går, og resultatet blir en form for buet linje.
+
+```{r fig.cap = "Pivotpunkt på regresjonslinje og usikkerhet rundt konfidensintervall", warning = FALSE, message = FALSE}
+data %>%
+  ggplot(aes(x = hk, y = forbruk)) +
+  geom_point() +
+  labs(x = "Motorytelse (hk)", y ="Drivstofforbruk (l(mil)") +
+  geom_smooth(method = lm) +
+  theme_bw() +
+  geom_segment(x = 125, y = 0.75, xend = 125, yend = 1.25, color = "red") +
+  geom_segment(x = 95, y = 1.00805, xend = 152, yend = 1.00805, color = "red")    
+```
 
 ### Steg i analyse
 
@@ -180,7 +285,7 @@ Vi ser på datasettet og noen nøkkeltall for datasettet.
 
 ```{r results='asis'}
 Field_OLS_data <- read_excel("Field_datasett_OLS.xlsx")
-summarytools::descr(Field_OLS_data)
+descr(Field_OLS_data)
 ```
 
 Vi kan se at datasettet består av 200 obervasjoner av 4 variabler. Hver av observasjonene er en CD:
@@ -194,40 +299,40 @@ Ofte er det imidlertid mer hensiktsmessig å se på dataene grafisk i en utforsk
 
 #### Histogram
 
-```{r}
+```{r fig.cap = "Histogram for 'adverts' og 'sales'"}
 annotations <- data.frame(
   x = c(round(min(Field_OLS_data$Adverts), 2), round(mean(Field_OLS_data$Adverts), 2), round(max(Field_OLS_data$Adverts), 2)),
-  y = c(4, 52, 5),
+  y = c(4, 52, 4),
   label = c("Min:", "Gjennomsnitt:", "Maks:"))
   
 plott1 <- ggplot(Field_OLS_data, aes(Adverts)) + 
-  geom_histogram(bins = 10, color = "#000000", fill = "#0099F8") + 
-    geom_vline(aes(xintercept = mean(Adverts)), color = "#000000", size = 0.5, linetype = "dashed") + 
- geom_text(data = annotations, aes(x = x, y = y, label = paste(label, x)), size = 2, fontface = "bold") +
-      theme_classic()
+    geom_histogram(bins = 10, color = "black", fill = "lightblue") + 
+    geom_vline(aes(xintercept = mean(Adverts)), color = "red", size = 0.5, linetype = "dashed") + 
+    geom_text(data = annotations, aes(x = x, y = y, label = paste(label, x)), size = 3, fontface = "bold") +
+    theme_bw()
 
 annotations2 <- data.frame(
   x = c(round(min(Field_OLS_data$Sales), 2), round(mean(Field_OLS_data$Sales), 2), round(max(Field_OLS_data$Sales), 2)),
-  y = c(4, 52, 5),
+  y = c(4, 52, 4),
   label = c("Min:", "Gjennomsnitt:", "Maks:"))
 
 plott2 <- ggplot(Field_OLS_data, aes(Sales)) + 
-  geom_histogram(bins = 10, color = "#000000", fill = "#0099F8") + 
-    geom_vline(aes(xintercept = mean(Sales)), color = "#000000", size = 0.5, linetype = "dashed") + 
- geom_text(data = annotations2, aes(x = x, y = y, label = paste(label, x)), size = 2, fontface = "bold") +
-      theme_classic()
+    geom_histogram(bins = 10, color = "black", fill = "lightblue") + 
+    geom_vline(aes(xintercept = mean(Sales)), color = "red", size = 0.5, linetype = "dashed") + 
+    geom_text(data = annotations2, aes(x = x, y = y, label = paste(label, x)), size = 3, fontface = "bold") +
+    theme_bw()
 grid.arrange(plott1, plott2, ncol=2)
 ```
 
 Det kan se ut som at salgstallene er rimelig normalfordelte, mens reklamevariabelen er klart skjev. 
 
-#### Quantile-Quantile plott (qq)
+#### Quantile-Quantile plott (QQ)
 
-Q-Q plottet (“quantile-quantile plot”) kan tolkes ved å se om dataverdiene ligger langs en rett linje med ca 45 graders vinkel. Q-Q plottet innebærer å se to distribusjoner mot hverandre – empirisk fordeling (dataene) og teoretisk forventning ut fra en fordelingsmodell (som normalfordeling om vi snakker om “normal Q-Q plott" - dvs vi ser om vår empiriske datafordeling og normalfordelingen er lik). Om de samsvarer perfekt ligger de på en helt rett linje (x = y). I eksempelet under vil da alle punktene ligge perfekt oppå den rette linjen. Siden vi vet den teoretiske distribusjonen til normalfordelingen, kan vi bruke denne teoretiske fordelingen til å plotte den mot datasettet vi sitter med.
+QQ plottet (“quantile-quantile plot”) kan tolkes ved å se om dataverdiene ligger langs en rett linje med ca 45 graders vinkel. QQ plottet innebærer å se to distribusjoner mot hverandre – empirisk fordeling (dataene) og teoretisk forventning ut fra en fordelingsmodell (som normalfordeling om vi snakker om “normal QQ plott" - dvs vi ser om vår empiriske datafordeling og normalfordelingen er lik). Om de samsvarer perfekt ligger de på en helt rett linje (x = y). I eksempelet under vil da alle punktene ligge perfekt oppå den rette linjen. Siden vi vet den teoretiske distribusjonen til normalfordelingen, kan vi bruke denne teoretiske fordelingen til å plotte den mot datasettet vi sitter med.
 
-```{r}
+```{r fig.cap = "QQ-plott"}
 par(mfrow=(c(1,2)))
-qqSales2 <- car::qqPlot(Field_OLS_data$Adverts)
+qqSales2 <- car::qqPlot(Field_OLS_data$Adverts) 
 qqAdverts2 <- car::qqPlot(Field_OLS_data$Sales)
 ```
 
@@ -250,7 +355,7 @@ I standard multippel regresjonsanalyse legger vi alle de uavhengige variablene i
 
 Vi ønsker å se om Adverts kan predikere Sales. Grafisk kan vi vise dette:
 
-![Platesalg predikert av reklame - modell](OLS1.png){width=50%}
+![Modell for prediksjon av platesalg basert på reklame](OLS1.png){width=50%}
 
 ```{r}
 FieldOLS_reg <- ols_regress(Sales ~ Adverts, data = Field_OLS_data)
@@ -264,34 +369,64 @@ FieldOLS_reg
 
 #### Hvor mye forklarer modellen vår?
 
-Det første vi kan se på er $R^{2}$ som forteller oss hvor stor del av den totale variansen modellen forklarer. I dette tilfellet er $R^{2} = 0.3346$. Det innebærer at modellen vår kan forklare 33.46 % av den totale variansen. Det betyr at reklame forklarer («accounts for») 33.5 % av variansen i salget. Det er med andre ord mange andre faktorer som kan forklare hvorfor noen plater selger bedre enn andre, men reklame kan forklare drøye 33 % av den totale variansen. Dette kan vi også se er statistisk signifikant p < .001.
+```{r}
+# I denne kodeblokken lager jeg samme regresjon med gjennom "lm" siden det er 
+# enklere å trekke ut enkeltverdier som F, p, df osv fra denne. Resten av 
+# kodeblokka er kode for å hente ut diverse verdier som enkeltverdier.
+lmregresjon <- lm(Sales ~ Adverts, data = Field_OLS_data)
+regverdier <- summary(lmregresjon)
+r_squared <- regverdier$r.squared
+p_verdi <- regverdier$coefficients[2, 4]
+intercept2 <- regverdier$coefficients[1,1]
+stigningstall <- regverdier$coefficients[2,1]
+f_verdi <- regverdier$fstatistic[1]
+dfd <- regverdier$fstatistic[2] 
+dfn <- regverdier$fstatistic[3]
+p_verdi2 <- scales::pvalue(p_verdi,
+               accuracy = 0.001, 
+               decimal.mark = ".", 
+               add_p = TRUE) 
+```
+
+Det første vi kan se på er $R^{2}$ som forteller oss hvor stor del av den totale variansen modellen forklarer. I dette tilfellet er $R^{2}$ = `r round(r_squared, 4)`. Det innebærer at modellen vår kan forklare `r round(r_squared, 4)*100`% av den totale variansen. Det betyr at reklame forklarer ("accounts for") `r round(r_squared, 4)*100`% av variansen i salget. Det er med andre ord mange andre faktorer som kan forklare hvorfor noen plater selger bedre enn andre, men reklame kan forklare drøyt `r round(r_squared, 2)*100`% av den totale variansen. Dette kan vi også se at funnet vårt er statistisk signifikant (p = `r format(round(p_verdi, 4), nsmall = 4)`9, dvs. p-verdien er aldri 0, men i dette tilfellet er den 0.0000....294198 hvilket som regel skrives `r p_verdi2`.
 
 Endel programmer vil også gi en R verdi. Siden vi kun har en uavhengig variabel (en prediktor) vil verdien R utgjøre den bivariate korrelasjonen (korrelasjonskoeffisienten mellom de to variablene - vi ser at dette er samme verdi som i tabellen over korrelasjonskoeffisienter lenger opp).
 
-Adjusted $R^{2}$ er en "modifisert versjon" av $R^{2}$ der det legges inn en korreksjon for antall prediktorer i modellen. Motivasjonen for dette er at det å legge til flere prodeiktorer *alltid* vil øke $R^{2}$ verdien [@navarroLearningStatisticsJamovi2019a]. @navarroLearningStatisticsJamovi2019a påpeker imidlertid at man ikke kan tolke adjusted $R^{2}$ like rett fram som $R^{2}$, og anbefaler at man bruker $R^{2}$. Det vi også kan si er at dersom verdiene på henholdsvis $R^{2}$ og adjusted $R^{2}$ er nærme hverandre (eller like) indikerer dette en god kryssvaliditet i modellen, noe som kan gjøre oss sikrere i generalisering av funnene våre.
+Adjusted $R^{2}$ er en "modifisert versjon" av $R^{2}$ der det legges inn en korreksjon for antall prediktorer i modellen. Motivasjonen for dette er at det å legge til flere prediktorer *alltid* vil øke $R^{2}$ verdien [@navarroLearningStatisticsJamovi2019a]. @navarroLearningStatisticsJamovi2019a påpeker imidlertid at man ikke kan tolke adjusted $R^{2}$ like rett fram som $R^{2}$, og anbefaler at man bruker $R^{2}$. Det vi også kan si er at dersom verdiene på henholdsvis $R^{2}$ og adjusted $R^{2}$ er nærme hverandre (eller like) indikerer dette en god kryssvaliditet i modellen, noe som kan gjøre oss sikrere i generalisering av funnene våre.
 
 #### Modellens koeffisienter og regresjonslikning
 
-Koeffisientene vil fortelle oss mer i multippel regresjonsanalyse, men gir oss noen interessante opplysninger også her. I introduksjonen snakket vi om punktet der regresjonslinja skjærer y-aksen (konstanten). Fra analysen ser vi at (Intercept) = 134.14 og Adverts = 0.096. 134.14 er punktet på y-aksen regresjonslinja "begynner" (der x = 0). Altså, ettersom x-aksen angir verdier for hva vi bruker på reklame er Intercept estimatet antallet plater vi kan forvente å selge dersom vi bruker 0 kroner på reklame. Estimatet på «Adverts» på 0,096 er stigningstallet for regresjonslinja – hvis prediktoren (reklame) stiger med 1 enhet stiger salget med 0,096 plater. Vi kan da lage følgende likning: $$ Sales=134,14\:+\:0,096\left(Adverts\right) $$
+Koeffisientene vil fortelle oss mer i multippel regresjonsanalyse, men gir oss noen interessante opplysninger også her. I introduksjonen snakket vi om punktet der regresjonslinja skjærer y-aksen (konstanten). Fra analysen ser vi at (Intercept) = `r round(intercept2, 2)` og Adverts = `r round(stigningstall, 3)`. `r round(intercept2, 2)` er punktet på y-aksen regresjonslinja "begynner" (der x = 0). Altså, ettersom x-aksen angir verdier for hva vi bruker på reklame er Intercept estimatet antallet plater vi kan forvente å selge dersom vi bruker 0 kroner på reklame. Estimatet på Adverts på `r round(stigningstall, 3)` er stigningstallet for regresjonslinja – hvis prediktoren (reklame) stiger med 1 enhet stiger salget med 0,096 plater. 
+
+```{r}
+regresjonslikning2 <- extract_eq(lmregresjon)
+regresjonslikning3 <- extract_eq(lmregresjon, use_coefs = TRUE)
+```
+
+<div align="center">Vi kan da lage følgende likning: `r regresjonslikning2`.</div>
+
+eller med våre verdier
+
+<div align="center">Vi kan da lage følgende likning: `r regresjonslikning3`.</div>
 
 #### Hvor god er modellen vår (goodness of fit)?
 
 Vi ønsker å ha en formening om hvor god modellen er («goodness of fit»). Altså, er regresjonsmodellen vår bedre enn en modell der vi ikke vet noe om forholdet mellom reklame og platesalg? Vi kan bruke gjennomsnitt av salgstallene som en modell for ingen sammenheng mellom reklame og platesalg, og deretter sammenlikne regresjonsmodellen med gjennomsnittsmodellen. Sammenlikningen mellom modellene skjer gjennom å se på forskjellene mellom de observerte målingene (salgstall) og verdier predikert at de to ulike modellene. Dersom regresjonsmodellen signifikant predikerer bedre er det en bedre modell enn alternativet.
 
-Analysen vår har gitt oss F verdien 99.59 med p < .001. Vi ser at verdien er statistisk signifikant. F verdien er et mål på forbedring i prediksjonen sett opp mot unøyaktigheter i modellen (alle modeller er unøyaktige (eller "feil")).
-Vi kan sjekke F-verdien opp mot antall frihetsgrader (df) gjennom tabeller som ofte finnes i statistikkbøker, eller bruke onlineressurser som [her](http://www.stat.purdue.edu/~jtroisi/STAT350Spring2015/tables/FTable.pdf)
+Analysen vår har gitt oss F verdien `r f_verdi` med `r p_verdi2`. Vi ser at verdien er statistisk signifikant. F verdien er et mål på forbedring i prediksjonen sett opp mot unøyaktigheter i modellen (alle modeller er unøyaktige (eller "feil")).
+Vi kan sjekke F-verdien opp mot antall frihetsgrader (df) gjennom tabeller som ofte finnes i statistikkbøker, eller bruke onlineressurser som [her](http://www.stat.purdue.edu/~jtroisi/STAT350Spring2015/tables/FTable.pdf).
 
-Vi ser av resultatene fra analysen at antall df i teller er 1 og antall df i nevner er 198. Hvis vi leser av tabellen ser vi at for df 1/df 200 er kritisk verdi 3,89 for α = 0,05 og 11,15 for α = 0,001. Vår F er med andre ord langt over kritisk verdi. Vi kan derfor si at vår regresjonsmodell gir en signifikant bedre prediksjon av platesalg enn alternativet. Reklame er med andre ord en god prediktor for platesalg.
+Vi ser av resultatene fra analysen at antall df i teller er `r dfd` og antall df i nevner er `r dfn`. Hvis vi leser av tabellen ser vi at for df 1/df 200 er kritisk verdi 3,89 for α = 0,05 og 11,15 for α = 0,001. Vår F er med andre ord langt over kritisk verdi. Vi kan derfor si at vår regresjonsmodell gir en signifikant bedre prediksjon av platesalg enn alternativet. Reklame er med andre ord en god prediktor for platesalg.
 
 Helt nøyaktig kan vi regne ut kritisk verdi (som vi har gjort i R) for df 1 og df 198:
 
 ```{r}
-qf(p=.05, df1=1, df2=198, lower.tail=FALSE)
+qf(p = .05, df1 = 1, df2 = 198, lower.tail = FALSE)
 ```
 
 Ut fra dette kan vi si det er svært usannsynlig at forbedringen fra referansemodellen (gjennomsnittet) til vår modell er tilfeldig. Vi kan også si at dersom forbedringen ved regresjonsmodellen er større enn unøyaktigheten i modellen så vil F > 1. 
 
-Til slutt vil vi se på konfidensintervallet:
+Til slutt vil vi se på konfidensintervallet (se diskusjon om konfidensintervall lenger opp):
 
 ```{r}
 FieldOLS_reg <- lm(Sales ~ Adverts, Field_OLS_data)
@@ -355,7 +490,7 @@ nocite: |
 ---
 Det er også verdt å merke seg at det ikke er ønskelig med for mange respondenter, da et svært stort antall respondenter vil gi statistisk signifikans for nesten enhver multippel korrelasjon  – "For both statistical and practical reasons, then, one wants to measure the smallest number of cases that has a decent chance of revealing a relationship of a specified size" [@tabachnikUsingMultivariateStatistics2007, s.123]. Dette har med andre ord mye å si for hvordan man planlegger en studie. @milesApplyingRegressionCorrelation2001, som angitt i siste rad i tabellen over, ser på sammenhengen mellom effektstørrelse, statistisk styrke og utvalgsstørrelse. Field [-@fieldDiscoveringStatisticsUsing2009, s.223, figur 7.10] har modifisert grafisk denne sammenhengen:
 
-![Sammenheng antall prediktorer og nødvendig utvalgsstørrelse gitt ønsket statistisk styrke](Field_s223.png)
+![Sammenheng antall prediktorer og nødvendig utvalgsstørrelse gitt ønsket statistisk styrke, fra Field (2009)](Field_s223.png)
 
 #### De uavhengige variablene er additiv for den avhengige variabelen
 
@@ -364,7 +499,7 @@ Med andre ord, hvis effekten av $x_1$ på $y$ er avhengig av hvordan $x_2...x_n$
 
 La oss vise dette med et eksempel fra @thraneAppliedRegressionAnalysis2019 (se figur 6.1). Dersom vi har data for kvinners og menns inntekt relatert til antall års utdannelse vil vi kunne se i en regresjonsanalyse at antall års utdanning predikerer inntekt. Forutsetningen om additivitet sier da at antall års utdanning har lik effekt på inntekt for menn og kvinner. Slik er det imidlertid ikke. Generisk kan det framstilles som i grafen under:       
 
-```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE, fig.cap = "Non-additiv effekt, fra Thrane (2019)"}
 lengdeutd <- c(1,2,3,4,5,6,7,8,9,10,11,12)
 menn <- seq(650000, 1000000, by = 30000)
 kvinner <- seq(600000, 1000000, by = 35000)
@@ -393,28 +528,25 @@ saleslm <- ols_regress(Sales~. ,data = Carseats)
 saleslm
 ```
 
-Denne modellen kan altså forklare 87 % av variansen i Sales. 
+```{r echo = FALSE}
+rsquared3 <- lm(Sales ~ ., data = Carseats)
+rsquared4 <- summary(rsquared3)
+```
+
+Denne modellen kan altså forklare `r round(summary(rsquared3)$r.squared, 2)*100`% av variansen i Sales. 
 Vi kan imidlertid mistenke at det kan være en interaksjon mellom variablene Income og Population - jo større befolkning, jo større inntekt tilgjengelig. 
 
 ```{r}
-saleslm2 <- lm(Sales~. ,Carseats)
-saleslm1 <- lm(Sales~.+Population*Income, Carseats)
+saleslm2 <- lm(Sales ~. ,Carseats)
+saleslm1 <- lm(Sales ~. + Population * Income, Carseats)
 compareCoefs(saleslm2, saleslm1)
 ```
 
-Forskjellen mellom modellene ligger altså i den nederste koeffisienten (Income:Population) som da er den kombinerte og samtidige effekten av de to variablene. Vi ser at effekten er veldig liten, men grafisk kan vi også se interaksjonseffekten:
-
-```{r}
-ggplot(data=Carseats, aes(x=Income, y=Sales, group=1)) +geom_smooth(method=lm,se=F)+ 
-    geom_smooth(aes(Population,Sales), method=lm, se=F,color="black")+xlab("Income and Population")+labs(
-        title="Inntekt i blått - Befolkning i svart")
-```
-
-Vi ser en klar interaksjon ved at linjene krysser (jfr. Thranes merknad om at forutsetningen om additivitet gir parallelle linjer).
+Forskjellen mellom modellene ligger altså i den nederste koeffisienten (Income:Population) som da er den kombinerte og samtidige effekten av de to variablene. Vi ser at effekten tilsynelatende er veldig liten
 
 I R har vi et hjelpemiddel i pakken *interactions*:
 
-```{r}
+```{r fig.cap = "Interaksjonseffekt"}
 interact_plot(saleslm1, pred = Population, modx = Income)
 ```
 
@@ -432,11 +564,11 @@ Vi tar, som navnet "linær regresjonsanalyse" ganske klart indikerer, utgangspun
 
 Vi har allerede sett en grafisk framstilling under punktet analyse av dataene som lar oss visuelt vurdere denne forutsetningen:
 
-```{r}
+```{r fig.cap = "Scatterplott for variablene 'Adverts' og 'Sales'"}
 scatterplot(Adverts ~ Sales, data = Field_OLS_data)
 ```
 
-Den stiplede linjen som buer ca midt i det skraverte området gjør ingen forutsetninger, men plotter bare dataene (ofte kalt "scatterplot smoother"). Vi kan vurdere om denne er nærme eller langt fra en rett linje. I grafen over ligger det både en stiplet buet linje og en rett linje (regresjonslinje). I vårt tilfelle vil vi raskt konkludere med at forholdet mellom de to variablene er tilnærmet lineært.
+Den stiplede linjen som buer ca midt i det skraverte området gjør ingen forutsetninger, men plotter bare dataene (ofte kalt "scatterplot smoother"). Vi kan vurdere om denne er nærme eller langt fra en rett linje. I grafen over ligger det både en stiplet buet linje og en rett linje (regresjonslinje). I vårt tilfelle vil vi kunne konkludere med at forholdet mellom de to variablene har en form som ikke er helt lineær, men som samtidig ikke er veldig "ulineær".
 
 #### Residualene skal være normalfordelte
 
@@ -450,39 +582,35 @@ names(FieldOLS_reg)
 
 Residualene lagres altså i modellen og vi kan plotte ut disse:
 
-```{r}
+```{r fig.cap = "Residualplott"}
 FieldOLS_reg <- lm(Sales ~ Adverts, Field_OLS_data)
-
-hist(FieldOLS_reg$residuals)
-
-FieldOLSresid <- FieldOLS_reg$residuals
-
 plott3 <- ggplot(data = FieldOLS_reg, aes(FieldOLS_reg$residuals)) + 
-  geom_histogram(bins = 10, color = "#000000", fill = "#0099F8") +
-    theme_classic() +
+    geom_histogram(bins = 10, color = "black", fill = "lightblue") +
+    theme_bw() +
     labs(title = 'Histogram av residualer', x = 'Residualer', y = 'Antall')
-
 plott3
 ```
 
-Vi kan også se på et Q-Q plott og hente ut testverdier for ulike normalitetstester:
+Vi kan også se på et QQ plott og hente ut testverdier for ulike normalitetstester:
 
-```{r}
-ols_plot_resid_qq(FieldOLS_reg)
+```{r fig.cap = "QQ plott for regresjonsanalyse"}
+ols_plot_resid_qq(FieldOLS_reg) +
+    theme_bw()
+    
 ols_test_normality(FieldOLS_reg)
 ```
 
-Q-Q plottet viser noe avvik.
+QQ plottet viser noe avvik.
 
 En hendig graf er også et plott av residualene på y-aksen og "fitted values" på x-aksen:
 
-```{r}
+```{r fig.cap = "Residual vs. fitted values"}
 ols_plot_resid_fit(FieldOLS_reg)
 ```
 
 I forhold til forutsetningen om normalfordelte residualer skal være spredd tilfeldig rundt 0. 
 
-Sett under ett kan det i dette tilfellet se ut som at residualene er tilnærmet (nok) normalfordeling.
+Sett under ett kan det i dette tilfellet se ut som at residualene er tilnærmet (nok) normalfordeling. Vi ser det er en viss konisk form på residualene og vi så også på QQ-plottet at det var visse avvik i endene.
 
 #### Fravær av multikolinearitet
 
@@ -498,10 +626,10 @@ Vi kan derfor sjekke for multikolinearitet gjennom å se på en korrelasjonsmatr
 
 ```{r}
 FieldKorr <- cor(Field_OLS_data, method = "pearson")
-round(FieldKorr, 2)
+tab_corr(FieldKorr, triangle = "lower")
 ```
 
-Hvis vi følger @pallantSPSSSurvivalManual2010 ser vi først at alle de tre uavhengige variablene korrelerer mellom $0.33$ og $0.60$ med den avhengige. De bivariate korrelasjonene mellom de uavhengige variablene erpå hhv. $0.08$, $0.10$ og $0.18$. Ut fra korrelasjonsmatrisen bør det ikke være grunn til å frykte multikolinearitet.
+Hvis vi følger @pallantSPSSSurvivalManual2010 ser vi først at alle de tre uavhengige variablene korrelerer mellom $0.33$ og $0.60$ med den avhengige. De bivariate korrelasjonene mellom de uavhengige variablene er på hhv. $0.08$, $0.10$ og $0.18$. Ut fra korrelasjonsmatrisen bør det ikke være grunn til å frykte multikolinearitet.
 
 Dette er aktuelt i multippel regresjonsanalyse, så for å vise dette lager vi en slik for datasettet til Field der vi inkluderer tre uavhengige variabler:
 
@@ -510,7 +638,7 @@ FieldOLS_mult_reg <- lm(Sales ~ ., data = Field_OLS_data)
 brief(FieldOLS_mult_reg)
 ```
 
-Imidletid finnes det også advarsler mot å se kun på de parvise korrelasjonene. Selv om korrelasjonen mellom f.eks. fem par variabler er lav/under 0.8/0.9, kan det hende at korrelasjonen mellom fire av disse tilsammen forklarer en veldig høy andel av variansen i den femte, uten at dette fremkommer i de parvise korrelasjonene. En måte å supplere vurderingen av multikolinearitet er gjennom VIF ("Variance Inflation Factor"). VIF bruker multippel regresjonsanalyse (se evt kap. om regresjonsanalyse) for å regne ut graden av multikolinearitet. Det statistikkprogrammet ditt gjør er å kjøre en og en av variablene som avhengig variabel:
+Imidletid finnes det også advarsler mot å se kun på de parvise korrelasjonene. Selv om korrelasjonen mellom f.eks. fem par variabler er lav/under 0.8/0.9, kan det hende at korrelasjonen mellom fire av disse tilsammen forklarer en veldig høy andel av variansen i den femte, uten at dette fremkommer i de parvise korrelasjonene. En måte å supplere vurderingen av multikolinearitet er gjennom VIF ("Variance Inflation Factor"). VIF bruker multippel regresjonsanalyse for å regne ut graden av multikolinearitet. Det statistikkprogrammet ditt gjør er å kjøre en og en av variablene som avhengig variabel:
 
 $x1 <- x2, x3, x4, x5$
 
@@ -522,11 +650,11 @@ $x4 <- x1, x2, x3, x5$
 
 $x5 <- x1, x2, x3, x4$
 
-Hver av disse modellene fremskaffer en $R^2$ (igjen: se kapittelet om regresjonsanalyse for mer forklaring om dette). For den første modellen ovenfor forklarer $R^2$-verdien  hvor mye av variansen i x1 som forklares av x2, x3, x4 og x5 - og tilsvarende for de andre modellene. Det innebærer at jo høyere $R^2$-verdi, jo høyere multikolinearitet. VIF-verdien regnes ut slik:
+Hver av disse modellene fremskaffer en $R^2$. For den første modellen ovenfor forklarer $R^2$-verdien  hvor mye av variansen i x1 som forklares av x2, x3, x4 og x5 - og tilsvarende for de andre modellene. Det innebærer at jo høyere $R^2$-verdi, jo høyere multikolinearitet. VIF-verdien regnes ut slik:
 
 $VIF_i=\frac{1}{1-R^2_i}$
 
-Vi kan også se på Variance Inflation Factor (VIF), som måler hvor mye variansen til en estimert regresjonskoeffisient øker pga. multikollinearitet. 
+VIF måler med andre ord hvor mye variansen til en estimert regresjonskoeffisient øker pga. multikollinearitet. 
 
 ```{r}
 ols_vif_tol(FieldOLS_mult_reg)
@@ -534,7 +662,7 @@ ols_vif_tol(FieldOLS_mult_reg)
 
 VIF kan anta verdier fra 1, som indikerer 0 multikolinearitet. Så hvilken verdi av VIF er så høy at vi har problemer med multikolinearitet? @hairjr.MultivariateDataAnalysis2010 og @myersClassicalModernRegression1990 opererer med en akseptabel grense på 10 - altså at over 10 er det for høy multikolinearitet. Andre anbefaler en langt lavere grense. @menardAppliedLogisticRegression2002 hevder at VIF > 5.0 er bekymringsfullt, mens @johnstonConfoundingCollinearityRegression2018 sier at VIF > 2.5 indikerer bekymringsfull multikolinearitet. 
 
-Her er rådene (også) litt ulike. En VIF-verdi på 10 for VIF anses f.eks. i pakken "olsrr" i R (som vi har brukt over) som et tegn på alvorlig multikolinearitet [jfr. @belsleyRegressionDiagnosticsIdentifying1980]. Der settes VIF på 4 som en grense der man bør se nærmere på om multikolinearitet kan være et problem. @bowermanLinearStatisticalModels1990 tilføyer at snittet av VIF for de uavhengige variablene ikke bør være vesentlig over 1. 
+For VIF er altså rådene (også) litt sprikende. En VIF-verdi på 10 for VIF anses f.eks. i pakken "olsrr" i R (som vi har brukt over) som et tegn på alvorlig multikolinearitet [jfr. @belsleyRegressionDiagnosticsIdentifying1980]. Der settes VIF på 4 som en grense der man bør se nærmere på om multikolinearitet kan være et problem. @bowermanLinearStatisticalModels1990 tilføyer at snittet av VIF for de uavhengige variablene ikke bør være vesentlig over 1. 
 
 @dejonghImpactPreselectedVariance2015 framholder at problemet med multikolinearitet er et mindre problem jo større utvalgsstørrelsen er - deres studie undersøkte utvalgsstørrelser på 100, 250, 500, 750, 1000 og 10000. Fra 500 og oppover var feilene små. Så noen krystallklar anbefaling er ikke lett å finne. Et tips kan være å sjekke om det er noen retningslinjer eller allment anerkjente anbefalinger innenfor ditt fagområde.
 
@@ -544,53 +672,97 @@ Variansen til residualene for de uavhengige variablene skal være lik [@milesApp
 
 Variansen til residualen kan altså ikke avhenge av de uavhengige variablene, men være lik på alle nivåer av verdier for prediktorene. Dersom vi har heteroskedastisitet vil spredningen rundt regresjonslinja variere med X.
 
-Forutsetningen om homoskedastisitet er godt illustrert av @milesApplyingRegressionCorrelation2001, s.100-101, fig. 4.22, 4.23 og 4.24:
+Forutsetningen om homoskedastisitet er godt illustrert av @milesApplyingRegressionCorrelation2001:
 
-![](Heteroskedasicity.png)
+![Homoskedastisitet, illustrert i Miles & Shevlin, s.100-101, fig. 4.22, 4.23 og 4.24](Heteroskedasicity.png)
 
 Figuren til venstre viser et scatterplot for residualer. I midten har vi samme fordeling av residualer med et antall normalfordelingskurver. Til høyre ser vi et alternativt scatterplot for residualer som bryter med forutsetningen om homoskedastisitet. 
-
-@lovasStatistikkUniversiteterOg2013 illustrerer det samme slik i eksempelet om motorstørrelse og drivstofforbruk:
-
-![](Homoskedastisitet.png)
-
-Variasjonen i residualene er like stor uansett verdien av x.
+Når residualene er homoskedastiske er variasjonen i residualene like stor uansett verdien av x.
 
 Den såkalte White's test vil også kunne være et godt hjelpemiddel:
 
 ```{r}
 FieldOLS_mult2 <- lm(Sales ~ Adverts + Airplay + Image, data = Field_OLS_data)
-bptest(FieldOLS_mult2, ~ Adverts*Airplay*Image + I(Adverts^2) + I(Airplay^2)+ I(Image^2), data = Field_OLS_data)
+heteroskedtest <- bptest(FieldOLS_mult2, ~ Adverts*Airplay*Image + I(Adverts^2) + I(Airplay^2)+ I(Image^2), data = Field_OLS_data)
+heteroskedtest
 ```
 
-Her ser vi at p-verdien er $0.4027$, dvs. vi kan ikke forkaste nullhypotesen = vi har ikke grunn til å konkludere med at vi har heteroskedasisitet i regresjonsmodellen.
+Her ser vi at p-verdien er `r round(heteroskedtest$p.value, 3)` $0.4027$, dvs. vi kan ikke forkaste nullhypotesen = vi har ikke grunn til å konkludere med at vi har heteroskedasisitet i regresjonsmodellen.
 
 #### Fravær av autokorrelasjon
 
-Dette er typisk et problem i tidsserieanalyser eller geografiske analyser [@eikemoKvantitativAnalyseMed2007, a.124], der "verdien på variabel X for enhet N i stor grad er bestemt av verdien på variabel X for enhet N-1". Et annet kjent eksempel er fra aksjemarkedet: Hvis en aksje stiger i dag er det mer sannsynlig at den stiger i morgen. Verdien av aksjen i morgen avhenger (delvis) av verdien i dag. Verdiene i dataene autokorrelerer. Grad av autokorrelasjon er således et mål på forholdet mellom en variabels verdi på tidspunkt X og verdien på tidspunkt før X.
+Dette er typisk et problem i tidsserieanalyser eller geografiske analyser [@eikemoKvantitativAnalyseMed2007, s.124], der "verdien på variabel X for enhet N i stor grad er bestemt av verdien på variabel X for enhet N-1". Et annet kjent eksempel er fra aksjemarkedet: Hvis en aksje stiger i dag er det mer sannsynlig at den stiger i morgen. Verdien av aksjen i morgen avhenger (delvis) av verdien i dag. Verdiene i dataene autokorrelerer. Grad av autokorrelasjon er således et mål på forholdet mellom en variabels verdi på tidspunkt X og verdien på tidspunkt før X.
 
 To tilfeldige observasjoner bør ikke ha korrelasjon i residualen. Dette kan testes gjennom en Durbin-Watson test [@durbinTestingSerialCorrelation1951].
 Durbin-Watson testen er en test på autokorrelasjon i residualene, og vil ha en verdi på mellom 0 og 4. Verdien 2 indikerer ingen autokorrelasjon. Verdier mellom 0 og 2 indikerer en positiv autokorrelasjon, mens verdier mellom 2 og 4 indikerer en negativ autokorrelasjon. En konservativ tommelfingerregel sier at verdier under 1 og over 3 er bekymringsfullt [@fieldDiscoveringStatisticsUsing2012].
 
 ```{r}
-durbinWatsonTest(FieldOLS_reg)
+dwt <- durbinWatsonTest(FieldOLS_reg)
+dwt
 ```
 
-Her viser verdien $2.03$ noe som ikke gir grunn til bekymring.
+Her viser verdien `r round(dwt$dw, 2)` noe som ikke gir grunn til bekymring.
 
-#### Fravær av innflytelsesrike observasjoner/caser
 
-Vi så under punktet "Analyse av dataene" (se for eksempel Boxplottet av Adverts) at vi har noen observasjoner i modellen som kan defineres som uteliggere. Vi kan identifisere disse gjennom residualene:
+#### Uteliggere og fravær av (for) innflytelsesrike observasjoner/caser
+
+##### Grubbs' test
+
+Det første vi kan gjøre er å foreta en såkalt "Grubbs test", som gir oss en indikasjon på om den høyeste verdien i variabelen bør regnes som en uteligger (hvis den høyeste ikke er det vil ingen andre heller være det).
 
 ```{r}
-car::qqPlot(FieldOLS_reg, id.method="identify", main="Q-Q Plott")
+grubbstest <- grubbs.test(Field_OLS_data$Adverts)
+grubbstest
 ```
 
-Vi ser at residualene for 1 og 169 identifiseres som statistisk signifikante uteliggere
+Vi så under punktet "Analyse av dataene" (se for eksempel Boxplottet av Adverts) at vi har noen observasjoner i modellen som trolig kan defineres som uteliggere. Vi kan identifisere disse gjennom residualene. Først velger vi et standardisert plott av residualene. Standardiering av residualene innebærer å ta residualverdien og dele på estimatet for standardavviket for residualene, og er et mål på størrelsen på avviket mellom observerte og forventede verdier. 
+
+
+```{r}
+ols_plot_resid_stand(FieldOLS_reg) +
+    theme_bw()
+```
+
+En utfordring med "standardized residuals" er at uteliggere kan være så innflytelsesrike på regresjonsmodellen at estimatene fra modellen "trekkes" mot uteliggerne. Ideen i "studentized residuals" er å fjerne observasjoner en etter en, og rekalkulere regresjonsmodellen etter hver observasjon som fjernes. Dette produserer "deleted residuals". Når disse standardiseres (ved å dele på estiamtet for standardavviket for resodualene) blir dette "studentized residuals".
+
+Vi kan illustrere poenget med "studentized residuals" slik:
+
+```{r fig.cap = "Nytte av studentized residuals"}
+x1 <- c(2, 4, 6, 8, 10)
+y1 <- c(2, 4, 6, 8, 2)
+x2 <- c(2, 4, 6, 8)
+y2 <- c(2, 4, 6, 8)
+data1 <- tibble(x1, y1)
+plott1 <- ggplot(data1, aes(x = x1, y = y1)) +
+    geom_point(col = "blue", size = 3) +
+    stat_smooth(method = "lm", col = "red", se = FALSE) + 
+    xlab("x") + 
+    ylab("y") +
+    theme_bw()
+data2 <- tibble(x2, y2)
+plott2 <- ggplot(data2, aes(x = x2, y = y2)) +
+    geom_point(col = "blue", size = 3) +
+    stat_smooth(method = "lm", col = "magenta", se = FALSE) + 
+    xlab("x") + 
+    ylab("y") +
+    theme_bw()
+ggarrange(plott1, plott2, ncol = 2, nrow = 2)
+
+```
+
+I venstre regresjonsplott over har vi en klar uteligger. Den røde regresjonslinja "trekkes" mot uteliggeren. Dette påvirker åpenbart residualene. I den venstre er uteliggeren fjernet og regresjonslinja rekalkulert etter fjerningen. Dette påvirker (like åpenbart) residualene. "Studentied residuals" kalles også ofte "Deleted t residuals". Matematisk brukes "Mean Square Error" (MSE) for alle obervasjonene i modellen til å standardisere, mens "studentized" bruker MSE for observasjonene i modellen **fratrukket fjernede obervasjoner** (MSE jsuteres med andre ord for hver fjerning).
+
+
+```{r fig.cap = "Studentized Residual Plot"}
+ols_plot_resid_stud(FieldOLS_reg) +
+    theme_bw()
+```
+
+Dette plottet viser residualene delt på deres estimerte standardavvik. Dersom en studentized residual er større enn +/- 3 vil denne testen definere observasjonen som en uteligger. Ut fra dette har vi ikke indikasjoner på utfordringer med uteliggere.
 
 ##### Hampel filter
 
-Hampel filter innebærer at man ser alle observasjoner som ligger utenfor intervallet $median +/- 3 median\ absolute\ deviation\ (MAS)$.
+Hampel filter, se feks. @pearsonGeneralizedHampelFilters2016 innebærer at man ser alle observasjoner som ligger utenfor intervallet $median +/- 3 median\ absolute\ deviation\ (MAD)$.
 
 ```{r}
 nedregrense <- median(Field_OLS_data$Adverts) - 3*(mad(Field_OLS_data$Adverts, constant = 1))
@@ -601,75 +773,88 @@ uteligger_ind <- which(Field_OLS_data$Adverts < nedregrense |Field_OLS_data$Adve
 uteligger_ind
 ```
 
-##### Grubbs' test
-
-Grubbs' test ser om den høyeste verdien i variabelen bør regnes som en uteligger (hvis den høyeste ikke er det vil ingen andre heller være det).
-
-```{r}
-grubbstest <- grubbs.test(Field_OLS_data$Adverts)
-grubbstest
-```
-
 ##### Rosners test
 
-Her angir vi det antallet vi tror er uteliggere, f.eks. fra et box plott.
+Her angir vi det antallet vi tror er uteliggere, f.eks. antallet som er identifisert gjennom Hampel filteret ovenfor. Rosners test [@rosnerPercentagePointsGeneralized1983] bør brukes på ca. normalfordelte data og med minimum 25 som utvalgsstørrelse. Vi har `r nrow(Field_OLS_data)` observasjoner og kan anta normalfordeling.         
 
 ```{r}
 rosnerstest <- rosnerTest(Field_OLS_data$Adverts,
-  k = 3
+  k = length(uteligger_ind)
 )
 rosnerstest$all.stats
 ```
 
-#### Influential cases
-
-Vi kan også kjøre analyser som identifiserer betydning/innvirkning ("influential cases"):
-
-```{r}
-influenceIndexPlot(FieldOLS_reg, vars = "hat", id = list(n=3))
-```
-
-Det som i grafen over kalles "hat values" er et vanlig mål for å finne observasjoner/caser som er relativt langt fra senter av prediksjonsrommet og som derfor **potensielt** har stor innflytelse på OLS-regresjonskoeffisientene ("leverage") [@foxCompanionAppliedRegression2019]. @huberRobustStatistics1981 anbefaler følgende grenseverdier: verdier under $0.2$ er ønskelig, verdier over $0.5$ uønskede, og verdier mellom $0.2$ og $0.5$ problematiske. 
-
-"Hat values" er altså et mål på potensiell innflytelse. Neste mål - *DfBetas* - er et mål på observasjonens effekt på regresjonskoeffisinenten for hver variabel med og uten den innflytelsesrike observasjonen - eller med andre ord: observasjonenes innflytelse på variablene. @belsleyRegressionDiagnosticsIdentifying1980 anbefaler 2 som cut-off verdi for å indikere innflytelsesrike observasjoner.
-
-```{r}
-ols_plot_dfbetas(FieldOLS_reg, print_plot = TRUE)
-```
-
-Pakken legger automatisk inn cutoff-verdi (i dette tilfellet 0.14). Formelen for utregning av dfbeta cutoff-verdi er $\frac{2}{\sqrt{n}}$, der n=antall observasjoner.
-
-Vi kan også se på *dffit* [@welschLinearRegressionDiagnostics1977]. 
-
-```{r}
-ols_plot_dffits(FieldOLS_reg)
-```
-
-Cutoff-verdi i dette tilfellet er 0.2. Formel for utregning er $2*\frac{\sqrt{(k+1)}}{(n-k-1)}$, der k = antall prediktorer og n = antall observasjoner.
+Rosners test anslår at ingen at observasjoenne vi fant gjennom Hampelfilteret er uteliggere. 
 
 Det siste målet vi ønsker å se på (og trolig den mest brukte) er "Cook's distance", som gir et mål på observasjonens totale innflytelse på regresjonsmodellen. 
 
-```{r}
-influenceIndexPlot(FieldOLS_reg, vars = "Cook", id = list(n=3))
+```{r fig.cap = "Cook's distance"}
+ols_plot_cooksd_bar(FieldOLS_reg) +
+    theme_bw()
 ```
 
 I grafen over vises Cook's distance - et mål på vektet kvadratsum for forskjellene mellom de individuelle elementene til koeffisienten. Sagt på en annen måte: Vi bruker Cook's distance til å se hvilke observasjoner/caser som kan påvirke modellen vår uforholdsmessig mye (totalt sett). Dersom vi har mange caser med høy verdi på Cook's distance kan det være en indikasjon på at lineær regresjon kanskje ikke er en egnet analyse for det foreliggende datasettet. 
 
 Så hva er høy verdi på Cook's distance? Kilder som  @cookResidualsInfluenceRegression1982 og @tabachnikUsingMultivariateStatistics2007 angir at verdier over 1 er bekymringsfullt. Andre, som @foxRegressionDiagnosticsIntroduction2020, advarer mot en ren numerisk vurdering (og fremhever viktigheten av både grafisk presentasjon og vurdering av hvert enkelt tilfelle). En tilnærming som er anbefalt (se f.eks. @zachHowIdentifyInfluential2019) er å bruker forholdstallet $4/N$ - i vårt tilfelle $4/200=0.02$. 
 
-La oss hente opp Cook's distance for de største verdiene for de enkelte observasjoner:
+La oss hente opp Cook's distance for de observasjonene vi så i ovenstående plott:
 
 ```{r}
 mineCDverdier <- cooks.distance(FieldOLS_reg)
 mineCDverdier <- round(mineCDverdier, 3)
-head(sort(mineCDverdier, decreasing = TRUE), n = 10)
+head(sort(mineCDverdier, decreasing = TRUE), n = 6)
 ```
 
-Her kjenner vi igjen observasjonene 1, 169 og 42 som de med høyest verdi på Cook's distance, men også casene 10, 55 og 125 har verdier over anbefalingen som kommer fra $4/n$. Men vi ser også at verdien er relativt lave hvis man tar utgangspunkt i 1 som bekymringsfullt. For å vise eventuell justering av modellen som følge av uteliggere viser vi likevel framgangsmåte. 
+Her kjenner vi igjen observasjonene 1, 169 og 42 som de med høyest verdi på Cook's distance, men også casene 10, 55 og 125 har verdier over anbefalingen som kommer fra $4/n$. Men vi ser også at verdien er relativt lave hvis man tar utgangspunkt i 1 som bekymringsfullt. 
 
-Vi bør også undersøke "added variable plots" - i en regresjon kan observasjonene ha både en individuell og en sammensatt/felles påvirkning.
+#### Influential cases
+
+En annen grafisk mulighet er å bruke "Studentized Residuals vs Leverage Plot". 
 
 ```{r}
+ols_plot_resid_lev(FieldOLS_reg) +
+    theme_bw()
+```
+
+"Leverage" referer til hvor mye koeffisientene i regresjonslikningen vil endres dersom respektive obaservasjon ble fjernet. Observasjoner med høy påvirkning påvirker naturlig nok regresjonskoeffisientene i større grad enn observasjoner med lav påvirkning.
+
+Vi kan også kjøre analyser som identifiserer betydning/innvirkning ("influential cases"):
+
+```{r fig.cap = "hat-values"}
+influenceIndexPlot(FieldOLS_reg, vars = "hat", id = list(n=3))
+```
+
+Det som i grafen over kalles "hat values" er et vanlig mål for å finne observasjoner/caser som er relativt langt fra senter av prediksjonsrommet og som derfor **potensielt** har stor innflytelse på OLS-regresjonskoeffisientene ("leverage") [@foxCompanionAppliedRegression2019]. @huberRobustStatistics1981 anbefaler følgende grenseverdier: verdier under $0.2$ er ønskelig, verdier over $0.5$ uønskede, og verdier mellom $0.2$ og $0.5$ problematiske. 
+
+"Hat values" er altså et mål på potensiell innflytelse. 
+
+```{r fig.cap = "Hadi' Influence Measure"}
+ols_plot_hadi(FieldOLS_reg) +
+    theme_bw()
+```
+
+Hadi's metode [@hadiNewMeasureOverall1992; @hadiModificationMethodDetection1994] baserer seg på at uteliggere kan være uteliggere i uavhengige variabler, avhengige variabler eller begge. 
+
+Neste mål - *DfBetas* - er et mål på observasjonens effekt på regresjonskoeffisinenten for hver variabel med og uten den innflytelsesrike observasjonen - eller med andre ord: observasjonenes innflytelse på variablene. @belsleyRegressionDiagnosticsIdentifying1980 anbefaler 2 som cut-off verdi for å indikere innflytelsesrike observasjoner.
+
+```{r fig.cap = "dfBetas"}
+ols_plot_dfbetas(FieldOLS_reg)
+```
+
+Pakken legger automatisk inn cutoff-verdi (i dette tilfellet 0.14). Formelen for utregning av dfbeta cutoff-verdi er $\frac{2}{\sqrt{n}}$, der n=antall observasjoner.
+
+Vi kan også se på *dffit* [@welschLinearRegressionDiagnostics1977]. 
+
+```{r fig.cap = "dfFit"}
+ols_plot_dffits(FieldOLS_reg) +
+    theme_bw()
+```
+
+Cutoff-verdi i dette tilfellet er 0.2. Formel for utregning er $2*\frac{\sqrt{(k+1)}}{(n-k-1)}$, der k = antall prediktorer og n = antall observasjoner.
+
+Vi bør også undersøke "added variable plots" - i en regresjon kan observasjonene ha både en individuell og en sammensatt/felles påvirkning. 
+
+```{r fig.cap = "Added value plott"}
 avPlots(FieldOLS_reg, id=list(cex=0.75, n=3, method="mahal"))
 ```
 
@@ -697,20 +882,36 @@ Igjen, ikke de store endringene. Vi kan se at Intercept ($\beta$) går litt ned 
 
 La oss, for eksempelets skyld, manipulere datasettet slik at en analyse av Cook's distance ser slik ut:
 
-```{r}
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('Field_datasett_OLS2.xlsx')
+```
+
+```{r fig.cap = "Innflytelsesrike caser etter manipulasjon"}
 Field_OLS_data2 <- read_excel("Field_datasett_OLS2.xlsx")
 FieldOLS_man <- lm(formula = Sales ~ Adverts, data = Field_OLS_data2)
 influenceIndexPlot(FieldOLS_man, vars = c("Cook"), id = list(n=3))
+```
+
+Vi kan gjenta f.eks. Hadi's:
+
+```{r fig.cap = "Hadi' Influence Measure #2"}
+ols_plot_hadi(FieldOLS_man) +
+    theme_bw()
+```
+
+Og et "added variable plot" for å illustrere:
+```{r}
+avPlots(FieldOLS_man, id=list(cex=0.75, n=3, method="mahal"))
 ```
 
 Hvis vi nå kjører denne modellen opp mot en modell der vi tar bort 11 og 23 får vi:
 
 ```{r}
 FieldOLS_man2 <- update(FieldOLS_man, subset = -c(11, 23))
-compareCoefs(FieldOLS_man, FieldOLS_man2)
+koeff <- compareCoefs(FieldOLS_man, FieldOLS_man2)
 ```
 
-Her ser vi koeffisienten for Adverts stiger fra 0.01 til 0.09, eller en endring på 11.1%. 
+Her ser vi koeffisienten for Adverts stiger fra `r round(koeff[4,1], 3)` til `r round(koeff[4,2], 3)`, eller en endring på `r round(((koeff[4,2]-koeff[4,1])/koeff[4,1])*100, 0)`%. 
 
 ### Steg 7: Eventuell analyse av revidert modell
 
@@ -753,7 +954,12 @@ tab_model(FieldOLS_reg)
 
 Vi viser her rapportering av en enkel lineær regresjonsanalyse etter APA-standard:
 
-En enkel lineær regresjon ble gjennomført for å predikere salgstall per uke basert på sum brukt på reklame uka før lansering. Vi fant en signifikant regresjonslikning (F(1,198) = 99.59, $\beta$ = 134.14p < .001) med en $R^2$ på .335, 95% CI [119.28, 149.00].
+```{r echo = FALSE}
+konfint <- confint(FieldOLS_reg, level = .95)
+```
+
+
+En enkel lineær regresjon ble gjennomført for å predikere salgstall per uke basert på sum brukt på reklame uka før lansering. Vi fant en signifikant regresjonslikning (F(`r dfd`,`r dfn` = `r format(round(f_verdi, 2), nsmall = 2)`, $\beta$ = `r format(round(intercept2, 2), nsmall = 2)`, `r p_verdi2`) med en $R^2$ på `r round(r_squared, 3)`, 95% [`r format(round(konfint[1,1], 2), nsmall = 2)`, `r format(round(konfint[1,2], 2), nsmall = 2)`].
 
 ### Til slutt for R-brukere...
 
@@ -762,11 +968,12 @@ En enkel lineær regresjon ble gjennomført for å predikere salgstall per uke b
 Forfatterne har laget en samling av regresjonsdiagnostikk som vi viser her på Fields data der vi laget en multippel regresjonsmodell:
 
 ```{r}
-options(scipen=999)
 regression.diagnostics(FieldOLS_mult_reg)
 ```
 
 Analysen gir en samlet oversikt over et antall parametere og søker å hjelpe til med beslutning om forutsetninger er ok/ikke ok, men vi vil understreke at kunnskap om hva som ligger bak de ulike testene og kriteriene er essensielt. Mer informasjon om parameterene finner dere [her](https://ihrke.github.io/rnorsk/reference/regression.diagnostics.html).
+
+En praktisk tilnærming til regresjonsanalyse kan være (for R-brukere) å kjøre denne samlede testen først og deretter, om nødvendig, spole tilbake i dette kapittelet dersom man får indikasjoner på problemer i denne samlede testen.
 
 ## Standard multippel regresjonsanalyse
 
@@ -812,7 +1019,7 @@ Pallant_survey <- as.data.frame(read_excel("Pallant_survey.xlsx"))
 
 Datasettet er for stort til å vises fram i sin helhet, men vi skal bruke to uavhengige variabler - tmast (Control of external events) og tpcioss (Control of internal states) mot den avhengige variabelen tpstress (Perceived stress).
 
-Vi ønsker altså å se om en gruppe studenters (N = 439) egenrapporterte oppfattelse av sin kontroll over eksterne forhold som kan skape stress og deres evne til å kontrollere deres følelser, tanker og fysiske reaksjoner [@pallantDevelopmentValidationScale2000]. Vi kan derfor se nærmere på variablene.
+Vi ønsker altså å se om en gruppe studenters (N = 439) egenrapporterte oppfattelse av sin kontroll over eksterne forhold som kan skape stress og deres evne til å kontrollere deres følelser, tanker og fysiske reaksjoner [@pallantDevelopmentValidationScale2000]. Vi kan se nærmere på variablene.
 
 ```{r}
 Pallant_survey2 <- select(Pallant_survey, tmast, tpcoiss, tpstress)
@@ -820,21 +1027,38 @@ Pallant_survey2 <- na.omit(Pallant_survey2)
 summarytools::descr(Pallant_survey2, stats = "common")
 ```
 
-```{r}
-par(mfrow=(c(2,2)))
-histtmast <- with(Pallant_survey2, hist(tmast))
-histtpcoiss <- with(Pallant_survey2, hist(tpcoiss))
-histtpstress <- with(Pallant_survey2, hist(tpstress))
+```{r fig.cap = "Histogrammer for Pallant survey", warning = FALSE, message = FALSE}
+tmastplott <- ggplot(Pallant_survey2, aes(tmast)) + 
+    geom_histogram(bins = 10, color = "black", fill = "lightblue") + 
+    theme_bw()
+tpcoissplott <- ggplot(Pallant_survey2, aes(tpcoiss)) + 
+    geom_histogram(bins = 10, color = "black", fill = "lightblue") + 
+    theme_bw()
+tpstressplott <- ggplot(Pallant_survey2, aes(tpstress)) + 
+    geom_histogram(bins = 10, color = "black", fill = "lightblue") + 
+    theme_bw()
+ggarrange(tmastplott, tpcoissplott, tpstressplott, 
+          ncol = 2, nrow = 2)
 ```
 
-```{r}
+```{r fig.cap = "QQ plott 'tmast'"}
 qqtmast <- car::qqPlot(~ tmast, data = Pallant_survey2)
+```
+
+```{r fig.cap = "QQ plott 'tpcoiss'"}
 qqtpcoiss <- car::qqPlot(~ tpcoiss, data = Pallant_survey2)
+```
+
+```{r fig.cap = "QQ plott 'tpstress'"}
 qqtpstress <- car::qqPlot(~ tpstress, data = Pallant_survey2)
 ```
 
-```{r}
-boxplot(Pallant_survey2)
+
+```{r fig.cap = "Boxplott for 'tmast', 'tpcoiss' og 'tpstress'", warning = FALSE, message = FALSE}
+Pallant_long <- melt(Pallant_survey2)
+ggplot(Pallant_long, aes(x = variable, y = value, color = variable)) + 
+    geom_boxplot() +
+    theme_bw()
 ```
 
 ### Evtentuelt valg av prediktorer ut fra analyse av dataene
@@ -843,7 +1067,7 @@ Vi gjør ingen analyse av dette da vi har valgt to uavhengige variabler ut fra e
 
 ### Lage modell (kjøre regresjonsanalysen)
 
-![](PallantOLS.png){width=50%}
+![Modell for multippel regresjonsanalyse](PallantOLS.png){width=75%}
 
 ### Analyse av resultatene (diagnostikk)
 
@@ -851,7 +1075,7 @@ Vi gjør ingen analyse av dette da vi har valgt to uavhengige variabler ut fra e
 
 I multippel regresjonsanalyse har vi mer enn en prediktor/uavhengig variabel. Som regel kan vi ønske å inkludere mer enn en prediktor fordi vi sjeldent klarer å fange nok av variansen i en avhengig variabel gjennom en prediktor. Samtidig ønsker vi ikke flere uavhengige variabler enn nødvendig for å lage en så enkel modell som mulig som gir oss prediksjoner vi kan bruke. Matematisk er det også slik at enhver uavhengig variabel som har en grad av korrelasjon med den avhengige variabelen vil bidra til å øke $R^2$ uten at det nødvendigvis gjør modellen "riktigere" (men kan gjøre den vanskeligere å tolke). Dersom vi legger til unødvendige uavhengige variabler risikerer vi det som kalles overfitting - altså at modellen blir god på å beskrive tilfeldige feil i dataene heller enn å beskrive forholdet mellom variablene. Resultatet er at modellen ikke kan generaliseres. 
 
-![Underfit - God fit - Overfit](Fit.png)
+![Underfit - God fit - Overfit](Fit.png){width=75%}
 
 Vi kan også se tilbake på regresjonsforutsetningene og vil se at et stort antall uavhengige variabler er en invitasjon til multikolinearitet. 
 
@@ -868,6 +1092,10 @@ For å unngå dette er det viktig å tenke på forholdstallene som ble diskutert
 
 Vi skal illustrere overfitting basert på et eksempel fra @frostHowInterpretAdjusted2022 (dette eksempelet har altså ikke noe direkte med analysen vi er inne i - Pallant sitt datasett - men er tatt med for å illustrere poenget med *overfitting*). 
 
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('PresidentRanking.csv')
+```
+
 ```{r}
 PresidentRanking <- read.csv("PresidentRanking.csv")
 summarytools::descr(PresidentRanking)
@@ -875,55 +1103,110 @@ summarytools::descr(PresidentRanking)
 
 Datasettet inneholder to variabler: Hvordan historikere rangerer amerikanske presidenter (Historians.rank) og hvor stor generell støtte presidenter har hatt i befolkningen (Approval.High). 
 
-```{r}
-presidentlm <- lm(formula = Historians.rank ~ Approval.High, data = PresidentRanking)
-plot(Historians.rank ~ Approval.High, data = PresidentRanking)
-abline(presidentlm, lwd = 2, col = "red")
-summ(presidentlm)
+```{r fig.cap = "Sammenheng 'folkets dom' og 'historikeres dom' over US presidenter", warning = FALSE, message = FALSE}
+presidentlm <- lm(Historians.rank ~ Approval.High, data = PresidentRanking)
+presplott <- ggplot(PresidentRanking, aes(Approval.High, Historians.rank)) +
+    geom_point() +
+    geom_smooth(method = 'lm', se = FALSE) +
+    theme_bw()
+presplott
+tab_model(presidentlm)
 ```
 
-Vi ser at R-squared er $0.0068$ - hvilket vi vil tolke som at det i praksis ikke er noen sammenheng mellom variablene. 
+```{r echo = FALSE}
+regverdier2 <- summary(presidentlm)
+r_squared2 <- regverdier2$r.squared
+```
+
+Vi ser at R-squared er `r r_squared2` - hvilket vi vil tolke som at det i praksis ikke er noen sammenheng mellom variablene. 
 
 Vi kan så bruke en polynomisk likning (her har vi brukt  $x^3$ for å lage regresjonslinjen):
 
 ```{r}
 presidentlm2 <- lm(Historians.rank ~ poly(Approval.High, degree=3), data=PresidentRanking)
-ggplot(data=PresidentRanking, aes(Approval.High,Historians.rank)) +
+presplott2 <- ggplot(data = PresidentRanking, aes(Approval.High, Historians.rank)) +
     geom_point() + 
-    geom_smooth(method="lm", formula=y~I(x^3)+I(x^2))
-summ(presidentlm2)
+    geom_smooth(method = "lm", formula = y ~ I(x^3) + I(x^2)) +
+    theme_bw()
+presplott2
+tab_model(presidentlm2)
 ```
 
-Vi har nå en R-squared på $0.66$ for denne modellen mot $0.0068$ for den lineære modellen. Dette betyr at den polynomiske regresjonsmodellen forklarer drøye 66% av variansen i den avhengige variabelen. Modellen vår er ut fra dette en god modell for våre data.
-Imidlertid gir en analyse av Predicted R-square oss et annet bilde av modellen:
+```{r echo = FALSE}
+regverdier3 <- summary(presidentlm2)
+r_squared3 <- regverdier3$r.squared
+```
+
+Vi har nå en R-squared på `r r_squared3` for denne modellen mot `r r_squared2` for den lineære modellen. Dette betyr at den polynomiske regresjonsmodellen forklarer drøye `r round(r_squared3, 2)*100`% av variansen i den avhengige variabelen. Modellen vår er ut fra dette tilsynelatende en god modell for våre data. Imidlertid gir en analyse av Predicted R-square oss et annet bilde av modellen:
 
 ```{r}
 ols_pred_rsq(presidentlm2)
 ```
 
-I realiteten forteller både verdien på predicted r-square på 0, og forskjellen mellom R-square ($0.664$) og predicted R-square $0$, at vi har en seriøs overfitting. Vi har med andre ord funnet en modell som beskriver dataene våre veldig godt, men som ikke kan brukes på andre data enn de vi har (vel, den kan jo brukes, men vil ikke kunne gi oss noe av verdi). Vi kan altså ikke predikere noe ut fra modellen.
+I realiteten forteller både verdien på predicted r-square på `r ols_pred_rsq(presidentlm2)`, og forskjellen mellom R-square i polynomisk modell `r r_squared3` og predicted R-square at vi har en seriøs overfitting. Vi har med andre ord funnet en modell som beskriver dataene våre rimelig godt, men som ikke kan brukes på andre data enn de vi har (vel, den kan jo brukes, men vil ikke kunne gi oss noe av verdi). Vi kan altså ikke predikere noe ut fra modellen. Dette er et poeng vi kommer sterkt tilbake til i kapittelet om maskinlæring.
+
+La oss gå tilbake til vårt eksempel på multippel regresjonsanalyse.
 
 ```{r}
 PallantOLS_reg <- lm(tpstress ~ tmast + tpcoiss, data = Pallant_survey2)
-summ(PallantOLS_reg)
+tab_model(PallantOLS_reg)
 ```
 
-Vi ser at $R^2 = 0.466$. Modellen kan altså forklare $46.6%$ av variansen i den avhengige variabelen. Vi ser at vi får en noe lavere verdi for «Adjusted R Squared» i forhold til «R Squared».  Når vi legger til en uavhengig variabel i en regresjonsanalyse er det lite sannsynlig at korrelasjonen mellom den nye uavhengige variabelen og den avhengige variabelen vil være nøyaktig 0. Den vil i stedet fluktuere rundt 0. Pga. denne tilfeldige fluktuasjonen rundt 0 vil $R^2$ alltid øke litt når man legger til en ny uavhengig variabel. Adjusted $R^2$ søker å kompensere for dette å få fram en mer korrekt verdi. Jo større antall uavhengige variabler, jo større forskjell vil man se mellom $R^2$ og Adjusted $R^2$. Det samme vil være tilfelle ved mindre utvalgsstørrelser fordi variasjonen rundt 0 vil være større i mindre utvalg. 
+```{r echo = FALSE}
+regverdier4 <- summary(PallantOLS_reg)
+r_squared4 <- regverdier4$r.squared
+ad_r_squared4 <- regverdier4$adj.r.squared
+tmastbeta <- regverdier4$coefficients[2,1]
+tpcoissbeta <- regverdier4$coefficients[3,1]
+f_verdi2 <- regverdier4$fstatistic[1]
+p_verdi_f <- regverdier4$fstatistic[5]
+dfd2 <- regverdier4$fstatistic[2] 
+dfn2 <- regverdier4$fstatistic[3]
+tmast_p_verdi <- regverdier4$coefficients[ 2, 4]
+tpcoiss_p_verdi <- regverdier4$coefficients[ 3, 4]
+tmast_p_verdi2 <- scales::pvalue(tmast_p_verdi,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+tpcoiss_p_verdi2 <- scales::pvalue(tpcoiss_p_verdi,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
 
-Vi kan også legge merke til at Predicted R-Squared er $0.456$ og dermed svært lik R-squared. 
+# Hente ut p-verdien for F test lm. Funksjon fra Stephen Turner (https://gettinggeneticsdone.blogspot.com/2011/01/rstats-function-for-extracting-f-test-p.html)
+
+pverdi_for_f <- function (modelobject) {
+	if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
+	f <- summary(modelobject)$fstatistic
+	p <- pf(f[1],f[2],f[3],lower.tail = F)
+	attributes(p) <- NULL
+	return(p)
+}
+pverdi_for_f(PallantOLS_reg)
+
+p_for_f <- scales::pvalue(pverdi_for_f(PallantOLS_reg),
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+```
+
+
+Vi ser at $R^2$ er `r round(r_squared4, 3)`. Modellen kan altså forklare `r round(r_squared4, 3)*100`% av variansen i den avhengige variabelen. Vi ser at vi får en noe lavere verdi for «Adjusted R Squared» (`r round(ad_r_squared4, 3)`i forhold til «R Squared» (`r round(r_squared4, 3)`. Når vi legger til en uavhengig variabel i en regresjonsanalyse er det lite sannsynlig at korrelasjonen mellom den nye uavhengige variabelen og den avhengige variabelen vil være nøyaktig 0. Den vil i stedet fluktuere rundt 0. Pga. denne tilfeldige fluktuasjonen rundt 0 vil $R^2$ alltid øke litt når man legger til en ny uavhengig variabel. Adjusted $R^2$ søker å kompensere for dette å få fram en mer korrekt verdi. Jo større antall uavhengige variabler, jo større forskjell vil man se mellom $R^2$ og Adjusted $R^2$. Det samme vil være tilfelle ved mindre utvalgsstørrelser fordi variasjonen rundt 0 vil være større i mindre utvalg. 
+
+Vi kan også legge merke til at Predicted R-Squared er `r round(ols_pred_rsq(PallantOLS_reg), 3)` og dermed svært lik R-squared. 
 
 #### Modellens koeffisienter
 
-Vi ser først på tallene for "Std.Beta" under "Parameter Estimated". Vi ser at tmast bidrar i større grad enn tpcoiss (fortegn er i denne sammenheng irrelevant). Begge bidrar signifikant. 
+Vi ser på talleneunder "Est". Vi ser at tmast `r round(tmastbeta, 3)` bidrar i større grad enn tpcoiss (`r round(tpcoissbeta, 3)`) Fortegn er i denne sammenheng irrelevant når vi ser på størrelse på effekt. Begge bidrar signifikant, hhv `r tmast_p_verdi2` og `r tpcoiss_p_verdi2`. 
 
 #### Hvor god er modellen vår (goodness of fit)?
 
-Vi kan se at F-verdien er 184.5. Vi kan regne ut (bruke R) til å finne kritiske verdi.
+Vi kan se at F-verdien er `r round(f_verdi2, 1)`. Vi kan regne ut (bruke R) til å finne kritiske verdi.
 ```{r}
 qf(p=.05, df1=2, df2=423, lower.tail=FALSE)
 ```
 
-F-verdien er dermed langt over kritisk verdi (p < 0.001).
+F-verdien er dermed langt over kritisk verdi (`r p_for_f`).
 
 Det ser derfor ut til at det er svært usannsynlig at forbedringen fra referansemodellen (gjennomsnittet) til vår modell er tilfeldig. Vi kan også si at dersom forbedringen ved regresjonsmodellen er større enn unøyaktigheten i modellen så vil F > 1. 
 
@@ -949,7 +1232,7 @@ Også dette forutsetter vi er på plass.
 nrow(Pallant_survey2)
 ```
 
-Vi har altså 426 observasjoner. I forhold til tabellen vist under forutsetninger lenger opp tilfredsstiller dette godt de ulike måtene å betrakte forholdstallet vi har vist til.
+Vi har altså `r nrow(Pallant_survey2)` observasjoner. I forhold til tabellen vist under forutsetninger lenger opp tilfredsstiller dette godt de ulike måtene å betrakte forholdstallet vi har vist til.
 
 #### De uavhengige variablene er additiv for den avhengige variabelen
 
@@ -957,29 +1240,33 @@ Vi kan mistenke at det kan være en interaksjon mellom variablene tmast og tpcoi
 
 ```{r}
 PallantOLS_reg2 <- lm(tpstress ~ tmast + tpcoiss, Pallant_survey2)
-PallantOLS_inter <- lm(tpstress ~.+tmast*tpcoiss, Pallant_survey2)
+PallantOLS_inter <- lm(tpstress ~. + tmast*tpcoiss, Pallant_survey2)
 compareCoefs(PallantOLS_reg2, PallantOLS_inter)
 ```
 
-Forskjellen mellom modellene ligger altså i den nederste koeffisienten (tmast:tpcoiss) som da er den kombinerte og samtidige effekten av de to variablene. Vi ser at effekten er veldig liten, men grafisk kan vi også se interaksjonseffekten:
+Forskjellen mellom modellene ligger altså i den nederste koeffisienten (tmast:tpcoiss) som da er den kombinerte og samtidige effekten av de to variablene. Vi ser at effekten er veldig liten.
 
-```{r}
-ggplot(data=Pallant_survey2, aes(x=tmast, y=tpstress, group=1)) +geom_smooth(method=lm,se=F)+ 
-    geom_smooth(aes(tmast,tpcoiss), method=lm, se=F,color="black")+xlab("tmast og tpcoiss")+labs(
-        title="tmast i blått - tpcoiss i svart")
-```
-
-Det kan se ut som en interaksjonseffekt ved at linjene ikke er parallelle. Det kan imidlertid være noe vanskelig å tolke interaksjonseffekt. Man kan f.eks. ha en interaksjonseffekt som ikke er statistisk signifikant. I R kan vi bruke pakken *jtools* som hjelp:
-
-```{r}
-summ(PallantOLS_inter)
-```
-
-Vi ser at interaksjonen tmast:tpcoiss ikke er statistisk signifikant.
-
-```{r}
+```{r fig.cap = "Interaksjonseffekt #2"}
 interact_plot(PallantOLS_inter, pred = tmast, modx = tpcoiss)
 ```
+
+Det kan se ut som en interaksjonseffekt ved at linjene ikke er helt parallelle. Det kan imidlertid være noe vanskelig å tolke interaksjonseffekt. Man kan f.eks. ha en interaksjonseffekt som ikke er statistisk signifikant. I R kan vi bruke pakken *jtools* som hjelp:
+
+```{r}
+tab_model(PallantOLS_inter)
+```
+
+```{r echo = FALSE}
+p_interaksjon <- summ(PallantOLS_inter)
+p_interaksjon
+p_interaksjonsverdi <- as.data.frame(p_interaksjon$coeftable)
+p_interaksjonsverdi2 <- scales::pvalue(p_interaksjonsverdi[6,4],
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+```
+
+Vi ser at interaksjonen tmast:tpcoiss ikke er statistisk signifikant (`r p_interaksjonsverdi2`)
 
 Tolkningen her er "som før": Parallelle linjer indikerer fravær av interaksjonseffekt.
 
@@ -987,11 +1274,11 @@ Tolkningen her er "som før": Parallelle linjer indikerer fravær av interaksjon
 
 Vi kan ikke se på samme type scatterplott for sjekk av linearitet som vi gjorde under enkel OLS (på et todimensjonalt plott). Vi kan imidlertid lage "added variable plots" [@mostellerDataAnalysisRegression1977]. 
 
-```{r}
-ols_plot_added_variable(PallantOLS_reg2, print_plot = TRUE)
+```{r fig.cap = "Added variables scatterplott", warninge = FALSE, message = FALSE}
+ols_plot_added_variable(PallantOLS_reg2)
 ```
 
-X-aksene representerer en enkelt uavhengig variabel (per graf ovenfor). Y-aksen = den avhengige variabelen. Den blå linjen viser sammenhengen mellom den uavhengige variabelen og den avhengige variabelen når alle andre uavhengige variabler holdes konstant. Jo sterkere lineær sammenheng i plottene, jo sterkere er den respektive uavhengige variabelens bidrag i modellen. 
+X-aksene representerer en enkelt uavhengig variabel (per graf ovenfor). Y-aksen = den avhengige variabelen. Den blå linjen viser sammenhengen mellom den uavhengige variabelen og den avhengige variabelen når alle andre uavhengige variabler holdes konstant. Jo sterkere lineær sammenheng i plottene, jo sterkere er den respektive uavhengige variabelens bidrag i modellen. Denne typen plott omtales også som "Partial Regression Plot".
 
 I vårt tilfelle vil vi nok konkludere med at forutsetningen om linearitet er (nok) oppfylt. 
 
@@ -999,26 +1286,32 @@ I vårt tilfelle vil vi nok konkludere med at forutsetningen om linearitet er (n
 
 Side vi vet at residualene lagres i modellen og vi kan plotte ut disse:
 
-```{r}
-hist(PallantOLS_reg2$residuals)
+```{r fig.cap = "Histogram over residualer"}
+ggplot(data = Pallant_survey2, aes(x = PallantOLS_reg2$residuals)) +
+    geom_histogram(fill = 'lightblue', color = 'black') +
+    labs(x = 'Residualer', y = 'Antall') +
+    theme_bw()
 ```
 
-Vi kan også se på et Q-Q plott og hente ut testverdier for ulike normalitetstester:
+Histogrammet tyder på rimelig god normalfordeling.
 
-```{r warning=FALSE}
+```{r fig.cap = "Residualplott"}
+ggplot(lm(tpstress ~ tmast + tpcoiss, data=Pallant_survey2)) + 
+    geom_point(aes(x=.fitted, y=.resid), col = "blue") +
+    geom_hline(aes(yintercept = 0), col = "red") +
+    theme_bw()
+```
+
+Residualplottet indikerer også fordeling tett på normalfordeling.I forhold til forutsetningen om normalfordelte residualer skal disse være spredd tilfeldig rundt 0. 
+
+Vi kan også se på et QQ plott og hente ut testverdier for ulike normalitetstester:
+
+```{r warning=FALSE, fig.cap = "QQ plott for residualer"}
 ols_plot_resid_qq(PallantOLS_reg2)
 ols_test_normality(PallantOLS_reg2)
 ```
 
-Q-Q plottet viser noe avvik.
-
-En hendig graf er også et plott av residualene på y-aksen og "fitted values" på x-aksen:
-
-```{r}
-ols_plot_resid_fit(PallantOLS_reg2)
-```
-
-I forhold til forutsetningen om normalfordelte residualer skal disse være spredd tilfeldig rundt 0. 
+QQ plottet viser noe avvik.
 
 Sett under ett kan det i dette tilfellet se ut som at residualene er tilnærmet (nok) normalfordeling.
 
@@ -1029,7 +1322,9 @@ Vi kan derfor sjekke for multikolinearitet gjennom å se på en korrelasjonsmatr
 ```{r}
 PallantKorr <- cor(Pallant_survey2, method = "pearson", use="pairwise.complete.obs")
 round(PallantKorr, 2)
+tab_corr(Pallant_survey2, triangle = "lower")
 ```
+p < .0001**** , p < .001*** , p < .01**, p < .05*
 
 Hvis vi følger @pallantSPSSSurvivalManual2010 ser vi først at alle de to uavhengige variablene korrelerer mellom $r=0.58$ og $r=-0.61$ med den avhengige. Den bivariate korrelasjonen mellom de uavhengige variablene er på $0.53$. Ut fra korrelasjonsmatrisen bør det ikke være grunn til å frykte multikolinearitet.
 
@@ -1044,24 +1339,34 @@ Det er ingenting som indikerer at vi har multikolinearitet i dataene i denne mod
 Den såkalte White's test vil også kunne være et godt hjelpemiddel:
 
 ```{r}
-bptest(PallantOLS_reg2, ~ tmast*tpcoiss + I(tmast^2) + I(tpcoiss^2), data = Pallant_survey2)
+bpPallant <- bptest(PallantOLS_reg2, ~ tmast*tpcoiss + I(tmast^2) + I(tpcoiss^2), data = Pallant_survey2)
+bpPallant
 ```
 
-Her ser vi at $p < 0.001$, dvs. vi kan ikke forkaste nullhypotesen = vi har ikke grunn til å konkludere med at vi har heteroskedasisitet i regresjonsmodellen.
+```{r echo = FALSE}
+bpPallantverdi <- scales::pvalue(bpPallant$p.value,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+
+Her ser vi at `r bpPallantverdi`, dvs. vi kan ikke forkaste nullhypotesen = vi har ikke grunn til å konkludere med at vi har heteroskedasisitet i regresjonsmodellen.
 
 #### Fravær av autokorrelasjon
 
 ```{r}
-durbinWatsonTest(PallantOLS_reg2)
+dwtPallant <- durbinWatsonTest(PallantOLS_reg2)
+dwtPallant
 ```
 
-Her viser verdien $1.826$ noe som ikke gir grunn til bekymring.
+Her viser verdien `r format(round(dwtPallant$dw, 3), nsmall = 3)` noe som ikke gir grunn til bekymring. Verdi rundt 2 indikerer ingen autokorrelasjon, verdier mellom 1.5 og 2.5 anses ofte som akseptable. Hvis verdien er under 1.5 indikerer det en positiv autkorrelasjon, noe som ikke er uvanlig. Verdier over 2.5 indikerer negativ autokorrelasjon, noe som ofte er mer uvanlig. 
 
 #### Fravær av innflytelsesrike observasjoner/caser
 
 Vi så under punktet "Analyse av dataene" (se for eksempel Boxplottet av Adverts) at vi har noen observasjoner i modellen som kan defineres som uteliggere. Vi kan identifisere disse gjennom residualene:
 
-```{r}
+```{r fig.cap = "QQ plott Pallant OLS"}
 car::qqPlot(PallantOLS_reg2, id = list(n=3))
 ```
 
@@ -1069,25 +1374,25 @@ Vi ser at residualene ligger innenfor 95% konfidenstintervall. Det er lite ved r
 
 Vi kan også kjøre analyser som identifiserer betydning/innvirkning ("influential cases"):
 
-```{r}
+```{r fig.cap = "Influence Index Plot"}
 influenceIndexPlot(PallantOLS_reg2, vars = "hat", id = list(n=3))
 ```
 
 DfBetas:
 
-```{r}
+```{r fig.cap = "DfBetas plott"}
 ols_plot_dfbetas(PallantOLS_reg2, print_plot = TRUE)
 ```
 
 dffit:
 
-```{r}
+```{r fig.cap = "dffit plott"}
 ols_plot_dffits(PallantOLS_reg2, print_plot = TRUE)
 ```
 
 Cook's distance:
 
-```{r}
+```{r fig.cap = "Cook's distance"}
 influenceIndexPlot(PallantOLS_reg2, vars = "Cook", id = list(n=3))
 ```
 
@@ -1102,7 +1407,6 @@ Det er ingenting ved hat values, DfBetas eller Cook's disgance som er bekymrings
 #### Oppsummert om forutsetninger/diagnostikk
 
 ```{r}
-options(scipen=999)
 regression.diagnostics(PallantOLS_reg2)
 ```
 
@@ -1151,11 +1455,49 @@ tab_model(PallantOLS_reg2)
 ```
 </div>
 
-En multippel lineær regresjonsanalyse ble gjennomført for å teste om respondentenes oppfattede nivå av indre kontroll og kontroll på ytre faktorer predikerer totalt nivå av oppfattet stress. Analyser ble gjennomført for å sikre at det ikke var brudd på forutsetningene for en multippel lineær regresjonsanalyse. En statistisk signifikant regresjonsmodell ble funnet (F (2, 423) = 184.5, p < .001), med en $R^2$ på .466. Både nivå av indre kontroll og kontroll på ytre faktorer var signifikante prediktorer. 
+```{r echo = FALSE}
+regverdier4 <- summary(PallantOLS_reg)
+r_squared4 <- regverdier4$r.squared
+ad_r_squared4 <- regverdier4$adj.r.squared
+tmastbeta <- regverdier4$coefficients[2,1]
+tpcoissbeta <- regverdier4$coefficients[3,1]
+f_verdi2 <- regverdier4$fstatistic[1]
+p_verdi_f <- regverdier4$fstatistic[5]
+dfd2 <- regverdier4$fstatistic[2] 
+dfn2 <- regverdier4$fstatistic[3]
+tmast_p_verdi <- regverdier4$coefficients[ 2, 4]
+tpcoiss_p_verdi <- regverdier4$coefficients[ 3, 4]
+tmast_p_verdi2 <- scales::pvalue(tmast_p_verdi,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+tpcoiss_p_verdi2 <- scales::pvalue(tpcoiss_p_verdi,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+
+# Hente ut p-verdien for F test lm. Funksjon fra Stephen Turner (https://gettinggeneticsdone.blogspot.com/2011/01/rstats-function-for-extracting-f-test-p.html)
+
+pverdi_for_f <- function (modelobject) {
+	if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
+	f <- summary(modelobject)$fstatistic
+	p <- pf(f[1],f[2],f[3],lower.tail = F)
+	attributes(p) <- NULL
+	return(p)
+}
+pverdi_for_f(PallantOLS_reg)
+
+p_for_f <- scales::pvalue(pverdi_for_f(PallantOLS_reg),
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+```
+
+En multippel lineær regresjonsanalyse ble gjennomført for å teste om respondentenes oppfattede nivå av indre kontroll og kontroll på ytre faktorer predikerer totalt nivå av oppfattet stress. Analyser ble gjennomført for å sikre at det ikke var brudd på forutsetningene for en multippel lineær regresjonsanalyse. En statistisk signifikant regresjonsmodell ble funnet (F (`r dfd2`, `r dfn2`) = `r round(f_verdi2, 1)`, `r p_for_f`, med en $R^2$ `r round(r_squared4, 3)` Både nivå av indre kontroll og kontroll på ytre faktorer var signifikante prediktorer. 
 
 ### Modellens evne til å predikere
 
-Et siste tema vi skal ta for oss i multippel regresjonsanalyse inkluderes ofte ikke i lærebøkers kapitler om regresjonsanalyse. Det omtales gjerne i andre sammenhenger i lærebøker som "predictive analytics" eller "predictive modelling", og hvis man skal lære seg om temaer som maskinlæring vil dette naturlig element der. Selv synes jeg dette er naturlig å omtale under regresjonsanalyse også fordi:
+Et siste tema vi skal ta for oss i multippel regresjonsanalyse inkluderes ofte ikke i lærebøkers kapitler om regresjonsanalyse. Det omtales gjerne i andre sammenhenger i lærebøker som "predictive analytics" eller "predictive modelling", noe vi kommer tilbake til under tematikken maskinlæring. Sånn sett blir det å foregripe begivenhetene noe, men det er naturlig å omtale under regresjonsanalyse også fordi:
 
 - "Model fit" handler kun om hvor god modellen vår beskriver/passer til dataene vi har i dette tilfellet
 - Dette sier ikke nødvendigvis så mye om hvor god modellen vår er på andre data. Så hvis vi vil lage en modell basert på våre data som vi også ønsker skal kunne predikere i andre data (er vår modell generaliserbar?) trenger vi en tilleggsanalyse.
@@ -1168,13 +1510,13 @@ Kryssvalidering innebærer at vi deler datasettet i to: en del vi utvikler model
 
 Grafisk kan vi se for oss prosessen slik:
 
-![](kFold1.png){width=50%}
+![](kFold1.png){width=75%}
 
 Datasettet deles først tilfeldig i treningsdata og testdata. Ofte brukes 80/20 eller 70/30 fordeling, men dette kan variere. Treningsdataene deles igjen tilfeldig inn i utvalg.
 
 Metoden vi ser på her kalles "k fold Cross Validation". *k* utgjør antall "folds". Et "fold" er et sett utvalg.  Det er ikke noen formell regel for hvor mange utvalg man bør ha. @kuhnAppliedPredicitveModelling2013 hevder "The choice of k is usually 5 or 10, but there is no formal rule" (s.70). 
 
-![](kFold2.png){width=50%}
+![](kFold2.png){width=75%}
 
 Hvis vi tenker oss at vi har tre utvalg (U1-3) i treningsdatasettet får vi da:
 
@@ -1250,16 +1592,9 @@ xfun::embed_file('Pallant_survey.dta')
 Pallant_survey <- as.data.frame(read_excel("Pallant_survey.xlsx"))
 ```
 
-I tillegg til de to uavhengige variabler - tmast (Control of external events) og tpcioss (Control of internal states) vil vi bruke variablene alder (age) og "social desirability" (tmarlow) som kontrollvariabler. 
+I tillegg til de to uavhengige variabler - tmast (Control of external events) og tpcioss (Control of internal states) vil vi bruke variablene alder (age) og "social desirability" (tmarlow) som kontrollvariabler. "Social desirability bias" er et kjent fenomen der respondenter har en tendens til å ønske å framstå i et bedre lys heller enn i et sant/reelt lys [@preissTestingLevelSocial2015]. Respondenter kan f.eks. ønske å framstå som mer ærlige enn de i realiteten er, og vil derfor også svare deretter på spørsmål. I tillegg kan man anta at alder kan ha påvirkning på opplevelsen av totalt stressnivå. 
 
-```{r}
-Pallant_subset <- Pallant_survey[c("age", "tmarlow", "tmast", "tpcoiss", "tpstress")]
-summarytools::descr(Pallant_subset, stats = "common")
-```
-
-"Social desirability bias" er et kjent fenomen der respondenter har en tendens til å ønske å framstå i et bedre lys heller enn i et sant/reelt lys [@preissTestingLevelSocial2015]. Respondenter kan f.eks. ønske å framstå som mer ærlige enn de i realiteten er, og vil derfor også svare deretter på spørsmål. I tillegg kan man anta at alder kan ha påvirkning på opplevelsen av totalt stressnivå. 
-
-Vi velger å lage et nytt datasett der vi trekker ut de relevante variablene, og fjerne observasjoner med NA (ingen verdi).
+Vi velger å modifisere datasettet der vi trekker ut de relevante variablene, og fjerne observasjoner med NA (ingen verdi).
 
 ```{r}
 Pallant_survey3 <- select(Pallant_survey, age, tmarlow, tmast, tpcoiss, tpstress)
@@ -1269,10 +1604,15 @@ summarytools::descr(Pallant_survey3, stats = "common")
 
 I denne hierarkiske multipple regresjonsanalysen ønsker vi derfor å bruke alder og sosial ønskverdighet som kontrollvariabler. Vi legger i første blokk inn de variablene vi ønsker å kontrollere for, før vi i blokk to legger inn de samme uavhengige variablene som i forrige eksempel. Hensikten med dette er at vi ønsker å fjerne mulige effekter av de to "kontrollvariablene".
 
-```{r}
-par(mfrow=(c(1,2)))
-histage <- with(Pallant_survey3, hist(age))
-histtmarlow <- with(Pallant_survey3, hist(tmarlow))
+```{r fig.cap = "Histogrammer for 'age' og 'tmarlow'"}
+ageplott <- ggplot(Pallant_survey3, aes(age)) + 
+    geom_histogram(bins = 11, color = "black", fill = "lightblue") + 
+    theme_bw()
+tmarlowplott <- ggplot(Pallant_survey3, aes(tmarlow)) + 
+    geom_histogram(bins = 11, color = "black", fill = "lightblue") + 
+    theme_bw()
+ggarrange(ageplott, tmarlowplott, 
+          ncol = 2, nrow = 2)
 ```
 
 ### Evtentuelt valg av prediktorer ut fra analyse av dataene
@@ -1281,7 +1621,7 @@ Vi gjør ingen analyse av dette da vi har valgt to kontrollvariabler og to uavhe
 
 ### Lage modell (kjøre regresjonsanalysen)
 
-![](PallantOLShier.png){width=50%}
+![Modell for hierarkisk multippel regresjonsanalyse](PallantOLShier.png){width=75%}
 
 Her lager vi tre modeller: Modell 0 inneholder kun Intercept (som en referansemodell). Modell 1 inneholder kun age og tmarlow, modell 2 inneholder i tillegg tmast og tpcoiss.
 
@@ -1294,11 +1634,78 @@ modell2 <- lm(tpstress ~ age + tmarlow + tmast + tpcoiss, data = Pallant_survey3
 ### Analyse av resultatene (diagnostikk)
 
 ```{r}
-summ(modell1)
-summ(modell2)
+tab_model(modell0)
 ```
 
-Den første modellen er modellen med kun alder og social desirability som forklarer 5,9 % av variansen. Den andre modellen, som består av både kontrollvariablene og de to tidligere uavhengige variablene forklarer til sammen 47 %.
+```{r echo = FALSE}
+modell0res <- summary(modell0)
+
+modell0_p_verdi <- modell0res$coefficients[1,4]
+modell0_p_verdimod <- scales::pvalue(modell0_p_verdi,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+Modell 0 er referansemodellen. Vi kan se at denne modellen har $R^2$ = `r format(round(modell0res$r.squared, 3), nsmall = 3)`, `r modell0_p_verdimod`.
+
+```{r}
+tab_model(modell1)
+```
+
+```{r echo = FALSE}
+modell1res <- summary(modell1)
+
+modell1_p_verdi_age <- modell1res$coefficients[2,4]
+modell1_p_verdimod_age <- scales::pvalue(modell1_p_verdi_age,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+
+modell1_p_verdi_tmarlow <- modell1res$coefficients[3,4]
+modell1_p_verdimod_tmarlow <- scales::pvalue(modell1_p_verdi_tmarlow,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+Modell 1 er modellen med kun alder og social desirability som forklarer `r round(modell1res$r.squared, 3)*100`% av variansen. Her ser vi at "age" ikke er statistisk signifikant (`r modell1_p_verdimod_age`), mens "tmarlow" har `r modell1_p_verdimod_tmarlow`.
+
+```{r}
+tab_model(modell2)
+```
+
+```{r echo = FALSE}
+modell2res <- summary(modell2)
+
+modell2_p_verdi_age <- modell2res$coefficients[2,4]
+modell2_p_verdimod_age <- scales::pvalue(modell1_p_verdi_age,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+
+modell2_p_verdi_tmarlow <- modell2res$coefficients[3,4]
+modell2_p_verdimod_tmarlow <- scales::pvalue(modell2_p_verdi_tmarlow,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+
+modell2_p_verdi_tmast <- modell2res$coefficients[4,4]
+modell2_p_verdimod_tmast <- scales::pvalue(modell2_p_verdi_tmast,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+
+modell2_p_verdi_tpcoiss <- modell2res$coefficients[5,4]
+modell2_p_verdimod_tpcoiss <- scales::pvalue(modell2_p_verdi_tpcoiss,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+```
+
+Modell 2, som består av både kontrollvariablene og de to tidligere uavhengige variablene, forklarer til sammen `r round(modell2res$r.squared, 3)*100`% av variansen i "tpstress". Vi ser nå at både "age" (`r modell2_p_verdimod_age`) og "tmarlow" (`r modell2_p_verdimod_tmarlow`) ikke er signifikante, mens "tmast" (`r modell2_p_verdimod_tmast`) og "tpcoiss" (`r modell2_p_verdimod_tpcoiss`) er statistisk signifikante.
+
+Vi ser det samme oppsummert i en ANOVA av modellene:
 
 ```{r}
 anova(modell0, modell1, modell2)
@@ -1306,11 +1713,25 @@ anova(modell0, modell1, modell2)
 
 Vi kan oppsummere modellene:
 
-* Modell 0: $SS_Total$ = 14450 (ingen prediktorer)
-* Modell 1: $SS_Residual$ = 13598.0, $SS_Difference$ = 852.4, $F$(2, 420) =  23.26, $p$<.001 (etter å ha lagt til age og tmarlow)
-* Modell 2: $SS_Residual$ = 7658.8, $SS_Difference$ = 5939.2, $F$(2, 418) = 162.07, $p$<.001 (etter å ha lagt til tmast og tpcoiss)
+```{r echo = FALSE}
+anovares <- anova(modell0, modell1, modell2)
 
-Det vi jo ønsket å finne ut av var hvor mye våre to uavhengige variabler forklarer etter at effektene fra de to kontrollvariablene er tatt bort. Dette finner vi i «R Square Change» - altså hvor mye $R^2$ endrer seg fra modell 1 til modell 2. Vi har i tillegg med hvor mye $R^2$ endrer seg fra modell 0 ti lmodell 1.
+anova_p_verdi_modell1 <- scales::pvalue(anovares[2,6],
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+anova_p_verdi_modell2 <- scales::pvalue(anovares[3,6],
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+```
+
+
+* Modell 0: $SS_{Total}$ = `r round(anovares[1,2], 0)` (ingen prediktorer)
+* Modell 1: $SS_{Residual}$ = `r round(anovares[2,2], 0)`, $SS_{Difference}$ = `r round(anovares[2,4], 0)`, $F$(`r anovares[2,3]`, `r anovares[2,1]`) = `r round(anovares[2,5], 2)`, `r anova_p_verdi_modell1` (etter å ha lagt til age og tmarlow)
+* Modell 2: $SS_{Residual}$ = `r round(anovares[3,2], 0)`, ${SS_Difference}$ =  `r round(anovares[3,4], 0)`, $F$(`r anovares[3,3]`, `r anovares[3,1]`) = `r round(anovares[3,5], 2)`, `r anova_p_verdi_modell2` (etter å ha lagt til tmast og tpcoiss)
+
+Det vi jo ønsket å finne ut av var hvor mye våre to uavhengige variabler forklarer etter at effektene fra de to kontrollvariablene er tatt bort. Dette finner vi i "R Square Change" - altså hvor mye $R^2$ endrer seg fra modell 1 til modell 2. Vi har i tillegg med hvor mye $R^2$ endrer seg fra modell 0 ti lmodell 1.
 
 ```{r}
 rsq_diff1 <- summary(modell1)$r.squared - summary(modell0)$r.squared
@@ -1319,26 +1740,35 @@ rsq_diff1
 rsq_diff2
 ```
 
-For modell 2 er verdien 0.411. Altså – de to uavhengige variablene forklarer 41.1 % av variansen i den avhengige variabelen **etter** at vi har kontrollert for alder og sosial ønskverdighet. Vi kan så se på de uavhengige variablenes unike bidrag (altså bidrag etter at interaksjonseffekter er tatt bort). 
+For modell 2 er verdien `r round(rsq_diff2, 3)`. Altså – de to uavhengige variablene forklarer `r round(rsq_diff2, 3)*100`% av variansen i den avhengige variabelen **etter** at vi har kontrollert for alder og sosial ønskverdighet. Vi kan så se på de uavhengige variablenes unike bidrag (altså bidrag etter at interaksjonseffekter er tatt bort). 
 
 #### Modellens koeffisienter
 
+Vi velger å vise output fra regresjonsanalyse i pakken "olsrr". Pakken "olsrr" er etter vår mening en veldig god pakke for regresjonsanalyse (som vi har brukt mye undervegs som den observante leser vil ha sett :-))
 ```{r}
 modell2x <- ols_regress(tpstress ~ age + tmarlow + tmast + tpcoiss, data = Pallant_survey)
 modell2x
 ```
 
-
-Vi ser på tallene for "Std.Beta" under "Parameter Estimates". Vi ser at alder og social desirability ikke bidrar signifikant i seg selv. Beta verdiene i tabellen representerer de unike bidragene for hver variabel etter at overlappende effekter fra de andre variablene er fjernet. tmast bidrar i større grad (beta = -0,631) enn pcoiss (beta = -0,160).
+Vi ser på tallene for "Std.Beta" under "Parameter Estimates". Vi ser at alder og social desirability ikke bidrar signifikant i seg selv. Beta verdiene i tabellen representerer de unike bidragene for hver variabel etter at overlappende effekter fra de andre variablene er fjernet. tmast bidrar i større grad (beta = `r format(round(modell2res$coefficients[4,1], 3), nsmall = 3)`) enn pcoiss (beta = `r format(round(modell2res$coefficients[5,1], 3), nsmall = 3)`).
 
 #### Hvor god er modellen vår (goodness of fit)?
 
-Vi kan se at F-verdien er 92.67. 
+Vi kan se at F-verdien er `r modell2res$fstatistic["value"]`. 
 ```{r}
 qf(p=.05, df1=4, df2=418, lower.tail=FALSE)
 ```
 
-F-verdien er dermed langt over kritisk verdi (p < 0.001).
+```{r echo = FALSE}
+pverdi_for_f(modell2)
+
+p_for_f <- scales::pvalue(pverdi_for_f(modell2),
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+```
+
+F-verdien er dermed langt over kritisk verdi `r p_for_f`.
 
 Det ser derfor ut til at det er svært usannsynlig at forbedringen fra referansemodellen (gjennomsnittet) til vår modell er tilfeldig. Vi kan også si at dersom forbedringen ved regresjonsmodellen er større enn unøyaktigheten i modellen så vil F > 1. 
 
@@ -1349,6 +1779,7 @@ Vi viser resultater av tester og grafer, men diskuterer ikke disse nærmere. I s
 #### Kausalitet
 
 Vi antar at det foreligger godt teoretisk grunnlag for modellen. 
+
 #### Variablene er uten målefeil
 
 Vi må forutsette at vi ikke har systematiske målefeil i variablene. 
@@ -1363,7 +1794,7 @@ Også dette forutsetter vi er på plass.
 nrow(Pallant_survey2)
 ```
 
-Vi har altså 426 observasjoner. I forhold til tabellen vist under forutsetninger lenger opp tilfredsstiller dette godt de ulike måtene å betrakte forholdstallet vi har vist til.
+Vi har altså `r nrow(Pallant_survey2)` observasjoner. I forhold til tabellen vist under forutsetninger lenger opp tilfredsstiller dette godt de ulike måtene å betrakte forholdstallet vi har vist til.
 
 #### De uavhengige variablene er additiv for den avhengige variabelen
 
@@ -1383,16 +1814,20 @@ Se forrige regresjonsanalyse.
 
 #### Residualene skal være normalfordelte
 
-Side vi vet at residualene lagres i modellen og vi kan plotte ut disse:
+Siden vi vet at residualene lagres i modellen og kan vi plotte ut disse:
 
-```{r}
-hist(PallantOLS2$residuals)
+```{r fig.cap = "Histogram for residualer"}
+data <- tibble(PallantOLS2$residuals)
+ggplot(data, aes(x=PallantOLS2$residuals)) + 
+    geom_histogram(color = "black", fill = "lightblue") + 
+    theme_bw()
 ```
 
 Vi kan også se på et Q-Q plott og hente ut testverdier for ulike normalitetstester:
 
-```{r}
-ols_plot_resid_qq(PallantOLS2)
+```{r fig.cap = "QQ plott for residualer"}
+ols_plot_resid_qq(PallantOLS2) +
+    theme_bw()
 ols_test_normality(PallantOLS2)
 ```
 
@@ -1400,8 +1835,9 @@ Q-Q plottet viser noe avvik (jfr. )
 
 En hendig graf er også et plott av residualene på y-aksen og "fitted values" på x-aksen:
 
-```{r}
-ols_plot_resid_fit(PallantOLS2)
+```{r fig.cap = "Residual plott"}
+ols_plot_resid_fit(PallantOLS2) +
+    theme_bw()
 ```
 
 I forhold til forutsetningen om normalfordelte residualer skal disse være spredd tilfeldig rundt 0. 
@@ -1413,11 +1849,11 @@ Sett under ett kan det i dette tilfellet se ut som at residualene er tilnærmet 
 Vi kan derfor sjekke for multikolinearitet gjennom å se på en korrelasjonsmatrisen:
 
 ```{r}
-PallantKorr <- cor(Pallant_survey2, method = "pearson")
-round(PallantKorr, 2)
+tab_corr(Pallant_survey2, triangle = "lower")
 ```
+p < .0001**** , p < .001*** , p < .01**, p < .05*
 
-Hvis vi følger @pallantSPSSSurvivalManual2010 ser vi først at alle de to uavhengige variablene korrelerer mellom $r=0.52$ og $r=-0.58$ med den avhengige. Den bivariate korrelasjonen mellom de uavhengige variablene er på $0.52$. Ut fra korrelasjonsmatrisen bør det ikke være grunn til å frykte multikolinearitet.
+Hvis vi følger @pallantSPSSSurvivalManual2010 ser vi først at de to uavhengige variablene korrelerer mellom $r=0.52$ og $r=-0.58$ med den avhengige. Den bivariate korrelasjonen mellom de uavhengige variablene er på $0.52$. Ut fra korrelasjonsmatrisen bør det ikke være grunn til å frykte multikolinearitet.
 
 ```{r}
 ols_vif_tol(PallantOLS2)
@@ -1430,24 +1866,42 @@ Det er ingenting som indikerer at vi har multikolinearitet i dataene i denne mod
 Den såkalte White's test vil også kunne være et godt hjelpemiddel:
 
 ```{r}
-bptest(PallantOLS2, ~ tmast*tpcoiss + I(tmast^2) + I(tpcoiss^2), data = Pallant_survey2)
+bptestres <- bptest(PallantOLS2, ~ tmast*tpcoiss + I(tmast^2) + I(tpcoiss^2), data = Pallant_survey2)
+bptestres
 ```
 
-Her ser vi at $p < 0.001$, dvs. vi kan ikke forkaste nullhypotesen = vi har ikke grunn til å konkludere med at vi har heteroskedasisitet i regresjonsmodellen.
+```{r echo = FALSE}
+bp_p_verdi <- bptestres$p.value
+bp_p_verdi <- scales::pvalue(bp_p_verdi,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+Her ser vi at `r bp_p_verdi`, dvs. vi kan ikke forkaste nullhypotesen = vi har ikke grunn til å konkludere med at vi har heteroskedasisitet i regresjonsmodellen.
 
 #### Fravær av autokorrelasjon
 
 ```{r}
-durbinWatsonTest(lm(tpstress ~ age + tmarlow + tmast + tpcoiss, Pallant_survey))
+dwt_verdi <- durbinWatsonTest(lm(tpstress ~ age + tmarlow + tmast + tpcoiss, Pallant_survey))
+dwt_verdi
 ```
 
-Her viser verdien $1.817$ med p < 0.05 noe som indikerer at vi har autokorrelasjon.
+```{r echo = FALSE}
+dwt_p_verdi <- dwt_verdi$p
+dwt_p_verdi <- scales::pvalue(dwt_p_verdi,
+                           accuracy = 0.05, 
+                           decimal.mark = ".", 
+                           add_p = TRUE) 
+```
+
+Her viser verdien `r round(dwt_verdi$dw, 3)` med `r dwt_p_verdi` noe som indikerer at vi har autokorrelasjon.
 
 #### Fravær av innflytelsesrike observasjoner/caser
 
 Vi så under punktet "Analyse av dataene" (se for eksempel Boxplottet av Adverts) at vi har noen observasjoner i modellen som kan defineres som uteliggere. Vi kan identifisere disse gjennom residualene:
 
-```{r}
+```{r fig.cap = "QQ plott residualer"}
 car::qqPlot(PallantOLS2, id = list(n=3))
 ```
 
@@ -1455,20 +1909,21 @@ Vi ser at residualene ligger innenfor 95% konfidenstintervall. Det er lite ved r
 
 Vi kan også kjøre analyser som identifiserer betydning/innvirkning ("influential cases"):
 
-```{r}
+```{r fig.cap = "Influence Index Plott - hat values"}
 influenceIndexPlot(PallantOLS2, vars = "hat", id = list(n=3))
 ```
 
 DfBetas:
 
-```{r}
-ols_plot_dfbetas(PallantOLS2, print_plot = TRUE)
+```{r fig.cap = "DfBetas"}
+ols_plot_dfbetas(PallantOLS2)
 ```
 
 Cook's distance:
 
-```{r}
-influenceIndexPlot(PallantOLS2, vars = "Cook", id = list(n=3))
+```{r fig.cap = "Cook's distance"}
+ols_plot_cooksd_chart(PallantOLS2) +
+    theme_bw()
 ```
 
 ```{r}
@@ -1477,12 +1932,11 @@ mineCDverdier2 <- round(mineCDverdier2, 5)
 head(sort(mineCDverdier2, decreasing = TRUE))
 ```
 
-Det er ingenting ved hat values, DfBetas eller Cook's disgance som er bekymringsfullt.
+Vi finner ikke grunn til å være veldig bekymret gjennom hat values, DfBetas eller Cook's distance. 
 
 #### Oppsummert om forutsetninger/diagnostikk
 
 ```{r}
-options(scipen=999)
 regression.diagnostics(PallantOLS2)
 ```
 
@@ -1515,8 +1969,7 @@ table1::table1(~age + tmarlow + tmast + tpcoiss + tpstress, data = Pallant_surve
 Tabell 2: Korrelasjonsmatrise
 <div align="left">
 ```{r}
-Pallantkorr <- tab_corr(Pallant_survey3, triangle = "lower")
-Pallantkorr
+tab_corr(Pallant_survey3, triangle = "lower")
 ```
 p < .0001**** , p < .001*** , p < .01**, p < .05*
 </div>
@@ -1547,15 +2000,16 @@ Stegvis regresjon er en iterativ multippel regresjonsanalyse der prosessen gradv
 3. Gjenta steg 1 og 2 inntil alle signifikante uavhengige variabler er inkludert i modellen og alle ikke-signifikante verdier er ute av modellen.
 
 **"Backward selection"** (også omtalt som "Step-Down" eller "Backward Elimination") starter i motsatt ende av forward. Her puttes alle de uavhengige variablene inn først. Deretter tar man hver gang bort variabelen som har høyest p-verdi for F inntil man ikke har flere ikke-signifikante variabler igjen i modellen. 
+
 **"Bidirectional"** utvelgelse er en kombinasjon av de to foregående. Den starter som forward selection, men hver gang en variabel settes inn blir alle variablene i modellen kontrollert for å se om p-verdien for F har endret seg til over en definert terskelverdi som følge av den nye variabelen. Hvis en ikke-signifikant variabel da blir funnet fjernes den. Når ingen variabler tilfredsstiller terskelverdiene for enten inkludering eller ekskludering i modellen stopper prosessen. Dette krever to definerte signifikansnivåer: En for å inkludere og en for å ekskludere, der terskelverdien for å inkludere må være lavere enn for å ekskludere (med mindre man ønsker en uendelig loop der man aldri finner en løsning).
 
 Det skal bemerkes at dette er en rent matematisk/statistisk operasjon. Det ligger ingen teoretiske vurderinger til grunn. Man har selvsagt ingen garanti for at de uavhengige variablene man ender opp med er fornuftige eller har noen praktisk signifikans. Ethvert resultat fra en stegvis regresjon må derfor vurderes kritisk. Man står også i fare for såvel overfitting som underfitting (jfr. tidligere punkt om overfitting) [@fieldDiscoveringStatisticsUsing2009]. Det mangler ikke på advarsler om å bruke stegvis regresjon, f.eks. fra @milesApplyingRegressionCorrelation2001 som advarer om at stegvis regresjonsanalyse "should be used with extreme caution" (s.38). @singerAppliedLongitudinalData2003 hevder på sin side "Never let a computer select predictors mechanically. The computer does not know your research questions nor the literature upon which they rest. It cannot distinguish predictors of direct substantive interest from those whose effects you want to control".  Man skal i hvert fall se på resultatene med et veldig kritisk blikk siden "The data analyst knows more than the computer" [@hendersonBuildingMultipleRegression1981, s.391].
 
-Et alvorlig problem med stegvis regresjonsanalyse er at man får en $R^2$-verdi som har svært unøyaktig høy [@milesApplyingRegressionCorrelation2001].Dette skyldes at statistikkprogrammet tråler gjennom et stort antall uavhengige variabler på søken etter statistisk signifikante variabler og velger ut alle disse. En andel variabler vil være signifikante av tilfeldighet noe som øker verdien på $R^2$. 
+Et alvorlig problem med stegvis regresjonsanalyse er at man får en $R^2$-verdi som ofte er svært unøyaktig høy [@milesApplyingRegressionCorrelation2001].Dette skyldes at statistikkprogrammet tråler gjennom et stort antall uavhengige variabler på søken etter statistisk signifikante variabler og velger ut alle disse. En andel variabler vil være signifikante av tilfeldighet noe som øker verdien på $R^2$. 
 
 Forutsetningene er de samme som for standard multippel regresjon. Spesielt skal man være observant på uteliggere. En tommelfingerregel som angis er minimum 5 caser per variabel (50 variabler = minimum 250 caser). 
 
-Vi skal se på et eksempel som er hentet fra [](https://www.spss-tutorials.com/stepwise-regression-in-spss-example/) [@vandenbergStepwiseRegressionSPSS2018].
+Vi skal se på et eksempel som er hentet fra @vandenbergStepwiseRegressionSPSS2018 som du kan finne  [her](https://www.spss-tutorials.com/stepwise-regression-in-spss-example/) .
 Du kan laste ned datasettet i ulike formater her:
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
@@ -1588,23 +2042,41 @@ summarytools::descr(magazine_data, stats = "common")
 ```
 
 ```{r}
-par(mfrow=(c(2,3)))
-histtsat1 <- with(magazine_data, hist(sat1))
-histtsat2 <- with(magazine_data, hist(sat2))
-histtsat3 <- with(magazine_data, hist(sat3))
-histtsat4 <- with(magazine_data, hist(sat4))
-histtsat5 <- with(magazine_data, hist(sat5))
-histtsat6 <- with(magazine_data, hist(sat6))
-histtsat7 <- with(magazine_data, hist(sat7))
-histtsat8 <- with(magazine_data, hist(sat8))
-histtsat9 <- with(magazine_data, hist(sat9))
+hist1 <- ggplot(magazine_data, aes(x=sat1)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+hist2 <- ggplot(magazine_data, aes(x=sat2)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+hist3 <- ggplot(magazine_data, aes(x=sat3)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+hist4 <- ggplot(magazine_data, aes(x=sat4)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+hist5 <- ggplot(magazine_data, aes(x=sat5)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+hist6 <- ggplot(magazine_data, aes(x=sat6)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+hist7 <- ggplot(magazine_data, aes(x=sat7)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+hist8 <- ggplot(magazine_data, aes(x=sat8)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+hist9 <- ggplot(magazine_data, aes(x=sat9)) + 
+    geom_histogram(color = "black", fill = "lightblue", binwidth = 0.75) +
+    theme_bw()
+ggarrange(hist1, hist2, hist3, hist4, hist5, hist6, hist7, hist8, hist9, ncol = 3, nrow = 3)
 ```
 
 ### Lage modell (kjøre regresjonsanalysen)
 
 Hvilke av de 9 uavhengige variablene (sat1...sat9), som er ulike mål på kunders oppfatning av produktet, bidrar signifikant til å forklare variansen i hvordan kundene totalt sett skårer produktet (magasinet) («How would you rate our magazine altogether?»). De ulike målene er f.eks. grundighet, objektivitet, lesbarhet og pålitelighet. Spørsmålet er hvilke aspekter (sat1...sat9) har størst innflytelse på kundetilfredsheten?
 
-![](stepwise.png){width=50%}
+![Modell for stegvis multippel regresjon](stepwise.png){width=50%}
 
 ```{r}
 magazine_intercept <- lm(satov ~ 1, data = magazine_data)
@@ -1629,7 +2101,7 @@ Modellen blir med denne prosedyren:
 magazine_forward$coefficients
 ```
 
-For R-brukere kan vi kjøre hele analysen i en linje med pakken *olsrr*:
+Vi kan kjøre hele analysen i en linje med pakken *olsrr*:
 
 ```{r}
 ols_step_forward_aic(magazine_all, progress = TRUE, details = FALSE)
@@ -1639,6 +2111,7 @@ ols_step_forward_aic(magazine_all, progress = TRUE, details = FALSE)
 
 ```{r}
 ols_step_backward_aic(magazine_all, progress = TRUE, details = FALSE)
+
 ```
 
 ### Analyse av resultatene (diagnostikk) - *bidirectional*
@@ -1651,12 +2124,40 @@ Vi kan se at modellene gir likt resultat for alle tre måtene, men det trenger a
 
 #### Hvor god er modellen vår (goodness of fit)?
 
-Vi kan se at F-verdien er 49.206. 
-```{r}
-qf(p=.05, df1=8, df2=628, lower.tail=FALSE)
+```{r echo = FALSE}
+resultater <- ols_step_both_aic(magazine_all, progress = TRUE, details = FALSE)
 ```
 
-F-verdien er dermed langt over kritisk verdi (p < 0.001).
+```{r echo = FALSE}
+kun_intercept <- lm(satov ~ 1, data=magazine_data)
+full_modell <- lm(satov ~ sat1 + sat2 + sat3 + sat4 + sat5 + sat6 + sat7 + sat8 + sat9, data = magazine_data)
+begge <- step(kun_intercept, direction='both', scope=formula(full_modell), trace=0)
+beggeres <- summary(begge)
+dfn <- beggeres$fstatistic[2]
+dfd <- beggeres$fstatistic[3]
+
+lmp <- function (modelobject) {
+    if (class(modelobject) != "lm") stop("Not an object of class 'lm' ")
+    f <- summary(modelobject)$fstatistic
+    p <- pf(f[1],f[2],f[3],lower.tail=F)
+    attributes(p) <- NULL
+    return(p)
+}
+
+full_modell_p_verdi <- lmp(begge)
+full_modell_p_verdi <- scales::pvalue(full_modell_p_verdi,
+                           accuracy = 0.001, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+```
+
+Vi tar utgangspunkt i den siste modellen (selv om de altså i vårt tilfelle er like) og kan se at F-verdien er `r format(round(beggeres$fstatistic["value"], 3), nsmall = 3)`. 
+
+```{r}
+qf(p = .05, df1 = 8, df2 = 628, lower.tail=FALSE)
+```
+
+F-verdien er dermed langt over kritisk verdi `r full_modell_p_verdi`. 
 
 Det ser derfor ut til at det er svært usannsynlig at forbedringen fra referansemodellen (gjennomsnittet) til vår modell er tilfeldig. Vi kan også si at dersom forbedringen ved regresjonsmodellen er større enn unøyaktigheten i modellen så vil F > 1. 
 
@@ -1681,7 +2182,6 @@ table1::table1(~sat1 + sat2 + sat3 + sat4 + sat5 + sat6 + sat7 + sat8 + sat9 + s
 </div>
 
 <br>
-<br>
 
 Tabell 2: Korrelasjonsmatrise
 <div align="left">
@@ -1694,14 +2194,15 @@ p < .0001**** , p < .001*** , p < .01**, p < .05*
 </div>
 
 <br>
-<br>
 
 Tabell 3: Hierarkisk regresjonsanalyse av prediktorer for satov
 <div align="left">
 
 ```{r}
-magazine_finalmod <- lm(satov ~ sat1 + sat2 + sat3 + sat4 + sat5 + sat6 + sat7 + sat9, data = magazine_data)
-tab_model(magazine_finalmod)
+kun_intercept <- lm(satov ~ 1, data=magazine_data)
+full_modell <- lm(satov ~ sat1 + sat2 + sat3 + sat4 + sat5 + sat6 + sat7 + sat8 + sat9, data = magazine_data)
+begge <- step(kun_intercept, direction = 'both', scope = formula(full_modell), trace = 0)
+tab_model(begge)
 ```
 </div>
 

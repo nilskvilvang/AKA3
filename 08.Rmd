@@ -13,7 +13,7 @@ options(scipen=999)
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(readxl, writexl, tidyverse, summarytools, gridExtra, lsr, rstatix, mvnormalTest, heplots, plyr, xtable, broom, ggpubr, car, GGally)
+pacman::p_load(readxl, writexl, tidyverse, summarytools, gridExtra, lsr, rstatix, mvnormalTest, heplots, plyr, xtable, broom, ggpubr, car, GGally, knitr, sjPlot)
 ```
 
 ## Enveis MANOVA
@@ -28,7 +28,7 @@ Nedsiden ved å korrigere slik er at man øker sjansen for type II feil (sjansen
 
 Det vi ønsker å undersøke er:
 
-![](manova1.png){width=75%}
+![Design MANOVA](manova1.png){width=75%}
 
 ```{r echo = FALSE}
 manova1 <- readxl::read_excel("Pallant_Survey.xlsx")
@@ -46,22 +46,36 @@ xfun::embed_file('Pallant_Survey_MANOVA.xlsx')
 
 Vi kan se på variablene gruppert etter kjønn:
 ```{r}
+manova1 <- read_excel("Pallant_Survey_MANOVA.xlsx")
 manova1 %>%
   group_by(Kjonn) %>%
   rstatix::get_summary_stats(tnegaff, tposaff, tpstress, type = "mean_sd")
 ```
 
 Grafisk ser de avhengige variablene slik ut:
-```{r}
-p1 <- ggplot(manova1, aes(x = Kjonn, y = tnegaff, fill = Kjonn)) + geom_boxplot(outlier.shape = NA) + geom_jitter(width = 0.2) + theme(legend.position="top")
-p2 <- ggplot(manova1, aes(x = Kjonn, y = tposaff, fill = Kjonn)) + geom_boxplot(outlier.shape = NA) + geom_jitter(width = 0.2) + theme(legend.position="top")
-p3 <- ggplot(manova1, aes(x = Kjonn, y = tpstress, fill = Kjonn)) + geom_boxplot(outlier.shape = NA) + geom_jitter(width = 0.2) + theme(legend.position="top")
-gridExtra::grid.arrange(p1, p2, p3, ncol=3)
+```{r fig.cap = "Grafisk framstilling av de avhengige variablene i MANOVA #1"}
+p1 <- ggplot(manova1, aes(x = Kjonn, y = tnegaff, fill = Kjonn)) + 
+    geom_boxplot(outlier.shape = NA) + 
+    geom_jitter(width = 0.2) + 
+    theme_bw() +
+    theme(legend.position="top") 
+
+p2 <- ggplot(manova1, aes(x = Kjonn, y = tposaff, fill = Kjonn)) + 
+    geom_boxplot(outlier.shape = NA) + 
+    geom_jitter(width = 0.2) + 
+    theme_bw() +
+    theme(legend.position="top")
+p3 <- ggplot(manova1, aes(x = Kjonn, y = tpstress, fill = Kjonn)) + 
+    geom_boxplot(outlier.shape = NA) + 
+    geom_jitter(width = 0.2) + 
+    theme_bw() +
+    theme(legend.position="top")
+grid.arrange(p1, p2, p3, ncol=3)
 ```
 
 Gruppert på en litt annen måte kan vi også framstille dataene grafisk slik:
 
-```{r warning = FALSE, message = FALSE}
+```{r warning = FALSE, message = FALSE, fig.cap = "Grafisk framstilling av de avhengige variablene i MANOVA #2"}
 ggpubr::ggboxplot(
   manova1, x = "Kjonn", y = c("tnegaff", "tposaff", "tpstress"), 
   merge = TRUE, palette = "jco", xlab = "Verdi")
@@ -81,13 +95,18 @@ manovares1 <- manova(avhengige ~ Kjonn, data = manova1)
 summary(manovares1)
 ```
 
-Pillais testverdi er statistisk signifikant [Pillais Trace = 0.0244, *F*(3, 428) = 3.569, p < 0.05]. Det er grunn til å tro at det er forskjeller mellom gruppene. Vi finner med andre ord en signifikant forskjell mellom menn og kvinner (men kan ikke ut fra dette si noe om hvor forskjellene er).
-
-```{r warning = FALSE, message = FALSE}
-effectsize::eta_squared(manovares1)
+```{r echo = FALSE}
+manovarestabell <- summary(manovares1)
 ```
 
-$\eta^2 = 0.02$ viser imidlertid at effekten er liten.
+Pillais testverdi er statistisk signifikant [Pillais Trace = `r format(round(manovarestabell$stats[1,2], 3), nsmall = 3)`, *F*(`r manovarestabell$stats[1,4]`, `r manovarestabell$stats[1,5]`) = `r format(round(manovarestabell$stats[1,3], 3), nsmall = 3)`, p = `r format(round(manovarestabell$stats[1,6], 3), nsmall = 3)`]. Det er grunn til å tro at det er forskjeller mellom gruppene. Vi finner med andre ord en signifikant forskjell mellom menn og kvinner (men kan ikke ut fra dette si noe om hvor forskjellene er).
+
+```{r warning = FALSE, message = FALSE}
+etamanova <- effectsize::eta_squared(manovares1)
+etamanova
+```
+
+$\eta^2$ = `r format(round(etamanova$Eta2_partial, 3), nsmall = 3)` viser imidlertid at effekten er liten.
 
 ```{r}
 summary.aov(manovares1)
@@ -98,8 +117,16 @@ Vi kan se at kun en av variablene - betegnet "Response 3" (= "tpstress" siden de
 Vi kan gå tilbake til de to signifikante variablene:
 
 ```{r}
-manova1 %>% group_by(Kjonn) %>%  dplyr::summarise(n = n(), mean = mean(tnegaff), sd = sd(tnegaff))
-manova1 %>% group_by(Kjonn) %>%  dplyr::summarise(n = n(), mean = mean(tpstress), sd = sd(tpstress)) 
+manova1 %>% 
+    group_by(Kjonn) %>%  
+    dplyr::summarise(n = n(), 
+              mean = mean(tnegaff), 
+              sd = sd(tnegaff))
+manova1 %>% 
+    group_by(Kjonn) %>%  
+    dplyr::summarise(n = n(), 
+              mean = mean(tpstress), 
+              sd = sd(tpstress)) 
 ```
 
 Ut fra våre funn kan vi si at kvinner er statistisk signifikant mer stresset enn menn i denne undersøkelsen på 2 av 3 variabler, men forskjellen er liten.
@@ -113,14 +140,22 @@ Dette er kanskje en litt «merkelig» forutsetning, og strengt tatt er det vel i
 ### Utvalgsstørrelse
 
 ```{r}
-manova1 %>%
+celler <- manova1 %>%
   group_by(Kjonn) %>%
   dplyr::summarise(N = n())
+celler
 ```
 
 Dette er godt over "nødvendig" utvalgsstørrelse. Litteraturen gir ingen entydige retningslinjer for hva som er "stort nok", men en tommelfingerregel som gjengis flere steder er:
 
 $n\ i\ hver\ celle\ > antall\ avhengige\ variabler$
+
+```{r}
+(celler[1,2])
+ncol(manova1)-1
+```
+
+i vårt eksempel har vi `r celler[1,2]` og `r celler[2,2]` som må ses opp mot `r ncol(manova1)-1`.
 
 @wilsonvanvoorhisUnderstandingPowerRules2007 angir for ANOVA at hver celle bør ha 30. Dette er uansett ingen utfordring i vårt eksempel.
 
@@ -136,8 +171,7 @@ manova1 %>%
 Vi ser at vi har gjentatte problemer med signifikante verdier på shapiros test, noe som er problematisk ift. normalitet. Vi kan også sjekke skjevhet og kurtosis:
 
 ```{r}
-options(scipen = 999)
-mvnormalTest::mardia(manova1[, c("tnegaff", "tposaff", "tpstress")])$mv.test
+mardia(manova1[, c("tnegaff", "tposaff", "tpstress")])$mv.test
 ```
 
 Dette ser også ut til å bekrefte brudd på forutsetning om univariat normalitet.
@@ -145,11 +179,26 @@ Dette ser også ut til å bekrefte brudd på forutsetning om univariat normalite
 Siden vi har store utvalg (`r nrow(manova1)`) vil vi imidlertid kunne vise til sentralgrenseteoremet (se vedlegg B) og anta at vi har multivariat normalitet [@bedreMANOVAUsingExamples2018 angir n > 20 for hver kombinasjon av variabler], og gjerne se på dataene gjennom QQ-plott:
 
 ```{r}
-diagram1 <- ggpubr::ggqqplot(manova1, "tnegaff", facet.by = "Kjonn", title = "tnegaff")
-diagram2 <- ggpubr::ggqqplot(manova1, "tposaff", facet.by = "Kjonn", title = "tposaff")
-diagram3 <- ggpubr::ggqqplot(manova1, "tpstress", facet.by = "Kjonn", title = "tpstress")
+diagram1 <- ggqqplot(manova1, "tnegaff", 
+                     facet.by = "Kjonn", 
+                     title = "tnegaff")
+diagram2 <- ggqqplot(manova1, "tposaff", 
+                     facet.by = "Kjonn", 
+                     title = "tposaff")
+diagram3 <- ggqqplot(manova1, "tpstress", 
+                     facet.by = "Kjonn", 
+                     title = "tpstress")
+```
+
+```{r fig.cap = "QQ plott for 'tnegaff'"}
 diagram1
+```
+
+```{r fig.cap = "QQ plott for 'tpsoaff'"}
 diagram2
+```
+
+```{r fig.cap = "QQ plott for 'tpstress'"}
 diagram3
 ```
 
@@ -168,10 +217,11 @@ Vi ser ut til å ha en utfordring også med multivariat normalitet (men jfr. pkt
 ### Homogenitet i varians-kovariansmatrisene
 
 ```{r}
-boxM(Y = manova1[, c("tnegaff", "tposaff", "tpstress")], group = manova1$Kjonn)
+boxtest <- boxM(Y = manova1[, c("tnegaff", "tposaff", "tpstress")], group = manova1$Kjonn)
+boxtest
 ```
 
-Siden p > 0.05 kan vi si at varians-kovariansmatrisene er like for alle kombinasjoner av de avhengige variablene gitt av de ulike gruppene i den uavhengige variabelen.
+Siden p = `r format(round(boxtest$p.value, 3), nsmall = 3)` kan vi si at varians-kovariansmatrisene er like for alle kombinasjoner av de avhengige variablene gitt av de ulike gruppene i den uavhengige variabelen.
 
 ### Univariate uteliggere
 
@@ -180,22 +230,23 @@ Her sjekker vi for uteliggere med ekstrem påvirkning i de enkelte avhengige var
 ```{r}
 manova1 %>%
     group_by(Kjonn) %>%
-    rstatix::identify_outliers(tnegaff)
+    identify_outliers(tnegaff)
 ```
 
 ```{r}
 manova1 %>%
     group_by(Kjonn) %>%
-    rstatix::identify_outliers(tposaff)
+    identify_outliers(tposaff)
 ```
 
 ```{r}
 manova1 %>%
     group_by(Kjonn) %>%
-    rstatix::identify_outliers(tpstress)
+    identify_outliers(tpstress)
 ```
 
-Vi observerer ingen uteliggere med ekstrem påvirkning. Pakken "rstatix" definerer her uteliggere som observasjoner som ligger over $Q3 + 1.5 * IQR$ eller under $Q1 - 1.5*IQR$ der
+Vi observerer ingen uteliggere med ekstrem påvirkning. Pakken "rstatix" definerer her uteliggere som observasjoner som ligger over
+$Q3 + 1.5 * IQR$ eller under $Q1 - 1.5*IQR$ der
 
 $Q1\ og\ Q3\ er\ første\ og\ tredje\ kvartil$
 
@@ -212,7 +263,7 @@ mvuteliggere <- rstatix::mahalanobis_distance(data = manova1[, c("tnegaff", "tpo
 which(mvuteliggere, arr.ind = TRUE)
 ```
 
-Vi ser vi har en multivariat uteligger - observasjon nr. 185. Vi kan se om MANOVA endrer seg mye om denne tas vekk:
+Vi ser vi har multivariat uteligger(e) - observasjon nr. `r which(mvuteliggere, arr.ind = TRUE)`. Vi kan se om MANOVA endrer seg mye om denne tas vekk:
 
 ```{r}
 manova2 <- manova1[-c(185), ]
@@ -229,18 +280,36 @@ summary(manovares2)
 effectsize::eta_squared(manovares2)
 ```
 
+$\eta^2$ = `r format(round(etamanova$Eta2_partial, 3), nsmall = 3)` viser imidlertid at effekten er liten.
+
 Sammenliknet med verdier fra den opprinnelige modellen har vi i praksis ingen endring ved å ta bort den ene definerte multivariate uteliggeren. Den kan derfor ikke ha nevneverdig innflytelse på modellen.
+
+```{r}
+etamanova2 <- effectsize::eta_squared(manovares2)
+sammenlikning <- as_tibble(c(etamanova$Eta2_partial, etamanova2$Eta2_partial))
+sammenlikning$Modell <- c("Manovamodell 1", "Manovamodell 2")
+colnames(sammenlikning) <- c("Eta-squared", "Modell")
+sammenlikning <- sammenlikning[, c(2,1)]
+sammenlikning
+```
 
 ### Linearitet
 
 De parvise sammenhengene mellom de avhengige variablene bør være lineære for hver av gruppene i den uavhengige variabelen.
 
-```{r}
+```{r fig.caption = "Korrelogram"}
 linearitet <- manova1 %>%
   select(tnegaff, tposaff, tpstress, Kjonn) %>%
   group_by(Kjonn) %>%
-  doo(~ggpairs(.) + theme_bw(), result = "plots")
+  doo(~ggpairs(.) + 
+  theme_bw(), result = "plots")
 linearitet$plots
+```
+
+Det øverste plottet viser korrelasjoner for kvinner, det nederste for menn, jfr. "kontroll" av korrelasjonekoeffisienten for kvinner for variablene "tnegaff" og "tpsoaff":
+```{r}
+manovamann <- filter(manova1, Kjonn=="Mann")
+round(cor(manovamann$tpstress, manovamann$tposaff), 3)
 ```
 
 Det vi kan se er at det muligens er en utfordring med variabelen "tnegaff". Vi så også under sjekk av normalitet at tnegaff var problematisk.
@@ -249,14 +318,10 @@ Det vi kan se er at det muligens er en utfordring med variabelen "tnegaff". Vi s
 
 ```{r}
 manova3 <- manova1[ ,c("tnegaff", "tposaff", "tpstress")]
-manovacor <- round(cor(manova3),2)
-upper <- manovacor
-upper[upper.tri(manovacor)] <- ""
-upper <- as.data.frame(upper)
-upper
+tab_corr(manova3, triangle = "lower")
 ```
 
-@tabachnikUsingMultivariateStatistics2007 forslår r=0.90 som en øvre grense for korrelasjon mellom to variabler, mens @pallantSPSSSurvivalManual2010 opererer med 0.8 som en grense for bekymring. Ut fra dette ser det ikke ut til at vi har noen bekymringer for dette i eksempelet.
+@tabachnikUsingMultivariateStatistics2007 forslår r=0.90 som en øvre grense for korrelasjon mellom to variabler, mens @pallantSPSSSurvivalManual2010 opererer med 0.80 som en grense for bekymring. Ut fra dette ser det ikke ut til at vi har noen bekymringer for dette i eksempelet.
 
 
 

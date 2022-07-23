@@ -8,7 +8,7 @@ always_allow_html: true
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra, writexl, car, corrplot)
+pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra, writexl, car, corrplot, sjPlot)
 ```
 
 ## Samvariasjon/kovarians
@@ -143,18 +143,14 @@ korr <- cor.test(Pallantmod$Pallantmod.tpstress, Pallantmod$Pallantmod.tpcoiss)
 korr
 ```
 
-I resultatet kan vi se at `r korr$estimate`. Siden vi har et negativt fortegn betyr det at vi har en negativ korrelasjon mellom variablene – altså en høy verdi på den ene variabelen er forbundet med en lav verdi på den andre. Vi ser at korrelasjonen er signifikant (`r korr$p.value`). Vi kan også si noe om styrken på korrelasjonen (uavhengig av fortegn på koeffisienten). 
+I resultatet kan vi se at `r round(korr$estimate, 3)`. Siden vi har et negativt fortegn betyr det at vi har en negativ korrelasjon mellom variablene – altså en høy verdi på den ene variabelen er forbundet med en lav verdi på den andre. Vi ser at korrelasjonen er signifikant (`r korr$p.value`). Vi kan også si noe om styrken på korrelasjonen (uavhengig av fortegn på koeffisienten). 
 
 Lenger opp har vi gjengitt forslag til tokning av størrelsen på korrelasjonskoeffisienten. Etter disse har vi en sterk negativ korrelasjon mellom disse to variablene ut fra Cohens inndeling, men en moderat korrelasjon ut fra @hinkleAppliedStatisticsBehavioral2003. 
 
-```{r}
-
-plot(Pallantmod$Pallantmod.tpcoiss, Pallantmod$Pallantmod.tpstress, main = 'Spredningsplott ', xlab = 'tpcoiss', ylab = 'tpstress')
-
+```{r fig.cap = "Scatterplott for 'tpcoiss' og 'tpstress'"}
 korrplott <- ggplot(Pallantmod, aes(x=Pallantmod.tpcoiss, y=Pallantmod.tpstress)) + 
     geom_point(col = "red") +
-    theme_bw() +
-    labs(caption = "Scatterplott for Pallantmod.tpcoiss og Pallantmod.tpstress")
+    theme_bw() 
 korrplott
 ```
 
@@ -166,23 +162,42 @@ Det er vanligvis ikke nødvendig å vise resultater av en korrelasjonsanalyse de
 
 Eksempelet her er hentet fra @coghlanUsingMultivariateAnalysis2010 ([Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/)). Datasettet inneholder data på mengde av 13 ulike kjemikalier i vin fra en region i Italia fra tre ulike produsenter. 
 
-```{r echo = FALSE}
+```{r}
 wine <- read.table("http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data",
           sep=",")
 ```
 
-Vi kan først lage en korrelasjonsmatrise der vi kun tar for oss de første fem kjemikaliene (kolonne 2 til 5 i datasettet):
-
+Vi kan teste enkeltvise korrelasjoner som f.eks. mellom V2 og V3:
 ```{r}
-vinkorrelasjon <- as.matrix(cor(wine[2:5]))
-upper <- round(vinkorrelasjon, 2)
-upper[upper.tri(vinkorrelasjon)] <- ""
-upper <- as.data.frame(upper)
-# upper
-kable(upper)
+v2v3korr <- cor.test(wine$V2, wine$V3, method = "pearson")
+v2v3korr
 ```
 
-Og et sammensatt plott:
+V2 og V3 har en korrelasjon på `r format(round(v2v3korr$estimate, 3), nsmall = 3)` med en p-verdi på `r format(round(v2v3korr$p.value, 3), nsmall = 3)`. 
+
+```{r}
+v2v4korr <- cor.test(wine$V2, wine$V4, method = "pearson")
+v2v4korr
+```
+V2 og V4, på sin side, har en korrelasjon på `r format(round(v2v4korr$estimate, 3), nsmall = 3)` med en p-verdi på `r format(round(v2v4korr$p.value, 3), nsmall = 3)`. 
+
+Ofte viser vi korrelasjoner i en korrelasjonsmatrise. 
+
+```{r}
+tab_corr(wine, triangle = "lower", p.numeric = FALSE)
+```
+p < .0001**** , p < .001*** , p < .01**, p < .05*
+
+```{r echo = FALSE}
+p_korrelasjon <- scales::pvalue(v2v4korr$p.value,
+                           accuracy = 0.01, 
+                           decimal.mark = ".", 
+                           add_p = TRUE)
+```
+
+Vi kan se at korrelasjonen mellom V2 og V3 framstår som ikke signifikant i korrelasjonsmatrisen, mens V2 og V4 vises som signifikant (`r p_korrelasjon`. 
+
+Og et sammensatt plott (viser her kun for V2 - V5):
 
 ```{r fig.cap = "Korrelasjonsplott for 5 kjemikalier"}
 scatterplotMatrix(wine[2:5])

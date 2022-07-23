@@ -8,7 +8,7 @@ always_allow_html: true
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(summarytools, tidyverse)
+pacman::p_load(summarytools, tidyverse, car, carData)
 ```
 
 Univariat analyse handler om analyse av en enkelt variabel - dvs. vi kan godt gjøre analysen på flere variabler samtidig, men vi ser kun på karakteristika ved den enkelte variabel, ikke variabler i sammenheng eller i forhold til hverandre). I hovedsak gjør vi dette på tre måter:
@@ -176,7 +176,7 @@ ggplot(hoyde, aes(x = Hoyde)) +
 
 Et densityplott viser distribusjonen til en numerisk variabel. Det er på en måte en "smooth" versjon av histogrammet. Densityplott kan være et alternativ når man skal se på dataene og hvilken distribusjon den har. Det kan være enklere å se om distribusjonen f.eks. er bimodal eller unimodal (en eller to topper). Det kan også være en god visualisering av en variabel med to grupper.
 
-```{r fig.cap = "Density kurve med gjennomsnittsverdi for to grupper"}
+```{r fig.cap = "Densitykurver med gjennomsnittsverdi for to grupper"}
 snitt <- hoydefelles %>% 
   group_by(Kjonn) %>%
   summarise(grp.mean = mean(Hoyde))
@@ -187,8 +187,16 @@ ggplot(hoydefelles, aes(x = Hoyde)) +
   scale_color_manual(values = c("steelblue", "red"))+
   scale_fill_manual(values = c("lightblue", "orange")) +
   theme_bw()
-    
 ```
+
+Vi kan også utvide til flere grupper - her gjennom et eksempel fra et datasett som ligger i pakken "car":
+```{r fig.cap = "Densitykurver for tre grupper for en variabel"}
+data(Salaries, package = "carData")
+ggplot(data = Salaries, aes(x = salary, fill = rank)) +
+  geom_density(alpha = .3) +
+  theme_bw() 
+```
+
 
 ### Boksplott
 

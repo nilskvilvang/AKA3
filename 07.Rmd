@@ -90,7 +90,7 @@ resultataov1 <- aov(toptim ~ agegp3, data = optimisme)
 summary(resultataov1)
 ```
 
-Siden p-verdien er `r summary(resultataov1)[[1]][["Pr(>F)"]][1]` kan vi konkludere med at det er signifikante forskjell et sted (mellom to eller flere grupper) i variabelen (agegp3). Men vi kan ikke ut fra dette si hvor – altså hvilken gruppe som er signifikant forskjellig fra de andre). 
+Siden p-verdien er `r format(round(summary(resultataov1)[[1]][["Pr(>F)"]][1], 3), nsmall = 3)` kan vi konkludere med at det er signifikante forskjell et sted (mellom to eller flere grupper) i variabelen (agegp3). Men vi kan ikke ut fra dette si hvor – altså hvilken gruppe som er signifikant forskjellig fra de andre). 
 
 Vi bør sjekke forutsetningen om homogenitet i variansen. Homogen (lik) varians har vi når standardavvikene i ulike grupper er omtrent like.
 
@@ -286,7 +286,7 @@ padj$p.adj
 
 Vi kan se at det er statistisk signifikant forskjell mellom alle tre parene: confid1 - confid2 = `r format(round(padj$p[1], 3), nsmall = 3)`, confid1 - confid3 = `r format(round(padj$p[2], 3), nsmall = 3)` og confid2 - confid3 (`r format(round(padj$p[3], 3), nsmall = 3)`) (p er selvagt ikke 0, men 0.000 angir f.eks. for siste par `r padj$p[3]`).
 
-Til slutt ser vi på effektstørrelsen ($\eta^2$). Denne ble gitt automatisk da vi brukte pakken "ez" som "ges" ("ges" = Generalized Eta-Squared). Verdien for "ges" i tabellen over = `r res$ges`). Vi kan også hente verdien direkte (funksjonen "eta-squared" klarer ikke å hente fra ezANOVA, men som sagt ligger det som "ges" i output fra ezANOVA):
+Til slutt ser vi på effektstørrelsen ($\eta^2$). Denne ble gitt automatisk da vi brukte pakken "ez" som "ges" ("ges" = Generalized Eta-Squared). Verdien for "ges" i tabellen over = `r format(round(res$ges, 2), nsmall = 2)`. Vi kan også hente verdien direkte (funksjonen "eta-squared" klarer ikke å hente fra ezANOVA, men som sagt ligger det som "ges" i output fra ezANOVA):
 
 ```{r fig.cap = "Eta squared direkte fra aov"}
 resultataov5 <- aov(score ~ time, data = selvtillit3)
@@ -323,11 +323,11 @@ cohen1
 cohen2
 ```
 
-Vi ser at Cohens d for tid 1 - tid 2 er `r cohen1$estimate` og for tid 2 til tid 3 er `r cohen2$estimate`. Dette gir følgende tolkning [@ben-shacharEffectsizeEstimationEffect2020a], jfr. @gignacEffectSizeGuidelines2016:
+Vi ser at Cohens d for tid 1 - tid 2 er `r format(round(cohen1$estimate, 3), nsmall = 3)` og for tid 2 til tid 3 er `r format(round(cohen2$estimate, 3), nsmall = 3)`. Dette gir følgende tolkning [@ben-shacharEffectsizeEstimationEffect2020a], jfr. @gignacEffectSizeGuidelines2016:
 
 ```{r fig.cap = "Tolkning Cohens d"}
-interpret_cohens_d(0.52, rules = "gignac2016")
-interpret_cohens_d(0.57, rules = "gignac2016")
+interpret_cohens_d(cohen1$estimate, rules = "gignac2016")
+interpret_cohens_d(cohen2$estimate, rules = "gignac2016")
 ```
 
 Vi kan med andre ord si at intervensjonen gir en moderat/middels effekt, og at tidsperioden fra intervensjon til siste måling også gir en moderat/middels effekt. Når det gjelder effektstørrelser har vi altså nå mål på effekten i hele modellen og for de ulike "stegene" separat.
@@ -466,9 +466,10 @@ Det vi kan se av resultattabellen for ANOVA er først at group*fost (interaksjon
 
 ```{r echo = FALSE}
 effektstorrelse <- omega_squared(statfryktaov)
+effektstorrelse 
 ```
 
-Variabelen "group" er heller ikke signifikant. Derimot er "fost" signifikant (p < 0.001) med en $\eta^2$ = `r round(effektstorrelse[2,2], 2). Dette indikerer en middels effekt [@cohenStatisticalPowerAnalysis1988]. Dette støttes av utregning av $\omega^2$:
+Variabelen "group" er heller ikke signifikant. Derimot er "fost" signifikant (p < 0.001) med en $\eta^2$ = `r round(effektstorrelse[2,2], 2)`. Dette indikerer en middels effekt [@cohenStatisticalPowerAnalysis1988]. Dette støttes av utregning av $\omega^2$:
 
 ```{r fig.cap = "Effekstørrelse omega squared"}
 effektstorrelse <- omega_squared(statfryktaov)
@@ -503,7 +504,7 @@ En nyttig pakke dersom man skal eksportere resultattabell iht. f.eks. APA-standa
 apa.aov.table(lm(score ~ group*fost, statfryktlong),filename = "Example1.doc",table.number = 1)
 ```
 
-![](anovaapatabell.png){width=75%}
+![](anovaapatabell.png){width=85%}
 
 (merk: Tallene er noe avvikende fra vårt eksempel og kan skyldes ulike måter å foreta korreksjoner på, men er tatt med her for å vise muligheten. Pakken apaTables kan gi APA-tabeller for en rekke ulike analyser).
 

@@ -94,7 +94,7 @@ Hvis kjikvadratverdien er større eller lik den kritiske verdien er resultatene 
 
 Vi kan altså bruke både p-verdien og kjikvadratverdien til å vurdere om vi skal forkaste nullhypotesen eller ikke. Hvis vi tar fram igjen krysstabellen vår:
 
-```{r fig.caption = "Krysstabell"}
+```{r fig.caption = "Krysstabell #1"}
 krysstab
 ```
 
@@ -117,7 +117,7 @@ Forventede verdier er regnet ut matematisk ved:
 $\frac{radsum * kolonnesum}{totalsum}$
 
 Vi har krysstabellen:
-```{r fig.caption = "Krysstabell"}
+```{r fig.caption = "Krysstabell #2"}
 krysstab
 ```
 
@@ -146,16 +146,16 @@ Phi-koeffisienten kan tolkes som en korrelasjonskoeffisient (Pearson r).
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "Tolkning av phi-koeffisient"}
 
-phikoeff <- data.frame(r = c(".70 eller høyere", "0.40 - 0.69", "0.30 - 0.39", "0.20 - 0.29", "0.01 - 0.19", "0"),
+phikoefftab <- data.frame(r = c(".70 eller høyere", "0.40 - 0.69", "0.30 - 0.39", "0.20 - 0.29", "0.01 - 0.19", "0"),
                      verdi = c("Veldig sterk sammenheng", "Sterk sammenheng", "Moderat sammenheng", "Svak sammenheng", "Ingen eller neglisjerbar sammenheng", "Ingen sammenheng"))
 
-colnames(phikoeff) <- c("r", "Tolkning")
+colnames(phikoefftab) <- c("r", "Tolkning")
 
-phikoeff <- phikoeff%>%
+phikoefftab <- phikoefftab %>%
   kbl(caption = "Phi-koeffisient - uavhengig av fortegn") %>%
   kable_classic(full_width = F, position = "left", html_font = "Cambria")
 
-column_spec(phikoeff, 2, width = "8cm")
+column_spec(phikoefftab, 2, width = "8cm")
 ```
 
 I dette eksempelet har vi verdien `r phikoeff`, altså ingen eller neglisjerbar sammenheng.

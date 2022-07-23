@@ -943,11 +943,60 @@ ggarrange(dat1plot, dat2plot, dat3plot, dat4plot +
               rremove("x.text"), ncol = 2, nrow = 2,  widths = c(1, 1))
 ```
 
-## Nullhypotese
+## Nullhypotese og alernativ hypotesese
 
 Vi kommer mye tilbake til hypotesetesting (i ulike former), men dette danner grunnlaget for å forstå hvorfor vi tester en nullhypotese og forkaster den hvis vi får et signifikant resultat. Vi ønsker å teste hypotesen om at M = 53 [51,55] er en god estimator for μ. I stedet for å teste alle muligheter for at μ vil ligge i intervallet, tester vi i stedet en presist formulert og testbar nullhypotese om at μ ikke vil ligge i intervallet [51,55]. Hvis vi får et signifikant resultat på nullhypotesetesten kan vi si at sannsynligheten for at μ vil ligge utenfor [51,55] er svært liten (avhengig av konfidensnivå), og at vi derfor har styrket hypotesen om at M=53 [51,55] er en god estimator for μ. Vi setter med andre ord opp en stråmann: vi vil egentlig teste om våre estimatorer for populasjonen er sannsynlige innenfor et konfidensintervall, men tester i stedet sannsynligheten for at de ikke er det i håp om å forkaste stråmannen.
 
-Nullhypotesen formuleres som regel som en presis og testbar hypotese om ingen forbindelse eller forskjell mellom gitte variabler. Nullhypotesen kan imidlertid være «hva som helst», i den forstand at det er like gyldig å formulere en nullhypotese som ikke inneholder null i betydningen tallet null eller ingen forskjell e.l. Poenget er at den må formuleres slik at den evt kan forkastes hvis den ikke støttes ("null" kommer, har jeg blitt fortalt, fra det engelske "nullify" - altså "gjøre ugyldig, annullere, oppheve"). 
+Nullhypotesen formuleres som regel som en presis og testbar hypotese om ingen forbindelse eller forskjell mellom gitte variabler. Nullhypotesen kan imidlertid være "hva som helst", i den forstand at det er like gyldig å formulere en nullhypotese som ikke inneholder null i betydningen tallet null eller ingen forskjell e.l. Poenget er at den må formuleres slik at den evt kan forkastes hvis den ikke støttes ("null" kommer, har jeg blitt fortalt, fra det engelske "nullify" - altså "gjøre ugyldig, annullere, oppheve"). 
+
+Det vi kaller "alternativ hypotese" vil være - enkelt sagt - det motsatte av nullhypotesen. En nullhypotese vil f.eks. kunne være "Det er en sammenheng mellom løpetrening og maksimalt oksygenopptak". Nullhypotesen vil da være "Det er ingen sammenheng...". Og det er dette vi tester. Hvis vi kan teste nullhypotesen og konkludere med at vi forkaster denne (se neste delkapittel) kan vi samtidig si at vår tillit til den alternative hypotsesen er styrket (men, jfr neste delkapittel, vi kan ikke si at den alternative hypotesen er sann).
+
+## p-verdi (og litt nullhypotese)
+
+En "p-verdi" er en verdi - et tall - som uttrykker hvor sannsynlig det er at du ville fått resultatet du har funnet dersom nullhypotesen er sann (se forrige delkapittel). Svært mange statistiske tester har tar f.eks. utgangspunkt i at det ikke er noen forskjell mellom to grupper av observasjoner - altså er nullhypotesen at det **ikke** er forskjell. P-verdien - "probability value" - forteller deg noe om hvor sannsynlig det er at dine funn vil oppstå dersom det ikke er noen forskjell (altså at nullhypotesen er styrket). Testen regner ut en testverdi som sier noe om hvor nære dine data er en gitt distribusjon (som igjen er gitt av hvilken test du utfører - en t-test sjekker dine data mot en såkalt t-distribusjon). P-verdien indikerer hvor ofte du vil oppleve en like stor eller større testverdi. 
+
+P-verdien oppgis som et desimaltall, og svært ofte vil man se at 0.05 brukes som en grenseverdi. Vi vil uttrykke at en p-verdi under 0.05 (**hvis** 0.05 er valgt som en grenseverdi) er statistisk signifikant. Vi vil si at vi har gode grunner til å forkaste nullhypotesen - det er mindre enn 5% sannsynlighet for at nullhypotesen er sann (og at våre funn er tilfeldige). 
+
+Vi skal imidlertid være obs på at vi *ikke* kan si at det er 95% sannsynlighet for at den alternative hypotesen er sann. Vi har *ikke* testet den alternative hypotesen, vi har kun testet nullhypotesen. Vi kan, strengt tatt, heller ikke si at nullhypotesen ikke er sann, vi kan kun konkludere med at vi enten forkaster eller ikke forkaster den. Hvis vi f.eks. skulle si at "vi forkaster nullhypotesen og derfor er den alternative hypotsesen sann" betyr det at vi er 100% sikre på at den alternative hypotesen er sann. Og det har vi ikke noe grunnlag for å hevde på bakgrunn av en test av nullhypotesen - det er fortsatt f.eks. 5% sannsynlighet for at våre funn er tilfeldige (gitt at vi har valgt 5% som grenseverdi). Vi kan, imidlertid, uttrykke at det at vi kan forkaste nullhypotesen styrker vår alternative hypotese.
+
+Når vi skal rapportere p-verdier finnes det ulike retningslinjer, men i følge APA manualen bør vi rapportere nøyaktige p-verdier (f.eks. p = .015), med mindre p-verdien er under .001, da man i stedet bruker p < .001. Merk at dette er iht APA-srandard, andre standarder kan kreve annen rapportering av verdier. Noen eksempler:
+
+La oss anta at vi har seks ulike p-verdier: 0.50, 0.16, 0.032, 0.011, 0.008, 0.0000123.
+
+```{r}
+p <- c(0.50, 0.16, 0.032, 0.011, 0.008, 0.0000123)
+p
+```
+
+Hvis vi f.eks. setter 0.05 som terskelverdi får vi:
+
+```{r}
+p2 <- scales::pvalue(p,
+               accuracy = 0.05, 
+               decimal.mark = ".", 
+               add_p = TRUE) 
+p2
+```
+
+Eller 0.01:
+
+```{r}
+p3 <- scales::pvalue(p,
+               accuracy = 0.01, 
+               decimal.mark = ".", 
+               add_p = TRUE) 
+p3
+```
+
+Eller 0.001:
+
+```{r}
+p4 <- scales::pvalue(p,
+               accuracy = 0.001, 
+               decimal.mark = ".", 
+               add_p = TRUE) 
+p4
+```
 
 ## Statistisk styrke – "Statistical Power" - og type I og II feil
 
