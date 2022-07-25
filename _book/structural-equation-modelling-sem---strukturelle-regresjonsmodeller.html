@@ -92,7 +92,6 @@
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-a---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-b---chebyshevs-teorem.html">Vedlegg B - Chebyshevs teorem</a></li>
-<li><a class="" href="vedlegg-x---session-info.html">Vedlegg X - Session Info</a></li>
 </ul>
 
         <div class="book-extra">
@@ -121,7 +120,7 @@
 <p>Det som er særegent for SEM er at det omfatter både forholdet observert-latente variabler (“measurement model”) og latent-latent variabler (“structural model”).</p>
 <p><span class="citation">Lin (2021b)</span> illustrerer en typisk SEM-modell slik:</p>
 <div class="figure">
-<img src="Lin_SEM-modell.png" style="width:80.0%" alt=""><p class="caption">Eksempel på SEM-modell fra <span class="citation">Lin (2021b)</span></p>
+<img src="Lin_SEM-modell.png" style="width:90.0%" alt=""><p class="caption">Eksempel på SEM-modell fra <span class="citation">Lin (2021b)</span></p>
 </div>
 <ul>
 <li>Sirkel = Latent variabel</li>
@@ -130,11 +129,11 @@
 <li>Rett pil = Sti (startpunkt markerer variabel som predikerer sluttpunkt på pila)</li>
 <li>Buet pil = Varians eller kovarians</li>
 </ul>
-<p>Et sentral poeng å huske på er at - på lik linje med bekreftende faktoranalyse CFA - er SEM en “bekreftende metode”, altså bør det ligge solid teori i bakgrunnen der vi modellerer for å finne støtte eller ikke for modellen.</p>
+<p>Et sentral poeng å huske på er at på lik linje med bekreftende faktoranalyse CFA er SEM en “bekreftende metode”, altså bør det ligge solid teori i bakgrunnen der vi modellerer for å finne støtte eller ikke for modellen.</p>
 <p>Vi vil også poengtere at SEM-analyse trives best med større datautvalg. <span class="citation">Kline (2016)</span> foreskriver at <span class="math inline">\(\frac{n}{q}\)</span> bør være <span class="math inline">\(20:1\)</span>, der <span class="math inline">\(q\)</span> er antall parametere i modellen. Altså, hvis antall parametere er 15 bør utvalgsstørrelsen være minst 300.</p>
 <p><span class="citation">Lin (2021b)</span> illustrerer modellvalg i SEM på denne måten (referansene til “Model 1A” etc. i illustrasjonen under referer til ulike modeller Lin bygger i sin gjennomgang) <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;se kapittel 1 for definisjon av begreper som eksogene og endogene variabler&lt;/p&gt;"><sup>8</sup></a>:</p>
 <div class="figure">
-<img src="Lin_SEM-metodikk.png" style="width:80.0%" alt=""><p class="caption">Visualisering av SEM, fra <span class="citation">Lin (2021b)</span></p>
+<img src="Lin_SEM-metodikk.png" style="width:90.0%" alt=""><p class="caption">Visualisering av SEM, fra <span class="citation">Lin (2021b)</span></p>
 </div>
 <p>Siden vi i foregående kapitler har sett på såvel enkel som multippel regresjon og faktoranalyse vil vi i dette kapittelet bruke Lins eksempel for å belyse multivariat regresjon, stianalyse og strukturell regresjon.</p>
 <div id="datasettet" class="section level2" number="13.1">
@@ -193,7 +192,7 @@
 <p>Vi kan se på kovariansmatrisen:</p>
 <div class="sourceCode" id="cb424"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">semdatacov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">semdata</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">sjPlot</span><span class="fu">::</span><span class="fu"><a href="https://strengejacke.github.io/sjPlot/reference/tab_corr.html">tab_corr</a></span><span class="op">(</span><span class="va">semdatacov</span>, triangle <span class="op">=</span> <span class="st">"lower"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">tab_corr</span><span class="op">(</span><span class="va">semdatacov</span>, triangle <span class="op">=</span> <span class="st">"lower"</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table style="border-collapse:collapse; border:none;" class="table table-sm">
 <tr>
 <th style="font-style:italic; font-weight:normal; border-top:double black; border-bottom:1px solid black; padding:0.2cm;">
@@ -530,19 +529,20 @@ Computed correlation used pearson-method with listwise-deletion.
 <p>Multivariat regresjon skiller seg fra multippel regresjon ved at vi har flere avhengige variabler (multippel regresjon har flere uavhengige variabler, men kun 1 avhengig variabel).</p>
 <p>I dette eksempelet er vår hypotese at motivasjon predikerer både lesing og regning, mens foreldrepåvirkning kun predikerer lesing (sammen med motivasjon).</p>
 <div class="figure">
-<img src="SEMmod3A.png" alt=""><p class="caption">SEM-modell for multivariat regresjon</p>
+<img src="SEMmod3A.png" style="width:90.0%" alt=""><p class="caption">SEM-modell for multivariat regresjon</p>
 </div>
 <p><span class="math inline">\(\gamma_{11}, \gamma_{12}\ og\ \gamma_{22}\ er\ ladningen\ på\ de\ latente\ variablene\)</span>
-<span class="math inline">\(\phi_{11}\ og \phi_{22}\ er\ variansen\ i\ x_1\ og\ x_2\ (de\ observerte\ variablene\ x_1\ og\ x_2)\)</span>
+<span class="math inline">\(\phi_{11}\ og\ \phi_{22}\ er\ variansen\ i\ x_1\ og\ x_2\ (de\ observerte\ variablene\ x_1\ og\ x_2)\)</span>
 <span class="math inline">\(\phi_{12}\ er\ kovariansen\ mellom\ de\ to\ eksogene\ variablene\ x_1\ og\ x_2\)</span>
 <span class="math inline">\(\zeta_1\ og\ \zeta_2\ er\ residualene\ til\ de\ to\ latente\ variablene\ y_1\ og\ y_2\)</span>
 <span class="math inline">\(\psi_{11}\ og\ \psi_{22}\ er\ variansen\ i\ residualene\ til\ de\ latente\ variablene\)</span>
 <span class="math inline">\(\psi_{12}\ er\ kovariansen\ mellom\ residualene\ til\ de\ latente\ variablene\)</span></p>
+<p>Vi kan da lage den første modellen:</p>
 <div class="sourceCode" id="cb425"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">semmultivregr</span> <span class="op">&lt;-</span> <span class="st">'</span></span>
 <span><span class="st">    read ~ ppsych + motiv</span></span>
 <span><span class="st">    arith ~ motiv'</span></span>
-<span><span class="va">fitsemmultivregr</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">semmultivregr</span>, data<span class="op">=</span><span class="va">semdata</span><span class="op">)</span></span>
+<span><span class="va">fitsemmultivregr</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">semmultivregr</span>, data <span class="op">=</span> <span class="va">semdata</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitsemmultivregr</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lavaan 0.6-12 ended normally after 17 iterations</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -581,17 +581,17 @@ Computed correlation used pearson-method with listwise-deletion.
 <span><span class="co">#&gt;                    Estimate  Std.Err  z-value  P(&gt;|z|)</span></span>
 <span><span class="co">#&gt;    .read             65.032    4.113   15.811    0.000</span></span>
 <span><span class="co">#&gt;    .arith            63.872    4.040   15.811    0.000</span></span></code></pre></div>
-<p>I delen “Regressions” over ser vi at forholdet mellom lesing og foreldrepåvirkning er -0.216, og 0.476 mellom lesing og motivasjon. Dvs. for hver enhet økning i foreldrepåvirkning synker lesing med 0.216 når det er kontrollert for påvirkningen fra motivasjon. På samme måte: en enhets økning i motivasjon øker lesing med 0.476 når vi har kontrollert for foreldrepåvirkningen. Vi ser også at regning øker med 0.6 når motivasjon øker med en enhet.</p>
+<p>I delen “Regressions” over ser vi at forholdet mellom lesing og foreldrepåvirkning er -0.216, og 0.476 mellom lesing og motivasjon. Dvs. for hver enhet økning i (negativ) foreldrepåvirkning synker lesing med 0.216 når det er kontrollert for påvirkningen fra motivasjon. På samme måte: en enhets økning i motivasjon øker lesing med 0.476 når vi har kontrollert for foreldrepåvirkningen. Vi ser også at regning øker med 0.6 når motivasjon øker med en enhet.</p>
 <p>Vi kan imidlertid tenke oss at foreldrepåvirkning også predikerer regning slik at vi får følgende modell:</p>
 <div class="figure">
-<img src="SEMmod3E.png" alt=""><p class="caption">SEM-modell #2 for multivariat regresjon</p>
+<img src="SEMmod3E.png" style="width:90.0%" alt=""><p class="caption">SEM-modell #2 for multivariat regresjon</p>
 </div>
-<p>Vi får da:</p>
+<p>Vi får da modeel 2:</p>
 <div class="sourceCode" id="cb426"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">semmultivregr2</span> <span class="op">&lt;-</span> <span class="st">'</span></span>
 <span><span class="st">    read ~ 1 + ppsych + motiv</span></span>
 <span><span class="st">    arith ~ 1 + ppsych + motiv'</span></span>
-<span><span class="va">fitsemmultivregr2</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">semmultivregr2</span>, data<span class="op">=</span><span class="va">semdata</span><span class="op">)</span></span>
+<span><span class="va">fitsemmultivregr2</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">semmultivregr2</span>, data <span class="op">=</span> <span class="va">semdata</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitsemmultivregr2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lavaan 0.6-12 ended normally after 25 iterations</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -641,9 +641,9 @@ Computed correlation used pearson-method with listwise-deletion.
 <h2>
 <span class="header-section-number">13.3</span> Stianalyse<a class="anchor" aria-label="anchor" href="#stianalyse"><i class="fas fa-link"></i></a>
 </h2>
-<p>Vi skal bygge videre på den første multivariate regresjonsmodellen over, men nå tenke oss at de endogende variablene påvirker hverandre. Dette kan vi illustrere slik:</p>
+<p>Vi skal bygge videre på den første multivariate regresjonsmodellen over, men nå tenke oss at de endogende variablene påvirker hverandre <span class="math inline">\(\beta_\{21}\)</span>. Dette kan vi illustrere slik:</p>
 <div class="figure">
-<img src="SEMmod4A.png" alt=""><p class="caption">SEM-modell for stianalyse</p>
+<img src="SEMmod4A.png" style="width:90.0%" alt=""><p class="caption">SEM-modell for stianalyse</p>
 </div>
 <p>Vi ser at vi her har en tilleggshypotese om at lesing predikerer regning.</p>
 <div class="sourceCode" id="cb427"><pre class="downlit sourceCode r">
@@ -651,7 +651,7 @@ Computed correlation used pearson-method with listwise-deletion.
 <span><span class="st">    read ~ 1 + ppsych + motiv</span></span>
 <span><span class="st">    arith ~ 1 + motiv + read</span></span>
 <span><span class="st">'</span></span>
-<span><span class="va">fitstianalyse</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">stianalyse</span>, data<span class="op">=</span><span class="va">semdata</span><span class="op">)</span></span>
+<span><span class="va">fitstianalyse</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">stianalyse</span>, data <span class="op">=</span> <span class="va">semdata</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitstianalyse</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lavaan 0.6-12 ended normally after 1 iterations</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -708,10 +708,10 @@ Computed correlation used pearson-method with listwise-deletion.
 <span><span class="co">#&gt; 10 ppsych ~~  motiv  0.000  0.000   0.000       NA    0.000</span></span>
 <span><span class="co">#&gt; 19 ppsych  ~  motiv  0.000  0.000   0.000    0.000    0.000</span></span></code></pre></div>
 <p>Den klart mest innflytelsesrike parameteren er motiv ~ arith. Forventet endring i regresjonskoeffisienten (“expected parameter change” - epc) er 8.874.
-Vi går ikke videre med revidert modell, og det er verdt å poengtere <span class="citation">Lin (2021b)</span> advarsel om forsiktighet i å endre modellen “fordi vi kan”. Faren for Type I feil kan stige drastisk.</p>
+Vi går ikke videre med revidert modell, og det er verdt å poengtere <span class="citation">Lin (2021b)</span> advarsel om forsiktighet i å endre modellen “fordi vi kan”. Faren for Type I feil kan stige drastisk. Igjen er et et nøkkelpunkt å ha solide hypotseser og teoretisk forankring i forkant av analysene.</p>
 <p>Vi skal til slutt se på hvor god modellen er (“fit statistics”).</p>
 <div class="sourceCode" id="cb429"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitstianalyse</span>, fit.measures<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitstianalyse</span>, fit.measures <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lavaan 0.6-12 ended normally after 1 iterations</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Estimator                                         ML</span></span>
@@ -795,17 +795,17 @@ Vi går ikke videre med revidert modell, og det er verdt å poengtere <span clas
 <h3>
 <span class="header-section-number">13.4.1</span> En endogen variabel<a class="anchor" aria-label="anchor" href="#en-endogen-variabel"><i class="fas fa-link"></i></a>
 </h3>
-<p>Vår hpotese for denne modellen er at de latente eksogene variablene Tilpasning og Risiko hver har 3 indikatorer (jfr. gjennomgang av datasettet i starten av kapittelet). Vi har videre en latent endogen variabel - Prestasjon - med sine tre indikatorer. Begge “sidene” utgjør “measurement models”. I tillegg har vi den strukturelle regresjonen der vi hypotetiserer at Tilpasning positivt predikerer Prestasjon, mens Risiko negativt predikerer Prestasjon. Under viser vi under modellen svært forenklet.</p>
+<p>Vår hypotese for denne modellen er at de latente eksogene variablene Tilpasning og Risiko hver har 3 indikatorer (jfr. gjennomgang av datasettet i starten av kapittelet). Vi har videre en latent endogen variabel - Prestasjon - med sine tre indikatorer. Begge “sidene” utgjør “measurement models”. I tillegg har vi den strukturelle regresjonen der vi hypotetiserer at Tilpasning positivt predikerer Prestasjon, mens Risiko negativt predikerer Prestasjon. Under viser vi under modellen svært forenklet.</p>
 <div class="figure">
-<img src="SEMmod6A.png" alt=""><p class="caption">SEM-modell for strukturell regresjon - en endogen variabel</p>
+<img src="SEMmod6A.png" style="width:90.0%" alt=""><p class="caption">SEM-modell for strukturell regresjon - en endogen variabel</p>
 </div>
 <div class="sourceCode" id="cb430"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">strukregrsem</span> <span class="op">&lt;-</span> <span class="st">'</span></span>
-<span><span class="st">adjust =~ motiv + harm + stabi</span></span>
-<span><span class="st">risk =~ verbal + ppsych + ses</span></span>
-<span><span class="st">achieve =~ read + arith + spell</span></span>
-<span><span class="st">achieve ~ adjust + risk</span></span>
-<span><span class="st">'</span></span>
+<span><span class="st">    adjust = ~ motiv + harm + stabi</span></span>
+<span><span class="st">    risk = ~ verbal + ppsych + ses</span></span>
+<span><span class="st">    achieve = ~ read + arith + spell</span></span>
+<span><span class="st">    achieve ~ adjust + risk</span></span>
+<span><span class="st">    '</span></span>
 <span><span class="va">fitstrukregrsem</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">strukregrsem</span>, data<span class="op">=</span><span class="va">semdata</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitstrukregrsem</span>, standardized<span class="op">=</span><span class="cn">TRUE</span>, fit.measures<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lavaan 0.6-12 ended normally after 130 iterations</span></span>
@@ -934,9 +934,11 @@ Vi går ikke videre med revidert modell, og det er verdt å poengtere <span clas
 <span><span class="co">#&gt;     0.347    0.347</span></span></code></pre></div>
 <p>Vi kan også vise modellen grafisk. I illustrasjonen under har vi spesifisert at vi kun ønsker signifikante stier (&lt; 0.05).</p>
 <div class="sourceCode" id="cb431"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">lavaanPlot</span><span class="op">(</span>model <span class="op">=</span> <span class="va">fitstrukregrsem</span>, node_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="st">"box"</span>, fontname <span class="op">=</span> <span class="st">"Helvetica"</span><span class="op">)</span>, edge_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>, coefs <span class="op">=</span> <span class="cn">TRUE</span>, sig <span class="op">=</span> <span class="fl">.05</span><span class="op">)</span></span></code></pre></div>
-<div id="htmlwidget-d824be11da238e5e3c42" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d824be11da238e5e3c42">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n motiv; harm; stabi; verbal; ppsych; ses; read; arith; spell \n node [shape = oval] \n adjust; risk; achieve \n \n edge [ color = grey ] \n adjust->achieve [label = \"0.37\"] risk->achieve [label = \"0.72\"] adjust->motiv [label = \"1\"] adjust->harm [label = \"0.88\"] adjust->stabi [label = \"0.69\"] risk->verbal [label = \"1\"] risk->ppsych [label = \"-0.77\"] risk->ses [label = \"0.81\"] achieve->read [label = \"1\"] achieve->arith [label = \"0.84\"] achieve->spell [label = \"0.98\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<code class="sourceCode R"><span><span class="fu">lavaanPlot</span><span class="op">(</span>model <span class="op">=</span> <span class="va">fitstrukregrsem</span>, </span>
+<span>           node_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="st">"box"</span>, fontname <span class="op">=</span> <span class="st">"Helvetica"</span><span class="op">)</span>, </span>
+<span>           edge_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>, coefs <span class="op">=</span> <span class="cn">TRUE</span>, sig <span class="op">=</span> <span class="fl">.05</span><span class="op">)</span></span></code></pre></div>
+<div id="htmlwidget-0ffa33508b1c2fbae8ff" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0ffa33508b1c2fbae8ff">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n motiv; harm; stabi; verbal; ppsych; ses; read; arith; spell \n node [shape = oval] \n adjust; risk; achieve \n \n edge [ color = grey ] \n adjust->achieve [label = \"0.37\"] risk->achieve [label = \"0.72\"] adjust->motiv [label = \"1\"] adjust->harm [label = \"0.88\"] adjust->stabi [label = \"0.69\"] risk->verbal [label = \"1\"] risk->ppsych [label = \"-0.77\"] risk->ses [label = \"0.81\"] achieve->read [label = \"1\"] achieve->arith [label = \"0.84\"] achieve->spell [label = \"0.98\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="to-endogene-variabler" class="section level3" number="13.4.2">
 <h3>
@@ -944,19 +946,19 @@ Vi går ikke videre med revidert modell, og det er verdt å poengtere <span clas
 </h3>
 <p>En annen mulig hypotese er denne:</p>
 <div class="figure">
-<img src="SEMmod6B.png" alt=""><p class="caption">SEM-modell for strukturell regresjon - to endogene variabler</p>
+<img src="SEMmod6B.png" style="width:90.0%" alt=""><p class="caption">SEM-modell for strukturell regresjon - to endogene variabler</p>
 </div>
 <p>Risiko predikerer i denne modellen Tilpasning, og at den endogene variabelen Tilpasning og den eksogene variabelen Risiko predikerer den endogene variabelen Prestasjon.</p>
 <div class="sourceCode" id="cb432"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">strukregrsem2</span> <span class="op">&lt;-</span> <span class="st">'</span></span>
-<span><span class="st">adjust =~ motiv + harm + stabi</span></span>
-<span><span class="st">risk =~ verbal + ses + ppsych</span></span>
-<span><span class="st">achieve =~ read + arith + spell</span></span>
-<span><span class="st">adjust ~ risk </span></span>
-<span><span class="st">achieve ~ adjust + risk</span></span>
-<span><span class="st">'</span></span>
-<span><span class="va">fitstrukregrsem2</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">strukregrsem2</span>, data<span class="op">=</span><span class="va">semdata</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitstrukregrsem2</span>, standardized<span class="op">=</span><span class="cn">TRUE</span>, fit.measures<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="st">    adjust =~ motiv + harm + stabi</span></span>
+<span><span class="st">    risk =~ verbal + ses + ppsych</span></span>
+<span><span class="st">    achieve =~ read + arith + spell</span></span>
+<span><span class="st">    adjust ~ risk </span></span>
+<span><span class="st">    achieve ~ adjust + risk</span></span>
+<span><span class="st">    '</span></span>
+<span><span class="va">fitstrukregrsem2</span> <span class="op">&lt;-</span> <span class="fu">sem</span><span class="op">(</span><span class="va">strukregrsem2</span>, data <span class="op">=</span> <span class="va">semdata</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fitstrukregrsem2</span>, standardized <span class="op">=</span> <span class="cn">TRUE</span>, fit.measures <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; lavaan 0.6-12 ended normally after 112 iterations</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Estimator                                         ML</span></span>
@@ -1078,9 +1080,11 @@ Vi går ikke videre med revidert modell, og det er verdt å poengtere <span clas
 <span><span class="co">#&gt;     1.000    1.000</span></span>
 <span><span class="co">#&gt;     0.347    0.347</span></span></code></pre></div>
 <div class="sourceCode" id="cb433"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">lavaanPlot</span><span class="op">(</span>model <span class="op">=</span> <span class="va">fitstrukregrsem2</span>, node_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="st">"box"</span>, fontname <span class="op">=</span> <span class="st">"Helvetica"</span><span class="op">)</span>, edge_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>, coefs <span class="op">=</span> <span class="cn">TRUE</span>, sig <span class="op">=</span> <span class="fl">.05</span><span class="op">)</span></span></code></pre></div>
-<div id="htmlwidget-c7d5d5118d9e60453c6e" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c7d5d5118d9e60453c6e">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n motiv; harm; stabi; verbal; ses; ppsych; read; arith; spell \n node [shape = oval] \n adjust; risk; achieve \n \n edge [ color = grey ] \n risk->adjust [label = \"0.6\"] adjust->achieve [label = \"0.37\"] risk->achieve [label = \"0.72\"] adjust->motiv [label = \"1\"] adjust->harm [label = \"0.88\"] adjust->stabi [label = \"0.69\"] risk->verbal [label = \"1\"] risk->ses [label = \"0.81\"] risk->ppsych [label = \"-0.77\"] achieve->read [label = \"1\"] achieve->arith [label = \"0.84\"] achieve->spell [label = \"0.98\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<code class="sourceCode R"><span><span class="fu">lavaanPlot</span><span class="op">(</span>model <span class="op">=</span> <span class="va">fitstrukregrsem2</span>, </span>
+<span>           node_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="st">"box"</span>, fontname <span class="op">=</span> <span class="st">"Helvetica"</span><span class="op">)</span>, </span>
+<span>           edge_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>, coefs <span class="op">=</span> <span class="cn">TRUE</span>, sig <span class="op">=</span> <span class="fl">.05</span><span class="op">)</span></span></code></pre></div>
+<div id="htmlwidget-ba49c6d77e84baa5373f" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ba49c6d77e84baa5373f">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n motiv; harm; stabi; verbal; ses; ppsych; read; arith; spell \n node [shape = oval] \n adjust; risk; achieve \n \n edge [ color = grey ] \n risk->adjust [label = \"0.6\"] adjust->achieve [label = \"0.37\"] risk->achieve [label = \"0.72\"] adjust->motiv [label = \"1\"] adjust->harm [label = \"0.88\"] adjust->stabi [label = \"0.69\"] risk->verbal [label = \"1\"] risk->ses [label = \"0.81\"] risk->ppsych [label = \"-0.77\"] achieve->read [label = \"1\"] achieve->arith [label = \"0.84\"] achieve->spell [label = \"0.98\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div>
@@ -1118,7 +1122,7 @@ Vi går ikke videre med revidert modell, og det er verdt å poengtere <span clas
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 23 juli, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 25 juli, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

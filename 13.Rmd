@@ -34,7 +34,7 @@ Det som er særegent for SEM er at det omfatter både forholdet observert-latent
 
 @linIntroductionStructuralEquation2021 illustrerer en typisk SEM-modell slik:
 
-![Eksempel på SEM-modell fra @linIntroductionStructuralEquation2021](Lin_SEM-modell.png){width=80%}
+![Eksempel på SEM-modell fra @linIntroductionStructuralEquation2021](Lin_SEM-modell.png){width=90%}
 
 - Sirkel = Latent variabel
 - Firkant = Observert variabel
@@ -42,13 +42,13 @@ Det som er særegent for SEM er at det omfatter både forholdet observert-latent
 - Rett pil = Sti (startpunkt markerer variabel som predikerer sluttpunkt på pila)
 - Buet pil = Varians eller kovarians
 
-Et sentral poeng å huske på er at - på lik linje med bekreftende faktoranalyse CFA - er SEM en "bekreftende metode", altså bør det ligge solid teori i bakgrunnen der vi modellerer for å finne støtte eller ikke for modellen. 
+Et sentral poeng å huske på er at på lik linje med bekreftende faktoranalyse CFA er SEM en "bekreftende metode", altså bør det ligge solid teori i bakgrunnen der vi modellerer for å finne støtte eller ikke for modellen. 
 
 Vi vil også poengtere at SEM-analyse trives best med større datautvalg. @klinePrinciplesPracticeStructural2016 foreskriver at $\frac{n}{q}$ bør være $20:1$, der $q$ er antall parametere i modellen. Altså, hvis antall parametere er 15 bør utvalgsstørrelsen være minst 300.
 
 @linIntroductionStructuralEquation2021 illustrerer modellvalg i SEM på denne måten (referansene til "Model 1A" etc. i illustrasjonen under referer til ulike modeller Lin bygger i sin gjennomgang) ^[se kapittel 1 for definisjon av begreper som eksogene og endogene variabler]:
 
-![Visualisering av SEM, fra @linIntroductionStructuralEquation2021](Lin_SEM-metodikk.png){width=80%}
+![Visualisering av SEM, fra @linIntroductionStructuralEquation2021](Lin_SEM-metodikk.png){width=90%}
 
 Siden vi i foregående kapitler har sett på såvel enkel som multippel regresjon og faktoranalyse vil vi i dette kapittelet bruke Lins eksempel for å belyse multivariat regresjon, stianalyse og strukturell regresjon.
 
@@ -84,7 +84,7 @@ Vi kan se på kovariansmatrisen:
 
 ```{r}
 semdatacov <- as.matrix(cov(semdata))
-sjPlot::tab_corr(semdatacov, triangle = "lower")
+tab_corr(semdatacov, triangle = "lower")
 ```
 
 En positiv kovarians betyr altså at når f.eks. motivasjon og harmoni er positivt kovariert (77) øker den ene når den andre øker. Og motsatt - når motivasjon og foreldrepåvirkning er negativt kovariert (-25) betyr det at negativ foreldrepåvirkning resulterer i lavere motivasjon.
@@ -95,36 +95,38 @@ Multivariat regresjon skiller seg fra multippel regresjon ved at vi har flere av
 
 I dette eksempelet er vår hypotese at motivasjon predikerer både lesing og regning, mens foreldrepåvirkning kun predikerer lesing (sammen med motivasjon). 
 
-![SEM-modell for multivariat regresjon](SEMmod3A.png)
+![SEM-modell for multivariat regresjon](SEMmod3A.png){width=90%}
 
 $\gamma_{11}, \gamma_{12}\ og\ \gamma_{22}\ er\ ladningen\ på\ de\ latente\ variablene$
-$\phi_{11}\ og \phi_{22}\ er\ variansen\ i\ x_1\ og\ x_2\ (de\ observerte\ variablene\ x_1\ og\ x_2)$
+$\phi_{11}\ og\ \phi_{22}\ er\ variansen\ i\ x_1\ og\ x_2\ (de\ observerte\ variablene\ x_1\ og\ x_2)$
 $\phi_{12}\ er\ kovariansen\ mellom\ de\ to\ eksogene\ variablene\ x_1\ og\ x_2$
 $\zeta_1\ og\ \zeta_2\ er\ residualene\ til\ de\ to\ latente\ variablene\ y_1\ og\ y_2$
 $\psi_{11}\ og\ \psi_{22}\ er\ variansen\ i\ residualene\ til\ de\ latente\ variablene$
 $\psi_{12}\ er\ kovariansen\ mellom\ residualene\ til\ de\ latente\ variablene$
 
+Vi kan da lage den første modellen:
+
 ```{r}
 semmultivregr <- '
     read ~ ppsych + motiv
     arith ~ motiv'
-fitsemmultivregr <- sem(semmultivregr, data=semdata)
+fitsemmultivregr <- sem(semmultivregr, data = semdata)
 summary(fitsemmultivregr)
 ```
 
-I delen "Regressions" over ser vi at forholdet mellom lesing og foreldrepåvirkning er -0.216, og 0.476 mellom lesing og motivasjon. Dvs. for hver enhet økning i foreldrepåvirkning synker lesing med 0.216 når det er kontrollert for påvirkningen fra motivasjon. På samme måte: en enhets økning i motivasjon øker lesing med 0.476 når vi har kontrollert for foreldrepåvirkningen. Vi ser også at regning øker med 0.6 når motivasjon øker med en enhet. 
+I delen "Regressions" over ser vi at forholdet mellom lesing og foreldrepåvirkning er -0.216, og 0.476 mellom lesing og motivasjon. Dvs. for hver enhet økning i (negativ) foreldrepåvirkning synker lesing med 0.216 når det er kontrollert for påvirkningen fra motivasjon. På samme måte: en enhets økning i motivasjon øker lesing med 0.476 når vi har kontrollert for foreldrepåvirkningen. Vi ser også at regning øker med 0.6 når motivasjon øker med en enhet. 
 
 Vi kan imidlertid tenke oss at foreldrepåvirkning også predikerer regning slik at vi får følgende modell:
 
-![SEM-modell #2 for multivariat regresjon](SEMmod3E.png)
+![SEM-modell #2 for multivariat regresjon](SEMmod3E.png){width=90%}
 
-Vi får da:
+Vi får da modeel 2:
 
 ```{r}
 semmultivregr2 <- '
     read ~ 1 + ppsych + motiv
     arith ~ 1 + ppsych + motiv'
-fitsemmultivregr2 <- sem(semmultivregr2, data=semdata)
+fitsemmultivregr2 <- sem(semmultivregr2, data = semdata)
 summary(fitsemmultivregr2)
 ```
 
@@ -132,9 +134,9 @@ Vi kan tolke dette på samme måte som første modell.
 
 ## Stianalyse
 
-Vi skal bygge videre på den første multivariate regresjonsmodellen over, men nå tenke oss at de endogende variablene påvirker hverandre. Dette kan vi illustrere slik:
+Vi skal bygge videre på den første multivariate regresjonsmodellen over, men nå tenke oss at de endogende variablene påvirker hverandre $\beta_\{21}$. Dette kan vi illustrere slik:
 
-![SEM-modell for stianalyse](SEMmod4A.png)
+![SEM-modell for stianalyse](SEMmod4A.png){width=90%}
 
 Vi ser at vi her har en tilleggshypotese om at lesing predikerer regning.
 
@@ -143,7 +145,7 @@ stianalyse <- '
     read ~ 1 + ppsych + motiv
     arith ~ 1 + motiv + read
 '
-fitstianalyse <- sem(stianalyse, data=semdata)
+fitstianalyse <- sem(stianalyse, data = semdata)
 summary(fitstianalyse)
 ```
 
@@ -156,12 +158,12 @@ modindices(fitstianalyse, sort = TRUE)
 ```
 
 Den klart mest innflytelsesrike parameteren er motiv ~ arith. Forventet endring i regresjonskoeffisienten ("expected parameter change" - epc) er 8.874. 
-Vi går ikke videre med revidert modell, og det er verdt å poengtere @linIntroductionStructuralEquation2021 advarsel om forsiktighet i å endre modellen "fordi vi kan". Faren for Type I feil kan stige drastisk. 
+Vi går ikke videre med revidert modell, og det er verdt å poengtere @linIntroductionStructuralEquation2021 advarsel om forsiktighet i å endre modellen "fordi vi kan". Faren for Type I feil kan stige drastisk. Igjen er et et nøkkelpunkt å ha solide hypotseser og teoretisk forankring i forkant av analysene.
 
 Vi skal til slutt se på hvor god modellen er ("fit statistics").
 
 ```{r}
-summary(fitstianalyse, fit.measures=TRUE)
+summary(fitstianalyse, fit.measures = TRUE)
 ```
 
 1. CFI - Confirmatory Factor Index: Vil være en verdi mellom 0 og 1. Verdier over 0.9, evt 0.95 for en mer konsvervativ tilnærming, vurderes som bra. Siden vi har 0.994 her indikerer det en god modell.
@@ -174,17 +176,17 @@ summary(fitstianalyse, fit.measures=TRUE)
 
 ### En endogen variabel
 
-Vår hpotese for denne modellen er at de latente eksogene variablene Tilpasning og Risiko hver har 3 indikatorer (jfr. gjennomgang av datasettet i starten av kapittelet). Vi har videre en latent endogen variabel - Prestasjon - med sine tre indikatorer. Begge "sidene" utgjør "measurement models". I tillegg har vi den strukturelle regresjonen der vi hypotetiserer at Tilpasning positivt predikerer Prestasjon, mens Risiko negativt predikerer Prestasjon. Under viser vi under modellen svært forenklet.
+Vår hypotese for denne modellen er at de latente eksogene variablene Tilpasning og Risiko hver har 3 indikatorer (jfr. gjennomgang av datasettet i starten av kapittelet). Vi har videre en latent endogen variabel - Prestasjon - med sine tre indikatorer. Begge "sidene" utgjør "measurement models". I tillegg har vi den strukturelle regresjonen der vi hypotetiserer at Tilpasning positivt predikerer Prestasjon, mens Risiko negativt predikerer Prestasjon. Under viser vi under modellen svært forenklet.
 
-![SEM-modell for strukturell regresjon - en endogen variabel](SEMmod6A.png)
+![SEM-modell for strukturell regresjon - en endogen variabel](SEMmod6A.png){width=90%}
 
 ```{r}
 strukregrsem <- '
-adjust =~ motiv + harm + stabi
-risk =~ verbal + ppsych + ses
-achieve =~ read + arith + spell
-achieve ~ adjust + risk
-'
+    adjust = ~ motiv + harm + stabi
+    risk = ~ verbal + ppsych + ses
+    achieve = ~ read + arith + spell
+    achieve ~ adjust + risk
+    '
 fitstrukregrsem <- sem(strukregrsem, data=semdata)
 summary(fitstrukregrsem, standardized=TRUE, fit.measures=TRUE)
 ```
@@ -192,30 +194,34 @@ summary(fitstrukregrsem, standardized=TRUE, fit.measures=TRUE)
 Vi kan også vise modellen grafisk. I illustrasjonen under har vi spesifisert at vi kun ønsker signifikante stier (< 0.05).
 
 ```{r}
-lavaanPlot(model = fitstrukregrsem, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, sig = .05)
+lavaanPlot(model = fitstrukregrsem, 
+           node_options = list(shape = "box", fontname = "Helvetica"), 
+           edge_options = list(color = "grey"), coefs = TRUE, sig = .05)
 ```
 
 ### To endogene variabler
 
 En annen mulig hypotese er denne:
 
-![SEM-modell for strukturell regresjon - to endogene variabler](SEMmod6B.png)
+![SEM-modell for strukturell regresjon - to endogene variabler](SEMmod6B.png){width=90%}
 
 Risiko predikerer i denne modellen Tilpasning, og at den endogene variabelen Tilpasning og den eksogene variabelen Risiko predikerer den endogene variabelen Prestasjon.
 
 ```{r}
 strukregrsem2 <- '
-adjust =~ motiv + harm + stabi
-risk =~ verbal + ses + ppsych
-achieve =~ read + arith + spell
-adjust ~ risk 
-achieve ~ adjust + risk
-'
-fitstrukregrsem2 <- sem(strukregrsem2, data=semdata)
-summary(fitstrukregrsem2, standardized=TRUE, fit.measures=TRUE)
+    adjust =~ motiv + harm + stabi
+    risk =~ verbal + ses + ppsych
+    achieve =~ read + arith + spell
+    adjust ~ risk 
+    achieve ~ adjust + risk
+    '
+fitstrukregrsem2 <- sem(strukregrsem2, data = semdata)
+summary(fitstrukregrsem2, standardized = TRUE, fit.measures = TRUE)
 ```
 
 ```{r}
-lavaanPlot(model = fitstrukregrsem2, node_options = list(shape = "box", fontname = "Helvetica"), edge_options = list(color = "grey"), coefs = TRUE, sig = .05)
+lavaanPlot(model = fitstrukregrsem2, 
+           node_options = list(shape = "box", fontname = "Helvetica"), 
+           edge_options = list(color = "grey"), coefs = TRUE, sig = .05)
 ```
 

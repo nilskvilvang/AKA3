@@ -9,12 +9,12 @@ always_allow_html: true
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable, GPArotation, EFAtools, nFactors, rstatix, calibrate, Matrix, summarytools, lavaan, lavaanPlot, haven, skimr, psycho, semPlot, gridExtra, kfa, multiUS)
+pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable, GPArotation, EFAtools, nFactors, rstatix, calibrate, Matrix, summarytools, lavaan, lavaanPlot, haven, skimr, psycho, semPlot, gridExtra, kfa, multiUS, ggpubr, sjPlot)
 ```
 
 ## Innledning
 
-"En faktoranalyse er en analyseteknikk som brukes for å forstå korrelasjonsstrukturen i et sett av observerte variabler" [@bjerkanFaktoranalyse2007b, s.221]. I følge @mehmetogluInnforingStatistiskeDataanalyser2020 brukes disse statistiske teknikkene i praksis som metoder som reduserer et større antall variabler til et mindre antall variabler uten å miste vesentlig informasjon om dataene i prosessen. De omtales derfor ofte som datareduksjonsteknikker ("data reduction" eller "dimension reduction"). Ofte vil vi bruke faktoranalyse for å kunne si noe om såkalte latente (eller skjulte) variabler i samfunnsvitenskapene -  forhold vi ikke kan måle direkte, men som vi kan uttrykke gjennom å måle/observere en rekke andre forhold/variabler som vi så "samler" i en konstruert variabel gjennom nettopp faktoranalyse. Målet med faktoranalysen er da i følge @tinsleyUsesFactorAnalysis1987 "to achieve parsimony by using the smallest number of explanatory concepts to explain the maximum amount of common variance in a correlation matrix". Det vi ønsker å finne er variabler som er korrelerte med hverandre, men relativt ukorrelerte med andre grupper/subset av variabler (som igjen er interkorrelerte i egen gruppe/subset) [@tabachnikUsingMultivariateStatistics2007]. Den grunnleggende utfordringen er at vi ønsker å representere et stort antall variabler på en enklere måte, men hvis vi velger for få faktorer mister vi informasjon (noe som går ut over påliteligheten) og hvis vi velger for mange kan vi ende opp med en modell som er komplisert og vanskelig å tolke. 
+"En faktoranalyse er en analyseteknikk som brukes for å forstå korrelasjonsstrukturen i et sett av observerte variabler" [@bjerkanFaktoranalyse2007b, s.221]. I følge @mehmetogluInnforingStatistiskeDataanalyser2020 brukes disse statistiske teknikkene i praksis som metoder som reduserer et større antall variabler til et mindre antall variabler uten å miste vesentlig informasjon om dataene i prosessen. De omtales derfor ofte som datareduksjonsteknikker ("data reduction" eller "dimension reduction"). Ofte vil vi bruke faktoranalyse for å kunne si noe om såkalte latente (eller skjulte) variabler i samfunnsvitenskapene -  forhold vi ikke kan måle direkte, men som vi kan uttrykke gjennom å måle/observere en rekke andre forhold/variabler som vi så "samler" i en konstruert variabel gjennom nettopp faktoranalyse. Målet med faktoranalysen er da i følge @tinsleyUsesFactorAnalysis1987 "to achieve parsimony by using the smallest number of explanatory concepts to explain the maximum amount of common variance in a correlation matrix" (s.414). Det vi ønsker å finne er variabler som er korrelerte med hverandre, men relativt ukorrelerte med andre grupper/subset av variabler (som igjen er interkorrelerte i egen gruppe/subset) [@tabachnikUsingMultivariateStatistics2007]. Den grunnleggende utfordringen er at vi ønsker å representere et stort antall variabler på en enklere måte, men hvis vi velger for få faktorer mister vi informasjon (noe som går ut over påliteligheten) og hvis vi velger for mange kan vi ende opp med en modell som er komplisert og vanskelig å tolke. 
 
 Innledningsvis er det nødvendig å gjøre en grunnleggende begrepsavklaring rundt begrepet faktoranalyse da det i mange sammenhenger framstår som om begreper blandes sammen og det kan være uklart hva man egentlig snakker om. Begrepene faktoranalyse og komponentanalyse ("Factor Analysis" - FA - og "Principal Component Analysis" - PCA) brukes ofte om hverandre og noen ganger er det uklart hva som er hva (eller i hvert fall hva forfatteren mener). En klargjørende framstilling kan man f.eks. finne i @joreskogkarlg.MultivariateAnalysisLISREL2016. Vi vil i det følgende skille mellom faktoranalyse (EFA og CFA), og komponentanalyse (PCA).
 
@@ -25,11 +25,11 @@ Felles for begge er:
 * de er metodikker for å identifisere mønstre i korrelasjonen mellom variabler. 
 
 En grunnleggende forskjell er at PCA er en deskriptiv teknikk mens faktoranalyse er modelleringsteknikker [@unkelSimultaneousParameterEstimation2010]. PCA blir dermed "en empirisk oppsummering av datamaterialet" [@bjerkanFaktoranalyse2007b, s.225].
-Strengt tatt er ikke PCA en faktoranalyse, men omtales (dessverre noe forvirrende) som sagt ofte som en faktoranalyse. I SPSS heter f.eks. menypunktet «Data reduction» og man velger «Factor» i neste valg hvilket innebærer en EFA. SPSS er begrenset til EFA, og man trenger AMOS i SPSS som strengt tatt er et SEM-program (SEM = Structural Equation Modelling - en relatert metodikk til CFA som vi behandler i et senere kapittel).
+Strengt tatt er ikke PCA en faktoranalyse, men omtales (dessverre noe forvirrende) som sagt ofte som en faktoranalyse. I SPSS heter f.eks. menypunktet «Data reduction» og man velger «Factor» i neste valg hvilket innebærer en EFA. SPSS er begrenset til EFA, og man trenger AMOS i SPSS som strengt tatt er et SEM-program (SEM = Structural Equation Modelling - en relatert metodikk til CFA som vi behandler i et annet kapittel).
 
 Grafisk kan forskjellene vises slik:
 
-![](PCA-FA.png){width=60%}
+![Forskjeller PCA og FA](PCA-FA.png){width=90%}
 
 I venstre del (PCA) kombineres fire målte variabler ($X_1...X_4$) til en komponent ($C$). Pilene indikerer at det er variablene som bidrar til å skape komponenten, og de kan gjøre det med ulike styrke (vekt), som er vist med $w_1...w_4$. Variablene $X_1...X_4$ utgjør altså ulike størrelser på bidraget til komponenten $C$. 
 
@@ -37,7 +37,7 @@ I figurens høyre del ser vi en faktor $F$ som skaper de fire målte variablene 
 
 Som illustrert i figuren under består variansen til variabelen X av tre deler: felles varians med andre variabler, unik varians for selve variabel X og målefeil. PCA søker å forklare all varians for variabel X som en komponent (derav komponentanalyse), mens faktoranalyse kun søker å forklare den delen av den totale variansen som er felles (eller med andre ord: korrelasjonen mellom variablene).   
 
-![Modifisert fra @bjerkanFaktoranalyse2007b, s. 225, fig. 10.1](PCA-EFA-CFA.png){width=70%}
+![Modifisert fra @bjerkanFaktoranalyse2007b, s. 225, fig. 10.1](PCA-EFA-CFA.png){width=90%}
 
 Matematisk er forskjellen mellom faktoranalyse og PCA altså hvordan varians blir analysert – i PCA blir all varians analysert, i faktoranalyse blir kun delt varians («shared variance») analysert. Eller med andre ord: PCA analyserer all varians (felles varians, unik varians og målefeil), FA analyserer kovarians (variabelens felles varians med andre variabler).
 
@@ -47,7 +47,7 @@ En annen måte å illustrere forskjellen mellom PCA og EFA er gitt av @bastosExp
 
 ![Fra @bastosExploratoryFactorAnalysis2021](PCA-EFA.png){width=60%}
 
-I figuren over representerer A'ene spesifikk varians, B'ene felles varians og C'ene feilvarians (jfr. figuren fra @bjerkanFaktoranalyse2007b lenger opp). Mens vi i PCA vil bruke all varians (A, B og C) bruker vi kun B i EFA. 
+I figuren over representerer A'ene spesifikk varians, B'en felles varians og C'ene feilvarians (jfr. figuren fra @bjerkanFaktoranalyse2007b lenger opp). Mens vi i PCA vil bruke all varians (A, B og C) bruker vi kun B i EFA. 
 
 Praktisk er det imidlertid ikke helt trivielt å avgjøre om man skal bruke PCA eller EFA. @guadagnoliRelationSampleSize1988 konkluderer også i en litteraturundersøkelse med at resultatene fra PCA i stor grad er like som resultatene fra faktoranalyse. Med minst 30 variabler vil løsningene være mer eller mindre like, men med under 20 variabler kan forskjeller inntreffe [@stevensAppliedMultivariateStatistics2002]. Som @fieldDiscoveringStatisticsUsing2009 oppsummerer: "However, to a non-statistician the difference between a principal component and a factor may be difficult to conceptualize (they are both linear models), and the difference arises largely from the calculation" (s.760).
 
@@ -59,10 +59,9 @@ Praktisk er det imidlertid ikke helt trivielt å avgjøre om man skal bruke PCA 
 
 La oss se på hva PCA er. Vi tar utgangspunkt i et lite, kontruert datasett der vi har registrert karakterer i ulike fag på 10 studenter. Dette eksempelet er modifisert fra @starmerStatQuestPrincipalComponent2018, med innslag fra @pittardPrincipalComponentsAnalysis2012.
 
-```{r echo = FALSE, eval = TRUE}
-studentnr <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-matte <- c(79, 76, 78, 75, 42, 45, 41, 46, 50, 49)
-karakterer <- data.frame(studentnr, matte)
+```{r}
+karakterer <- tibble(studentnr = 1:10, 
+                     matte = c(79, 76, 78, 75, 42, 45, 41, 46, 50, 49))
 kartabell1 <- flextable(karakterer)
 kartabell1 <- autofit(kartabell1)
 kartabell1
@@ -70,18 +69,20 @@ kartabell1
 
 Vi kan plotte den ene variabelen - matte. 
 
-```{r}
-plot(karakterer$matte, xlab = "studentnr", ylab = "matte")
+```{r fig.cap = "Karakterer for variabelen 'matte'"}
+ggplot(karakterer, aes(x = studentnr, y = matte)) + 
+    geom_point() +
+    theme_bw()
 ```
 
 Vi kan se at studentgruppen deler seg i to klare grupper, en gruppe med høy score og en gruppe med lavere score. Studentene i gruppa med høy score likner mer på hverandre enn på studenter i den andre gruppa, og motsatt.
 
 Hvis vi legger til en variabel - f.eks. engelskkarakterer - får vi denne tabellen:
 
-```{r echo = FALSE, eval = TRUE}
+```{r}
 engelsk <- c(79, 68, 71, 70, 53, 55, 62, 60, 64, 49)
-karakterer$engelsk <- engelsk
-karakterer2 <- karakterer
+karakterer <- karakterer %>%
+    mutate(engelsk = engelsk)
 kartabell2 <- flextable(karakterer)
 kartabell2 <- autofit(kartabell2)
 kartabell2
@@ -89,30 +90,33 @@ kartabell2
 
 Som vi også kan plotte:
 
-```{r}
-plot(karakterer$matte, karakterer$engelsk, xlab = "matte", ylab = "engelsk")
+```{r fig.cap = "Karakterer for variablene 'matte' og 'engelsk'"}
+ggplot(karakterer, aes(x = matte, y = engelsk)) + 
+    geom_point() +
+    theme_bw()
 ```
 
 Vi kan nå si vi har to dimensjoner for hver student: den første dimensjonen - x-aksen - inneholder mattekarakterer, den andre dimensjonen - y-aksen - inneholder engelskkarakterer. Vi kan se også med to dimensjoner at det er to tydelige clustere. 
 
 Så kan vi legge til nok en karakter - denne gangen norsk. 
 
-```{r echo = FALSE, eval = TRUE}
+```{r}
 norsk <- c(67, 68, 69, 66, 48, 46, 47, 50, 51, 49)
-karakterer$norsk <- norsk
+karakterer <- karakterer %>%
+    mutate(norsk = norsk)
 kartabell3 <- flextable(karakterer)
 kartabell3 <- autofit(kartabell3)
 kartabell3
 ```
 
-Med tre dimensjoner må vi har tre akser i plottet: 
+Med tre dimensjoner må vi ha tre akser i plottet: 
 
-```{r}
-fig <- plot_ly(karakterer, x = matte, y = norsk, z = engelsk)
-fig <- fig %>% add_markers()
-fig <- fig %>% layout(scene = list(xaxis = list(title = 'Matte'),
-                                   yaxis = list(title = 'Norsk'),
-                                   zaxis = list(title = 'Engelsk')))
+```{r fig.cap = "Karakterer for variablene 'matte', 'engelsk' og 'norsk'"}
+fig <- plot_ly(karakterer, x = karakterer$matte, y = karakterer$norsk, z = karakterer$engelsk) %>%
+    add_markers() %>%
+    layout(scene = list(xaxis = list(title = "Matte"),
+                        yaxis = list(title = "Norsk"),
+                        zaxis = list(title = "Engelsk")))
 fig
 ```
 
@@ -122,42 +126,46 @@ Hvis vi nå legger til fysikkarakterer i tillegg kan vi ikke lenger plotte dette
 
 Vi går tilbake til datasettet med to karakterer (dimensjoner).
 
-```{r}
+```{r  fig.cap = "Karakterer for variablene 'matte' og 'engelsk'"}
 kartabell2
-plot(karakterer$matte, karakterer$engelsk, xlab = "matte", ylab = "engelsk")
+ggplot(karakterer, aes(x = matte, y = engelsk)) + 
+    geom_point() +
+    theme_bw()
 ```
 
 Vi regner så ut gjennomsnittet for de to variablene matte og engelsk: 
 
 ```{r echo = FALSE, eval = TRUE}
-mean(karakterer$matte)
-mean(karakterer$engelsk)
+colMeans(karakterer[2:3])
 ```
 
 Vi bruker disse gjennomsnittsverdiene til å kalkulere senterpunktet (x = 58.1, y = 63.1) som vi deretter - ved å beholde de innbyrdes avstandene i x- og y-planet mellom datapunktene - sentrerer alle observasjonene rundt. 
 
-```{r}
+```{r fig.cap = "Plott for matte og engelsk sentrert på (0,0)"}
 center_scale <- function(x) {
     scale(x, scale = FALSE)
 }
-sentrert <- as.data.frame(center_scale(karakterer))  
-plot(sentrert$matte, sentrert$engelsk, xlab = "matte", ylab = "engelsk")
-abline(v = 0, lty=2)
-abline(h = 0, lty=2)
+sentrert <- as_tibble(center_scale(karakterer)) 
+sentrertplott <- ggplot(sentrert, aes(x = matte, y = engelsk)) + 
+    geom_point() +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    theme_bw()
+sentrertplott
 ```
 
 Vi ser at datapunktene ligger nøyaktig likt i forhold til hverandre, men senterpunktet er nå (0, 0). Neste steg er å lage en regresjonslinje som passer best mulig til dataene. Vi begynner med å legge på en hvilken som helst linje som går gjennom (0, 0) og deretter roterer vi linja med (0, 0) som pivoteringspunkt til man finner linja som passer best (i dette tilfellet den røde stiplede linja):
 
-```{r}
-plot(sentrert$matte, sentrert$engelsk, xlab = "matte", ylab = "engelsk")
-abline(v = 0, lty=2)
-abline(h = 0, lty=2)
-abline(coef = c(0,3), col = "blue", lty = 3)
-abline(coef = c(0,2.5), col = "blue", lty = 3)
-abline(coef = c(0,2), col = "blue", lty = 3)
-abline(coef = c(0,1.5), col = "blue", lty = 3)
-abline(coef = c(0,1), col = "blue", lty = 3)
-abline(coef = c(0,0.75), col = "red", lty = 3)
+```{r fig.cap = "Eksempler på mulige linjer som pivoterer i (0,0)"}
+sentrertplott2 <- sentrertplott +
+    geom_abline(intercept = 0, slope = 5.0, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 3.0, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 2.0, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 1.5, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 1.0, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 0.75, col = "blue", linetype = "dashed") +    
+    geom_abline(intercept = 0, slope = 0.5, col = "red", linetype = "dashed")
+sentrertplott2
 ```
 
 Og hvordan vet PCA hvilken linje som passer best? For å se på det skal vi ta en liten omveg ut av eksempelet vårt. 
@@ -168,160 +176,156 @@ Med utgangspunkt i @longPrincipalComponentAnalysis2010 kan vi illustrere den pri
 
 I en OLS (jfr. teori i kapittel om regresjonsanalyse) vil man søke å finne beste tilpasning:
 
-```{r}
+```{r warning = FALSE, message = FALSE, fig.cap = "OLS x ~ y"}
 set.seed(2)
 x <- 1:100
 y <- 20 + 3 * x
 e <- rnorm(100, 0, 60)
 y <- 20 + 3 * x + e
-# OLS-regresjon y ~ x
-plot(x,y)
-yx.lm <- lm(y ~ x)
-lines(x, predict(yx.lm), col="red")
-arrows(x0 = 61, x1= 61, y0 = 100, y1 = 200, lwd = 2, col = "orange")
-arrows(x0 = 54, x1= 54, y0 = 260, y1 = 180, lwd = 2, col = "orange")
+data <- tibble(x, y)
+ggplot(data, aes(x, y)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    geom_segment(aes(x = 61, y = 98, xend = 61, yend = 195),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    geom_segment(aes(x = 78, y = 298, xend = 78, yend = 247),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    theme_bw()
 ```
 
-OLS forsøker å minimere feilleddet mellom den avhengige variabelen og modellen ved å regne på alle avstandene (og kvadrere dem) mellom datapunktene og modellen. I grafen over er dette illustrert med oransje strek for to av datapunktene.
+OLS forsøker å minimere feilleddet mellom den avhengige variabelen og modellen ved å regne på alle avstandene (og kvadrere dem) mellom datapunktene og modellen. I grafen over er dette illustrert med oransje strek for to av datapunktene. Dette er grundigere gjennomgått i kapittelet om regresjon. 
 
 Hvis vi bytter om på den avhengige og uavhengige variabelen ser det i OLS slik ut for to av datapunktene:
 
-```{r}
-# OLS-regresjon x ~ y
-plot(x,y)
-xy.lm <- lm(x ~ y)
-lines(predict(xy.lm), y, col="blue")
-arrows(x0 = 84, x1= 55, y0 = 190, y1 = 190, lwd = 2, col = "orange")
-arrows(x0 = 32, x1= 44, y0 = 137, y1 = 137, lwd = 2, col = "orange")
+```{r warning = FALSE, message = FALSE, fig.cap = "OLS y ~ x"}
+ggplot(data, aes(y, x)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    geom_segment(aes(x = 190, y = 45, xend = 145, yend = 45),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    geom_segment(aes(x = 173, y = 57, xend = 200, yend = 57),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    theme_bw()
 ```
 
 OLS forsøker alltid minimere y-avstanden (feilleddet = $y-\hat{y}$). PCA vil minimere feilleddet ortogonalt (90$^\circ$ på modellen):
 
-```{r}
-# PCA x ~ y
-plot(x,y)
-xy.lm <- lm(x ~ y)
-lines(predict(xy.lm), y, col="green")
-arrows(x0 = 54, x1= 57, y0 = 260, y1 = 200, lwd = 2, col = "orange")
-arrows(x0 = 42, x1= 38, y0 = 32, y1 = 109, lwd = 2, col = "orange")
+```{r warning = FALSE, message = FALSE, fig.cap = "Ortogonale avstander i PCA"}
+ggplot(data, aes(x, y)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE)  +
+    geom_segment(aes(x = 54, y = 255, xend = 58, yend = 190),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    geom_segment(aes(x = 42, y = 32, xend = 36, yend = 132),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    theme_bw()
 ```
 
-PCA vil rotere modellen ("regresjonslinja") rundt et senterpunkt og hele tiden kalkulere summen av de ortogonale feilleddene. Når du har en litt større mengde uavhengige variabler vil PCA gi deg hvilke lineære kombinasjoner som teller mest. En snasen forklaring og illustrasjon kan de se [her](https://stats.stackexchange.com/questions/2691/making-sense-of-principal-component-analysis-eigenvectors-eigenvalues/2700#2700) 
+PCA vil rotere modellen ("regresjonslinja") rundt et senterpunkt og hele tiden kalkulere summen av de **ortogonale** feilleddene. Når du har en litt større mengde uavhengige variabler vil PCA gi deg hvilke lineære kombinasjoner som teller mest. Hvis vi går tilbake til denne:
+
+```{r warning = FALSE, message = FALSE, fig.cap = "OLS y ~ x"}
+sentrertplott2
+```
+
+Merk at alle linjene må gå gjennom pivoteringspunktet (0,0). Vi kan tenke oss alle punktene som ankere som har en fjør festet til den vilkårlige linja. Alle punktene vil forsøke å dra linja til seg slik at den snurrer rundt (0,0) og gir minst mulig lengde på fjæra. Det vil imidlertid føre til at andre punkters fjærer strekker seg, og disse fjærene vil forsøke å dra seg sammen slik fjærer gjør når de strekkes. Til slutt når man et slags ekvilibrium der alle fjærene til sammen er i optimal lengde (det er umulig å strekke en fjær uten at flere fjærer til sammen skaper "ubalanse"). Dette er i prinsippet hva PCA gjør for å finne beste linje. Litt lenger ned går vi igjennom dette litt mer i detalj.
 
 Å gå i dybden på den matematiske utregningen av *eigenvalues* og *eigenvectors* er på grensen av dybdekunnskap i et notat med tittel "Anvendt..." i seg, og trolig kan man leve godt uten denne dybdekunnskapen. En anbefalt kilde for å gå i dybden kan være @smithTutorialPrincipalComponents2002. Likevel vil vi skissere under hvordan dette gjøres i det enkle eksempelet.  
 
 ### PCA gjennom et lite eksempel - del 2
 
-Vi tar utgangspunkt i eksempelet der vi hadde to variabler som er sentrert:
+Vi tar utgangspunkt i eksempelet der vi hadde to variabler:
 
 ```{r}
 kartabell2
-plot(sentrert$matte, sentrert$engelsk, xlab = "matte", ylab = "engelsk")
 ```
 
-Vi legger på en tilfeldig linje som går gjennom (0, 0).
+Vi legger på en tilfeldig linje som går gjennom (0, 0) på de sentrerte dataene.
 
-```{r}
-plot(sentrert$matte, sentrert$engelsk, xlab = "matte", ylab = "engelsk")
-abline(v = 0, lty=2)
-abline(h = 0, lty=2)
-abline(coef = c(0,1), col = "blue", lty = 3)
-lines(x=c(0,16.9), y=c(0, 6.9), col = "orange")
-lines(x=c(16.9, 13.4), y=c(6.9, 13.6), col = "orange")
-text(10, 2, "a")
-text(16, 11, "b")
-text(8, 10, "c")
+```{r fig.cap = "Tilnærming til maksimering av 'c'"}
+sentrertplott3 <- sentrertplott +
+    geom_abline(intercept = 0, slope = 1, col = "blue", linetype = "dashed") +
+    geom_segment(aes(x = 0, y = 0, xend = 16.9, yend = 6.9), color = "orange") +
+    geom_segment(aes(x = 16.9, y = 6.9, xend = 12.4, yend = 12.3), color = "orange") +
+    geom_text(x = 10, y = 3, label = "a") +
+    geom_text(x = 16, y = 10, label = "b") +
+    geom_text(x = 8, y = 10, label = "c")
+sentrertplott3
 ```
 
-Ettersom vi roterer linja vil avstanden $a$ ikke forandre seg. Lengden på både $b$ og $c$ vil imidlertid endre seg relativt til hverandre. Når $b$ blir lengre, blir $c$ kortere og motsatt. I samme tanke som OLS-regresjon (se ovenfor) ønsker vi at $b$ skal være så kort som mulig da det betyr at linja ligger så nærme datapunktet som mulig. For å få $b$ så kort som mulig jobber iidlertid PCA for å maksimere $c$ (det har samme effekt: når $c$ er på sitt maksimale er $b$ på sitt minimale). PCA finner altså den beste linja ved å maksimere den kvadrerte avstanden $c$ (kvadrert pga. Pythagoras... $a^2 + b^2 = c^2$). 
+Ettersom vi roterer linja vil avstanden $a$ ikke forandre seg. Lengden på både $b$ og $c$ vil imidlertid endre seg relativt til hverandre. Når $b$ blir lengre, blir $c$ kortere og motsatt. I samme tanke som OLS-regresjon (se ovenfor) ønsker vi at $b$ skal være så kort som mulig da det betyr at linja ligger så nærme datapunktet som mulig. For å få $b$ så kort som mulig jobber imidlertid PCA for å maksimere $c$ (det har samme effekt: når $c$ er på sitt maksimale er $b$ på sitt minimale). PCA finner altså den beste linja ved å maksimere den kvadrerte avstanden $c$ (kvadrert pga. Pythagoras... $a^2 + b^2 = c^2$). 
 
 PCA summerer da $c^2$ for alle de 10 punktene i dette eksempelet. Siden verdiene er kvadrerte slipper vi også problemet med at positive og negative verdier nuller hverandre ut (som for OLS - Ordinary Least *Squares* selv om vi her ikke regner squares men avstand). Summen = sum of squared distances  **SS(distances)**. 
 
-```{r}
-plot(sentrert$matte, sentrert$engelsk, xlab = "matte", ylab = "engelsk")
-abline(v = 0, lty=2)
-abline(h = 0, lty=2)
-abline(coef = c(0,1), col = "blue", lty = 3)
-lines(x=c(0,16.9), y=c(0, 6.9), col = "orange")
-lines(x=c(16.9, 13.4), y=c(6.9, 13.6), col = "orange")
-text(10, 2, "a")
-text(16, 11, "b")
-text(8, 10, "c")
-text(10, -8, TeX('$\\c_{1}^2$ ... $\\c_{10}^2$ = SS(distances)'))
+```{r warning = FALSE, message = FALSE, fig.cap = "SS(Distances)"}
+sentrertplott4 <- sentrertplott3 +
+    geom_text(x = 10, y = -8, label = TeX('$\\c_{1}^2$ ... $\\c_{10}^2$ = SS(distances)'))  
+sentrertplott4
 ```
-
 
 #### Identifikasjon av Principal Component 1 (PC1), eigenvectors og loading scores
 
 PCA roterer som sagt på linja pivotert i (0, 0) og til slutt finner den linja som maksimaliserer SS(Distances). Denne linja kalles **Principal Component 1 (PC1)**. 
 
-
-```{r echo = FALSE, eval = TRUE}
+```{r}
 lmkarakterer <- lm(engelsk ~ matte, data = sentrert)
 model_summary <- summary(lmkarakterer)
 stigningstall <- model_summary$coefficients[2,1]
+stigningstall
 ```
 
-PC1 har et stigningstall på `r stigningstall`. Det betyr at en økning på 1 i x (matte) gir en økning på 0.46 i y (engelsk). Det betyr at matte har større innvirkning på grupepringen av studentene enn engelsk. 
+PC1 har et stigningstall på `r stigningstall`. Det betyr at en økning på 1 i x (matte) gir en økning på 0.46 i y (engelsk). Det betyr at matte har større innvirkning på grupperingen av studentene enn engelsk. 
 
-```{r}
-plot(sentrert$matte, sentrert$engelsk, xlab = "matte", ylab = "engelsk")
-abline(v = 0, lty=2)
-abline(h = 0, lty=2)
-abline(lmkarakterer, col = "red")
-text(3, 3, "PC1", srt = 20)
-
-lines(x=c(0,17.9), y=c(0, 4.9), col = "orange")
-lines(x=c(17.9, 17.2), y=c(4.9, 7.9), col = "orange")
-text(9.8, 2, "a")
-text(18.5, 7, "b")
-text(10, 6.5, "c")
-
-text(11, -1.5, TeX('Pythagoras gir: a = 1, b = 0.46, c = 1.1'))
+```{r warning = FALSE, message = FALSE, fig.cap = "Pythagoras på veg mot eigenvalue og eigenvector for PC1"}
+sentrertplott4 <- sentrertplott +
+    geom_smooth(method = "lm", se = FALSE) +
+    geom_segment(aes(x = 0, y = 0, xend = 17.9, yend = 4.9), color = "orange") +
+    geom_segment(aes(x = 17.9, y = 4.9, xend = 16.75, yend = 7.8), color = "orange") +
+    geom_text(x = 3, y = 3, label = "PC1", angle = 23, color = "blue") +
+    geom_text(x = 9.8, y = 2, label = "a") +
+    geom_text(x = 18.5, y = 7, label = "b") +
+    geom_text(x = 10, y = 6.5, label = "c") +
+    geom_text(x = 11, y = -1.5, label = "Pythagoras gir: a = 1, b = 0.46, c = 1.1", size = 5)
+sentrertplott4    
 ```
   
 I PCA skaleres $c$ alltid til 1. Matematisk gjør vi det ved å dele hver side av Pythagoras med $c$ (her 1.1). 
 
-```{r}
-plot(sentrert$matte, sentrert$engelsk, xlab = "matte", ylab = "engelsk")
-abline(v = 0, lty=2)
-abline(h = 0, lty=2)
-abline(lmkarakterer, col = "red")
-text(3, 3, "PC1", srt = 20)
-
-lines(x=c(0,17.9), y=c(0, 4.9), col = "orange")
-lines(x=c(17.9, 17.2), y=c(4.9, 7.9), col = "orange")
-text(9.8, 2, "a")
-text(18.5, 7, "b")
-text(10, 6.5, "c")
-
-text(11, -1.5, "Pythagoras gir: a = 1, b = 0.46, c = 1.1", cex = 0.75)
-text(11, -4, "PCA-skalerte verdier: a = 0.91, b = 0.42, c = 1", cex = 0.75)
-text(11, -6.5, "SS(Distances) = Eigenvalue for PC1", cex = 0.75)
+```{r warning = FALSE, message = FALSE, fig.cap = "Eigenvalue og eigenvector for PC1"}
+sentrertplott5 <- sentrertplott4 +
+    geom_text(x = 11, y = -1.5, label = "Pythagoras gir: a = 1, b = 0.46, c = 1.1", size = 5) +
+    geom_text(x = 11, y = -4.0, label = "PCA-skalerte verdier: a = 0.91, b = 0.42, c = 1", size = 5) +
+    geom_text(x = 11, y = -6.5, label = "SS(Distances) = Eigenvalue for PC1", size = 5)  
+sentrertplott5
 ```
 
-Disse verdiene - 0.91 og 0.42 - kalles **Eigenvector** for PC1, og de to verdiene kalles gjerne **Loading Scores**. Som vist i grafen over er $SS(Distances) = Eigenvalue for PC1$. Eigenvalue er et begrep vi kommer tilbake til i PCA når vi skal velge ut hvor mange komponenter vi skal beholde. 
+Disse verdiene (0.91 og 0.42) kalles sammen **Eigenvector** for PC1, og de to verdiene kalles gjerne **Loading Scores**. Som vist i grafen over er $SS(Distances) = Eigenvalue for PC1$. Eigenvalue er et begrep vi kommer tilbake til i PCA når vi skal velge ut hvor mange komponenter vi skal beholde. 
 
-Det neste vi kan se på da er Principal Component 2 (PC2). PC2 er linja som går vinkelrett på PC1 og gjennom (0, 0). PC2 er altså linja som reflekterer den nest største kilden til variasjon i dataene, men som er ortogonal (vinkelrett) på PC1. Dette betyr at eigenvectoren er "snudd" og blir -0.42 og 0.91 (som altså er loading scores for PC2).
+Det neste vi kan se på da er Principal Component 2 (PC2). PC2 er linja som går vinkelrett på PC1 og gjennom (0, 0). PC2 er altså linja som reflekterer den nest største kilden til variasjon i dataene, men som er ortogonal (vinkelrett) på PC1. Dette betyr at eigenvectoren er "snudd" og blir -0.42 og -0.91 (som altså er loading scores for PC2).
 
-```{r}
-plot(sentrert$matte, sentrert$engelsk, xlab = "matte", ylab = "engelsk")
-abline(v = 0, lty=2)
-abline(h = 0, lty=2)
-abline(lmkarakterer, col = "red")
-text(3, 3, "PC1", srt = 20)
-abline(a = 0, b = -4.5, col = "blue") 
-text(-4, 8, "PC2", srt = 20)
+```{r warning = FALSE, message = FALSE, fig.cap = "Sentrert plott for PC1 og PC2"}
+sentrertplott6 <- sentrertplott +
+    geom_smooth(method = "lm", se = FALSE) +
+    geom_text(x = 3, y = 3, label = "PC1", angle = 23, color = "blue") +
+    geom_abline(intercept = 0, slope = -2.5, col = "red", size = 1.25) +
+    geom_text(x = -4, y = 5, label = "PC2", angle = 23, color = "red")
+sentrertplott6
 ```
 
 For å få fram det endelige PCA-plottet roteres løsningen slik at PC1 utgjør x-aksen og PC2 y-aksen.
 
-```{r warning = FALSE}
-karaktererX2 <- within(karakterer2, rm(studentnr))
+```{r warning = FALSE, message = FALSE, fig.cap = "Rotert PCA-plott"}
+karaktererX2 <- within(karakterer, rm(studentnr, norsk))
 # Skalerer data
 standardize <- function(x) {(x - mean(x))}
 skalert_karaktererX2 <- apply(karaktererX2,2,function(x) (x-mean(x)))
-plot(skalert_karaktererX2, cex=0.9, xlim=c(-20,20))
+# Finner Eigenvalues fra kovariansematrisen
+my.cov <- cov(skalert_karaktererX2)
+my.eigen <- eigen(my.cov)
+rownames(my.eigen$vectors) <- c("matte","engelsk")
+colnames(my.eigen$vectors) <- c("PC1","PC")
+# Sum Eigenvalues = den totale variansen i dataene
+sum(my.eigen$values)
+var(skalert_karaktererX2[,1]) + var(skalert_karaktererX2[,2])
 # Finner Eigenvalues fra kovariansematrisen
 my.cov <- cov(skalert_karaktererX2)
 my.eigen <- eigen(my.cov)
@@ -334,40 +338,35 @@ var(skalert_karaktererX2[,1]) + var(skalert_karaktererX2[,2])
 loadings <- my.eigen$vectors
 pc1.slope <- my.eigen$vectors[1,1]/my.eigen$vectors[2,1]
 pc2.slope <- my.eigen$vectors[1,2]/my.eigen$vectors[2,2]
-abline(0,pc1.slope,col="red")
-abline(0,pc2.slope,col="blue")
-textxy(12,10,"(-0.710,-0.695)",cx=0.9,dcol="red")
-textxy(-12,10,"(0.695,-0.719)",cx=0.9,dcol="blue")
-# Hvor mye varians foklarer hver eigenvector
-pc1.var <- 100*round(my.eigen$values[1]/sum(my.eigen$values),digits=2)
-pc2.var <- 100*round(my.eigen$values[2]/sum(my.eigen$values),digits=2)
-xlab=paste("PC1 - ",pc1.var," % of variation",sep="")
-ylab=paste("PC2 - ",pc2.var," % of variation",sep="")
-scores <- skalert_karaktererX2 %*% loadings
-sd <- sqrt(my.eigen$values)
-rownames(loadings) = colnames(karaktererX2)
-plot(scores,ylim=c(-10,10),xlab=xlab,ylab=ylab)
-abline(0,0,col="red")
-abline(0,90,col="blue")
+sentrert2 <- as_tibble(center_scale(skalert_karaktererX2)) 
+
+sentrertplott7 <- ggplot(sentrert2, aes(x = matte, y = engelsk)) + 
+    geom_point() +
+    geom_abline(intercept = 0, slope = pc1.slope, color = "blue") +
+    geom_abline(intercept = 0, slope = pc2.slope, color = "red") +  
+    geom_text(x = 8, y = 10, label = "(-0.710,-0.695)", color = "blue") +   
+    geom_text(x = -12, y = 10, label = "(0.695,-0.719)", color = "red") +       
+    theme_bw()
+sentrertplott7
 ```
 
 ```{r}
-scores <- skalert_karaktererX2 %*% loadings
-sd <- sqrt(my.eigen$values)
-rownames(loadings) = colnames(karaktererX2)
-
-plot(scores,ylim=c(-10,10),xlab=xlab,ylab=ylab)
-abline(0,0,col="red")
-abline(0,90,col="blue")
+# Hvor mye varians foklarer hver eigenvector
+pc1.var <- 100*round(my.eigen$values[1]/sum(my.eigen$values),digits=2)
+pc2.var <- 100*round(my.eigen$values[2]/sum(my.eigen$values),digits=2)
+pcvarians <- tibble(pc1.var, pc2.var)
+pcvarians
 ```
+
+Vi kan se at PC1 forklarere `r pcvarians[1,1]`% og PC2 forklarer `r pcvarians[1,2]`%.
 
 Punktene plottes deretter på det roterte diagrammet. Til dette brukes trigonometri. La oss se på et enkelt eksempel for ett punkt - dette gjør vi selvsagt ikke manuelt. 
 
-![](rotasjon1.png)
+![Utgangspunkt for plotting av datapunkter på det roterte diagrammet](rotasjon1.png){width=90%}
 
 Vi har det opprinnelige plottet i et koordinatsystem og har funnet PC1 og PC2, og snur først aksene. Så må datapunktene posisjoneres etter de roterte aksene. La oss vise med ett punkt (1,0) - altså punktet 1 på x-aksen, 0 på y-aksen.
 
-![](rotasjon2.png){width=50%}
+![Rotasjon av ett punkt (1,0)](rotasjon2.png){width=50%}
 
 Punkt (1,0) blir da - forutsatt $\alpha=30$:
 
@@ -377,15 +376,15 @@ $x'= cos(\alpha) = 0.9$
 
 (1,0) blir da rotert (0.5, 0.9). Slik gjør man for alle datapunkter. 
 
-![](rotasjon3.png){width=50%}
+![Datapunktet (1,0) rotert](rotasjon3.png){width=50%}
 
 #### Litt mer i detalj om rotasjon
 
-Det vi har gjort ovenfor med et lite eksempel kjøres på hele datasettet i det verktøyet vi bruker (R, Stata, SPSS, osv.). 
+Det vi har gjort ovenfor med et lite eksempel kjøres på hele datasettet i det verktøyet vi bruker (R, Stata, SPSS, osv.). Needless to say - det er greit å ha maskiner og programvare som gjør dette for oss...
 
-![](rotasjonsmatrise.png)
+![Rotasjonsmatrise](rotasjonsmatrise.png){width=50%}
 
-Med utgangspunkt i en datamatrise roteres dataene i en gitt vinkel gjennom en rotasjonsmatrise til et ny datamatrise (PC1). Denne an igjen roteres på samme måte til PC2. 
+Med utgangspunkt i en datamatrise roteres dataene i en gitt vinkel gjennom en rotasjonsmatrise til et ny datamatrise (PC1). Denne kan igjen roteres på samme måte til PC2. 
 
 Vi kan se på komponentene:
 
@@ -399,7 +398,6 @@ Og matrisen etter en rotasjon som vi kan plotte (som vi kjenner igjen fra litt l
 ```{r}
 utdata <- ut1$score
 utdata
-plot(utdata)
 ```
 
 #### Utvelgelse av antall komponenter
@@ -414,15 +412,14 @@ $\frac{SS(Distances for PC1)}{n - 1} = Varians for PC1$
 
 $\frac{SS(Distances for PC2)}{n - 1} = Varians for PC2$
 
-Et viktig poeng er at en PCA ikke reduserer antall variabler i seg selv. Hvis du opprinnelig har 13 variabler vil du få 13 PC, men spørsmålet er hvor mange du faktisk trenger å se på for å forklare variansen (hvilket du ønsker skal være færre enn det opprinnelige antall variabler). Og det er her vi kommer fram til hele poenget med PCA: Hvir mange komponenter skal vi beholde?
+Et viktig poeng er at en PCA ikke reduserer antall variabler i seg selv. Hvis du opprinnelig har 13 variabler vil du få 13 PC, men spørsmålet er hvor mange du faktisk trenger å se på for å forklare variansen (hvilket du ønsker skal være færre enn det opprinnelige antall variabler). Og det er her vi kommer fram til hele poenget med PCA: Hvor mange komponenter skal vi beholde?
 
-For å vise uilke metoder for å vurdere antall komponenter som bør beholdes bruker vi et datasett med flere variabler enn vårt eksempel ovenfor, modifisert fra @datavizHowMakeScree2020) - vi går ikke inn på hva dataene er. 
+For å vise ulike metoder for å vurdere antall komponenter som bør beholdes bruker vi et datasett med flere variabler enn vårt eksempel ovenfor, modifisert fra @datavizHowMakeScree2020) - vi går ikke inn på hva dataene er. 
 
 ```{r}
 penguins_data <- penguins[,c("bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g", "year")]
 penguins_data <- na.omit(penguins_data)
 ```
-
 
 ##### Kaisers kriterium
 
@@ -446,22 +443,22 @@ La oss forutsette at variansen for PC1 = 13 og for PC2 = 4. Dvs. at den totale v
 
 I vårt eksempel kan vi dermed fremstille dette scree plottet:   
 
-```{r}
-var_explained_df <- data.frame(PC= paste0("PC",1:5), var_explained=(pca_obj$sdev)^2/sum((pca_obj$sdev)^2))
+```{r fig.cap = "Scree plott"}
+var_explained_df <- tibble(PC = paste0("PC",1:5), var_explained=(pca_obj$sdev)^2/sum((pca_obj$sdev)^2))
 var_explained_df %>%
-  ggplot(aes(x=PC,y=var_explained, group=1))+
-  geom_point(size=4)+
-  geom_line()+
-  labs(title="Scree plott")
+    ggplot(aes(x = PC, y = var_explained, group = 1))+
+    geom_point(size = 4)+
+    geom_line() +
+    theme_bw()
 summary(pca_obj)
 ```
 
 @cattellScreeTestNumber1966 beskriver framgangsmåten som at man finner albuen og dropper alle komponenter etter komponenten som starter albuen (eller sagt på en annen måte: vi beholder alle komponentene over knekkpunktet). I vårt tilfelle indikerer det at vi beholder 1 komponent. I vårt scree plott er det et tydelig knekkpunkt, men i mange tilfeller er det ikke så tydelig, og det kan være vanskelig å identifisere «det rette» knekkpunktet. 
 
-En alternativ, og ofte brukt meetode for å illlustrere et scree plot på, er å kombinere det med et histogram (eksempel fra @szczesnaPrincipalComponentAnalysis2022).
+En alternativ, og ofte brukt metode for å illlustrere et scree plot på, er å kombinere det med et histogram (eksempel fra @szczesnaPrincipalComponentAnalysis2022).
 
-```{r}
-fviz_eig(pca_obj, col.var="blue")
+```{r fig.cap = "Scree plott og histogram"}
+fviz_eig(pca_obj)
 ```
 
 ##### Parallell analyse
@@ -489,9 +486,9 @@ xfun::embed_file('Pallant_survey_PANAS.dta')
 ```
 
 ```{r}
-Pallant_survey_PANAS <- as.data.frame(read_excel("Pallant_survey_PANAS.xlsx"))
+Pallant_survey_PANAS <- as_tibble(read_excel("Pallant_survey_PANAS.xlsx"))
 Pallant_survey_PANAS <- na.omit(Pallant_survey_PANAS)
-summarytools::descr(Pallant_survey_PANAS)
+head(descr(Pallant_survey_PANAS))
 ```
 
 Datasettet består av 20 spørsmål som utgjør PANAS skalaen ("the Positive and Negative Affect Schedule"). 
@@ -506,7 +503,7 @@ summary(resultat.pca)
 ##### Kaisers kriterium og eigenvalues
 
 ```{r}
-eig.val <- as.data.frame(get_eigenvalue(resultat.pca))
+eig.val <- as_tibble(get_eigenvalue(resultat.pca))
 eig.val
 ```
 
@@ -514,7 +511,7 @@ Ut fra Kaisers kriterium beholder vi fire komponenter.
 
 ##### Scree plott
 
-```{r}
+```{r fig.cap = "Scree plott og histogram #2"}
 fviz_eig(resultat.pca, addlabels = TRUE)
 ```
 
@@ -531,14 +528,14 @@ Dette peker også mot at vi bør beholde to komponenter.
 #### PCA låst til to komponenter
 
 ```{r}
-pca2 <- psych::principal(Pallant_survey_PANAS, nfactors=2, scores = TRUE, rotate = "varimax")
+pca2 <- principal(Pallant_survey_PANAS, nfactors=2, scores = TRUE, rotate = "varimax")
 pca2
 ```
 
 Vi ønsker å se på modellen med to komponenter på tre parametere. Først ønsker vi at mindre enn 50% av residualene skal ha absoluttverdi > 0.05.
 
 ```{r}
-antall_over <- length(pca2$residual[pca2$residual>0.05])
+antall_over <- length(abs(pca2$residual[pca2$residual > 0.05]))
 antall_residualverdier <- nrow(pca2$residual)*ncol(pca2$residual)
 (antall_over/antall_residualverdier)*100
 ```
@@ -563,7 +560,7 @@ sort(pca2$communality)
 
 ```{r}
 Pallant_survey_PANAS2 <- subset(Pallant_survey_PANAS, select = -(pn5))
-pca3 <- psych::principal(Pallant_survey_PANAS2, nfactors=2, scores = TRUE, rotate = "varimax")
+pca3 <- principal(Pallant_survey_PANAS2, nfactors=2, scores = TRUE, rotate = "varimax")
 pca3
 ```
 
@@ -593,7 +590,8 @@ forholdstall <- (antobs / antkol)
 forholdstall <- round(forholdstall, 1)
 ```
 
-I vårt datasett har vi `r nrow(Pallant_survey_PANAS2)` caser/observasjoner. Vi får da forholdstallet `r forholdstall`. Antallet og forholdstallet skulle i utgangspunktet ikke være til hinder for en faktoranalyse her. Både @hairjr.MultivariateDataAnalysis2010 og @nunallyPsychometricTheory1978 anbefaler et forholdstall på 10:1. 
+I vårt datasett har vi `r nrow(Pallant_survey_PANAS2)` caser/observasjoner. Vi får da forholdstallet `r forholdstall`. Antallet og forholdstallet skulle i utgangspunktet ikke være til hinder for en PCA her. Både @hairjr.MultivariateDataAnalysis2010 og @nunallyPsychometricTheory1978 anbefaler et forholdstall på 10:1. 
+
 ##### Sphericity - er datasettet "faktoriserbart"
 
 Vi gjennomfører to tester: Bartletts test for sfæritet og KMO. Først Bartletts:
@@ -629,8 +627,8 @@ KMO er derfor "respektabel".
 
 ```{r}
 antiimage <- antiImage(Pallant_survey_PANAS2)$AIR
-antiimage2 <- as.matrix(diag(antiimage), row.names = FALSE)
-sort(antiimage2, decreasing = TRUE)
+antiimage2 <- as_tibble(diag(antiimage), row.names = FALSE)
+sort(antiimage2$value, decreasing = TRUE)
 ```
 
 I resultatet over har vi kun hentet ut de diagonale verdiene i anti-image matrisen (som er de vi er interessert i) og sortert disse i synkende rekkefølge. Disse verdiene er KMO verdier for de individuelle variablene. Disse bør ifølge @fieldDiscoveringStatisticsUsing2009 være på over 0,5. Verdier under 0,5 kan bety at vi bør ta denne variabelen ut. 
@@ -638,10 +636,10 @@ I resultatet over har vi kun hentet ut de diagonale verdiene i anti-image matris
 ```{r}
 corPallant_survey_PANAS2 <- cor(Pallant_survey_PANAS2)
 corPallant_survey_PANAS2 <- round(corPallant_survey_PANAS2, 2)
-length(corPallant_survey_PANAS2[corPallant_survey_PANAS2>0.9 & corPallant_survey_PANAS2<1])
+length(corPallant_survey_PANAS2[corPallant_survey_PANAS2 > 0.9 & corPallant_survey_PANAS2<1])
 ```
 
-Siden denne matrisen blir stor har vi over kun hentet ut antall korrelasjonsverdier som er over 0.9 (og under 1.0 siden det i matrisen alltid vil være 1.0 i diagonalene - der variablene korrelerer med seg selv). @fieldDiscoveringStatisticsUsing2009 peker på at *ingen* korrelasjo-ner bør være over 0.9. Samtidig bør det være godt med korrelasjoner over 0.3. Det finnes ingen absolutte krav til hvor mange/hvor stor andel av korrelasjonene som bør være over 0.3, men hvis man har få over 0.3 indikerer det at dataene kanskje ikke egner seg for PCA.
+Siden denne matrisen blir stor har vi over kun hentet ut antall korrelasjonsverdier som er over 0.9 (og under 1.0 siden det i matrisen alltid vil være 1.0 i diagonalene - der variablene korrelerer med seg selv). @fieldDiscoveringStatisticsUsing2009 peker på at *ingen* korrelasjoner bør være over 0.9. Samtidig bør det være godt med korrelasjoner over 0.3. Det finnes ingen absolutte krav til hvor mange/hvor stor andel av korrelasjonene som bør være over 0.3, men hvis man har få over 0.3 indikerer det at dataene kanskje ikke egner seg for PCA.
 
 I tabellen under har vi fjernet alle korrelasjonsverdier under +/- 0.3 og 1 for å gjøre det litt lettere å se.
 
@@ -667,7 +665,7 @@ Hensikten med en ekspolerende faktoranalyse er altså å undersøke om vi har va
 
 En faktor kan ses på som en skjult variabel - en variabel vi ikke kan observere eller måle direkte, men som påvirker flere andre synlige/målbare variabler.
 
-![](faktoranalyse.png){width=50%}
+![Hva er en faktor?](faktoranalyse.png){width=90%}
 
 Variablene A, B, C osv er med andre ord observerbare/målbare fenomen for underliggende, skjulte faktorer. Når vi grupperer variabler som er høyt korrelerte antar vi at deres variasjon og korrelasjon skyldes den underliggende/skjulte variabelen. 
 
@@ -675,25 +673,25 @@ Et typisk eksempel er den såkalte "five-factor model" [@mccraeIntroductionFiveF
 
 La oss se på dette visuelt på en forenklet framstilling. Vi har en teoretisk modell, der vi sier at positive tilbakemeldinger på jobben predikerer jobbtilfredshet, økonomi predikerer tilfredshet i hjemmet, og tilsammen predikerer jobbtilfredshet og tilfredshet i hjemmet den totale personlige tilfredsheten:
 
-![](faktoranalyse2.png)
+![Total personlig tilfredshet](faktoranalyse2.png){widt=90%}
 
 Dette er det vi teoretisk forventer og vår modell. Når vi samler data ser vi alltid at dataene (selvsagt) aldri passer perfekt inn i vår teoretiske modell. I figuren under er våre faktiske (empiriske) data fra vår undersøkelse representert gjennom de fargede sirklene som knyttes til sin respektive variabel. 
 
-![](faktoranalyse3.png)
+![Total personlig tilfredshet - teori og empiri](faktoranalyse3.png){widt=90%}
 
 Så det vi faktisk ser - empirisk - er egentlig dette:
 
-![](faktoranalyse4.png)
+![Vårt faktiske empiriske bilde](faktoranalyse4.png){width=90%}
 
 Ikke alle målte variabler måler sterkest på den underliggende faktoret, det er overlapping mellom variablene og hva de måler (og det kan se langt verre ut enn figuren under).
 
-![](faktoranalyse5.png)
+![Vårt faktiske empiriske bilde - gruppering](faktoranalyse5.png){width=90%}
 
 Faktoranalysen vil hjelpe oss i å rydde litt opp i dette, ved å se på hvilke variabler som faktisk (ikker teoretisk) korrelerer sterkt med hvilke, og hvilke som korrelerer svakt, for så å hjelpe oss strukturere modellen vi tester.
 
-I figuren over kan vi se at vi nok har en struktur av sterkt korrelerte variabler som måler "sine" underliggende faktorer, men vi ser også at det er en gruppe som teoretisk burde ligge nørmere sine respektive faktorer, men som ser ut til å klumpe seg i midten. Kanskje dette er en bedre representasjon?
+I figuren over kan vi se at vi nok har en struktur av sterkt korrelerte variabler som måler "sine" underliggende faktorer, men vi ser også at det er en gruppe som teoretisk burde ligge nærmere sine respektive faktorer, men som ser ut til å klumpe seg i midten. Kanskje dette er en bedre representasjon?
 
-![](faktoranalyse6.png)
+![Hva faktoranalyse kan gjøre for oss](faktoranalyse6.png){width=90%}
 
 Her må vi trolig gå tilbake til vårt teoretiske utgangspunkt og spørreskjemate for å se på om vi har funnet en ny faktor, eller om vi skal utelate enkelte målinger/sørsmål for å få en bedre modell. 
 
@@ -714,8 +712,8 @@ xfun::embed_file('fa_spm.dta')
 ```
 
 ```{r}
-fa_spm <- as.data.frame(read_excel("fa_spm.xlsx"))
-summarytools::descr(fa_spm)
+fa_spm <- as_tibble(read_excel("fa_spm.xlsx"))
+descr(fa_spm)
 ```
 
 Vi kan se for oss at vi har stilt en rekke mennesker 9 spørsmål der de har svart på en skala fra 1-4. Det vi ønsker å se er om disse spørsmålene kan si noe om en eller flere latente variabler. De 9 spørsmålene er altså direkte målt, og vi vil se om vi kan si noe om latente variabler ut fra dette. 
@@ -727,31 +725,19 @@ Inngangsverderdiene i en faktoranalyse er korrelasjonsmatrisen som "tygges" (i p
 Vi ser på korrelasjonsmatrisen. 
 
 ```{r}
-fa_spm_cor <- round(cor(fa_spm, use="complete.obs"),2)
-pull_lower_triangle(fa_spm_cor, diagonal = FALSE)
+korrelasjon <- tab_corr(fa_spm, triangle = "lower")
+korrelasjon
 ```
-
-Henter fram antall korrelasjoner over 0.9.
-
-```{r}
-length(fa_spm_cor[fa_spm_cor>0.9 & fa_spm_cor<1])
-```
-
-Videre tar vi vekk verdier under 0.3 og de som = 1:
-
-```{r}
-under03x<- as.data.frame(apply(fa_spm_cor, 2, function(x) ifelse (abs(x) > 0.3 & (x) < 1,x,"")))
-pull_lower_triangle(under03x, diagonal = FALSE)
-```
+p < .0001**** , p < .001*** , p < .01**, p < .05*
 
 #### KMO og Bartletts
 
-```{r}
-KMO(fa_spm_cor)
-BARTLETT(fa_spm_cor, N = nrow(fa_spm))
+```{r warning = FALSE, message = FALSE}
+KMO(fa_spm)
+BARTLETT(fa_spm)
 ```
 
-Vi bruker KMO og Bartletts til å se på "faktoriserbarheten". @kaiserIndexFactorialSimplicity1974 anbefaler 0.60 som cut-off verdi. Bartletts test er signifkant. Bartletts test sammenligner våre faktiske korrelasjonsmatrise med en "identity matrix". "Identity matrix" er en konstruert korrelasjonsmatrise med verdi 1 i diagnoalen og 0 på alle andre korrelasjoner:
+Vi bruker KMO og Bartletts til å se på "faktoriserbarheten". @kaiserIndexFactorialSimplicity1974 anbefaler 0.60 som cut-off verdi for KMO. Bartletts test er signifikant. Bartletts test sammenligner våre faktiske korrelasjonsmatrise med en "identity matrix". "Identity matrix" er en konstruert korrelasjonsmatrise med verdi 1 i diagnoalen og 0 på alle andre korrelasjoner:
 
 ```{r echo = FALSE}
 print("Identity Matrix")
@@ -764,6 +750,7 @@ Vi forventer selvsagt korrelasjon i vår korrelasjonsmatrise, og siden Bartletts
 I tillegg kan vi se på "determinant":
 
 ```{r}
+fa_spm_cor <- round(cor(fa_spm, use="complete.obs"),2)
 det(fa_spm_cor)
 ```
 
@@ -774,7 +761,7 @@ En positiv verdi indikerer også at datasettet egner seg for faktoranalyse.
 #### Kaisers kriterium
 
 ```{r}
-eigenComputes(fa_spm)
+eigenComputes(fa_spm_cor)
 ```
 
 Kaisers kriterium tilsier 3 faktorer.
@@ -810,7 +797,7 @@ Det finnes to hovedgrupper rotasjoner: ortogonal og oblikk. Blant ortogonale rot
 
 Under kapittelet om PCA viste vi ortogonal rotasjon. Dette innebærer at aksene forblir ortogonale på hverandre, mens ved oblikk rotasjon kan aksenens vinkler på hverandre variere. 
 
-![](faktoranalyse7.png)
+![Ortogonal vs. oblikk rotasjon](faktoranalyse7.png)
 
 Når vi kjører en ny faktoranalyse med 3 faktorer ser det slik ut:
 
@@ -833,37 +820,37 @@ RMSEA = Root Mean Square Error of Approximation. Her oppgis ofte verdiene 0.01, 
 
 ```{r}
 fa_ingenrot <- factanal(fa_spm, factors = 3, rotation = "none")
+fa_ingenrot2 <- tibble(fa_ingenrot$loadings[,1], fa_ingenrot$loadings[,2])
 fa_varimax <- factanal(fa_spm, factors = 3, rotation = "varimax")
+fa_varimax2 <- tibble(fa_varimax$loadings[,1], fa_varimax$loadings[,2])
 fa_promax <- factanal(fa_spm, factors = 3, rotation = "promax")
+fa_promax2 <- tibble(fa_promax$loadings[,1], fa_promax$loadings[,2])
 
-par(mfrow = c(1,3))
-plot(fa_ingenrot$loadings[,1], 
-     fa_ingenrot$loadings[,2],
-     xlab = "Faktor 1", 
-     ylab = "Faktor 2", 
-     ylim = c(-1,1),
-     xlim = c(-1,1),
-     main = "Uten rotasjon")
-abline(h = 0, v = 0)
-
-plot(fa_varimax$loadings[,1], 
-     fa_varimax$loadings[,2],
-     xlab = "Faktor 1", 
-     ylab = "Faktor 2", 
-     ylim = c(-1,1),
-     xlim = c(-1,1),
-     main = "Med varimax rotasjon")
-abline(h = 0, v = 0)
-
-plot(fa_promax$loadings[,1], 
-     fa_promax$loadings[,2],
-     xlab = "Faktor 1", 
-     ylab = "Faktor 2", 
-     ylim = c(-1,1),
-     xlim = c(-1,1),
-     main = "Med promax rotasjon")
-abline(h = 0, v = 0)
-
+plott1 <- ggplot(fa_ingenrot2, aes(x=fa_ingenrot$loadings[,1], y=fa_ingenrot$loadings[,2])) + 
+    geom_point() + 
+    xlim(-1, 1) + 
+    ylim(-1, 1) + 
+    geom_vline(xintercept = 0) + 
+    geom_hline(yintercept = 0) + 
+    labs(title="Uten rotasjon", x = "Faktor 1", y = "Faktor 2") +
+    theme_bw()
+plott2 <- ggplot(fa_varimax2, aes(x=fa_varimax$loadings[,1], y=fa_varimax$loadings[,2])) + 
+    geom_point() + 
+    xlim(-1, 1) + 
+    ylim(-1, 1) + 
+    geom_vline(xintercept = 0) + 
+    geom_hline(yintercept = 0) + 
+    labs(title="Varimax", x = "Faktor 1", y = "Faktor 2") +
+    theme_bw()
+plott3 <- ggplot(fa_promax2, aes(x=fa_promax$loadings[,1], y=fa_promax$loadings[,2])) + 
+    geom_point() + 
+    xlim(-1, 1) + 
+    ylim(-1, 1) + 
+    geom_vline(xintercept = 0) + 
+    geom_hline(yintercept = 0) + 
+    labs(title="Promax", x = "Faktor 1", y = "Faktor 2") +
+    theme_bw()
+ggarrange(plott1, plott2, plott3, ncol= 3, nrow = 1)
 ```
 
 ### Konfirmerende faktoranalyse (CFA)
@@ -879,25 +866,33 @@ I forrige del beskrev vi forskjellen på EFA og CFA på følgende måte:
 
 Data i eksempelet er hentet fra @fieldDiscoveringStatisticsUsing2009 (dataene er konstruerte).
 
-Du kan laste ned datasettet i SPSS-format [her](http://www.discoveringstatistics.com/docs/ds_data_files/SPSS%20Data%20Files/) - fila heter SAQ.sav.
+Du kan laste ned datasettet i SPSS-format [her](http://www.discoveringstatistics.com/docs/ds_data_files/SPSS%20Data%20Files/) - fila heter SAQ.sav. Vi har også lagt inn fila her:
 
-```{r}
-SAQ <- read_sav("SAQ.sav")
-SAQ2 <- select(SAQ, -c(Question_09:FAC4_2))
-SAQ2 <- rename(SAQ2, Spm1 = Question_01, Spm2 = Question_02, Spm3 = Question_03, Spm4 = Question_04, Spm5 = Question_05, Spm6 = Question_06, Spm7 = Question_07, Spm8 = Question_08)
-write_sav(SAQ2, "SAQ2.sav")
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('SAQ.sav')
 ```
 
 Vi har modifisert datasettet ved å ta vekk noen unødvendige variabler for vårt formål og gitt variablene nye navn, og kalt denne fila SAQ2.sav:
 
-```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
-xfun::embed_file('SAQ2.sav')
+```{r}
+SAQ <- read_sav("SAQ.sav")
+SAQ2 <- SAQ %>%
+    select(-c(Question_09:FAC4_2)) %>% 
+    rename(Spm1 = Question_01, 
+           Spm2 = Question_02, 
+           Spm3 = Question_03, 
+           Spm4 = Question_04, 
+           Spm5 = Question_05, 
+           Spm6 = Question_06, 
+           Spm7 = Question_07, 
+           Spm8 = Question_08)
+write_sav(SAQ, "SAQ2.sav")
 ```
 
 Det grunnleggende ved faktoranalyse er at det ser på korrelasjoner mellom spørsmål/enheter. I vårt datasett - SAQ2 - har vi denne korrelasjonsmatrisen:
 
 ```{r}
-SAQ2cor<-round(cor(SAQ2[,1:8]),2)
+SAQ2cor <- round(cor(SAQ2[,1:8]), 2)
 upper <- SAQ2cor
 upper[upper.tri(SAQ2cor)] <- ""
 upper <- as.data.frame(upper)
@@ -944,9 +939,9 @@ $y_1 = "enheten"/spørsmålet$
 
 $\tau_1 = intercept\ (= "tau")$
 
-$\lambda_1 = koeffisient\ (= lambda\ , på\ en\ måte\ som\ slope\ i\ lineær\ regresjon,\ men\ som\ i\ CFA\ kalles\ "loading")$
+$\lambda_1 = koeffisient\ (= lambda\, på\ en\ måte\ som\ slope\ i\ lineær\ regresjon,\ men\ som\ i\ CFA\ kalles\ "loading")$
 
-$\eta_1=faktoren\ (=eta\ ,uobservert/latent,\ i\ motsetning\ til\ en\ prediktor\ i\ lineær\ regresjon)$
+$\eta_1=faktoren\ (=eta\, uobservert/latent,\ i\ motsetning\ til\ en\ prediktor\ i\ lineær\ regresjon)$
 
 $e_1=feilleddet/residualen$
 
@@ -970,19 +965,16 @@ I motsetning til OLS, som er univariat, er CFA multivariat. For hver $y$ har vi 
 
 La oss anta at vi ser på spm 3, 4 og 5, og sier at vårt teoretiske utgangspunkt er at (den uobserverte/latente) faktoren SPSS-angst beskriver de observerte skårene på de tre spørsmålene. Grafisk kan vi illustrere dette slik:
 
-![](SPSSangst.png){width=50%}
+![Faktoranalyse for tre spørsmål](SPSSangst.png){width=50%}
 
 Vi modifiserer datasettet til å kun inneholde disse tre spørsmålene.
 
 ```{r}
-SAQ3 <- select(SAQ2, -c(Spm1, Spm2, Spm6:Spm8))
-SAQ3cov <- round(cov(SAQ3[,1:3]),2)
-upper <- SAQ3cov
-upper[upper.tri(SAQ3cov)] <- ""
-upper <- as.data.frame(upper)
-upper
+SAQ3 <- SAQ2 %>%
+    select(-c(Spm1, Spm2, Spm6:Spm8))
+tab_corr(SAQ3, triangle = "lower")
 ```
-For å se på antall frihetsgrader begynner vi med å se på antallet kjente størrelser (=totalt antall parametere = "known values"). Dette finner vi ved:
+For å se på antall frihetsgrader begynner vi med å se på antallet kjente størrelser (= totalt antall parametere = "known values"). Dette finner vi ved:
 
 $p(p+1)/2$
 
@@ -1004,7 +996,7 @@ I modellen vår må vi finne antall unike parametere, som i dette tilfellet er 1
 
 Antall frihetsgrader vil da være: $antall\ kjente\ parametere\ - antall\ frie\ parametere = 6 - 10 = -4$
 
-Dette er uheldig - vi kan ikke ha et større antall frie parametere enn antall kjente parametere, da får vi et negativt antall frihetsgrader og en umulig modell. Dette kalles "underdefined model", og kan sammenliknes med å skulle løse $x + y = 9$: Det finnes uendelig mange løsninger for den likningen. Der vi har 0 frihetsgrader er modellen "just-identified" (dette eer tilfelle i regresjonsmodeller), og positivt antall frihetsgrader innebærer "over-identified model".
+Dette er uheldig - vi kan ikke ha et større antall frie parametere enn antall kjente parametere, da får vi et negativt antall frihetsgrader og en umulig modell. Dette kalles "underdefined model", og kan sammenliknes med å skulle løse $x + y = 9$: Det finnes uendelig mange løsninger for den likningen. Der vi har 0 frihetsgrader er modellen "just-identified" (dette er tilfelle i regresjonsmodeller), og positivt antall frihetsgrader innebærer "over-identified model".
 
 Løsningen på en "underdefined model" er "fixed parameters" - altså at vi låser et antall parametere til en verdi slik at de ikke kan variere. Hvis vi f.eks. låser 3 x $\lambda$ og 1 x $\psi$ får vi 4 låste parametere som gir: 
 
@@ -1028,7 +1020,7 @@ summary(SPSS_3var)
 I tabellen over ser vi resultatet av vår modell. Ladningene ("loadings") - $\lambda$ - er gitt under "Latent Variables" - "Estimates". "Estimates" under "Variances", f.eks. 0.815 for Spm3 er residualen for Spm3. 
 I R-pakken **lavaan** som er brukt her, låses ladning for første spørsmål til 1. Vi ser dette under "Latent Variables" der "Estimate" for Spm3 = 1, noe vi også kan se grafisk under. Siden ladningen til Spm3 er låst til 1 ("fixed parameter") betyr det at $\lambda$ for de to andre spørsmålene er vist i relasjon til/skalert til Spm3. Dette gjør tolkning vanskelig. 
 
-```{r}
+```{r fig.cap = "Plott av faktoranalyse for tre spørsmål"}
 nodenavnf <- c(
     "Standard deviations excite me",
     "I dream that Pearson is attacking me with correlation coefficients",
@@ -1060,7 +1052,7 @@ summary(SPSS_3var_2)
 ```
 
 Vi ser at $\lambda$ - ladningen - for Spm3 ikke lenger er 1. 
-```{r}
+```{r fig.cap = "Plott av faktoranalyse for tre spørsmål - låst varians i faktor"}
 nodenavn <- c(
     "Standard deviations excite me",
     "I dream that Pearson is attacking me with correlation coefficients",
@@ -1098,12 +1090,12 @@ En noe mer oversiktlig tabell over parametrene, modifisert fra @dudekConfirmator
 ```{r}
 parameterEstimates(SPSS_8,standardized = FALSE) %>% 
     filter(op=="=~") %>%
-    select(Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue) %>%
-    knitr::kable(digits=3,booktabs=TRUE,format="markdown",caption="Faktorladninger")
+    select(Indicator = rhs,B = est, SE = se, Z = z,'p-value' = pvalue) %>%
+    knitr::kable(digits = 3, booktabs = TRUE, format = "markdown", caption = "Faktorladninger")
 ```
 
 
-```{r}
+```{r fig.cap = "Plott av faktoranalyse for alle åtte spørsmål"}
 nodenavn2 <- c(
     "Statistics make me cry",
     "My friends will think I'm stupid for not being able to cope with SPSS",
@@ -1140,7 +1132,7 @@ round(semMatrixAlgebra(SPSS_8, LY), digits = 3)
 Vi kan også se isolert på residualenes varians ($\theta$ = theta):
 ```{r}
 thetaverdier <- semMatrixAlgebra(SPSS_8, TE)
-upper <- round(thetaverdier, digits = 3)
+upper <- format(round(thetaverdier, digits = 3), nsmall = 3)
 upper[upper.tri(thetaverdier)] <- ""
 upper <- as.data.frame(upper)
 upper
@@ -1157,13 +1149,13 @@ For å gjøre tolkningen lettere kan vi standardisere både variansen i faktoren
 ```{r}
 parameterEstimates(SPSS_8,standardized = TRUE) %>% 
     filter(op=="=~") %>%
-    select(Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue, Std.Beta = std.all) %>%
-    knitr::kable(digits=3,booktabs=TRUE,format="markdown",caption="Faktorladninger")
+    select(Indicator = rhs, B = est, SE = se,Z = z, 'p-value' = pvalue, Std.Beta = std.all) %>%
+    knitr::kable(digits = 3, booktabs = TRUE, format = "markdown", caption = "Faktorladninger")
 ```
 
 Her ønsker vi å se på kolonnen "Std.all" i originaloutput (i vår forenkle tabell = "Std.Beta"), som vi kan sammenlikne med standardiserte betaverdier i lineær regresjon. Tolkningen nå blir: For ett standardavviks økning i SPSSangst øker Spm1 med 0.586 standardavvik, mens Spm går ned med 0.233 standardavvik (-0.233). Dette vil vi (som regel) kalle standardiserte ladninger ("standardized loadings"). En fordel med standardiserte ladninger er at vi kan lettere sammenlikne ladningen til hverandre fordi de er nettopp standardiserte.  
 
-```{r}
+```{r fig.cap = "Plott av faktoranalyse for alle åtte spørsmål - standardisert"}
 semPaths(SPSS_8,
          what = "std",
          whatLabels = "std",
