@@ -392,7 +392,43 @@ Det første vi kan se på er $R^{2}$ som forteller oss hvor stor del av den tota
 
 Endel programmer vil også gi en R verdi. Siden vi kun har en uavhengig variabel (en prediktor) vil verdien R utgjøre den bivariate korrelasjonen (korrelasjonskoeffisienten mellom de to variablene - vi ser at dette er samme verdi som i tabellen over korrelasjonskoeffisienter lenger opp).
 
-Adjusted $R^{2}$ er en "modifisert versjon" av $R^{2}$ der det legges inn en korreksjon for antall prediktorer i modellen. Motivasjonen for dette er at det å legge til flere prediktorer *alltid* vil øke $R^{2}$ verdien [@navarroLearningStatisticsJamovi2019a]. @navarroLearningStatisticsJamovi2019a påpeker imidlertid at man ikke kan tolke adjusted $R^{2}$ like rett fram som $R^{2}$, og anbefaler at man bruker $R^{2}$. Det vi også kan si er at dersom verdiene på henholdsvis $R^{2}$ og adjusted $R^{2}$ er nærme hverandre (eller like) indikerer dette en god kryssvaliditet i modellen, noe som kan gjøre oss sikrere i generalisering av funnene våre.
+##### Adjusted R^2
+
+Adjusted $R^{2}$ er en "modifisert versjon" av $R^{2}$ der det legges inn en korreksjon for antall prediktorer i modellen. Motivasjonen for dette er at det å legge til flere prediktorer *alltid* vil øke $R^{2}$ verdien [@navarroLearningStatisticsJamovi2019a]. Dette skyldes at det *alltid* vil være en tilfeldig korrelasjon mellom en uavhengig og en avhengig variabel (som kan være helt minimal og tilfeldig, men altså alltid kunne være der). $R^{2}$ vil derfor alltid øke (teoretisk kan den forbli uendret, men den vil aldri gå end selv om den uavhengige variabelen vil legger til er helt uten praktisk sammenheng med den avhengige variabelen). 
+
+$R^{2}$ regens ut slik: 
+
+$R^{2} = 1 - \frac{SS_{res}}{SS_{tot}}$
+
+Adjsted $R^{2}$ regnes ut slik:
+
+$Adj\ R^{2} = 1 - (1-R^2)\frac{n-1}{n-p-1}$
+
+der 
+
+p = antall uavhengige variabler (regressorer)
+
+n = utvalgsstørrelse
+
+Ut fra formelen for adjusted $R^{2}$ ser vi at ettersom vi legger til uavhengige variabler - og vi vet at $R^{2}$ øker - vil vi samtidig "straffe" $R^{2}$ gjennom den siste brøken i likningen der nevneren vil øke som følge av at p øker, noe som i retur senker verdien på hele det andre leddet i likningen.
+
+Generelt - hvis vi har for få uavhengige variabler i modellen er modellen "under-specified" og estimatene kan være skjeve ("biased"). Hvis vi derimot inkluderer for mange uavhengige variabler kan modellen bli "over-specified" hvilket vi kan tenke på som å tilpasse modellen veldig bra til akkurat de dataene vi har, men hvor modellen er lite generaliserbar (modellen blir nøyaktig til akkurat disse dataene, men upresis for andre data).
+
+@navarroLearningStatisticsJamovi2019a påpeker imidlertid at man ikke kan tolke adjusted $R^{2}$ like rett fram som $R^{2}$, og anbefaler at man bruker $R^{2}$. Det vi også kan si er at dersom verdiene på henholdsvis $R^{2}$ og adjusted $R^{2}$ er nærme hverandre (eller like) indikerer dette en god kryssvaliditet i modellen, noe som kan gjøre oss sikrere i generalisering av funnene våre. 
+
+Det vi imidlertid *kan* bruke adjusted $R^{2}$ direkte til er å sammenlikne modeller med ulikt antall uavhengige variabler. La oss anta at vi har fem modeller som har disse verdiene:
+
+```{r echo = FALSE}
+Modell <- c(1:5)
+Ant_uavh <- c(2, 3, 4, 5, 6)
+R_Sq <- c(56.6, 58.7, 59.3, 61.2, 62.9)
+R_Sq_adj <- c(54.2, 57.5, 58.6, 59.3, 57.2)
+tab <- tibble(Modell, Ant_uavh, R_Sq, R_Sq_adj)
+tab
+```
+
+I dette konstruerte tilfellet vil vi kunne velge modell 4 siden det kan virke som dette gir den beste balansen mellom nøyaktighet og presisjon. 
+
 
 #### Modellens koeffisienter og regresjonslikning
 

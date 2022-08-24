@@ -8,7 +8,7 @@ always_allow_html: true
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra, writexl, car, corrplot, sjPlot)
+pacman::p_load(flextable, tidyverse, officer, readxl, knitr, kableExtra, writexl, car, corrplot, sjPlot, datasets, plyr, psych)
 ```
 
 ## Samvariasjon/kovarians
@@ -89,17 +89,102 @@ column_spec(cohend, 1:3, width = "3.5cm")
 
 Ofte ønsker vi (og anbefaler) å ikke bare se på verdien av korrelasjonskoeffisienten, men også se på en grafisk framstilling av datane - gjerne omtalt som et spredningsplott ("scatter plot").
 
-![Eksempler på korrelasjoner](korrelasjoner.png){width=90%}
+En måte å gjøre dette på er å se på spredsningsplott, distribusjon og korrelasjon sammen visuelt. I eksempelet under, som vi ikke går nærmere inn på, har vi brukt data fra et datasett som ofte brukes i læringsøyemed ("iris"-datasettet) som ligger integrert i flere pakker i R, og som man kan se nærmere informasjon om [her](https://archive.ics.uci.edu/ml/datasets/iris) hvis man ønsker. 
+
+```{r}
+data <- iris[, 1:4] 
+pairs.panels(data,
+      cor = TRUE, 
+      stars = TRUE,
+      smooth = FALSE,
+      density = TRUE,
+      lm = FALSE,
+      ellipses = FALSE)
+```
+
+I plottet over vises altså fire variablers spredningsplott, distribusjon og korrelasjonskoeffisient.
 
 I eksempelet og illustrasjonene over har vi vist Pearsons korrelasjonskoeffisient $r$. Det finnes ulike korrelasjonskoeffisienter for ulike typer datasett. Pearsons korrelasjonskoeffisient brukes som regel på datasett der vi gjennomfører såkalte parametriske tester. For andre tester, ikke-parametriske, kan Spearmans rho ($\rho$) - ofte brukt for ordinale variabler (men kan også brukes på intervall/ratiodata) med parrede data ("matched pair") - og Kendalls tau ($\tau$) - ofte brukt for "nominelle variabler med rangert data ("ranked data") - være gode alternativer. Vi går ikke nærmere inn på disse her.
 
-Vi skal merke oss at en korrelasjonskoeffisient på 0 ikke betyr at det ikke er noen korrelasjon. Som vi kan se av bildet under [@froslieKorrelasjon2022] kan korrelasjonskoeffisienten være 0 og variablene like vel være avhengige (delt her iht Creative Commons: CC BY SA 3.0), jfr illustrasjonen over.
+Vi skal merke oss at en korrelasjonskoeffisient på 0 ikke betyr at det ikke er noen korrelasjon. Som vi kan se av bildet under [@froslieKorrelasjon2022] kan korrelasjonskoeffisienten være 0 og variablene like vel være avhengige (delt her iht Creative Commons: CC BY SA 3.0).
+
+![Eksempel på korrelasjonskoeffisent = 0](Froslie.png)
 
 Som sagt, et viktig poeng er at vi skal være veldig forsiktige med å tolke en korrelasjonskoeffisient uten å ha en grafisk framstilling av hvordan datapunktene fordeler seg (hvordan distribusjonen av datapunkter ser ut). Dette fordi en gitt korrelasjonskoeffisient kan representere et uendelig antall mønstre mellom to variabler.  @vanhoveWhatDataPatterns2018 viser dette:
 
 ![Eksempler på lik korrelasjon (r = 0.5)](korrelasjoner2.png){width=85%}
 
 Alle 16 eksemplene viser altså mønstre av korrelasjon mellom to variabler som alle har korrelasjonskoeffisienten r=0,5. 
+
+### Anscombes kvartett ("Anscombe's Quartet")
+
+Et kjent eksempel som viser betydningen av grafisk framstilling av data er "Anscombes kvartett" [@anscombeGraphsStatisticalAnalysis1973]. Anscombe konstruerte fire datasett (x1-y1, x2-y2, x3-y3 og x4-y4) som tilsynelatende er svært like:
+
+```{r}
+data <- datasets::anscombe
+kable(anscombe, "html") %>%
+  kable_styling(full_width = F)
+```
+
+Hvis vi ser på sentrale karakteristikker ved disse fire datasettene ser disse som sagt svært like ut. La oss f.eks. se på gjennomsnittsverdiene først:
+
+```{r}
+anscombe_1 <- data.frame(x = anscombe[["x1"]], y = anscombe[["y1"]], Set = "Anscombe 1")
+anscombe_2 <- data.frame(x = anscombe[["x2"]], y = anscombe[["y2"]], Set = "Anscombe 2")
+anscombe_3 <- data.frame(x = anscombe[["x3"]], y = anscombe[["y3"]], Set = "Anscombe 3")
+anscombe_4 <- data.frame(x = anscombe[["x4"]], y = anscombe[["y4"]], Set = "Anscombe 4")
+anscombe.data <- rbind(anscombe_1, anscombe_2, anscombe_3, anscombe_4)
+aggregate(cbind(x, y) ~ Set, anscombe.data, mean)
+```
+
+Vi kan også se på variansen gjennom standardavviket:
+
+```{r}
+aggregate(cbind(x, y) ~ Set, anscombe.data, sd)
+```
+
+Gjennomsnitt og standardavvik for datasettene 1-4 er med andre ord i praksis helt like. 
+
+Videre - hvis vi ser på korrelasjonen mellom x og y i de fire settene ser dette slik ut:
+
+```{r}
+korrelasjon <- function(data) {
+    x <- data.frame(r = cor(data$x, data$y))
+    return(x)
+}
+ddply(.data = anscombe.data, .variables = "Set", .fun = korrelasjon)
+```
+
+Korrelasjonskoeffisientene er også i praksis like. Det er ikke før vi plotter at vi ser "problemet":
+
+```{r}
+plott <- ggplot(anscombe.data, aes(x = x, y = y)) +
+    geom_point(color = "black") +  
+    facet_wrap(~Set, ncol = 2) + 
+    geom_smooth(formula = y ~ x, method = "lm", se = FALSE, data = anscombe.data) +
+    theme_bw() +
+    ggtitle("Anscombes kvartett")
+plott
+```
+
+I plottet ovenfor har vi plottet datasettene og lagt på en lineær regresjonslinje (se kapittel 9 for utførlig gjennomgang av regresjon - vi går ikke inn på det her ut over å si at regresjonslinja er en lineær modell for dataene). Det vi kan se er at selv om dataene i praksis har likt gjennomsnitt, likt standardavvik og lik korrelasjon er det noe subtile forhold som virker inn og som ikke så lett lar seg avsløre ved kun å se på dataene og nøkkelforhold ved dataene. I dette tilfellet vil f.eks. en lineær regresjonsmodell være egnet for datasett 1, men ikke for de andre (vel...datasett 3 har en uteligger som påvirker, og hvis den fjernes - noe som kan være en aktuell teknikk - så vil det være en aktuell modell også for dette datasettet). Uten å se dette visuelt kan vi dermed lett bli "lurt" til å tro at f.eks. en lineær modell beskriver dataene godt.
+
+Som sagt skal vi ikke gå inn i regresjonsanalyse her - se kapittel 9 - men et mål på om en regresjonsmodell er god er den såkalte $R^2$-verdien. 
+
+```{r}
+modell1 <- lm(y ~ x, subset(anscombe.data, Set == "Anscombe 1"))
+modell2 <- lm(y ~ x, subset(anscombe.data, Set == "Anscombe 2"))
+modell3 <- lm(y ~ x, subset(anscombe.data, Set == "Anscombe 3"))
+modell4 <- lm(y ~ x, subset(anscombe.data, Set == "Anscombe 4"))
+r2_1 <- summary(modell1)$r.squared
+r2_2 <- summary(modell2)$r.squared
+r2_3 <- summary(modell3)$r.squared
+r2_4 <- summary(modell4)$r.squared
+r2 <- cbind(r2_1, r2_2, r2_3, r2_4)
+r2
+```
+
+Tilsynelatende er altså en lineær modell egnet for alle fire datasettene, men som vi har sett i plottet over er dette slett ikke tilfelle. Moralen er altså: Visualiser dataene.
 
 ## Spuriøs korrelasjon
 

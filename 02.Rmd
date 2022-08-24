@@ -716,6 +716,48 @@ scatterplot(Adverts ~ Sales,
 
 Her kombinerer vi scatterplott og boxplott. Den rette blå linja er en minste kvadratssums regresjonslinje (OLS). Den stiplede blå linja bruker en ikke-parametrisk tilnærming. I tillegg får vi visualisert de fire mest ekstreme tilfellene (lengst vekk fra gjennomsnitt). 
 
+#### Normalfordeling er normalfordeling er normalfordeling
+
+Det kan avslutningsvis i delkapittelet om normalfordelingen være på sin plass å presisere at normalfordelingskurven speiler normalfordelte data - som naturligvis ikke er like.
+
+```{r fig.cap = "Ulike normalfordelte data med tilhørende normalfordelingskurver"}
+snitt_sim <- 10
+sd_sim <- 5
+
+sett1 <- ((snitt_sim - (3 * sd_sim)) - 5)
+sett2 <- (((2 * snitt_sim) + (3 * (2 * sd_sim))) + 5)
+
+m <- seq(from = sett1,
+         to = sett2,
+         length.out = 1e+5)
+
+ggplot(data = data.frame(m = c(sett1, sett2)), 
+       mapping = aes(x = m)) +
+    stat_function(mapping = aes(colour = "Distribusjon 1"), 
+                  fun = dnorm,
+                  args = list(mean = snitt_sim,
+                              sd = sd_sim)) +
+    stat_function(mapping = aes(colour = "Distribusjon 2"),
+                  fun = dnorm,
+                  args = list(mean = (snitt_sim),
+                              sd = (2 * sd_sim))) +
+    stat_function(mapping = aes(colour = "Distribusjon 3"),
+                  fun = dnorm,
+                  args = list(mean = (3 * snitt_sim),
+                              sd = (2 * sd_sim))) +    
+    scale_colour_manual(values = c("red", "blue", "magenta")) +
+    labs(x = "x", 
+         y = "y") +
+    theme_bw()
+```
+
+De tre linjene i plottet ovenfor viser normalfordeling med følgende parametere:
+
+- Rød linje: $\mu = 10,\ \sigma = 5$
+- Blå linje: $\mu = 10,\ \sigma = 10$
+- Lilla linje: $\mu = 30,\ \sigma = 10$
+
+
 ## Binomialfordeling
 
 En distribusjon hvor det kun er to mulige utfall av en hendelse kalles en binomial fordeling. Et myntkast er en slik hendelse (gitt at vi ser bort fra den fysiske muligheten at mynten kan lande stående på høykant). Levende eller død kan også være et eksempel på dette. Det ene utfallet utelukker det andre, men de er uavhengige fordi resultatet i ett myntkast ikke påvirker resultatet i neste myntkast. Alle myntkastene må derimot være identiske, det vil si sannsynligheten for det ene eller det andre resultatet er lik hver gang forsøket eller myntkastet gjennomføres. Hvis vi har lik sannsynlighet, kan en tilfeldig generert binomial distribusjon se slik ut:

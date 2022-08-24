@@ -14,7 +14,7 @@ options(scipen=999)
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg) 
+pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest) 
 ```
 
 Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (sav samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje.
@@ -54,31 +54,34 @@ Vi har i tidligere kapitler gått gjennom enkel og multippel OLS og polynomial r
 
 I delkapittelet om regresjon skal vi bruke datasettet AmesHousing
 
+
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
 xfun::embed_file("AmesHousing.csv")
 ```
 
 ```{r warning = FALSE, message = FALSE}
 Ames <- read.csv("AmesHousing.csv")
-Amesdim <- as.data.frame(dim(Ames))
+Amesdim <- as_tibble(dim(Ames))
 Amesdim
 ```
 
-Datasettet "AmesHousing" [@decockAmesIowaAlternative2011] inneholder salgsdata for `r Amesdim[1,1]` boliger i Ames, Iowa i tidsrommet 2006 til 2010 med tilhørende `r Amesdim[2,1]` variabler (23 nominelle, 23 ordinale, 14 diskrete og 20 kontinuerlige). Den uavhengige variabelen er salgspris. En oversikt over variablene finnes flere stedet på nett, f.eks. [her](https://rdrr.io/cran/AmesHousing/man/ames_raw.html) og mer detaljert [her](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
+Datasettet "AmesHousing" [@decockAmesIowaAlternative2011] inneholder salgsdata for `r Amesdim[1,1]` boliger i Ames, Iowa i tidsrommet 2006 til 2010 med tilhørende `r Amesdim[2,1]` variabler (nominelle, ordinale, diskrete og kontinuerlige). Den uavhengige variabelen er salgspris. En oversikt over variablene finnes flere stedet på nett, f.eks. [her](https://rdrr.io/cran/AmesHousing/man/ames_raw.html) og mer detaljert [her](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
 
-Vi skal i dette kapittelet ta utgangspunkt i det opprinnelige datasettet. I neste kapittel - der vi også tar for oss maskinlæring - vil vi bruke en modifisert versjon av datasettet som ligger i R-pakken "tidymodels". Vi vil også velge en litt annen tilnærming i analysen, og leseren kan dermed se både litt mer av bredden i tilnærminger og kunne sammenlikne hva ulike valg gjør med analysene.
+Vi skal i dette kapittelet ta utgangspunkt i det opprinnelige datasettet. Det finnes mange versjoner av dette datasette på nett siden det er et populært datasett, også i konkurranser på nett innen maskinlæring. I neste kapittel - der vi også tar for oss maskinlæring - vil vi bruke en modifisert versjon av datasettet som ligger i R-pakken "tidymodels". Vi vil også velge en litt annen tilnærming i analysen, og leseren kan dermed se både litt mer av bredden i tilnærminger og kunne sammenlikne hva ulike valg gjør med analysene.
 
 ### Manglende verdier i datasettet (NAs)
 
 Det kan innledningsvis være verdt å se om vi har variabler med mange manglende verdier ("na"). Vi kan først se på hvilke kolonner (variabler) som har manglende verdier:
 
 ```{r}
-nas <- colSums(is.na(Ames))
-nas <- as.data.frame(sort(nas, decreasing = TRUE))
-names(nas)[1] <- "Antall_NA"
-nas[nas==0] <- NA
-nas2<-as.data.frame(nas[complete.cases(nas),])
-nas2
+nas <- as_tibble(colSums(is.na(Ames))) %>%
+    na_if(0) %>%
+    drop_na()
+nanavn <- as_tibble(names(which(colSums(is.na(Ames)) > 0)))
+natabell <- bind_cols(nanavn, nas) %>%
+    rename(Variabel = value...1, Antall_NA = value...2) %>%
+    arrange(desc(Antall_NA))
+natabell
 ```
 
 Vi kan se at 5 variabler har et veldig høyt antall manglende verdier (NAs). Jeg velger å droppe disse variablene fra datasettet.
@@ -88,49 +91,78 @@ Ames2 <- subset(Ames, select = -c(Pool.QC, Misc.Feature, Alley, Fence, Fireplace
 dim(Ames2)
 ```
 
-Det er flere måter å håndtere manglende verdier på. Vi velger her å erstatte NA med gjennomsnitt for "Lot.Frontage" som har mange manglende verdier, og lar øvrige variabler være hva angår manglende verdier.
+Vi kan følge samme prosedyre som ovenfor for å få fram revidert liste over NAs (viser ikke kdoen for dette).
 
-```{r}
-Ames2$Lot.Frontage[is.na(Ames2$Lot.Frontage)] <- mean(Ames2$Lot.Frontage, na.rm = TRUE)
+```{r echo = FALSE}
+nas2 <- as_tibble(colSums(is.na(Ames2))) %>%
+    na_if(0) %>%
+    drop_na()
+nanavn2 <- as_tibble(names(which(colSums(is.na(Ames2)) > 0)))
+natabell2 <- bind_cols(nanavn2, nas2) %>%
+    rename(Variabel = value...1, Antall_NA = value...2) %>%
+    arrange(desc(Antall_NA))
+natabell2
 ```
 
+Det er flere måter å håndtere manglende verdier på. Vi velger her å erstatte NA med gjennomsnitt for "Lot.Frontage" som har mange manglende verdier, og lar øvrige variabler være hva angår manglende verdier. Det kan være aktuelt også å bruke median for manglende verdier, eller bare la det være.
+
 ```{r}
-nas3 <- colSums(is.na(Ames2))
-nas3 <- as.data.frame(sort(nas3, decreasing = TRUE))
-nas3[nas3==0] <- NA
-nas4 <- as.data.frame(nas3[complete.cases(nas3),])
-nas4
+Ames2 <- Ames2 %>% 
+  mutate(Lot.Frontage = ifelse(is.na(Lot.Frontage), mean(Lot.Frontage, na.rm = TRUE), Lot.Frontage))
 ```
+
+Vi kan sjekke at vi ikke har na i Lot.Frontage.
+
+```{r}
+sum(is.na(Ames2$Lot.Frontage))
+```
+
+Og står igjen med denne lista over variabler med respektive antall na:
+
+```{r echo = FALSE}
+nas3 <- as_tibble(colSums(is.na(Ames2))) %>%
+    na_if(0) %>%
+    drop_na()
+nanavn3 <- as_tibble(names(which(colSums(is.na(Ames2)) > 0)))
+natabell3 <- bind_cols(nanavn3, nas3) %>%
+    rename(Variabel = value...1, Antall_NA = value...2) %>%
+    arrange(desc(Antall_NA))
+natabell3
+```
+
+Som tidligere nevnt kan det være aktuelt å behandle også disse - og på ulike måter. Det avhenger mye av konteksten og hvor problematisk vi oppfatter de manglende verdiene å være (hvor stor andel utgjør de pr variabel i forhold til totalt antall observasjoner o.l.). Vi lar disse være for nå.
 
 ### Uteligger
 
 Den avhengige variabelen er salgspris ("SalePrice"). Hvis vi ser på distribusjonen av boligenes verdi ser vi indikasjoner på at det kan være enkeltboliger med unormalt høye salgsverdier.
 
-```{r}
+```{r fig.cap = "AmesHousing - boligens salgspris"}
 Amessalgspris <- ggplot() +
-    geom_point((aes(x=seq_along(Ames2$SalePrice), y=Ames2$SalePrice)), color = "red") + 
-    ggtitle("Boligens salgspris") +
+    geom_point((aes(x = seq_along(Ames2$SalePrice), y = Ames2$SalePrice))) + 
     xlab("Bolig nr.") +
-    ylab("Verdi")
+    ylab("Verdi") +
+    theme_bw()
 Amessalgspris
 ```
 
 Dette kommer tydeligere fram i histogrammet:
 
-```{r}
-ggplot(Ames2, aes(x=SalePrice)) + 
+```{r fig.cap = "Histogram for boligsalgspris"}
+bolighistogram <- ggplot(Ames2, aes(x=SalePrice)) + 
     geom_histogram(color="black", fill="lightblue", bins = 50) +
     labs(title = "Histogram salgsverdi", x = "Salgspris i $", y = "Antall") +
-    theme_classic()
+    theme_bw()
+bolighistogram
 ```
 
 Vi får også en klar indikasjon på uteliggere gjennom boksplottet:
 
-```{r}
-ggplot(data = Ames2, aes(x = "", y = SalePrice)) + 
-  geom_boxplot(fill = 'lightblue') +
-  labs(title = "Boksplott salgsverdi - Ames2",
-       y = "Verdi")
+```{r fig.cap = "Boxplott for boligsalgspris"}
+boligbox <- ggplot(data = Ames2, aes(x = "", y = SalePrice)) + 
+    geom_boxplot(fill = 'lightblue') +
+    ylab("Verdi") +
+    theme_bw()
+boligbox
 ```
 
 Uteliggere er en "tricky" greie. Man kan si at all data har verdifull informasjon. Samtidig påvirker uteliggere mange analyser og kan gi oss større avvik i prediksjoner fordi modellene påvirkes i uforholdsmessig grad av uteliggere i forhold til andre observasjoner. Mange av teknikkene i maskinlæring er sensitive ovenfor uteliggere. Vi gikk i detalj inn på dette i kapittelet om OLS, så vi begrenser oss her til noen analyser og viser til dette kapittelet for mer utførlig forklaringer.
@@ -165,7 +197,7 @@ Vi kan se hvordan datasettet har endret seg som følge av de justeringene vi nå
 v1 <- as.data.frame(dim(Ames))
 v2 <- as.data.frame(dim(Ames2))
 v3 <- as.data.frame(dim(Ames3))
-Amesendring <- data.frame(c(v1, v2, v3))
+Amesendring <- as.data.frame(c(v1, v2, v3))
 rownames(Amesendring) <- c("Observasjoner", "Variabler")
 colnames(Amesendring) <- c("Ames", "Ames2", "Ames3")
 kable(Amesendring, caption = "Utvikling av datasettet gjennom 'data cleaning'")
@@ -174,22 +206,23 @@ kable(Amesendring, caption = "Utvikling av datasettet gjennom 'data cleaning'")
 Vi sjekker nå Ames3 gjennom Rosners test (de 5 mest uteliggende verdiene blant gjenværende data):
 
 ```{r message = FALSE, warning = FALSE}
-rosnerstest <- rosnerTest(Ames3$SalePrice,
-  k = 5)
+rosnerstest <- rosnerTest(Ames3$SalePrice, k = 5)
 rosnerstest$all.stats
 rosnerstest$n.outliers
 ```
 
 Vi kan også sjekke igjen med et boksplott:
 
-```{r}
-ggplot(data = Ames3, aes(x = "", y = SalePrice)) + 
-  geom_boxplot(fill = 'lightblue') +
-  labs(title = "Boksplott salgsverdi - Ames3",
-       y = "Verdi")
+```{r fig.cap = "Boxplott for modifisert datasett"}
+boligbox2 <- ggplot(data = Ames3, aes(x = "", y = SalePrice)) + 
+    geom_boxplot(fill = 'lightblue') +
+    ylab("Verdi") +
+    theme_bw()
+boligbox2
 ```
 
 Til slutt merker vi oss at variabelen "SaleCondition" er en variabel som har registrert om salget har skjedd
+
 - "Normal" - som vi tolker som etter markedsmessige betingelser)
 - "Abnorml" - "trade, foreclosure, short sale"
 - "Family" - "Sale between family members"
@@ -197,29 +230,35 @@ Til slutt merker vi oss at variabelen "SaleCondition" er en variabel som har reg
 - "AdjLand" - "Adjoining Land Purchase"
 - "Alloca" - "Allocation - two linked properties with separate deeds, typically condo with a garage unit"
 
-Vi kan mistenke at unormalt salg, som salg innad i familie eller tvangssalg, kan ha en vesentlig påvirkning på salgspris, og siden vi er interessert i å modellere markedsmessige betingelser (de normale salgene) ved salgsprisen bør vi undersøke dette.
+Vi kan mistenke at unormalt salg, som salg innad i familie eller tvangssalg, kan ha en vesentlig påvirkning på salgspris, og siden vi er interessert i å modellere markedsmessige betingelser ("de normale salgene") ved salgsprisen bør vi undersøke dette.
 
 ```{r}
 group_by(Ames3, Sale.Condition) %>%
   summarise(
     count = n(),
     mean = mean(SalePrice, na.rm = TRUE))
-ggplot(Ames3, aes(x=Sale.Condition, y=SalePrice, fill=Sale.Condition)) + 
-    geom_boxplot()
+salgstype <- ggplot(Ames3, aes(x = Sale.Condition, y = SalePrice, fill = Sale.Condition)) + 
+    geom_boxplot() +
+    theme_bw()
+salgstype
 ```
+
+Vi kan se at det det er forskjeller. "Famliy" og "Normal" virker derimot ikke så veldig ulike, men forskjellene mellom andre grupper virker større. Vi kan se på den overordnede effekten av salgstypene gjennom en ANOVA.
 
 ```{r}
 res.aov <- aov(SalePrice ~ Sale.Condition, data = Ames3)
 summary(res.aov)
 ```
 
-Siden p-verdien er signifikant kan vi si det er signifikant forskjell mellom en eller flere av gjennomsnittsverdiene for de ulike gruppene i Sale.Condition.
+Siden p-verdien er signifikant kan vi si det er signifikant forskjell mellom en eller flere av gjennomsnittsverdiene for de ulike gruppene i Sale.Condition. For å se på hviklke av gruppene som har signifikant forskjell gjør vi en post-hoc test.
 
 ```{r}
 TukeyHSD(res.aov)
 ```
 
 Vi tar utgangspunkt i at "normal" er den markedsmessige salgsprosessen vi ønsker å modellere, noe vi forsåvidt også ser ut fra antallet salgsprosesser (som i overveiende grad er normale). Vi ønsker derfor å ta ut de typene salgsprosesser som har signifikant forskjellig salgsverdi i forhold til normal. Av ANOVA-resultatene ser vi at det gjelder "abnorml", "AdjLand" og "Partial" (vi kan også legge merke til at det **ikke** er signifikant forskjell på en kommersiell salgsprosess og salgsprosess i kategorien "familiy" som vi kanskje forventet). Dette stemmer bra overens med indikasjonene i den grafiske framstillingen ovenfor.
+
+Vi velger derfor å ta ut salgstypene som er signifikant forskjellige fra normal.
 
 ```{r}
 Ames4 <- Ames3[Ames3$Sale.Condition != "Abnorml" & Ames3$Sale.Condition != "AdjLand" & Ames3$Sale.Condition != "Partial",]
@@ -229,6 +268,7 @@ group_by(Ames4, Sale.Condition) %>%
     mean = mean(SalePrice, na.rm = TRUE))
 ```
 
+Vi kan se at gjennomsnittsprisen for boliger solgt til familie er lavere enn normalt salg, men forskjellen er altså ikke statistisk signifikant.
 Samlet etter alle justeringer ser utviklingen i datasettet slik ut:
 
 ```{r}
@@ -241,16 +281,16 @@ kable(Amesendring2, caption = "Utvikling av datasettet til Ames Housing gjennom 
 
 Vårt datasett ender altså opp med `r Amesendring2[1,4]` boligsalg med `r Amesendring2[2,4]` variabler.
 
-I videre analyse vil vi bruke en versjon av datasettet som kommer i pakken "modeldata". I denne versjonen er det ryddet opp litt mer og det er lagt til geodata (lengde- og breddegrad på salgsobjektene). Alt vi har gjort hittil kan imidlertid være nødvendige steg i forberedelser av data til analyse. Datasettet kan lastes ned her:
+I videre analyse vil vi bruke en versjon av datasettet som kommer i pakken "AmesHousing". I denne versjonen er det ryddet opp litt mer og det er lagt til geodata (lengde- og breddegrad på salgsobjektene). Alt vi har gjort hittil kan imidlertid være nødvendige steg i forberedelser av data til analyse. Datasettet kan lastes inn direkte fra pakken: 
 
-```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
-xfun::embed_file("ames.csv")
+```{r}
+data(ames, package = "modeldata")
+dim(ames)
 ```
 
 Vi kan se litt nærmere på datasettet vi tar med oss videre i analysen. Siden boligene er registrert solgt i ulike nabolag vil det være interessant å se på hvordan salgspris slår ut ift nabolag. Vi kan først vise byen Ames og de ulike salgsobjektene plottet på et kart som også viser nabolagene. Det kan ligge mye informasjon innledningsvis i et plott av denne type data på kart. Bildet under er laget i sin helhet på kode fra @kuhnTidyModeling2022, og koden finnes [her](https://github.com/tidymodels/TMwR/blob/main/extras/ames_sf.R). 
 
-
-```{r echo = FALSE}
+```{r echo = FALSE, warning = FALSE, message = FALSE}
 # Laster inn kart som er lastet ned
 ia_roads <- st_read(dsn = "iowa_highway.shp") 
 
@@ -740,26 +780,26 @@ dev.off()
 
 Vi kan så se på hvordan salgsprisen i gjennomsnitt ser ut for de ulike nabolagene.
 
-```{r}
+```{r fig.cap = "Salgspris fordelt på nabolag", warning = FALSE, message = FALSE}
 ames %>% 
   ggplot(aes(x = Sale_Price/1000, y = Neighborhood, fill = Neighborhood)) + 
     geom_density_ridges() + 
-    theme_minimal() + 
     labs(x='Salgspris 1000$', y = 'Nabolag') +
     theme_ridges(font_size = 11, center_axis_labels = TRUE) + 
     theme(legend.position = 'none') + 
-    labs(caption = "Salgspris pr nabolag")
+    labs(caption = "Salgspris pr nabolag") +
+    theme_bw()
 ```
 
 ### Deling av datasettet i trenings- og testdatasett
 
-Vi deler datasettet i trenings- og testsett siden vi vil trenge dette i regresjon som metodikk i maksinlæring.
+Vi deler datasettet i trenings- og testsett siden vi vil trenge dette i regresjon som metodikk i maskinlæring.
 
 ```{r}
-set.seed(123)
-splitt <- sample.split(ames$Sale_Price, SplitRatio = .8)
-ames_trening <- subset(ames, splitt == TRUE)
-ames_test <- subset(ames, splitt == FALSE)
+set.seed(4595) 
+data_split <- initial_split(ames, strata = "Sale_Price") 
+ames_trening <- training(data_split) 
+ames_test <- testing(data_split)
 ```
 
 ```{r}
@@ -773,32 +813,29 @@ kable(dimensjoner, caption = "Splitting av datasettet Ames Housing fra pakken 'm
 
 ### Enkel lineær regresjon
 
-I den enkle lineære regresjonsn ser vi på forholdet mellom salgspris som avhengig variabel og "Gr.Liv.Area" som er boligareal (ikke inkludert kjeller).Det vil være rimelig å anta at det er en sammenheng mellom boligareal og salgspris.
+I den enkle lineære regresjonen ser vi på forholdet mellom salgspris som avhengig variabel og "Gr.Liv.Area" som er boligareal (ikke inkludert kjeller). Det vil være rimelig å anta at det er en sammenheng mellom boligareal og salgspris.
 
-```{r}
+```{r fig.cap = "Enkel OLS regresjon - treningsdata"}
 enkelOLS <- lm(Sale_Price ~ Gr_Liv_Area, data = ames_trening)
 sjPlot::tab_model(enkelOLS)
 enkelOLSplott <- ggplot() +
     geom_point(aes(x = ames_trening$Gr_Liv_Area, y = ames_trening$Sale_Price), col = "red") +
     geom_line(aes(x = ames_trening$Gr_Liv_Area, y = predict(enkelOLS, newdata = ames_trening)), col = "blue") +
-    ggtitle("Enkel OLS - treningsdata") +
     xlab("Boligareal (ikke inkl. kjeller)") +
     ylab("Salgspris") + 
     theme_bw()
 enkelOLSplott
 ```
 
-Vi kan se det er en sammenheng, men også at det er et slags konisk/traktmønster der spredningen i verdiene øker med boligarealet. Dette kan tyde på at det er en (eller flere) andre variabler som påvirker sammenhengen mellom boligareal og salgspris. Dette kan f.eks. være beliggenhet/hvilket område av byen boligen ligger i (registrert i variabelen "Neighborhood"). Vi kan se på medianprisen for de uilke områdene:
+Vi kan se det er en sammenheng, men også at det er et slags konisk mønster/traktmønster der spredningen i verdiene øker med boligarealet. Dette kan tyde på at det er en (eller flere) andre variabler som påvirker sammenhengen mellom boligareal og salgspris. Dette kan f.eks. være beliggenhet/hvilket område av byen boligen ligger i (registrert i variabelen "Neighborhood"). Vi kan se på medianprisen for de ulike områdene:
 
-```{r warning = FALSE, message = FALSE}
+```{r warning = FALSE, message = FALSE, fig.cap = "Boliger sortert etter median salgspris pr nabolag"}
 nabolag <- tapply(ames$Sale_Price, ames$Neighborhood, median)
 nabolag <- sort(nabolag, decreasing = TRUE)
 nabolag
-# dotchart(nabolag, pch = 21, bg = "red",
-         # cex = 0.85,
-         # xlab="Medianpris solgt bolig",
-         # main = "Sortering av boliger etter median salgspris fordelt nabolag - Ames4")
-
+dotchart(nabolag, pch = 21, bg = "red",
+         cex = 0.85,
+         xlab="Medianpris solgt bolig")
 ```
 
 Så kan vi se på hvilke verdier modellen vil predikere på testdataene:
@@ -839,7 +876,7 @@ MSE/RMSE kan fortelle oss noe om hvor god modellen er ved at den sammenlikner ob
 
 ```{r warning = FALSE, message = FALSE}
 deskSalePrice <- describe(ames$Sale_Price)
-kable(deskSalePrice, caption = "Deskriptiv statistikk for den avhengige variabelen SalePrice")
+deskSalePrice
 ```
 
 Vi kan se at boligprisen varierer mellom `r deskSalePrice$min` og `r deskSalePrice$max`, med et standardavvik (= verdienes gjennomsnittlig avstand fra gjennomsnittet) på `r round(deskSalePrice$sd, 2)`. I det perspektivet bør altså vurdere om en gjennomsnittlig feil på `r round(rmsepred1, 2)` indikerer en modell vi er fornøyd med eller ikke. Jeg vil være tilbøyelig til å si at dette virker som et noe høyt gjennomsnittlig avvik i prediksjonene.
@@ -864,7 +901,7 @@ normrmse <- rename(normrmse, MaksMin = rmsepred1..deskdata1.max...deskdata1.min.
        Snitt = rmsepred1.deskdata1.mean,
        Standardavvik = rmsepred1.deskdata1.sd,
        IQR = rmsepred1..interkvart.)
-kable(normrmse, caption = "Sammenlikning av RMSE-verdi for 4 ulike beregningsmåter")
+kable(normrmse, caption = "Sammenlikning av RMSE-verdi ved ulike beregningsmåter")
 ```
 
 En lettere veg i R er gjennom pakken tdr (hensikten med utregning ovenfor er å vise - utregningen):
@@ -891,11 +928,13 @@ Vi må rett og slett ta et valg ut fra de (få) retningslinjene som f.eks. @otto
 
 ### Multippel regresjon
 
+Vi modifiserer datasettet noe mer, ved å velge ut de numeriske variablene for å se hvilke variabler som har korrelasjoner > 0.5 (absolutt verdi).
+
 ```{r}
-numerisk <- ames %>% select(where(is.numeric))
-korrelasjoner <- as.data.frame(cor(numerisk, ames$Sale_Price))
-korrelasjoner <- na.omit(korrelasjoner)
-korrelasjoner <- korrelasjoner %>%
+numerisk <- ames %>% 
+    select(where(is.numeric))
+korrelasjoner <- as.data.frame(cor(numerisk, ames$Sale_Price)) %>%
+    na.omit(korrelasjoner) %>%
     filter(V1 > 0.5 | V1 < -0.5)
 kable(korrelasjoner, caption = "Korrelasjoner større enn +/- 0.5 blant numeriske variabler i datasettet")
 ```
@@ -905,7 +944,17 @@ Ut fra dette utvider vi med åtte uavhengige variabler. I tillegg til boligstør
 Lager modell på treningssettet:
 
 ```{r}
-multiregressor <- lm(Sale_Price ~ Gr_Liv_Area + Year_Built + Year_Remod_Add + Mas_Vnr_Area + Total_Bsmt_SF + First_Flr_SF + Full_Bath + Garage_Cars + Garage_Area, data = ames_trening)
+multiregressor <- lm(Sale_Price ~ 
+                         Gr_Liv_Area + 
+                         Year_Built + 
+                         Year_Remod_Add + 
+                         Mas_Vnr_Area + 
+                         Total_Bsmt_SF + 
+                         First_Flr_SF + 
+                         Full_Bath + 
+                         Garage_Cars + 
+                         Garage_Area, 
+                     data = ames_trening)
 sjPlot::tab_model(multiregressor)
 ```
 
@@ -926,7 +975,7 @@ Vi kan sammenlikne MSE mellom multippel og enkel lineær:
 ```{r}
 msemultippel <- mean((df2$Observert - df2$Predikert)^2)
 msetab <- data.frame(mseOLS, msemultippel)
-msetab$Differanse <- round(msetab$mseOLS - msetab$msemultippel, 0)
+msetab$Differanse <- round(msetab$mseOLS - msetab$msemultippel, 0) 
 colnames(msetab) <- c("MSE enkel linear", "MSE multippel", "Differanse")
 kable(msetab, caption = "Sammenlikning MSE for hhv enkel lineær og multippel regresjon")
 ```
@@ -943,7 +992,7 @@ kable(normrmse2, caption = "Teststatistikk for modell og prediksjon fra pakken '
 
 For den enkle lineære var NRMSE `r round(normrmseverdi, 2)`, mens det for den multiple var `r round(normrmseverdi2, 2)`. For $R^2$ hadde den enkle lineære `r round(summary(lm(Sale_Price ~ Gr_Liv_Area, data = ames_trening))$r.squared, 2)` og for den multiple `r round(summary(lm(Sale_Price ~ Gr_Liv_Area + Year_Built + Year_Remod_Add + Mas_Vnr_Area + Total_Bsmt_SF + First_Flr_SF + Full_Bath + Garage_Cars + Garage_Area, data = ames_trening))$r.squared, 2)`.
 
-```{r}
+```{r echo = FALSE}
 rmse1 <- nrmse(y_prediksjon1, ames_test$Sale_Price)
 rmse2 <- nrmse(y_prediksjon2, ames_test$Sale_Price)
 rmsesammenlikning <- data.frame(c(rmse1, rmse2))
@@ -956,24 +1005,22 @@ colnames(rmsesammenlikning) <- c("Modell", "RMSE", "Uavhengige variabler")
 kable(rmsesammenlikning)
 ```
 
-## Polynomisk regresjon
+### Polynomisk regresjon
 
 La oss anta at vi ønsker å se på sammenhengen mellom byggeår og salgspris. Vi illustrerer dette gjennom en enkel lineær regresjon:
 
 ```{r warning = FALSE}
-theme_set(theme_bw())
-
-ggplot(ames_trening, aes(Year_Built, Sale_Price)) +
+aar_pris <- ggplot(ames_trening, aes(Year_Built, Sale_Price)) +
     labs(x = "Bolig bygd", y = "Salgspris") +
-  geom_point(color = "red") +
-  geom_smooth(method = 'lm', se = FALSE)
+    geom_point(color = "red") +
+    geom_smooth(method = 'lm', se = FALSE) + 
+    theme_bw()
+aar_pris
 ```
 
-Vi kan se at den lineære regresjonen kanskje ikke er den beste modellen. Det kan se ut til at trenden i datapunktene ligger i en svak kurve. Vi kan forsøke uilke polynomialledd for å se om vi kan finne en bedre modell med det.
+Vi kan se at den lineære regresjonen ikke er helt ueffen, men heller kanskje ikke er den beste modellen. Det kan se ut til at trenden i datapunktene ligger i en svak kurve. Vi kan forsøke uilke polynomialledd for å se om vi kan finne en bedre modell med det.
 
-```{r warninge = FALSE}
-theme_set(theme_classic())
-
+```{r warninge = FALSE, fig.cap = "Ulike polynomfunksjoner for sammenhengen mellom byggeår og salgspris"}
 poly_reg1 <- lm(formula = Sale_Price ~ poly(Year_Built, 1), data = ames_trening)
 poly_reg2 <- lm(formula = Sale_Price ~ poly(Year_Built, 2), data = ames_trening)
 poly_reg3 <- lm(formula = Sale_Price ~ poly(Year_Built, 3), data = ames_trening)
@@ -999,13 +1046,14 @@ polykurver <- ggplot(ames_trening) +
   stat_smooth(method = "lm", formula = y ~ poly(x,10), aes(Year_Built, poly_reg10$fitted.values, col = "Poly 10"), se = FALSE) +
   scale_colour_manual("",
                       breaks = c("Original",  "Poly 1", "Poly 2", "Poly 4", "Poly 6", "Poly 8", "Poly 10"),
-                      values = c("blue","red", "purple","orange","sienna", "black", "#FF689F")) 
+                      values = c("blue","red", "purple","orange","sienna", "black", "#FF689F")) +
+    theme_bw()
 polykurver
 ```
 
 Vi kan se av plottet over at i store deler av datasettet, la oss si fra ca. 1930 til 2010, har rimelig lik prediksjon for de ulike polynomlikningene. Den lineære predikerer, ikke uventet, høyere verdier fram til ca. 1990 og deretter lavere verdier enn de polynome. 
 
-```{r warning = FALSE}
+```{r message = FALSE, warning = FALSE, fig.cap = "Byggeår og slagspris - 1935-2010"}
 polykurver2 <- polykurver +
     xlim(1935,2010)
 polykurver2
@@ -1078,111 +1126,112 @@ rss_sammenlikning_test <- rss_sammenlikning_test[, c(2,1)]
 colnames(rss_sammenlikning_test) <- c("Modell", "RSS Test")
 
 rss_sammenlikning <- merge(rss_sammenlikning_trening, rss_sammenlikning_test, by = "Modell")
-rss_sammenlikning <- rss_sammenlikning %>% arrange(rss_sammenlikning$`RSS Test`) 
+rss_sammenlikning <- rss_sammenlikning %>% 
+    arrange(rss_sammenlikning$`RSS Test`) 
 kable(rss_sammenlikning, caption = "RSS sammenlikning for trenings - og testdata")
 ```
 
 Som vi kunne forvente ut fra plottet av modellene lenger opp er forskjellene i RSS-verdien ganske liten mellom modellene. Vi kan også lage et interessant plott der vi plotter RSS-verdiene "mot hverandre".
 
-```{r}
-trening_rss <- scale(c(trening_rss2, trening_rss3, trening_rss4, trening_rss5, trening_rss6, trening_rss7, trening_rss8, trening_rss9, trening_rss10)) # scaling 
-test_rss <- scale(c(test_rss2, test_rss3, test_rss4, test_rss5,  test_rss6, test_rss7, test_rss8, test_rss9, test_rss10))      # scaling
+```{r fig.cap = "RSS treningssett vs. testsett"}
+trening_rss <- scale(c(trening_rss2, trening_rss3, trening_rss4, trening_rss5, trening_rss6, trening_rss7, trening_rss8, trening_rss9, trening_rss10))
+test_rss <- scale(c(test_rss2, test_rss3, test_rss4, test_rss5,  test_rss6, test_rss7, test_rss8, test_rss9, test_rss10))
 orders <- c(2, 3, 4, 5, 6, 7, 8, 9, 10)
 
 ggplot() +
-  geom_line(aes(orders, trening_rss, col = "Trening RSS")) +
-  geom_line(aes(orders, test_rss, col = "Test RSS")) +
-  scale_x_continuous(breaks = seq(min(2), max(10), by = 1)) +    
-  scale_colour_manual("", 
-                      breaks = c("Trening RSS", "Test RSS"), 
-                      values = c("blue", "red")) +
+    geom_line(aes(orders, trening_rss, col = "Trening RSS")) +
+    geom_line(aes(orders, test_rss, col = "Test RSS")) +
+    scale_x_continuous(breaks = seq(min(2), max(10), by = 1)) +    
+    scale_colour_manual("", 
+                        breaks = c("Trening RSS", "Test RSS"), 
+                        values = c("blue", "red")) +
   ylab("RSS") +
-  xlab("Polynomfunksjon") 
+  xlab("Polynomfunksjon") +
+    theme_bw()
 ```
 
 Grafen illustrerer det vi kan se fra tabellen over - modell 9 ser ut til å predikere best. Vi kan vise det samme med RMSE (som sagt er RMSE, RSS og MSE forsåvidt mål på det samme).
 
 ```{r}
-polyrmse1 <- as.data.frame(tdStats(polypred1, ames_test$Sale_Price))
-polyrmse1 <- polyrmse1[7,]
-polyrmse1 <- round(polyrmse1, 3)   
-polyrmse2 <- as.data.frame(tdStats(polypred2, ames_test$Sale_Price))
-polyrmse2 <- polyrmse2[7,]
-polyrmse2 <- round(polyrmse2, 3) 
-polyrmse3 <- as.data.frame(tdStats(polypred3, ames_test$Sale_Price))
-polyrmse3 <- polyrmse3[7,]
-polyrmse3 <- round(polyrmse3, 3) 
-polyrmse4 <- as.data.frame(tdStats(polypred4, ames_test$Sale_Price))
-polyrmse4 <- polyrmse4[7,]
-polyrmse4 <- round(polyrmse4, 3) 
-polyrmse5 <- as.data.frame(tdStats(polypred5, ames_test$Sale_Price))
-polyrmse5 <- polyrmse5[7,]
-polyrmse5 <- round(polyrmse5, 3) 
-polyrmse6 <- as.data.frame(tdStats(polypred6, ames_test$Sale_Price))
-polyrmse6 <- polyrmse6[7,]
-polyrmse6 <- round(polyrmse6, 3) 
-polyrmse7 <- as.data.frame(tdStats(polypred7, ames_test$Sale_Price))
-polyrmse7 <- polyrmse7[7,]
-polyrmse7 <- round(polyrmse7, 3) 
-polyrmse8 <- as.data.frame(tdStats(polypred8, ames_test$Sale_Price))
-polyrmse8 <- polyrmse8[7,]
-polyrmse8 <- round(polyrmse8, 3) 
-polyrmse9 <- as.data.frame(tdStats(polypred9, ames_test$Sale_Price))
-polyrmse9 <- polyrmse9[7,]
-polyrmse9 <- round(polyrmse9, 3) 
-polyrmse10 <- as.data.frame(tdStats(polypred10, ames_test$Sale_Price))
-polyrmse10 <- polyrmse10[7,]
-polyrmse10 <- round(polyrmse10, 3)
-
-rmsesammenlikning2 <- data.frame(c(polyrmse1, polyrmse2, polyrmse3, polyrmse4, polyrmse5, polyrmse6, polyrmse7, polyrmse8, polyrmse9, polyrmse10))
-ny2 <- c("Enkel linear", "Poly 2", "Poly 3", "Poly 4", "Poly 5", "Poly 6", "Poly 7", "Poly 8", "Poly 9","Poly 10")
-rmsesammenlikning2$Modell <- ny2
-rmsesammenlikning2 <- rmsesammenlikning2[, c(2,1)]
-colnames(rmsesammenlikning2) <- c("Modell", "RMSE")
-rmsesammenlikning2 <- rmsesammenlikning2 %>% arrange(rmsesammenlikning2$`RMSE`) 
+polyrmse1 <- round(tdStats(polypred1, ames_test$Sale_Price)[[7]], 3)
+polyrmse2 <- round(tdStats(polypred2, ames_test$Sale_Price)[[7]], 3)
+polyrmse3 <- round(tdStats(polypred3, ames_test$Sale_Price)[[7]], 3)
+polyrmse4 <- round(tdStats(polypred4, ames_test$Sale_Price)[[7]], 3)
+polyrmse5 <- round(tdStats(polypred5, ames_test$Sale_Price)[[7]], 3)
+polyrmse6 <- round(tdStats(polypred6, ames_test$Sale_Price)[[7]], 3)
+polyrmse7 <- round(tdStats(polypred7, ames_test$Sale_Price)[[7]], 3)
+polyrmse8 <- round(tdStats(polypred8, ames_test$Sale_Price)[[7]], 3)
+polyrmse9 <- round(tdStats(polypred9, ames_test$Sale_Price)[[7]], 3)
+polyrmse10 <- round(tdStats(polypred10, ames_test$Sale_Price)[[7]], 3)
+rmsesammenlikning2 <- as_tibble(c(polyrmse1, polyrmse2, polyrmse3, polyrmse4, polyrmse5, polyrmse6, polyrmse7, polyrmse8, polyrmse9, polyrmse10)) %>%
+    rename(RMSE = 1) %>%
+    add_column(Modell = c("Enkel linear", "Poly 2", "Poly 3", "Poly 4", "Poly 5", "Poly 6", "Poly 7", "Poly 8", "Poly 9","Poly 10"), .before = 1) %>%
+    arrange(RMSE)
 kable(rmsesammenlikning2, caption = "RMSE for testdata")
 ```
 
-Som sagt kan RMSE tolkes direkte, så en RMSE på `r min(rmsesammenlikning2$RMSE)` for beste modell innebærer at modellen i gjennomsnitt bommer med `r min(rmsesammenlikning2$RMSE)`dollar på boligprisen. Samtidig ser vi at forskjellene, som vi har sett tidligere, er små mellom modellene. Selv med den lineære er forskjellen mellom beste og dårligste modell i dette tilfellet `r max(rmsesammenlikning2$RMSE) - min(rmsesammenlikning2$RMSE)`.
+Som sagt kan RMSE tolkes direkte, så en RMSE på `r min(rmsesammenlikning2$RMSE)` for beste modell innebærer at modellen i gjennomsnitt bommer med `r round(min(rmsesammenlikning2$RMSE),2)`dollar på boligprisen. Samtidig ser vi at forskjellene, som vi har sett tidligere, er små mellom modellene. Selv med den lineære er forskjellen mellom beste og dårligste modell i dette tilfellet `r max(rmsesammenlikning2$RMSE) - min(rmsesammenlikning2$RMSE)`.
 
 Vår modell blir dermed (på hele datasettet):
 
-```{r}
+```{r fig.cap = "Beste polynomregresjon på AmesHousing data"}
 polykurver3 <- ggplot(ames_trening) +
-  geom_point(aes(Year_Built, Sale_Price), cex = 2) +
-    labs(x = "Bolig bygd", y = "Salgspris") +
-    scale_x_continuous(breaks = seq(min(ames$Year_Built), max(ames$Year_Built), by = 10)) +
-    scale_y_continuous(breaks = seq(min(0), max(ames$Sale_Price), by = 50000)) +
-  stat_smooth(method = "lm", formula = y~poly(x,9), aes(Year_Built, poly_reg9$fitted.values, col = "Poly 9"), se = TRUE) 
+  geom_point(aes(Year_Built, Sale_Price), col = "grey") +
+    labs(x = "Bolig bygd", 
+         y = "Salgspris") +
+    scale_x_continuous(breaks = seq(min(ames$Year_Built), 
+                                    max(ames$Year_Built), 
+                                    by = 10)) +
+    scale_y_continuous(breaks = seq(min(0), 
+                                    max(ames$Sale_Price), 
+                                    by = 50000)) +
+    stat_smooth(method = "lm", 
+                formula = y~poly(x,9), 
+                aes(Year_Built, poly_reg9$fitted.values, col = "Poly 9"), 
+                se = TRUE) +
+    theme_bw()
 polykurver3
 ```
 
-Oppsummert kan vi se på RMSE for de tre modellene vi så langt har sett på:
+Oppsummert kan vi se på RMSE for de tre modellene vi så langt har sett på (som en oppsummering uten at man direkte kan sammenlikne):
 
 ```{r}
-rmse3 <- as_tibble(nrmse(polypred9, ames_test$Sale_Price))
+rmse3 <- as.data.frame(nrmse(polypred9, ames_test$Sale_Price))
 rmse3$Modell <- "Polynomial"
 rmse3$Uavhengig <- "Year_Built"
 colnames(rmse3) <- c("RMSE", "Modell", "Uavhengige variabler")
 rmse3 <- rmse3[, c(2,1,3)]
-rmsesammenlikning2 <- bind_rows(rmsesammenlikning2, rmse3)
+rmsesammenlikning2 <- bind_rows(rmsesammenlikning, rmse3)
 kable(rmsesammenlikning2, caption = "Sammenlikning av RMSE for valgte modeller")
 ```
 
-## Linear Support Vector Regression (SVR)
+### Linear Support Vector Regression (SVR)
 
 Så kommer vi til den første nye teknikken vi knytter til maskinlæring.
 
 SVR skiller seg fra OLS regresjon ved at metoden ikke forsøker å finne en regresjonslinje som gir minste kvadraters sum for avstandene mellom observasjon og regresjonslinje (minimalisere feil), men i stedet lar oss definere hvilken feilmargin vi anser som formålstjenlig for vårt formål/i vår kontekst. Grafisk kan vi illustrere dette slik (datapunktene i hhv. venstre og høyre del av illustrasjonen er like):
 
-![Lineær regresjon vs. SVR-regresjon](SVR.png){width="85%"}
+![Lineær regresjon vs. SVR-regresjon](SVR.png){width="90%"}
 
 I figuren over ser vi i den venstre delen en "tradisjonell" lineær regresjon, der vi altså forsøker å finne den linja som minimerer summen av kvadrerte avvik, der linja blir vår modell som vi vil predikere ut fra. I den høyre delen viser vi prinsippet med SVR. Vi tillater et feilnivå - målt ved $\epsilon$. Vi får et bånd - en slags "margin of error" - som vi tilater at vår modell predikerer innenfor (vi bryr oss ikke om "feilene" innenfor dette båndet). Der vi i linær regresjon bryr oss om hvert enkelt punkts avstand til regresjonslinja gjør vi ikke det i SVR for de punktene som ligger innenfor grensene på båndet vårt. Derimot bryr vi oss i SVR om de punktene som ligger utenfor båndet ("båndet" omtales gjerne på engelsk som $\epsilon\ insensitive\ tube$). For disse punktene måles avstanden fra det enkelte punkt til kanten på båndet. I figuren over ser vi disse som $\xi_1, \xi_2...osv$. Punktene utenfor båndet kalles "slack variables". Så teknikken i SVR går da ut på å minimere summen av avstandene fra hvert enkelt "slack variabel" til kanten av båndet (husk at vi selv definerer hvor bred/smal båndet skal være). Hensikten er at ulike praktiske analyser kan rettferdiggjøre ulike tilnærminger til hvor bred båndet skal være, og dermed hvor stor variasjon vi fanger opp innenfor båndet. Modellen vil derfor kunne variere med hvilken verdi vi setter på $\epsilon$.
 
 Hvorfor begrepet Support Vector Regression? Vel, alle datapunktene er vektorer (med en retning og avstand ut fra origo). Gitt at vi har definert båndet (gjennom $\epsilon$) vil punktene innenfor båndet ikke ha noen påvirkning på modellen, kun punktene utenfor. Derfor er det punktene utenfor som definerer modellen og dermed "støtter" ("supports") modellen.
 
+Vi bruker samme variabler som i den multiple regresjonen.
+
 ```{r}
-svrreg2 <- svm(Sale_Price ~ Gr_Liv_Area + Year_Built + Year_Remod_Add + Mas_Vnr_Area + Total_Bsmt_SF + First_Flr_SF + Full_Bath + Garage_Cars + Garage_Area, data = ames_trening, type = "eps-regression")
+svrreg2 <- svm(Sale_Price ~ 
+                   Gr_Liv_Area + 
+                   Year_Built + 
+                   Year_Remod_Add + 
+                   Mas_Vnr_Area + 
+                   Total_Bsmt_SF + 
+                   First_Flr_SF + 
+                   Full_Bath + 
+                   Garage_Cars + 
+                   Garage_Area, 
+               data = ames_trening, 
+               type = "eps-regression")
 svrreg2
 ```
 
@@ -1198,32 +1247,23 @@ colnames(df2) <- c("Predikert", "Observert", "Abs differanse")
 kable(head(df1, n = 10), caption = "Første 10 differanser mellom predikert og observert verdi")
 msesvr <- mean((df2$Observert - df2$Predikert)^2)
 msesvr
-
-# x <- 1:length(ames_trening$Sale_Price)
-# medianverdi <- ggplot() +
-#     geom_point(aes(x = x, y = ames_trening$Sale_Price), 
-#                color = "red") +
-#     geom_line(aes(x = x, y = predict(svrpred, newdata = ames_test)),
-#     color = "blue") +
-#     ggtitle("Median boligverdi (regresjon på testsett)") +
-#     xlab("Bolig nr.") + 
-#     ylab("Medianverdi")
-# medianverdi 
 ```
 
-Oppsummert kan vi se på RMSE for de fire modellene vi så langt har sett på:
+Oppsummert kan vi se på NRMSE for de fire modellene vi så langt har sett på:
 
 ```{r}
-rmse4 <- as_tibble(nrmse(svrpred,  ames_test$Sale_Price))
+rmse4 <- as.data.frame(nrmse(svrpred,  ames_test$Sale_Price))
 rmse4$Modell <- "SVR"
 rmse4$Uavhengig <- "Gr_Liv_Area + Year_Built + Year_Remod_Add + Mas_Vnr_Area + Total_Bsmt_SF + First_Flr_SF + Full_Bath + Garage_Cars + Garage_Area"
-colnames(rmse4) <- c("RMSE", "Modell", "Uavhengige variabler")
-rmse4 <- rmse4[, c(2,1,3)]
+colnames(rmse4) <- c("NRMSE", "Modell", "Uavhengige variabler")
+rmse4 <- rmse4[, c(2, 1, 3)]
 rmsesammenlikning3 <- bind_rows(rmsesammenlikning2, rmse4)
 kable(rmsesammenlikning3, caption = "Sammenlikning av RMSE for valgte modeller")
 ```
 
-### SVR eksempel 2
+Siden vi vi har samme varaibler i multippel og SVR kan vi se at SVR-modellen gir betydelig lavere RMSE.
+
+#### SVR eksempel 2
 
 Vi kan illustrere SVR på en annen type datasett. Datasettet "Boston" ligger integrert i R-pakken "MASS" og ble opprinnelig publisert i 1978. Datasettet inneholder boligdata fra Boston (N = 506) og var en undersøkelse "to measure the willingness to pay for clean air" [@harrisonHedonicHousingPrices1978, s.81]. I dette eksempelet bruker vi variabelen "medv" som avhengig variabel (som er boligenens medianverdi målt i \$1000). Vi har tatt ut en variabel - "B-1000" - fra det opprinnelige datasettet.
 
@@ -1234,17 +1274,18 @@ xfun::embed_file("bostondata.xlsx")
 ```{r warning = FALSE, echo = FALSE}
 bostondata <-  MASS::Boston
 bostondata <- subset(bostondata, select = -(black))
-glimpse(bostondata)
+dim(bostondata)
 ```
 
 Vi kan se på variabelen "medv" grafisk:
 
-```{r}
-ggplot() +
+```{r fig.cap = "Boligens verdi"}
+medv <- ggplot() +
     geom_point((aes(x=seq_along(bostondata$medv), y=bostondata$medv)), color = "red") + 
-    ggtitle("Boligens medianverdi") +
     xlab("Bolig nr.") +
-    ylab("Verdi")
+    ylab("Verdi") +
+    theme_bw()
+medv
 ```
 
 Vi lager SVR-modellen:
@@ -1260,7 +1301,7 @@ print(svrreg)
 
 Og predikerer på bakgrunn av treningssettet og sammenlikner med testdataene:
 
-```{r}
+```{r fig.cap = "Prediksjon og observasjon"}
 pred4 <-  predict(svrreg, btestsett)
 x = 1:length(btestsett$medv)
 ggplot() +
@@ -1268,9 +1309,9 @@ ggplot() +
                color = "red") +
     geom_line(aes(x = x, y = predict(svrreg, newdata = btestsett)),
               color = "blue") +
-    ggtitle("Median boligverdi (testsett)") +
     xlab("Bolig nr.") + 
-    ylab("Medianverdi")
+    ylab("Medianverdi") +
+    theme_bw()
 ```
 
 Vi kan til slutt sjekke hvor godt modellen predikerer:
@@ -1291,22 +1332,7 @@ deskdata
 
 Vi kan se at boligprisen varierer mellom 5000 og 50000, med et standardavvik (= verdienes gjennomsnittlig avstand fra gjennomsnittet) på 9200 (9.2). I det perspektivet kan modellen se ut til å predikere rimelig bra.
 
-```{r warning = FALSE, message = FALSE}
-normrmse2 <- tdStats(pred4, btestsett$medv)
-normrmse2
-```
-
-Jaha...så hvilken metode skal man bruke siden det gir fire ulike normaliserte verdier?
-
-I vårt datasett har vi ikke noe problem med utvalgsstørrelsen. Hvis vi ser på et boksplott vil vi se at vi har endel uteliggere og kanskje ekstreme verdier:
-
-```{r}
-ggplot(bostondata, aes(x = "", y = medv)) + geom_boxplot()
-```
-
-Vi kan gå videre med å se på hvor inflytelsesrike uteliggerne er for å se om det taler for bruk av IQR, men det gjør vi ikke her.
-
-## Decision Tree Regression
+### Decision Tree Regression
 
 Vi illustrerer DTR gjennom et eksempel basert på @plotly3DScatterPlots2022. I pakken "plotly" ligger et kjent datasett - mtcars - som er brukt i mange lærebøker og eksempler.
 
@@ -1324,13 +1350,15 @@ Et tips i R for å se på innhold og hva de enkelte variabler er i datasett som 
 # ?mtcars
 ```
 
-Hvor man (i RStudio) får opp tekst om datasettet i hjelpevinduet (normalt nede til høyre i skjermen). Vi kan se at variabelen "wt" er vekt, "hp" er hestekrefter og "qsec" er tid bilen bruker fra 0 til 1/4 mile. Vi kan se for oss at wt og hp er uavhengige variabler, og tid den avhengige variabelen.
+Hvor man får opp tekst om datasettet i hjelpevinduet (normalt nede til høyre i skjermen i RStudio). Vi kan se at variabelen "wt" er vekt, "hp" er hestekrefter og "qsec" er tid bilen bruker fra 0 til 1/4 mile. Vi kan se for oss at wt og hp er uavhengige variabler, og tid den avhengige variabelen.
 
 Vi kan plotte dataene. Vi kan først se på de to uavhengige variablene wt og hp.
 
-```{r}
-ggplot(mtcars, aes(x=wt, y=hp)) + geom_point(color = "red") +
-    scale_x_continuous(breaks = round(seq(min(mtcars$wt), max(mtcars$wt), by = 0.5),1))
+```{r fig.cap = "Scatterpplott 'wt' og 'hp'"}
+ggplot(mtcars, aes(x=wt, y=hp)) + 
+    geom_point(color = "red") +
+    scale_x_continuous(breaks = round(seq(min(mtcars$wt), max(mtcars$wt), by = 0.5),1)) +
+    theme_bw()
 ```
 
 Siden vi har tre variabler kan vi framstille dette som et 3D-plott (vi kan ha flere variabler i regresjonen naturligvis, men det klarer vi ikke å plotte).
@@ -1339,9 +1367,15 @@ Siden vi har tre variabler kan vi framstille dette som et 3D-plott (vi kan ha fl
 mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
 mtcars$am[which(mtcars$am == 1)] <- 'Manual'
 mtcars$am <- as.factor(mtcars$am)
-fig <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c('#BF382A', '#0C4B8E'))
-fig <- fig %>% add_markers()
-fig <- fig %>% layout(scene = list(xaxis = list(title = 'wt'),
+fig <- plot_ly(mtcars, 
+               x = ~wt, 
+               y = ~hp, 
+               z = ~qsec, 
+               color = ~am, 
+               colors = c('#BF382A', '#0C4B8E'))
+fig <- fig %>% 
+    add_markers() %>%
+    layout(scene = list(xaxis = list(title = 'wt'),
                      yaxis = list(title = 'hp'),
                      zaxis = list(title = '1/4 mile tid')))
 fig
@@ -1355,9 +1389,9 @@ Hver node i treet utgjør en test for en case/et dilemma/et valg inntil det ikke
 
 Modellen begynner med hele datasettet og leter gjennom alle verdier for alle inputvariabler (uavhengige variabler) for å finne splittverdien som deler datasettet i to og samtidig gir lavest mulig "Sums of Squares Error". Deretter gjentas denne prosessen inntil en stoppverdi er nådd.
 
-La oss gå tilbake til eksempelet med mtcars og se på kun de to uavhengige variablene:
+La oss gå tilbake til eksempelet med mtcars og se på kun de to uavhengige variablene. Eksempelet under er kun illustsrerende:
 
-```{r}
+```{r fig.cap = "Eksempel på 4 x splitt av datasett"}
 dtrplott <- ggplot(mtcars, aes(x=wt, y=hp)) + geom_point(color = "red")
 dtrplott +
     geom_segment(aes(x = 1.5, y = 170, xend = 3.6, yend = 170)) +
@@ -1375,7 +1409,8 @@ dtrplott +
     annotate(geom = "text", x = 3.7, y = 350, label = "3.6") +
     annotate(geom = "text", x = 1.5, y = 160, label = "170") +
     annotate(geom = "text", x = 1.5, y = 65, label = "75")  +
-    annotate(geom = "text", x = 2.6, y = 20, label = "2.5")
+    annotate(geom = "text", x = 2.6, y = 20, label = "2.5") +
+    theme_bw()
 ```
 
 ![Beslutningstre](DTR2.png){width="75%"}
@@ -1384,9 +1419,9 @@ I grafen over har vi visualisert beslutningstreet. Første splitt skjer ved wt =
 
 Vi har fått delt opp de to uavhengige variablene i bokser. Hvis vi nå får et nytt punkt (eller vil predikere verdien på den avhengige variabelen ut fra gitt verdier av de to uavhengige variablene) kan vi legge det nye punktet inn i riktig boks ut fra verdiene på hhv. wt og hp. Den predikerte Y-verdien - verdien på den avhengige variabelen - blir ganske enkelt gjennomsnittsverdien av alle y-verdiene i den respektive boksen (jfr $\hat{y}_n$ i figuren over). Inndeingen i boksene gjennom belsutningstreet har i realiteten tilført informasjon til våre data. Vi trenger altså predikere ut fra et mye snevrere utfallsområde enn en tradisjonell tilnærming som vil ta hensyn til alle datapunktene (ikke bare de i rette boks).
 
-### Eksempel DTR på Ames Housing Data
+#### Eksempel DTR på Ames Housing Data
 
-I dette eksempelet skal vi bruke datasettet fra pakken "AmesHousing" som over.
+I dette eksempelet skal vi bruke datasettet fra pakken "modeldata" som over.
 
 ```{r warning = FALSE, message = FALSE}
 dim(ames)
@@ -1395,20 +1430,17 @@ dim(ames)
 
 ```{r}
 dtregress <- rpart(
-  formula = Sale_Price ~ .,
-  data    = ames_trening)
+    formula = Sale_Price ~ .,
+    data    = ames_trening,
+    method  = "anova")
 dtregress
 ```
 
-Output over beskriver stegene i byggingen av beslutningstreet (splittene). Vi ser at vi starter med 2477 salgsobjekter. Den første splitten skjer gjennom variabelen "Garage" (splitt på 2.5). Dette danner utgangspunkt for gren nr 2 (Garage < 2.5) og 3 (Garage > 2.5). Gren 2 omfatter 2113 boliger med gjennomsnittlig salgspris på 162117,2 og gren 3 omfatter 364 boliger med gjennomsnittlig salgspris på 310039,6. Grenene 2 og 3 splittes videre i hhv. 4 og 5, og 6 og 7. Osv. 
-
-```{r warning = FALSE, message = FALSE}
-rpart.plot(dtregress)
-```
+Output over beskriver stegene i byggingen av beslutningstreet (splittene). Vi ser at vi starter med 2477 salgsobjekter. Den første splitten skjer gjennom variabelen "Garage_Cars" (splitt på 2 og 3). Dette danner utgangspunkt for gren nr 2 ("Garage_Cars" < 2.5 og 3 ("Garage_Cars" > 2.5. Gren 2 omfatter 1904 boliger med gjennomsnittlig salgspris på 161403.4 og gren 3 omfatter 293 boliger med gjennomsnittlig salgspris på 306268.3. Grenene 2 og 3 splittes videre i hhv. 4 og 5, og 6 og 7. Osv. 
 
 Plottet kan fort se smått og uoversiktlig ut (for et mindre datasett med færre grener og splitter vil dette se mer oversiktlig ut), men med litt zooming vil man se beslutningstreet og f.eks. hvor mange prosent av observasjonene som ligger i de repsektive grenene.
 
-Hvis vi ser litt nøyere på beslutningstreet ser vi at vi ender opp med 12 terminalnoder ut av 2930 observasjoner for 74 variabler i treningssettet. Dette skjer fordi algoritmen i rpart-pakken foretar beregninger for å se hvor det ikke gir mer å inkludere flere (gjennom en kryssvalidering). Vi ser forsåvidt det samme i beslutningstreoversikten lenger opp.
+Hvis vi ser litt nøyere på beslutningstreet ser vi at vi ender opp med 10 terminalnoder ut av 2477 observasjoner for 82 variabler i treningssettet. Dette skjer fordi algoritmen i rpart-pakken foretar beregninger for å se hvor det ikke gir mer å inkludere flere (gjennom en kryssvalidering). Vi ser forsåvidt det samme i beslutningstreoversikten lenger opp.
 
 Vi kan se dette i følgende plott:
 
@@ -1416,27 +1448,106 @@ Vi kan se dette i følgende plott:
 plotcp(dtregress)
 ```
 
-I grafen over ser vi på y-aksen relative feil gjennom kryssvalidering. Den nedre x-aksen er "cost complexity" verdi. Jo flere terminalnoder et belsutningstre har, jo mer kompleks blir treet (modellen). Cost complexity er en terskelverdi - algoritmen vil splitte noden kun hvis modellen forbedres med en verdi større enn terskelverdien. I vår modell/vårt tre skjer dette ved 11 terminalnoder. Den stiplede linjen viser en alternativ tilnærming som i dette tilfellet skulle tilsi 10 terminalnoder.
+I grafen over ser vi på y-aksen relative feil gjennom kryssvalidering. Den nedre x-aksen er "cost complexity" verdi. Jo flere terminalnoder et belsutningstre har, jo mer kompleks blir treet (modellen). Cost complexity er en terskelverdi - algoritmen vil splitte noden kun hvis modellen forbedres med en verdi større enn terskelverdien. I vår modell/vårt tre skjer dette ved 12 terminalnoder. Den stiplede linjen viser en alternativ tilnærming som i dette tilfellet skulle tilsi 10 terminalnoder.
+
+Hvis vi tvinger modellen til å ikke ta hensyn til "cost complexity" lar vi modellen kjøre antall trær fullt ut:
+
+```{r}
+dtregress2 <- rpart(
+    formula = Sale_Price ~ .,
+    data    = ames_trening,
+    method  = "anova", 
+    control = list(cp = 0, xval = 10))
+
+plotcp(dtregress2)
+abline(v = 10, lty = "dashed", col = "red")
+```
+
+Vi kan også se på den relative innflytelsen for de ulike variablene:
+
+```{r}
+innflytelse <- as.data.frame(varImp(dtregress)) %>%
+    filter(Overall > 0) %>%
+    arrange(Overall)
+innflytelse <- as.matrix(innflytelse)
+dotchart(innflytelse, pch = 21, bg = "red",
+         cex = 0.85,
+         xlab="Innflytelse")
+```
 
 ```{r warning = FALSE, message = FALSE}
-dtrprediksjon <- predict(dtregress, newdata = ames_test)
+dtrprediksjon <- predict(dtregress)
 modelprediksjon <- sqrt(mean((ames_test$Sale_Price - dtrprediksjon)^2))
 ```
 
 RMSE er `r round(modelprediksjon, 2)`. Dvs at i gjennomsnitt bommer modellens prediksjoner med \$`r round(modelprediksjon, 2)` dollar.
 
-Decision Tree Regression kan i seg selv være en noe lunefull og dårlig modell for prediksjon. Det er ikke sjeldent å finne en god fit til dataene, men ofte en overfit (altså at vi får en god fit til dataene, men lav prediksjonsnøyaktighet). Derimot er den grunnstammen (no pun intended) i "Random Forests" modellering som vi skal se på i neste delkapittel.
+Decision Tree Regression kan i seg selv være en noe lunefull og dårlig modell for prediksjon. Det er ikke sjeldent å finne en god fit til dataene, men ofte en overfit (altså at vi får en god fit til dataene, men lav prediksjonsnøyaktighet). Derimot er den grunnstammen (no pun intended) i "Random Forests" modellering som vi skal se på i neste delkapittel. Før vi går til Random Forest skal vi se på en metodikk for å redusere sårbarheten til et enkelt beslutningstre. Denne metodikken kalles "bagging" - fra "*b*ootstrap *agg*regating [@breimanBaggingPredictors1996].
 
-Oppsummert kan vi se på RMSE for de fem modellene vi så langt har sett på:
+#### Bagging
+
+@boehmkeRegressionTrees2018 illustrerer bagging slik:
+
+![Bagging - fra @boehmkeRegressionTrees2018, fig.3: "The bagging process"](bagging.png){width = 90%}
+
+Konseptet kan minne om kryssvalidering. Man ender opp med samlet prediksjon fra x antall "bagger" fra treningssettet. Hver bag utvikler sin modell som til sammen altså utgjør en samlet prediksjon. På den måten søker man å redusere variasjonen fra enkelttrær, og sannsynligheten for overfitting reduseres. Som sagt minner dette om kryssvalidering. Forskjellen er at i bagging tar gjennomsnittet av ulike modeller, mens kryssvalidering evaluerer et antall surrogatmodeller som antas å være like. Kryssvalidering er med andre ord en teknikk for å vurdere påliteligheten ("reliability") for en modell. Bagging er ikke spesifikk for DTR, men kan brukes på enhver regresjonsmodell. Imidlertid har metodikken mest for seg der variasjonen er stor, slik tilfellet ofte er med DTR. 
+
+Vi ser på bagging i DTR-eksempelet.
 
 ```{r}
-rmse5 <- as_tibble(nrmse(dtrprediksjon, ames_test$Sale_Price))
-rmse5$Modell <- "DTR"
-rmse5$Uavhengig <- "Alle"
-colnames(rmse5) <- c("RMSE", "Modell", "Uavhengige variabler")
-rmse5 <- rmse5[, c(2,1,3)]
-rmsesammenlikning3 <- bind_rows(rmsesammenlikning2, rmse5)
-kable(rmsesammenlikning3, caption = "Sammenlikning av RMSE for valgte modeller")
+ames_bag1 <- bagging(
+  formula = Sale_Price ~ .,
+  data = ames_trening,
+  nbagg = 100,  
+  coob = TRUE,
+  control = rpart.control(minsplit = 2, cp = 0))
+ames_bag1
 ```
 
-## Random Forest regresjon
+Vi kan se at RMSE er `r ames_bag1$err`.
+
+Inflytelse (viser de ti største):
+
+```{r}
+vip2 <- as.data.frame(varImp(ames_bag1), scale = TRUE) %>%
+    filter(Overall > 0) %>%
+    arrange(desc(Overall)) %>%
+    slice(1:10)
+vip2
+```
+
+### Random Forest regresjon
+
+Den enkleste (?) måten å beskrive hva hva Random Forest regresjon er er å tenke tenke tilbake på Decision Tree regresjon som ETT tre, og Random Forest som MANGE trær (= en skog). 
+Sagt på en annen måte: Vi lager mange decision trees og lager prediksjoner for hvert tre og ser på gjennomsnittet av alle prediksjonene. Vi vet at Decision Tree regresjon kan være en noe lunefull og dårlig modell for prediksjon, og hensikten med Random Forest er å mitigere dene lunefullheten gjennom å repetere prosessen (f.eks. minst 500 ganger) og deretter se på gjennomsnittet av prediksjonene. 
+
+Tenk deg at du blir bedt om å gjette hvor mange erter det er i glasset under:
+
+![Bilde: colourbox.com](Peas.jpg){width=85%}
+
+Ditt ene forsøk kan være temmelig nære, eller ganske langt unna. Hvis du derimot ber 1000 mennesker gjette og tar gjennomsnittet av alle gjetningene vil du med stor sannsynlighet i de fleste tilfeller treffe mye nærmere det riktige tallet enn om du gjetter en gang. Prinsippet med Random Forest vs. Decision Tree er i grunnen det samme. 
+
+
+```{r}
+rfregress500 <- randomForest(Sale_Price ~ ., 
+                          data = ames,
+                          ntree = 500)
+rf500 <- mean(predict(rfregress500, newdata = ames_test, predict.all = TRUE)$individual)
+rf500
+```
+
+Vi kan se at NRMSE er betydelig lavere enn for de andre regresjonsmodellene i dette kapittelet. 
+
+```{r}
+rfprediksjon <- predict(rfregress500, newdata = ames_test)
+rmse5 <- as.data.frame(nrmse(rfprediksjon,  ames_test$Sale_Price))
+rmse5
+```
+
+### LASSO regresjon
+
+I kapittelet om regresjonsanalyse 
+
+## Klassifisering
+
+
