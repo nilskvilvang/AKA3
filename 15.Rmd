@@ -14,7 +14,7 @@ options(scipen=999)
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest) 
+pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet) 
 ```
 
 Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (sav samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje.
@@ -1544,9 +1544,65 @@ rmse5 <- as.data.frame(nrmse(rfprediksjon,  ames_test$Sale_Price))
 rmse5
 ```
 
-### LASSO regresjon
+### Ridge regresjon
 
-I kapittelet om regresjonsanalyse 
+I kapittelet om regresjonsanalyse (ikke medregnet logistisk regresjon) har vi brukt minste kvadratsums metode ("Ordinary Least Squares"). Dersom vi har mange forklaringsvariabler i forhold til antall observasjoner eller stor korrelasjon mellom forklaringsvariablene (multikolinearitet) kan det være aktuelt å bruke alternative metoder fordi minste kvadratsums metode vil medføre stor varians i estimatorene. En av disse er "ridge regression" [@hoerlRidgeRegressionApplications; @hoerlRidgeRegressionBiased]. Vi tenker det er i overkant teknisk å gå inn i utregning (se f.eks. [her](https://www.publichealth.columbia.edu/research/population-health-methods/ridge-regression) for en rimelig bra forklaring (på engelsk), men poenget er å få estimatorer som er mer "korrekt" under de betingelsene som er nevnt over. Ridge regresjon utvider lineær regresjon ved å ta hensyn til kompleksiteten i modellen ved å introdusere en "straffeparameter" ("penalty parameter") som utgjøres av den kvadrerte størrelsen av koeffisientene.   
+
+For å illustrere dette bruker vi et eksempel fra @zachLassoRegressionStepbyStep2020 og et innebygd og ofte brukt datasett i R ("mtcars"). Den avhengige variabelen er "hp" ("gross horsepower"), og "mpg" ("Miles pr gallon"), "wt" ("weight"), "drat" ("Rear axle ratio") og "qsec" ("1/4 mile time") som de uavhengige variablene. 
+Den avhengige variabelen er da:
+
+```{r}
+y <- data.matrix(mtcars[mtcars$hp],)
+y
+```
+
+Og de uavhengige variablene:
+
+```{r}
+x <- data.matrix(mtcars[, c('mpg', 'wt', 'drat', 'qsec')])
+x
+```
+
+Modellen blir da:
+
+```{r}
+ridgemodell <- glmnet(x, y, alpha = 0)
+summary(ridgemodell)
+```
+
+Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såkalt lambdaverdi ($\lambda$) som gir lavest MSE (Mean Square Error).
+
+```{r}
+cv_ridgemodell <- cv.glmnet(x, y, alpha = 0)
+beste_lambda <- cv_ridgemodell$lambda.min
+beste_lambda
+plot(cv_ridgemodell)
+```
+
+Vi kan da optimalisere modellen gjennom den identifiserte beste $\lambda$.
+
+```{r}
+beste_modell <- glmnet(x, y, alpha = 0, lambda = beste_lambda)
+coef(beste_modell)
+```
+
+Et interessant plott er et "trace-plott" som viser hgvordan koeffisientene endrer seg som følge av endret lamda-verdi:
+
+```{r}
+plot(ridgemodell, xvar = "lambda")
+```
+
+Til slutt kan vi se på $R^2$ for beste modell:
+
+```{r}
+y_predicted <- predict(ridgemodell, s = beste_lambda, newx = x)
+sst <- sum((y - mean(y))^2)
+sse <- sum((y_predicted - y)^2)
+rsq <- 1 - sse/sst
+rsq
+```
+
+Beste modell kan dermed forklare `r round(rsq, 3)*100` % av variansen i den avhengige variabelen.
 
 ## Klassifisering
 
