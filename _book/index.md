@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "24 august, 2022"
+date: "29 august, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -159,7 +159,11 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   </tr>
   <tr>
    <td style="text-align:left;width: 8em; "> 24.august 2022 </td>
-   <td style="text-align:left;width: 40em; "> Redigert kap 3 </td>
+   <td style="text-align:left;width: 40em; "> Redigert kap 3, Ridge regresjon </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 27.august 2022 </td>
+   <td style="text-align:left;width: 40em; "> Lagt til nytt kap 11 </td>
   </tr>
 </tbody>
 </table>

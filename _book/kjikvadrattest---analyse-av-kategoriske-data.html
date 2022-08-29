@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Kapittel 5 Kjikvadrattest - Analyse av kategoriske data | Anvendt kvantitativ analyse</title>
 <meta name="author" content="Nils Kvilvang">
-<meta name="generator" content="bookdown 0.27 with bs4_book()">
+<meta name="generator" content="bookdown 0.28 with bs4_book()">
 <meta property="og:title" content="Kapittel 5 Kjikvadrattest - Analyse av kategoriske data | Anvendt kvantitativ analyse">
 <meta property="og:type" content="book">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kapittel 5 Kjikvadrattest - Analyse av kategoriske data | Anvendt kvantitativ analyse">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.4.0/transition.js"></script><script src="libs/bs3compat-0.4.0/tabs.js"></script><script src="libs/bs3compat-0.4.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="libs/tabwid-1.0.0/tabwid.css" rel="stylesheet">
 <link href="libs/tabwid-1.0.0/scrool.css" rel="stylesheet">
@@ -73,7 +73,7 @@
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
         <ul class="book-toc list-unstyled">
 <li><a class="" href="index.html">Introduksjon</a></li>
-<li><a class="" href="hvorfor-dette-notatet.html"><span class="header-section-number">1</span> Hvorfor dette notatet?</a></li>
+<li><a class="" href="hvorfor-denne-boka.html"><span class="header-section-number">1</span> Hvorfor denne boka?</a></li>
 <li><a class="" href="grunnleggende-begreper-og-sammenhenger.html"><span class="header-section-number">2</span> Grunnleggende begreper og sammenhenger</a></li>
 <li><a class="" href="samvariasjon-og-korrelasjon.html"><span class="header-section-number">3</span> Samvariasjon og korrelasjon</a></li>
 <li><a class="" href="univariat-analyse.html"><span class="header-section-number">4</span> Univariat analyse</a></li>
@@ -83,12 +83,13 @@
 <li><a class="" href="variansanalyse---manova-multivariate-analysis-of-variance.html"><span class="header-section-number">8</span> Variansanalyse - MANOVA (“Multivariate Analysis of Variance”)</a></li>
 <li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">9</span> Regresjonsanalyse - OLS</a></li>
 <li><a class="" href="iv-regresjon.html"><span class="header-section-number">10</span> IV regresjon</a></li>
-<li><a class="" href="polynomisk-regresjon.html"><span class="header-section-number">11</span> Polynomisk regresjon</a></li>
-<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">12</span> Logistisk regresjon</a></li>
-<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">13</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
-<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">14</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
-<li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li>
-<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">16</span> Maskinlæring gjennom “tidymodels”</a></li>
+<li><a class="" href="regularized-regression.html"><span class="header-section-number">11</span> Regularized regression</a></li>
+<li><a class="" href="polynomisk-regresjon.html"><span class="header-section-number">12</span> Polynomisk regresjon</a></li>
+<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">13</span> Logistisk regresjon</a></li>
+<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">14</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">15</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">16</span> Maskinlæring (Machine Learning)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">17</span> Maskinlæring gjennom “tidymodels”</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-a---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-b---chebyshevs-teorem.html">Vedlegg B - Chebyshevs teorem</a></li>
@@ -555,7 +556,7 @@ osv.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 24 august, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 29 august, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -568,7 +569,7 @@ osv.</p>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

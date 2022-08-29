@@ -4,1606 +4,1231 @@ csl: chicago-author-date.csl
 always_allow_html: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-options(scipen=999)
-```
-
-# Maskinlæring (Machine Learning)
+# Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)
 
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet) 
+pacman::p_load(readxl, car, rgl, flextable, plotly, latex2exp, ggfortify, gridExtra, factoextra, corrplot, Directional, tidyverse, palmerpenguins, psych, paran, kableExtra, multiUS, xtable, GPArotation, EFAtools, nFactors, rstatix, calibrate, Matrix, summarytools, lavaan, lavaanPlot, haven, skimr, psycho, semPlot, gridExtra, kfa, multiUS, ggpubr, sjPlot)
 ```
 
-Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (sav samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje.
+## Innledning
 
-Vi antar at avveiningen mellom forklaring og prediksjon er viktig og sentral for alle felt innenfor samfunnsvitenskapene, og at avveiningen har ulikt fokus og innretting fra fagfelt til fagfelt. @yarkoniChoosingPredictionExplanation2017 påpker f.eks. at for psykologi som fagfelt at "an increased focus on prediction, rather than explanation, can ultimately lead us to greater understanding of behavior" (s.1100).
+"En faktoranalyse er en analyseteknikk som brukes for å forstå korrelasjonsstrukturen i et sett av observerte variabler" [@bjerkanFaktoranalyse2007b, s.221]. I følge @mehmetogluInnforingStatistiskeDataanalyser2020 brukes disse statistiske teknikkene i praksis som metoder som reduserer et større antall variabler til et mindre antall variabler uten å miste vesentlig informasjon om dataene i prosessen. De omtales derfor ofte som datareduksjonsteknikker ("data reduction" eller "dimension reduction"). Ofte vil vi bruke faktoranalyse for å kunne si noe om såkalte latente (eller skjulte) variabler i samfunnsvitenskapene -  forhold vi ikke kan måle direkte, men som vi kan uttrykke gjennom å måle/observere en rekke andre forhold/variabler som vi så "samler" i en konstruert variabel gjennom nettopp faktoranalyse. Målet med faktoranalysen er da i følge @tinsleyUsesFactorAnalysis1987 "to achieve parsimony by using the smallest number of explanatory concepts to explain the maximum amount of common variance in a correlation matrix" (s.414). Det vi ønsker å finne er variabler som er korrelerte med hverandre, men relativt ukorrelerte med andre grupper/subset av variabler (som igjen er interkorrelerte i egen gruppe/subset) [@tabachnikUsingMultivariateStatistics2007]. Den grunnleggende utfordringen er at vi ønsker å representere et stort antall variabler på en enklere måte, men hvis vi velger for få faktorer mister vi informasjon (noe som går ut over påliteligheten) og hvis vi velger for mange kan vi ende opp med en modell som er komplisert og vanskelig å tolke. 
 
-Berepet "maskinlæring" har blitt et mer og mer sentralt begrep i samfunnsvitenskapelig metode generelt og i dataanalyse spesielt. Selve begrepet ble "coinet" (først brukt) av @samuelStudiesMachineLearning1959. Endel av metodene i maskinlæring kjenner vi fra før. Regresjon er f.eks. et sentralt element i "pakken" av metoder som kan puttes inn i begrepet maskinlæring. Og regresjon er jo ikke noe nytt, så er maskinlæring kun et moteord? Et fancy ord på ting vi har gjort før? Tja, kanskje svaret er både ja og nei. Det er unektelig slik at vi har drevet med regresjonsanalyser lenge før begrepet maskinlæring i hvert fall ble allment kjent og popularisert. Samtidig er maskinlæring en distinkt gruppe av analytiske metoder hvis hensikt er å - nettopp - lære. Med dette mener vi modeller som bruker data til å forbedre analyseopgavene vi har foran oss.
+Innledningsvis er det nødvendig å gjøre en grunnleggende begrepsavklaring rundt begrepet faktoranalyse da det i mange sammenhenger framstår som om begreper blandes sammen og det kan være uklart hva man egentlig snakker om. Begrepene faktoranalyse og komponentanalyse ("Factor Analysis" - FA - og "Principal Component Analysis" - PCA) brukes ofte om hverandre og noen ganger er det uklart hva som er hva (eller i hvert fall hva forfatteren mener). En klargjørende framstilling kan man f.eks. finne i @joreskogkarlg.MultivariateAnalysisLISREL2016. Vi vil i det følgende skille mellom faktoranalyse (EFA og CFA), og komponentanalyse (PCA).
 
-## Assosiasjon vs. prediksjon
+Felles for begge er:
 
-Et sentralt element i maskinlæring er prediksjon. Som nevnt ovenfor er f.eks. regresjonsanalyser et kjent begrep som vi har gått relativt grundig gjennom i tidligere kapitler. Vi skal imidlertid være klar over at all snakk om $R^2$ *ikke* sier noe om hvor godt en regresjonsmodell evner å predikere. $R^2$ forteller oss imidlertid noe om hvor godt den gitte regresjonsmodellen i snitt forklarer variansen i dataene vi har. Regresjonskoeffisientene beregnes for å maksimere $R^2$ (gjennom å minimere feilleddene). Av to modeller for samme data forklarer en modell med høyere $R^2$ mer av variansen i de foreliggende dataene enn en modell med lavere $R^2$. Men vi vet ikke noe om de to modellenes evne til å predikere. Derfor er maskinlæring fokusert på at modeller må trenes og testes. Dvs at dataene deles i uavhengige deler, der modellen utvikles og trenes på en del, og testes på en annen del. Merk: Dette er ikke det samme som å utvikle en regresjonsmodell på et datasett, og "teste" ved å replikere analysen på nye data. Dette er i realiteten to modeller - tradisjonell replikasjon - siden koeffisientene i modellen vil tilpasses to sett data (selv om de uavhengige variablene er de samme). Merk: Dette er ikke en kritikk av replikasjon, men en klargjøring av at i maskinlæring er prediksjon det sentrale. Den prediktive lakkmustesten for modeller ligger i hvor godt den klarer å predikere nye verdier ift observerte verdier den ikke har sett (altså hvor nærme observasjonene kommer prediksjonene). 
+* de er metoder for datareduksjon
+* de brukes for å uttrykke multivariate data gjennom færre dimensjoner enn det opprinnelige datasettet
+* de er metodikker for å identifisere mønstre i korrelasjonen mellom variabler. 
 
-## Konsepter og definisjoner
+En grunnleggende forskjell er at PCA er en deskriptiv teknikk mens faktoranalyse er modelleringsteknikker [@unkelSimultaneousParameterEstimation2010]. PCA blir dermed "en empirisk oppsummering av datamaterialet" [@bjerkanFaktoranalyse2007b, s.225].
+Strengt tatt er ikke PCA en faktoranalyse, men omtales (dessverre noe forvirrende) som sagt ofte som en faktoranalyse. I SPSS heter f.eks. menypunktet «Data reduction» og man velger «Factor» i neste valg hvilket innebærer en EFA. SPSS er begrenset til EFA, og man trenger AMOS i SPSS som strengt tatt er et SEM-program (SEM = Structural Equation Modelling - en relatert metodikk til CFA som vi behandler i et annet kapittel).
 
-Maskinlæring knyttes tett til kunstig intelligens (Articifical Intelligence, eller bare AI). Det er imildertid ulike oppfatninger av hvordan disse begrepene forholder seg til hverandre. I tillegg har begrepet "deep learning" også kommet mer i fokus. En vanlig måte å se sammenhengen på er denne [@superdatascienceMachineLearningAZ2022]:
+Grafisk kan forskjellene vises slik:
 
-![Sammenhengen AI - ML - DL, fra SuperDataScience](AI_ML_2.png)
+![Forskjeller PCA og FA](PCA-FA.png){width=90%}
 
-Det er videre vanlig å sele inn maskinlæring ut fra hvordan dataanalysen skjer:
+I venstre del (PCA) kombineres fire målte variabler ($X_1...X_4$) til en komponent ($C$). Pilene indikerer at det er variablene som bidrar til å skape komponenten, og de kan gjøre det med ulike styrke (vekt), som er vist med $w_1...w_4$. Variablene $X_1...X_4$ utgjør altså ulike størrelser på bidraget til komponenten $C$. 
 
--   Supervised learning: Modellering gjennom algoritmer som kjenner både input og ønsket output.
-    - Regresjon: F.eks. lineær, logistisk, polynomial, SVR. Regresjon predikerer en numerisk verdi.
-    - Klassifisering: F.eks. lineær, SVM, beslutningstre, k-nearest neighbor, random forest. Klassifisering predikerer et sett av ordnede eller uordnede kvalitative verdier.  
--   Unsupervised learning: Modellering gjennom algortimer som kjenner kun input, og forsøker finne mønstre og grupper i dataene gjennom sannsynligheter (for at noe tilhører den ene eller den andre gruppen eller kategorien).
-    - Clustering: Gruppering av data basert på likhet eller forskjeller
-    - Assosiering: Identifisering av sammenhenger mellom variabler
-    - Dimensionality reduction: Komponentanalyse (PCA), SVD o.l.
--   Semi-supervised learning: En form for mellomting mellom supervised og unsupervised, dvs. vi kan ha mindre deler av data med input og output som kan brukes på data uten kjent/ønsket output. F.eks. at supervised learning bruker unsupervised learning gjennom såkalt "feature engineering".
--   Reinforcement learning: Modellering gjennom algoritmer der henskten/målsetningen er å maksimere en oppfatning om kumulativ belønning/utkomme. Reinforcement learning brukes f.eks. til å lære maskiner å spille spill mot mennesker.
+I figurens høyre del ser vi en faktor $F$ som skaper de fire målte variablene ($Y_1...Y_4$). Dette vises ved at pilene går fra $F$ til $Y_1...Y_4$. $F$ kan typisk være en latent variabel vi ikke kan observere direkte - som f.eks. intelligens eller angst. Også her er det ulike vekter, så $F$ kan påvirke $Y_1...Y_4$ med ulik styrke. I tillegg har vi her et feilledd ($e_1...e_4$). $e_1$ representerer f.eks. den delen av variansen i $Y_1$ som ikke forklares av $F$. Vi kan uttrykke sammenhengen for en enkelt varaibel som $Y_1$ som en regresjonslikning: $Y_1 = b_1*F + e_1$ (og tilsvarende for $Y_2...Y_4$).  
 
-I tillegg skal man ikke holde på lenge med maskinlæring før begrepene Neural networks, Natural Language Processing (NLP) og Deep learning dukker opp. Disse kan, slik vi ser det, alle assosieres med såvel supervised som unsupervised learning. Vi kommer ikke til å gå inn på disse begrepene i dette kapittelet, men heller ta for oss disse begrepene i eget kapittel.
+Som illustrert i figuren under består variansen til variabelen X av tre deler: felles varians med andre variabler, unik varians for selve variabel X og målefeil. PCA søker å forklare all varians for variabel X som en komponent (derav komponentanalyse), mens faktoranalyse kun søker å forklare den delen av den totale variansen som er felles (eller med andre ord: korrelasjonen mellom variablene).   
 
+![Modifisert fra @bjerkanFaktoranalyse2007b, s. 225, fig. 10.1](PCA-EFA-CFA.png){width=90%}
 
-## Regresjon
+Matematisk er forskjellen mellom faktoranalyse og PCA altså hvordan varians blir analysert – i PCA blir all varians analysert, i faktoranalyse blir kun delt varians («shared variance») analysert. Eller med andre ord: PCA analyserer all varians (felles varians, unik varians og målefeil), FA analyserer kovarians (variabelens felles varians med andre variabler).
 
-Vi har i tidligere kapitler gått gjennom enkel og multippel OLS og polynomial regresjon. Disse er også teknikker under paraplyen maskinlæring. Selv om vi har vist regresjon i tidligere kapittel introduserer vi et element i maskinlæringskapittelet som viser splitting av datasett i treningsdata og testdata. Dette er karakteristisk for maskinlæring. Det innebærer at vi deler datasettet (tilfeldig) inn i to grupper: den første gruppa - treningsdata - bruker vi til å lage/trene en modell. Den andre gruppa - testdata - bruker vi for å se hvor god modellen vi lagde med treningsdataene klarer å predikere dataene som ligger i testdatasettet. Testdatasettet består jo av "virkelige" data, så hvis modellen vår er god og klarer å predikere disse dataene kan vi si noe sikrere om hvor godt vi kan anta modellen vil predikere nye, hittil ikke målte/observerte verdier.
+Teoretisk er forskjellen mellom de to at i FA ses faktoren som årsaker til variabelen, mens i PCA ses variablene som årsaken til komponentene; i PCA er det ingen teoretisk forventning om hvilke variabler som forbindes med hvilke komponenter – det er kun empirisk assosiert [@tabachnikUsingMultivariateStatistics2007].
 
-I delkapittelet om regresjon skal vi bruke datasettet AmesHousing
+En annen måte å illustrere forskjellen mellom PCA og EFA er gitt av @bastosExploratoryFactorAnalysis2021. 
 
+![Fra @bastosExploratoryFactorAnalysis2021](PCA-EFA.png){width=60%}
 
-```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
-xfun::embed_file("AmesHousing.csv")
-```
+I figuren over representerer A'ene spesifikk varians, B'en felles varians og C'ene feilvarians (jfr. figuren fra @bjerkanFaktoranalyse2007b lenger opp). Mens vi i PCA vil bruke all varians (A, B og C) bruker vi kun B i EFA. 
 
-```{r warning = FALSE, message = FALSE}
-Ames <- read.csv("AmesHousing.csv")
-Amesdim <- as_tibble(dim(Ames))
-Amesdim
-```
+Praktisk er det imidlertid ikke helt trivielt å avgjøre om man skal bruke PCA eller EFA. @guadagnoliRelationSampleSize1988 konkluderer også i en litteraturundersøkelse med at resultatene fra PCA i stor grad er like som resultatene fra faktoranalyse. Med minst 30 variabler vil løsningene være mer eller mindre like, men med under 20 variabler kan forskjeller inntreffe [@stevensAppliedMultivariateStatistics2002]. Som @fieldDiscoveringStatisticsUsing2009 oppsummerer: "However, to a non-statistician the difference between a principal component and a factor may be difficult to conceptualize (they are both linear models), and the difference arises largely from the calculation" (s.760).
 
-Datasettet "AmesHousing" [@decockAmesIowaAlternative2011] inneholder salgsdata for `r Amesdim[1,1]` boliger i Ames, Iowa i tidsrommet 2006 til 2010 med tilhørende `r Amesdim[2,1]` variabler (nominelle, ordinale, diskrete og kontinuerlige). Den uavhengige variabelen er salgspris. En oversikt over variablene finnes flere stedet på nett, f.eks. [her](https://rdrr.io/cran/AmesHousing/man/ames_raw.html) og mer detaljert [her](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
+## Principal Component Analysis (PCA)
 
-Vi skal i dette kapittelet ta utgangspunkt i det opprinnelige datasettet. Det finnes mange versjoner av dette datasette på nett siden det er et populært datasett, også i konkurranser på nett innen maskinlæring. I neste kapittel - der vi også tar for oss maskinlæring - vil vi bruke en modifisert versjon av datasettet som ligger i R-pakken "tidymodels". Vi vil også velge en litt annen tilnærming i analysen, og leseren kan dermed se både litt mer av bredden i tilnærminger og kunne sammenlikne hva ulike valg gjør med analysene.
+@tabachnikUsingMultivariateStatistics2007 foreslår at dersom du ønsker en «empirisk oppsummering» av datasettet og redusere et større antall variabler til et mindre antall komponenter er PCA riktig valg. I en PCA transformeres et antall korrelerte variabler til et mindre antall «principal components». 
 
-### Manglende verdier i datasettet (NAs)
+### PCA gjennom et lite eksempel
 
-Det kan innledningsvis være verdt å se om vi har variabler med mange manglende verdier ("na"). Vi kan først se på hvilke kolonner (variabler) som har manglende verdier:
+La oss se på hva PCA er. Vi tar utgangspunkt i et lite, kontruert datasett der vi har registrert karakterer i ulike fag på 10 studenter. Dette eksempelet er modifisert fra @starmerStatQuestPrincipalComponent2018, med innslag fra @pittardPrincipalComponentsAnalysis2012.
 
 ```{r}
-nas <- as_tibble(colSums(is.na(Ames))) %>%
-    na_if(0) %>%
-    drop_na()
-nanavn <- as_tibble(names(which(colSums(is.na(Ames)) > 0)))
-natabell <- bind_cols(nanavn, nas) %>%
-    rename(Variabel = value...1, Antall_NA = value...2) %>%
-    arrange(desc(Antall_NA))
-natabell
+karakterer <- tibble(studentnr = 1:10, 
+                     matte = c(79, 76, 78, 75, 42, 45, 41, 46, 50, 49))
+kartabell1 <- flextable(karakterer)
+kartabell1 <- autofit(kartabell1)
+kartabell1
 ```
 
-Vi kan se at 5 variabler har et veldig høyt antall manglende verdier (NAs). Jeg velger å droppe disse variablene fra datasettet.
-
-```{r}
-Ames2 <- subset(Ames, select = -c(Pool.QC, Misc.Feature, Alley, Fence, Fireplace.Qu))
-dim(Ames2)
-```
-
-Vi kan følge samme prosedyre som ovenfor for å få fram revidert liste over NAs (viser ikke kdoen for dette).
-
-```{r echo = FALSE}
-nas2 <- as_tibble(colSums(is.na(Ames2))) %>%
-    na_if(0) %>%
-    drop_na()
-nanavn2 <- as_tibble(names(which(colSums(is.na(Ames2)) > 0)))
-natabell2 <- bind_cols(nanavn2, nas2) %>%
-    rename(Variabel = value...1, Antall_NA = value...2) %>%
-    arrange(desc(Antall_NA))
-natabell2
-```
-
-Det er flere måter å håndtere manglende verdier på. Vi velger her å erstatte NA med gjennomsnitt for "Lot.Frontage" som har mange manglende verdier, og lar øvrige variabler være hva angår manglende verdier. Det kan være aktuelt også å bruke median for manglende verdier, eller bare la det være.
-
-```{r}
-Ames2 <- Ames2 %>% 
-  mutate(Lot.Frontage = ifelse(is.na(Lot.Frontage), mean(Lot.Frontage, na.rm = TRUE), Lot.Frontage))
-```
-
-Vi kan sjekke at vi ikke har na i Lot.Frontage.
-
-```{r}
-sum(is.na(Ames2$Lot.Frontage))
-```
-
-Og står igjen med denne lista over variabler med respektive antall na:
-
-```{r echo = FALSE}
-nas3 <- as_tibble(colSums(is.na(Ames2))) %>%
-    na_if(0) %>%
-    drop_na()
-nanavn3 <- as_tibble(names(which(colSums(is.na(Ames2)) > 0)))
-natabell3 <- bind_cols(nanavn3, nas3) %>%
-    rename(Variabel = value...1, Antall_NA = value...2) %>%
-    arrange(desc(Antall_NA))
-natabell3
-```
-
-Som tidligere nevnt kan det være aktuelt å behandle også disse - og på ulike måter. Det avhenger mye av konteksten og hvor problematisk vi oppfatter de manglende verdiene å være (hvor stor andel utgjør de pr variabel i forhold til totalt antall observasjoner o.l.). Vi lar disse være for nå.
-
-### Uteligger
-
-Den avhengige variabelen er salgspris ("SalePrice"). Hvis vi ser på distribusjonen av boligenes verdi ser vi indikasjoner på at det kan være enkeltboliger med unormalt høye salgsverdier.
-
-```{r fig.cap = "AmesHousing - boligens salgspris"}
-Amessalgspris <- ggplot() +
-    geom_point((aes(x = seq_along(Ames2$SalePrice), y = Ames2$SalePrice))) + 
-    xlab("Bolig nr.") +
-    ylab("Verdi") +
-    theme_bw()
-Amessalgspris
-```
-
-Dette kommer tydeligere fram i histogrammet:
-
-```{r fig.cap = "Histogram for boligsalgspris"}
-bolighistogram <- ggplot(Ames2, aes(x=SalePrice)) + 
-    geom_histogram(color="black", fill="lightblue", bins = 50) +
-    labs(title = "Histogram salgsverdi", x = "Salgspris i $", y = "Antall") +
-    theme_bw()
-bolighistogram
-```
-
-Vi får også en klar indikasjon på uteliggere gjennom boksplottet:
-
-```{r fig.cap = "Boxplott for boligsalgspris"}
-boligbox <- ggplot(data = Ames2, aes(x = "", y = SalePrice)) + 
-    geom_boxplot(fill = 'lightblue') +
-    ylab("Verdi") +
-    theme_bw()
-boligbox
-```
-
-Uteliggere er en "tricky" greie. Man kan si at all data har verdifull informasjon. Samtidig påvirker uteliggere mange analyser og kan gi oss større avvik i prediksjoner fordi modellene påvirkes i uforholdsmessig grad av uteliggere i forhold til andre observasjoner. Mange av teknikkene i maskinlæring er sensitive ovenfor uteliggere. Vi gikk i detalj inn på dette i kapittelet om OLS, så vi begrenser oss her til noen analyser og viser til dette kapittelet for mer utførlig forklaringer.
-
-Vi starter med Grubbs test:
-
-```{r message = FALSE, warning = FALSE}
-grubbstest <- grubbs.test(Ames2$SalePrice)
-grubbstest
-```
-
-Høyeste salgsverdi bør altså regnes som uteligger (hvis ikke høyeste verdi bør ses som en uteligger er det ingen grunn til å gå videre).
-
-Vi kan også bruke et såkalt Hampel filter som tar utgangspunkt i median:
-
-```{r}
-nedregrense <- median(Ames2$SalePrice) - 3*(mad(Ames2$SalePrice, constant = 1))
-ovregrense <- median(Ames2$SalePrice) + 3*(mad(Ames2$SalePrice, constant = 1))
-uteligger_ind <- which(Ames2$SalePrice < nedregrense |Ames2$SalePrice > ovregrense)
-uteligger_ind
-```
-
-Gjennom å identifisere uteliggere gjennom Hampelfilteret kan vi fjerne uteliggere (som sagt er det mange måter å forholde seg til uteliggere på og mye er kontekstavhengig - vi går ikke inn i ulike måter å behandle uteliggere på her, men velger å vise hvordan vi fjerner de identifiserte uteliggerne etter Hampel).
-
-```{r}
-Ames3 <- subset(Ames2, Ames2$SalePrice > nedregrense & Ames2$SalePrice < ovregrense)
-```
-
-Vi kan se hvordan datasettet har endret seg som følge av de justeringene vi nå har gjort:
-
-```{r}
-v1 <- as.data.frame(dim(Ames))
-v2 <- as.data.frame(dim(Ames2))
-v3 <- as.data.frame(dim(Ames3))
-Amesendring <- as.data.frame(c(v1, v2, v3))
-rownames(Amesendring) <- c("Observasjoner", "Variabler")
-colnames(Amesendring) <- c("Ames", "Ames2", "Ames3")
-kable(Amesendring, caption = "Utvikling av datasettet gjennom 'data cleaning'")
-```
-
-Vi sjekker nå Ames3 gjennom Rosners test (de 5 mest uteliggende verdiene blant gjenværende data):
-
-```{r message = FALSE, warning = FALSE}
-rosnerstest <- rosnerTest(Ames3$SalePrice, k = 5)
-rosnerstest$all.stats
-rosnerstest$n.outliers
-```
-
-Vi kan også sjekke igjen med et boksplott:
-
-```{r fig.cap = "Boxplott for modifisert datasett"}
-boligbox2 <- ggplot(data = Ames3, aes(x = "", y = SalePrice)) + 
-    geom_boxplot(fill = 'lightblue') +
-    ylab("Verdi") +
-    theme_bw()
-boligbox2
-```
-
-Til slutt merker vi oss at variabelen "SaleCondition" er en variabel som har registrert om salget har skjedd
-
-- "Normal" - som vi tolker som etter markedsmessige betingelser)
-- "Abnorml" - "trade, foreclosure, short sale"
-- "Family" - "Sale between family members"
-- "Partial" - "Home was not completed when last assessed (associated with New Homes)"
-- "AdjLand" - "Adjoining Land Purchase"
-- "Alloca" - "Allocation - two linked properties with separate deeds, typically condo with a garage unit"
-
-Vi kan mistenke at unormalt salg, som salg innad i familie eller tvangssalg, kan ha en vesentlig påvirkning på salgspris, og siden vi er interessert i å modellere markedsmessige betingelser ("de normale salgene") ved salgsprisen bør vi undersøke dette.
-
-```{r}
-group_by(Ames3, Sale.Condition) %>%
-  summarise(
-    count = n(),
-    mean = mean(SalePrice, na.rm = TRUE))
-salgstype <- ggplot(Ames3, aes(x = Sale.Condition, y = SalePrice, fill = Sale.Condition)) + 
-    geom_boxplot() +
-    theme_bw()
-salgstype
-```
-
-Vi kan se at det det er forskjeller. "Famliy" og "Normal" virker derimot ikke så veldig ulike, men forskjellene mellom andre grupper virker større. Vi kan se på den overordnede effekten av salgstypene gjennom en ANOVA.
-
-```{r}
-res.aov <- aov(SalePrice ~ Sale.Condition, data = Ames3)
-summary(res.aov)
-```
-
-Siden p-verdien er signifikant kan vi si det er signifikant forskjell mellom en eller flere av gjennomsnittsverdiene for de ulike gruppene i Sale.Condition. For å se på hviklke av gruppene som har signifikant forskjell gjør vi en post-hoc test.
-
-```{r}
-TukeyHSD(res.aov)
-```
-
-Vi tar utgangspunkt i at "normal" er den markedsmessige salgsprosessen vi ønsker å modellere, noe vi forsåvidt også ser ut fra antallet salgsprosesser (som i overveiende grad er normale). Vi ønsker derfor å ta ut de typene salgsprosesser som har signifikant forskjellig salgsverdi i forhold til normal. Av ANOVA-resultatene ser vi at det gjelder "abnorml", "AdjLand" og "Partial" (vi kan også legge merke til at det **ikke** er signifikant forskjell på en kommersiell salgsprosess og salgsprosess i kategorien "familiy" som vi kanskje forventet). Dette stemmer bra overens med indikasjonene i den grafiske framstillingen ovenfor.
-
-Vi velger derfor å ta ut salgstypene som er signifikant forskjellige fra normal.
-
-```{r}
-Ames4 <- Ames3[Ames3$Sale.Condition != "Abnorml" & Ames3$Sale.Condition != "AdjLand" & Ames3$Sale.Condition != "Partial",]
-group_by(Ames4, Sale.Condition) %>%
-  summarise(
-    count = n(),
-    mean = mean(SalePrice, na.rm = TRUE))
-```
-
-Vi kan se at gjennomsnittsprisen for boliger solgt til familie er lavere enn normalt salg, men forskjellen er altså ikke statistisk signifikant.
-Samlet etter alle justeringer ser utviklingen i datasettet slik ut:
-
-```{r}
-v4 <- as.data.frame(dim(Ames4))
-Amesendring2 <- data.frame(c(v1, v2, v3, v4))
-rownames(Amesendring2) <- c("Observasjoner", "Variabler")
-colnames(Amesendring2) <- c("Ames", "Ames2", "Ames3", "Ames4")
-kable(Amesendring2, caption = "Utvikling av datasettet til Ames Housing gjennom 'data cleaning'")
-```
-
-Vårt datasett ender altså opp med `r Amesendring2[1,4]` boligsalg med `r Amesendring2[2,4]` variabler.
-
-I videre analyse vil vi bruke en versjon av datasettet som kommer i pakken "AmesHousing". I denne versjonen er det ryddet opp litt mer og det er lagt til geodata (lengde- og breddegrad på salgsobjektene). Alt vi har gjort hittil kan imidlertid være nødvendige steg i forberedelser av data til analyse. Datasettet kan lastes inn direkte fra pakken: 
-
-```{r}
-data(ames, package = "modeldata")
-dim(ames)
-```
-
-Vi kan se litt nærmere på datasettet vi tar med oss videre i analysen. Siden boligene er registrert solgt i ulike nabolag vil det være interessant å se på hvordan salgspris slår ut ift nabolag. Vi kan først vise byen Ames og de ulike salgsobjektene plottet på et kart som også viser nabolagene. Det kan ligge mye informasjon innledningsvis i et plott av denne type data på kart. Bildet under er laget i sin helhet på kode fra @kuhnTidyModeling2022, og koden finnes [her](https://github.com/tidymodels/TMwR/blob/main/extras/ames_sf.R). 
-
-```{r echo = FALSE, warning = FALSE, message = FALSE}
-# Laster inn kart som er lastet ned
-ia_roads <- st_read(dsn = "iowa_highway.shp") 
-
-# Setter fargenyanser
-
-col_vals <- brewer.pal(8, "Dark2")
-
-# Setter farger på plottesymbolene fo rnabolagene
-
-ames_cols <- c(
-  North_Ames = col_vals[3],
-  College_Creek = col_vals[4],
-  Old_Town = col_vals[8],
-  Edwards = col_vals[5],
-  Somerset = col_vals[8],
-  Northridge_Heights = col_vals[4],
-  Gilbert = col_vals[2],
-  Sawyer = col_vals[7],
-  Northwest_Ames = col_vals[6],
-  Sawyer_West = col_vals[8],
-  Mitchell = col_vals[3],
-  Brookside = col_vals[1],
-  Crawford = col_vals[4],
-  Iowa_DOT_and_Rail_Road = col_vals[2],
-  Timberland = col_vals[2],
-  Northridge = col_vals[1],
-  Stone_Brook = col_vals[5],
-  South_and_West_of_Iowa_State_University = col_vals[3],
-  Clear_Creek = col_vals[1],
-  Meadow_Village = col_vals[1],
-  Briardale = col_vals[7],
-  Bloomington_Heights = col_vals[1],
-  Veenker = col_vals[2],
-  Northpark_Villa = col_vals[2],
-  Blueste = col_vals[5],
-  Greens = col_vals[6],
-  Green_Hills = col_vals[8],
-  Landmark = col_vals[3],
-  Hayden_Lake = "red"
-)
-
-# Setter valg av plottesymboler for nabolagene
-
-ames_pch <- c(
-  North_Ames = 16,
-  College_Creek = 16,
-  Old_Town = 16,
-  Edwards = 16,
-  Somerset = 15,
-  Northridge_Heights = 15,
-  Gilbert = 16,
-  Sawyer = 16,
-  Northwest_Ames = 16,
-  Sawyer_West = 17,
-  Mitchell = 15,
-  Brookside = 16,
-  Crawford = 17,
-  Iowa_DOT_and_Rail_Road = 17,
-  Timberland = 15,
-  Northridge = 15,
-  Stone_Brook = 15,
-  South_and_West_of_Iowa_State_University = 17,
-  Clear_Creek = 17,
-  Meadow_Village = 18,
-  Briardale = 15,
-  Bloomington_Heights = 20,
-  Veenker = 18,
-  Northpark_Villa = 20,
-  Blueste = 17,
-  Greens = 15,
-  Green_Hills = 18,
-  Landmark = 18,
-  Hayden_Lake = 16
-)
-
-
-## -----------------------------------------------------------------------------
-
-# extendrange drar ut enkeltplott med en liten prosent hver veg (x, y)
-
-ames_x <- extendrange(ames$Longitude)
-ames_y <- extendrange(ames$Latitude)
-ames_ratio <- diff(ames_x)/diff(ames_y)
-
-# Lager rammene for kartet
-all_ames <- 
-  ggplot() +
-  xlim(ames_x) +
-  ylim(ames_y) + 
-  theme_void() + 
-  theme(legend.position = "bottom", legend.title = element_blank()) +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .1) +
-  geom_point(
-    data = ames,
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = 1, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch)
-
-agg_png("ames.png", width = 820 * 3, height = 820 * 3, res = 300, scaling = 1)
-print(all_ames)
-dev.off()
-
-## -----------------------------------------------------------------------------
-
-mitchell_x <- extendrange(ames$Longitude[ames$Neighborhood == "Mitchell"], f = .1)
-mitchell_y <- extendrange(ames$Latitude[ames$Neighborhood == "Mitchell"], f = .1)
-
-mitchell_box <- 
-  ggplot() +
-  xlim(extendrange(ames$Longitude)) +
-  ylim(extendrange(ames$Latitude)) + 
-  theme_void() + 
-  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),
-        plot.background = element_rect(linetype = 'solid', colour = 'black', size = 1)) +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .1) +
-  geom_point(
-    data = ames %>% filter(Neighborhood %in% c("Meadow_Village", "Mitchell")),
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = .3, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch) +
-  geom_rect(
-    aes(
-      xmin = mitchell_x[1],
-      xmax = mitchell_x[2],
-      ymin = mitchell_y[1],
-      ymax = mitchell_y[2]
-    ),
-    fill = NA,
-    color = "black"
-  )
-
-
-mitchell_with_space <- mitchell_x
-mitchell_with_space[2] <- mitchell_x[2] +  diff(mitchell_x) * .5
-mitchell_ratio <- diff(mitchell_with_space)/diff(mitchell_y)
-
-mitchell <- 
-  ggplot() +
-  xlim(mitchell_with_space) +
-  ylim(mitchell_y) +
-  theme_void() + 
-  theme(
-    legend.position = c(.82, .55 ),
-    legend.background = element_rect(
-      fill = "white",
-      colour = NA,
-      size = 3
-    ),
-    legend.text  = element_text(size = rel(1.5)),
-    legend.title = element_text(size = rel(1.5))
-  ) +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .3) +
-  geom_point(
-    data = ames %>% filter(Neighborhood %in% c("Meadow_Village", "Mitchell")),
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = 4, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch)
-
-
-# make plot and guide side-by-side
-# mitchell_box +  plot_spacer() + mitchell +  plot_layout(widths = c(2, 0.1, 3))
-
-# guide inset in plot
-agg_png("mitchell.png", width = 480 * mitchell_ratio * 2, height = 480 * 2, res = 200)
-print(mitchell)
-print(mitchell_box, vp = viewport(0.8, 0.27, width = 0.3 * ames_ratio, height = 0.3))
-dev.off()
-
-
-## -----------------------------------------------------------------------------
-
-timberland_x <- extendrange(ames$Longitude[ames$Neighborhood == "Timberland"], f = .2)
-timberland_y <- extendrange(ames$Latitude[ames$Neighborhood == "Timberland"], f = .2)
-
-timberland_box <- 
-  ggplot() +
-  xlim(extendrange(ames$Longitude)) +
-  ylim(extendrange(ames$Latitude)) + 
-  theme_void() + 
-  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),
-        plot.background = element_rect(linetype = 'solid', colour = 'black', size = 1)) +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .1) +
-  geom_point(
-    data = ames,
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = .2, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch) +
-  geom_rect(
-    aes(
-      xmin = timberland_x[1],
-      xmax = timberland_x[2],
-      ymin = timberland_y[1],
-      ymax = timberland_y[2]
-    ),
-    fill = NA,
-    color = "black"
-  )
-
-
-timberland_with_space <- timberland_x
-timberland_with_space[2] <- timberland_x[2] +  diff(timberland_x) * .15
-timberland_ratio <- diff(timberland_with_space)/diff(timberland_y)
-
-timberland <- 
-  ggplot() +
-  xlim(timberland_with_space) +
-  ylim(timberland_y) +
-  theme_void() + 
-  theme(legend.position = "none") +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .3) +
-  geom_point(
-    data = ames,
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = 5, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch)
-
-# guide inset in plot
-agg_png("timberland.png", width = 480 * timberland_ratio)
-print(timberland)
-print(timberland_box, vp = viewport(0.85, 0.2, width = 0.3 * ames_ratio, height = 0.3))
-dev.off()
-
-## -----------------------------------------------------------------------------
-
-dot_rr_x <- extendrange(ames$Longitude[ames$Neighborhood == "Iowa_DOT_and_Rail_Road"], f = .05)
-dot_rr_y <- extendrange(ames$Latitude[ames$Neighborhood == "Iowa_DOT_and_Rail_Road"], f = .1)
-
-dot_rr_box <- 
-  ggplot() +
-  xlim(extendrange(ames$Longitude)) +
-  ylim(extendrange(ames$Latitude)) + 
-  theme_void() + 
-  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),
-        plot.background = element_rect(linetype = 'solid', colour = 'black', size = 1)) +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .1) +
-  geom_point(
-    data = ames %>% filter(Neighborhood %in% c("Iowa_DOT_and_Rail_Road")),
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = .3, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch) +
-  geom_rect(
-    aes(
-      xmin = dot_rr_x[1],
-      xmax = dot_rr_x[2],
-      ymin = dot_rr_y[1],
-      ymax = dot_rr_y[2]
-    ),
-    fill = NA,
-    color = "black"
-  )
-
-
-dot_rr_with_space <- dot_rr_y
-dot_rr_with_space[1] <- dot_rr_y[1] -  diff(dot_rr_y)
-dot_rr_ratio <- diff(dot_rr_x)/diff(dot_rr_with_space)
-
-dot_rr <- 
-  ggplot() +
-  xlim(dot_rr_x) +
-  ylim(dot_rr_with_space) +
-  theme_void() + 
-  theme(legend.position = "none") +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .3) +
-  geom_point(
-    data = ames %>% filter(Neighborhood %in% c("Iowa_DOT_and_Rail_Road")),
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = 6, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch)
-
-# guide inset in plot
-agg_png("dot_rr.png", width = 480 * dot_rr_ratio)
-print(dot_rr)
-print(dot_rr_box, vp = viewport(0.5, 0.26, width = 0.45 * ames_ratio, height = 0.45))
-dev.off()
-
-
-## -----------------------------------------------------------------------------
-
-crawford_x <- extendrange(ames$Longitude[ames$Neighborhood == "Crawford"], f = .1)
-crawford_y <- extendrange(ames$Latitude[ames$Neighborhood == "Crawford"], f = .1)
-
-crawford_box <- 
-  ggplot() +
-  xlim(extendrange(ames$Longitude)) +
-  ylim(extendrange(ames$Latitude)) + 
-  theme_void() + 
-  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),
-        plot.background = element_rect(linetype = 'solid', colour = 'black', size = 1)) +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .1) +
-  geom_point(
-    data = ames %>% filter(Neighborhood %in% c("Crawford")),
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = .3, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch) +
-  geom_rect(
-    aes(
-      xmin = crawford_x[1],
-      xmax = crawford_x[2],
-      ymin = crawford_y[1],
-      ymax = crawford_y[2]
-    ),
-    fill = NA,
-    color = "black"
-  )
-
-
-crawford_with_space <- crawford_y
-crawford_with_space[1] <- crawford_y[1] -  diff(crawford_y) * .4
-crawford_ratio <- diff(crawford_x)/diff(crawford_with_space)
-
-crawford <- 
-  ggplot() +
-  xlim(crawford_x) +
-  ylim(crawford_with_space) +
-  theme_void() + 
-  theme(legend.position = "none") +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .3) +
-  geom_point(
-    data = ames %>% filter(Neighborhood %in% c("Crawford")),
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = 5, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch)
-
-# guide inset in plot
-agg_png("crawford.png", width = 480 * crawford_ratio)
-print(crawford)
-print(crawford_box, vp = viewport(0.5, 0.2, width = 0.35 * ames_ratio, height = 0.35))
-dev.off()
-
-## -----------------------------------------------------------------------------
-
-
-northridge_x <- extendrange(ames$Longitude[ames$Neighborhood %in% c("Northridge", "Somerset")], f = .1)
-northridge_y <- extendrange(ames$Latitude[ames$Neighborhood %in% c("Northridge", "Somerset")], f = .1)
-
-northridge_box <- 
-  ggplot() +
-  xlim(extendrange(ames$Longitude)) +
-  ylim(extendrange(ames$Latitude)) + 
-  theme_void() + 
-  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),
-        plot.background = element_rect(linetype = 'solid', colour = 'black', size = 1)) +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .1) +
-  geom_point(
-    data = ames %>% filter(Neighborhood %in% c("Northridge", "Somerset")),
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = .3, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch) +
-  geom_rect(
-    aes(
-      xmin = northridge_x[1],
-      xmax = northridge_x[2],
-      ymin = northridge_y[1],
-      ymax = northridge_y[2]
-    ),
-    fill = NA,
-    color = "black"
-  )
-
-
-northridge_with_space <- northridge_x
-northridge_with_space[2] <- northridge_x[2] +  diff(northridge_x) * .3
-northridge_ratio <- diff(northridge_with_space)/diff(northridge_y)
-
-northridge <- 
-  ggplot() +
-  xlim(northridge_with_space) +
-  ylim(northridge_y) +
-  theme_void() + 
-  theme(
-    legend.position = c(.82, .5),
-    legend.background = element_rect(
-      fill = "white",
-      colour = NA,
-      size = 3
-    ),
-    legend.text  = element_text(size = rel(2)),
-    legend.title = element_text(size = rel(2))
-  ) +
-  geom_sf(data = ia_roads, aes(geometry = geometry), alpha = .3) +
-  geom_point(
-    data = ames %>% filter(Neighborhood %in% c("Northridge", "Somerset")),
-    aes(
-      x = Longitude,
-      y = Latitude,
-      col = Neighborhood,
-      shape = Neighborhood
-    ),
-    size = 4, 
-    alpha = .5
-  ) + 
-  scale_color_manual(values = ames_cols) + 
-  scale_shape_manual(values = ames_pch)
-
-
-# make plot and guide side-by-side
-# northridge_box +  plot_spacer() + northridge +  plot_layout(widths = c(2, 0.1, 3))
-
-# guide inset in plot
-agg_png("northridge.png", width = 480 * northridge_ratio)
-print(northridge)
-print(northridge_box, vp = viewport(0.85, 0.21, width = 0.35 * ames_ratio, height = 0.35))
-dev.off()
-```
-
-![Kart over Ames med salgsobjektene plottet inn etter nabolag - @kuhnTidyModeling2022](ames.png){width=85%}
-
-Vi kan så se på hvordan salgsprisen i gjennomsnitt ser ut for de ulike nabolagene.
-
-```{r fig.cap = "Salgspris fordelt på nabolag", warning = FALSE, message = FALSE}
-ames %>% 
-  ggplot(aes(x = Sale_Price/1000, y = Neighborhood, fill = Neighborhood)) + 
-    geom_density_ridges() + 
-    labs(x='Salgspris 1000$', y = 'Nabolag') +
-    theme_ridges(font_size = 11, center_axis_labels = TRUE) + 
-    theme(legend.position = 'none') + 
-    labs(caption = "Salgspris pr nabolag") +
+Vi kan plotte den ene variabelen - matte. 
+
+```{r fig.cap = "Karakterer for variabelen 'matte'"}
+ggplot(karakterer, aes(x = studentnr, y = matte)) + 
+    geom_point() +
     theme_bw()
 ```
 
-### Deling av datasettet i trenings- og testdatasett
+Vi kan se at studentgruppen deler seg i to klare grupper, en gruppe med høy score og en gruppe med lavere score. Studentene i gruppa med høy score likner mer på hverandre enn på studenter i den andre gruppa, og motsatt.
 
-Vi deler datasettet i trenings- og testsett siden vi vil trenge dette i regresjon som metodikk i maskinlæring.
-
-```{r}
-set.seed(4595) 
-data_split <- initial_split(ames, strata = "Sale_Price") 
-ames_trening <- training(data_split) 
-ames_test <- testing(data_split)
-```
+Hvis vi legger til en variabel - f.eks. engelskkarakterer - får vi denne tabellen:
 
 ```{r}
-dim1 <- as.data.frame(dim(ames_trening))
-dim2 <- as.data.frame(dim(ames_test))
-dimensjoner <- data.frame(dim1, dim2)
-rownames(dimensjoner) <- c("Observasjoner", "Variabler")
-colnames(dimensjoner) <- c("Treningssett", "Testsett")
-kable(dimensjoner, caption = "Splitting av datasettet Ames Housing fra pakken 'modeldata'")
+engelsk <- c(79, 68, 71, 70, 53, 55, 62, 60, 64, 49)
+karakterer <- karakterer %>%
+    mutate(engelsk = engelsk)
+kartabell2 <- flextable(karakterer)
+kartabell2 <- autofit(kartabell2)
+kartabell2
 ```
 
-### Enkel lineær regresjon
-
-I den enkle lineære regresjonen ser vi på forholdet mellom salgspris som avhengig variabel og "Gr.Liv.Area" som er boligareal (ikke inkludert kjeller). Det vil være rimelig å anta at det er en sammenheng mellom boligareal og salgspris.
-
-```{r fig.cap = "Enkel OLS regresjon - treningsdata"}
-enkelOLS <- lm(Sale_Price ~ Gr_Liv_Area, data = ames_trening)
-sjPlot::tab_model(enkelOLS)
-enkelOLSplott <- ggplot() +
-    geom_point(aes(x = ames_trening$Gr_Liv_Area, y = ames_trening$Sale_Price), col = "red") +
-    geom_line(aes(x = ames_trening$Gr_Liv_Area, y = predict(enkelOLS, newdata = ames_trening)), col = "blue") +
-    xlab("Boligareal (ikke inkl. kjeller)") +
-    ylab("Salgspris") + 
-    theme_bw()
-enkelOLSplott
-```
-
-Vi kan se det er en sammenheng, men også at det er et slags konisk mønster/traktmønster der spredningen i verdiene øker med boligarealet. Dette kan tyde på at det er en (eller flere) andre variabler som påvirker sammenhengen mellom boligareal og salgspris. Dette kan f.eks. være beliggenhet/hvilket område av byen boligen ligger i (registrert i variabelen "Neighborhood"). Vi kan se på medianprisen for de ulike områdene:
-
-```{r warning = FALSE, message = FALSE, fig.cap = "Boliger sortert etter median salgspris pr nabolag"}
-nabolag <- tapply(ames$Sale_Price, ames$Neighborhood, median)
-nabolag <- sort(nabolag, decreasing = TRUE)
-nabolag
-dotchart(nabolag, pch = 21, bg = "red",
-         cex = 0.85,
-         xlab="Medianpris solgt bolig")
-```
-
-Så kan vi se på hvilke verdier modellen vil predikere på testdataene:
-
-```{r warning = FALSE}
-y_prediksjon1 <- predict(enkelOLS, newdata = ames_test)
-OLSpred <- as.data.frame(y_prediksjon1)
-obs1 <- as.data.frame(ames_test$Sale_Price)
-df1 <- as.data.frame(c(OLSpred, obs1))
-df1$Differanse <- round(abs(df1$y_prediksjon1 - df1$ames_test.Sale_Price),0)
-colnames(df1) <- c("Predikert", "Observert", "Abs differanse")
-kable(head(df1, n = 10), caption = "Første 10 differanser mellom predikert og observert verdi")
-```
-
-Av plasshensyn viser vi kun de første 10 sammenlikningene mellom predikert og faktisk verdi. Den venstre kolonnen i tabellen over er verdien modellen predikerer, den høyre kolonnen tilhørende observerte verdi i testsettet.
-
-I kapittelet om polynomisk regresjon beskrev vi "Mean Square Error" (MSE) slik:
-
-$MSE = \frac{1}{n}*\sum(faktisk\ verdi - predikert\ verdi)$
-
-Vi kan regne ut MSE slik:
-
-```{r}
-((1/(nrow(df1))))*sum((df1$Observert - df1$Predikert)^2)
-# Alternativt:
-mseOLS <- mean((df1$Observert - df1$Predikert)^2)
-mseOLS
-```
-
-En annen vanlig måte å se på modellens prediksjonsevne er RMSE.
-
-```{r warning = FALSE, message = FALSE}
-rmsepred1 <- sqrt(mean((df1$Observert - df1$Predikert)^2))
-rmsepred1
-```
-
-MSE/RMSE kan fortelle oss noe om hvor god modellen er ved at den sammenlikner observerte verdier mot predikerte verdier. RMSE forteller oss f.eks. den gjennomsnittlige avstanden mellom en predikert verdi og den "tilhørende" observerte verdien. Jo nærmere 0 verdien er, jo bedre predikerer modellen (0 = perfekt prediksjon). RMSE er `r round(rmsepred1, 2)`. Dvs at i gjennomsnitt bommer modellens prediksjoner med \$`r round(rmsepred1, 2)`. Vi kan tolke dette i kontekst av dataene. Det er vanskelig å si noe fornuftig om den gjennomsnittlig feilen i prediksjonen uten å se på den avhengige variabelen. La oss derfor se på den.
-
-```{r warning = FALSE, message = FALSE}
-deskSalePrice <- describe(ames$Sale_Price)
-deskSalePrice
-```
-
-Vi kan se at boligprisen varierer mellom `r deskSalePrice$min` og `r deskSalePrice$max`, med et standardavvik (= verdienes gjennomsnittlig avstand fra gjennomsnittet) på `r round(deskSalePrice$sd, 2)`. I det perspektivet bør altså vurdere om en gjennomsnittlig feil på `r round(rmsepred1, 2)` indikerer en modell vi er fornøyd med eller ikke. Jeg vil være tilbøyelig til å si at dette virker som et noe høyt gjennomsnittlig avvik i prediksjonene.
-
-Vi kan enklere tolke og sammenlikne RMSE hvis vi normaliserer verdien.
-
-Det finnes fire beskrevne måter å normalisere RMSE [@ottoHowNormalizeRMSE2019]:
-
-```{r warning = FALSE, message = FALSE}
-deskdata1 <- describe(ames_test$Sale_Price)
-# Gjennom maks og min verdier
-egennrmse1 <- as.data.frame(rmsepred1/(deskdata1$max-deskdata1$min))
-# Gjennom gjennomsnitt
-egennrmse2 <- as.data.frame(rmsepred1/deskdata1$mean)
-# Gjennom standardavvik
-egennrmse3 <- as.data.frame(rmsepred1/deskdata1$sd)
-# Gjennom interkvartil bredde (IQR)
-interkvart <- IQR(ames$Sale_Price)
-egennrmse4 <- as.data.frame(rmsepred1/(interkvart))
-normrmse <- data.frame(c(egennrmse1, egennrmse2, egennrmse3, egennrmse4))
-normrmse <- rename(normrmse, MaksMin = rmsepred1..deskdata1.max...deskdata1.min.,
-       Snitt = rmsepred1.deskdata1.mean,
-       Standardavvik = rmsepred1.deskdata1.sd,
-       IQR = rmsepred1..interkvart.)
-kable(normrmse, caption = "Sammenlikning av RMSE-verdi ved ulike beregningsmåter")
-```
-
-En lettere veg i R er gjennom pakken tdr (hensikten med utregning ovenfor er å vise - utregningen):
-
-```{r warning = FALSE, message = FALSE}
-normrmse1 <- as.data.frame(tdStats(df1$Predikert, ames_test$Sale_Price))
-normrmseverdi <- normrmse1[12,]
-kable(normrmse1, caption = "Teststatistikk for modell og prediksjon fra pakken 'tdr'")
-```
-
-Normalisert RMSE er `r round(normrmseverdi, 2)` (ut fra `r normrmseverdi`).
-
-Merk at "tdr"-pakken bruker snitt til å normalisere i kolonnen "cvrmse" og MaksMin for å normalisere i kolonnen "nrmse" (hvilket vi ser gjennom de like verdiene fra pakken og fra vår manuelle utregning).
-
-Jaha...så hvilken metode skal man bruke siden det gir fire ulike normaliserte verdier?
-
-@ottoHowNormalizeRMSE2019 finner i sin simulering at "there is no normalization method (of the one tested here) that is obviously superior", men gir følgende råd:
-
--   Gjennomsnitt er ok hvis man sammenlikner modeller som baserer seg på samme responsvariabel. Hvis ikke, bruk en av de andre tre.
--   Maks-min metoden sies å være mer sensitiv for utvalgsstørrelse, men Otto fant ingen større forskjeller for utvalg helt ned til 5
--   IQR sies å være mindre sensitiv for ekstreme verdier
-
-Vi må rett og slett ta et valg ut fra de (få) retningslinjene som f.eks. @ottoHowNormalizeRMSE2019 gir, men vi bør i hvert fall være obs på dette hvis vi bruker normalisert RSME til å sammenlikne modeller slik at vi ikke sammenlikner epler og pærer.
-
-### Multippel regresjon
-
-Vi modifiserer datasettet noe mer, ved å velge ut de numeriske variablene for å se hvilke variabler som har korrelasjoner > 0.5 (absolutt verdi).
-
-```{r}
-numerisk <- ames %>% 
-    select(where(is.numeric))
-korrelasjoner <- as.data.frame(cor(numerisk, ames$Sale_Price)) %>%
-    na.omit(korrelasjoner) %>%
-    filter(V1 > 0.5 | V1 < -0.5)
-kable(korrelasjoner, caption = "Korrelasjoner større enn +/- 0.5 blant numeriske variabler i datasettet")
-```
-
-Ut fra dette utvider vi med åtte uavhengige variabler. I tillegg til boligstørrelse tar vi nå inn "Year_Built", "Year_Remod_Add", "Mas_Vnr_Area", "Total_Bsmt_SF", "First_Flr_SF", "Full_Bath", "Garage_Cars" og "Garage_Area" som er hhv. byggeår, nyeste år for oppussing, [murflisareal](https://www.homequestionsanswered.com/what-is-masonry-veneer.htm), totalt kjellerareal, areal første etasje, antall fullverdige bad, størrelse garasje ut fra antall biler og størrelse garasjen i areal. 
-
-Lager modell på treningssettet:
-
-```{r}
-multiregressor <- lm(Sale_Price ~ 
-                         Gr_Liv_Area + 
-                         Year_Built + 
-                         Year_Remod_Add + 
-                         Mas_Vnr_Area + 
-                         Total_Bsmt_SF + 
-                         First_Flr_SF + 
-                         Full_Bath + 
-                         Garage_Cars + 
-                         Garage_Area, 
-                     data = ames_trening)
-sjPlot::tab_model(multiregressor)
-```
-
-Prediksjon ift testdata (10 første verdier):
-
-```{r}
-y_prediksjon2 <- predict(multiregressor, newdata = ames_test)
-y_pred2 <- as.data.frame(y_prediksjon2)
-obs2 <- as.data.frame(ames_test$Sale_Price)
-df2 <- as.data.frame(c(y_pred2, obs2))
-df2$Differanse <- round(abs(df2$y_prediksjon2 - df2$ames_test.Sale_Price),0)
-colnames(df2) <- c("Predikert", "Observert", "Abs differanse")
-kable(head(df2, n = 10), caption = "Første 10 differanser mellom predikert og observert verdi")
-```
-
-Vi kan sammenlikne MSE mellom multippel og enkel lineær:
-
-```{r}
-msemultippel <- mean((df2$Observert - df2$Predikert)^2)
-msetab <- data.frame(mseOLS, msemultippel)
-msetab$Differanse <- round(msetab$mseOLS - msetab$msemultippel, 0) 
-colnames(msetab) <- c("MSE enkel linear", "MSE multippel", "Differanse")
-kable(msetab, caption = "Sammenlikning MSE for hhv enkel lineær og multippel regresjon")
-```
-
-Det ser ut til at den enkle OLS har vesentlig høyere MSE enn den multiple regresjonsmodellen.
-
-Vi kan også se på RMSE:
-
-```{r warning = FALSE, message = FALSE}
-normrmse2 <- as.data.frame(tdStats(y_prediksjon2, ames_test$Sale_Price))
-normrmseverdi2 <- normrmse2[12,]
-kable(normrmse2, caption = "Teststatistikk for modell og prediksjon fra pakken 'tdr'")
-```
-
-For den enkle lineære var NRMSE `r round(normrmseverdi, 2)`, mens det for den multiple var `r round(normrmseverdi2, 2)`. For $R^2$ hadde den enkle lineære `r round(summary(lm(Sale_Price ~ Gr_Liv_Area, data = ames_trening))$r.squared, 2)` og for den multiple `r round(summary(lm(Sale_Price ~ Gr_Liv_Area + Year_Built + Year_Remod_Add + Mas_Vnr_Area + Total_Bsmt_SF + First_Flr_SF + Full_Bath + Garage_Cars + Garage_Area, data = ames_trening))$r.squared, 2)`.
-
-```{r echo = FALSE}
-rmse1 <- nrmse(y_prediksjon1, ames_test$Sale_Price)
-rmse2 <- nrmse(y_prediksjon2, ames_test$Sale_Price)
-rmsesammenlikning <- data.frame(c(rmse1, rmse2))
-ny <- c("Enkel linear", "Multippel")
-rmsesammenlikning$Modell <- ny
-rmsesammenlikning <- rmsesammenlikning[, c(2,1)]
-ny2 <- c("Gr_Liv_Area", "Gr_Liv_Area, Year_Built, Year_Remod_Add, Mas_Vnr_Area, Total_Bsmt_SF, First_Flr_SF, Full_Bath, Garage_Cars, Garage_Area")
-rmsesammenlikning$Uavhengig <- ny2
-colnames(rmsesammenlikning) <- c("Modell", "RMSE", "Uavhengige variabler")
-kable(rmsesammenlikning)
-```
-
-### Polynomisk regresjon
-
-La oss anta at vi ønsker å se på sammenhengen mellom byggeår og salgspris. Vi illustrerer dette gjennom en enkel lineær regresjon:
-
-```{r warning = FALSE}
-aar_pris <- ggplot(ames_trening, aes(Year_Built, Sale_Price)) +
-    labs(x = "Bolig bygd", y = "Salgspris") +
-    geom_point(color = "red") +
-    geom_smooth(method = 'lm', se = FALSE) + 
-    theme_bw()
-aar_pris
-```
-
-Vi kan se at den lineære regresjonen ikke er helt ueffen, men heller kanskje ikke er den beste modellen. Det kan se ut til at trenden i datapunktene ligger i en svak kurve. Vi kan forsøke uilke polynomialledd for å se om vi kan finne en bedre modell med det.
-
-```{r warninge = FALSE, fig.cap = "Ulike polynomfunksjoner for sammenhengen mellom byggeår og salgspris"}
-poly_reg1 <- lm(formula = Sale_Price ~ poly(Year_Built, 1), data = ames_trening)
-poly_reg2 <- lm(formula = Sale_Price ~ poly(Year_Built, 2), data = ames_trening)
-poly_reg3 <- lm(formula = Sale_Price ~ poly(Year_Built, 3), data = ames_trening)
-poly_reg4 <- lm(formula = Sale_Price ~ poly(Year_Built, 4), data = ames_trening)
-poly_reg5 <- lm(formula = Sale_Price ~ poly(Year_Built, 5), data = ames_trening)
-poly_reg6 <- lm(formula = Sale_Price ~ poly(Year_Built, 6), data = ames_trening)
-poly_reg7 <- lm(formula = Sale_Price ~ poly(Year_Built, 7), data = ames_trening)
-poly_reg8 <- lm(formula = Sale_Price ~ poly(Year_Built, 8), data = ames_trening)
-poly_reg9 <- lm(formula = Sale_Price ~ poly(Year_Built, 9), data = ames_trening)
-poly_reg10 <- lm(formula = Sale_Price ~ poly(Year_Built, 10), data = ames_trening)
-
-# Viser kun 5 av de 10 polynomfunksjonene (+ den lineære)
-polykurver <- ggplot(ames_trening) +
-  geom_point(aes(Year_Built, Sale_Price, col = "lightgrey"), cex = 2) +
-    labs(x = "Bolig bygd", y = "Salgspris") +
-    scale_x_continuous(breaks = seq(min(ames_trening$Year_Built), max(ames_trening$Year_Built), by = 10)) +
-    scale_y_continuous(breaks = seq(min(0), max(ames_trening$Sale_Price), by = 50000)) +
-  stat_smooth(method = "lm", formula = y ~ poly(x,1), aes(Year_Built, poly_reg1$fitted.values, col = "Poly 1"), se = FALSE) +
-  stat_smooth(method = "lm", formula = y ~ poly(x,2), aes(Year_Built, poly_reg2$fitted.values, col = "Poly 2"), se = FALSE) +
-  stat_smooth(method = "lm", formula = y ~ poly(x,4), aes(Year_Built, poly_reg4$fitted.values, col = "Poly 4"), se = FALSE) +
-  stat_smooth(method = "lm", formula = y ~ poly(x,6), aes(Year_Built, poly_reg6$fitted.values, col = "Poly 6"), se = FALSE) +
-  stat_smooth(method = "lm", formula = y  ~poly(x,8), aes(Year_Built, poly_reg8$fitted.values, col = "Poly 8"), se = FALSE) +
-  stat_smooth(method = "lm", formula = y ~ poly(x,10), aes(Year_Built, poly_reg10$fitted.values, col = "Poly 10"), se = FALSE) +
-  scale_colour_manual("",
-                      breaks = c("Original",  "Poly 1", "Poly 2", "Poly 4", "Poly 6", "Poly 8", "Poly 10"),
-                      values = c("blue","red", "purple","orange","sienna", "black", "#FF689F")) +
-    theme_bw()
-polykurver
-```
-
-Vi kan se av plottet over at i store deler av datasettet, la oss si fra ca. 1930 til 2010, har rimelig lik prediksjon for de ulike polynomlikningene. Den lineære predikerer, ikke uventet, høyere verdier fram til ca. 1990 og deretter lavere verdier enn de polynome. 
-
-```{r message = FALSE, warning = FALSE, fig.cap = "Byggeår og slagspris - 1935-2010"}
-polykurver2 <- polykurver +
-    xlim(1935,2010)
-polykurver2
-```
-
-Vi kan sammenlikne modellene ved å se på Residual Sum of Squares (RSS). RSS finnes slik:
-
-$RSS = \sum(\hat{Y_i-Y_i)^2}$
-
-Fra tidligere har vi regnet ut MSE:
-
-$MSE = \frac{1}{n}\sum(\hat{Y_i-Y_i)^2}$
-
-og RMSE:
-
-$\sqrt{MSE}=\sqrt{\frac{1}{n}*RSS}$
-
-Alle måler med andre ord forskjellen/avvikene mellom predikerte og observerte verdier. For et rent modellvalg har det forsåvidt ikke så mye å si hvilken av de tre vi bruker - lavest verdi vil indikere best modell for prediksjon. For tolkning vil det imidlertid være lettere å tolke RMSE. I vårt eksempel vil RSS-verdien være gjennomsnittlig avvik mellom predikert og observert målt i $dollar^2$, mens RMSE vil være samme avvik målt i $dollar$. Så for en direkte tolkning vil RMSE være lettere å bruke enn RSS. 
-
-Vi regner derfor ut RSS for både trenings- og testdataene. Først lager vi prediksjonene for modellene:
-
-```{r}
-polypred1 <- predict(poly_reg1, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred2 <- predict(poly_reg2, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred3 <- predict(poly_reg3, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred4 <- predict(poly_reg4, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred5 <- predict(poly_reg5, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred6 <- predict(poly_reg6, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred7 <- predict(poly_reg7, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred8 <- predict(poly_reg8, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred9 <- predict(poly_reg9, newdata = data.frame(Year_Built = ames_test$Year_Built))
-polypred10 <- predict(poly_reg10, newdata = data.frame(Year_Built = ames_test$Year_Built))
-```
-
-Deretter kan vi sette opp en sammenlikning av RSS-verdiene i en tabell, der vi sorterer fra laveste til høyeste verdi for RSS-verdien for testsettet.
-
-```{r}
-trening_rss1 <- mean((ames_trening$Sale_Price - poly_reg1$fitted.values)^2)  
-trening_rss2 <- mean((ames_trening$Sale_Price - poly_reg2$fitted.values)^2)  
-trening_rss3 <- mean((ames_trening$Sale_Price - poly_reg3$fitted.values)^2)  
-trening_rss4 <- mean((ames_trening$Sale_Price - poly_reg4$fitted.values)^2)
-trening_rss5 <- mean((ames_trening$Sale_Price - poly_reg5$fitted.values)^2)
-trening_rss6 <- mean((ames_trening$Sale_Price - poly_reg6$fitted.values)^2)
-trening_rss7 <- mean((ames_trening$Sale_Price - poly_reg7$fitted.values)^2)
-trening_rss8 <- mean((ames_trening$Sale_Price - poly_reg8$fitted.values)^2)
-trening_rss9 <- mean((ames_trening$Sale_Price - poly_reg9$fitted.values)^2)
-trening_rss10 <- mean((ames_trening$Sale_Price - poly_reg10$fitted.values)^2)
-
-test_rss1 <- mean((ames_test$Sale_Price - polypred1)^2)  
-test_rss2 <- mean((ames_test$Sale_Price - polypred2)^2)  
-test_rss3 <- mean((ames_test$Sale_Price - polypred3)^2)  
-test_rss4 <- mean((ames_test$Sale_Price - polypred4)^2)
-test_rss5 <- mean((ames_test$Sale_Price - polypred5)^2)  
-test_rss6 <- mean((ames_test$Sale_Price - polypred6)^2)
-test_rss7 <- mean((ames_test$Sale_Price - polypred7)^2)
-test_rss8 <- mean((ames_test$Sale_Price - polypred8)^2)
-test_rss9 <- mean((ames_test$Sale_Price - polypred9)^2)
-test_rss10 <- mean((ames_test$Sale_Price - polypred10)^2)
-
-rss_sammenlikning_trening <- data.frame(c(trening_rss1, trening_rss2, trening_rss3, trening_rss4, trening_rss5, trening_rss6, trening_rss7, trening_rss8, trening_rss9, trening_rss10))
-ny3 <- c("Enkel linear", "Poly 2", "Poly 3", "Poly 4", "Poly 5", "Poly 6","Poly 7","Poly 8","Poly 9", "Poly 10")
-rss_sammenlikning_trening$Modell <- ny3
-rss_sammenlikning_trening <- rss_sammenlikning_trening[, c(2,1)]
-colnames(rss_sammenlikning_trening) <- c("Modell", "RSS Trening")
-
-rss_sammenlikning_test <- data.frame(c(test_rss1, test_rss2, test_rss3, test_rss4, test_rss5, test_rss6, test_rss7, test_rss8, test_rss9, test_rss10))
-ny4 <- c("Enkel linear", "Poly 2", "Poly 3", "Poly 4", "Poly 5", "Poly 6", "Poly 7", "Poly 8", "Poly 9", "Poly 10")
-rss_sammenlikning_test$Modell <- ny4
-rss_sammenlikning_test <- rss_sammenlikning_test[, c(2,1)]
-colnames(rss_sammenlikning_test) <- c("Modell", "RSS Test")
-
-rss_sammenlikning <- merge(rss_sammenlikning_trening, rss_sammenlikning_test, by = "Modell")
-rss_sammenlikning <- rss_sammenlikning %>% 
-    arrange(rss_sammenlikning$`RSS Test`) 
-kable(rss_sammenlikning, caption = "RSS sammenlikning for trenings - og testdata")
-```
-
-Som vi kunne forvente ut fra plottet av modellene lenger opp er forskjellene i RSS-verdien ganske liten mellom modellene. Vi kan også lage et interessant plott der vi plotter RSS-verdiene "mot hverandre".
-
-```{r fig.cap = "RSS treningssett vs. testsett"}
-trening_rss <- scale(c(trening_rss2, trening_rss3, trening_rss4, trening_rss5, trening_rss6, trening_rss7, trening_rss8, trening_rss9, trening_rss10))
-test_rss <- scale(c(test_rss2, test_rss3, test_rss4, test_rss5,  test_rss6, test_rss7, test_rss8, test_rss9, test_rss10))
-orders <- c(2, 3, 4, 5, 6, 7, 8, 9, 10)
-
-ggplot() +
-    geom_line(aes(orders, trening_rss, col = "Trening RSS")) +
-    geom_line(aes(orders, test_rss, col = "Test RSS")) +
-    scale_x_continuous(breaks = seq(min(2), max(10), by = 1)) +    
-    scale_colour_manual("", 
-                        breaks = c("Trening RSS", "Test RSS"), 
-                        values = c("blue", "red")) +
-  ylab("RSS") +
-  xlab("Polynomfunksjon") +
+Som vi også kan plotte:
+
+```{r fig.cap = "Karakterer for variablene 'matte' og 'engelsk'"}
+ggplot(karakterer, aes(x = matte, y = engelsk)) + 
+    geom_point() +
     theme_bw()
 ```
 
-Grafen illustrerer det vi kan se fra tabellen over - modell 9 ser ut til å predikere best. Vi kan vise det samme med RMSE (som sagt er RMSE, RSS og MSE forsåvidt mål på det samme).
+Vi kan nå si vi har to dimensjoner for hver student: den første dimensjonen - x-aksen - inneholder mattekarakterer, den andre dimensjonen - y-aksen - inneholder engelskkarakterer. Vi kan se også med to dimensjoner at det er to tydelige clustere. 
+
+Så kan vi legge til nok en karakter - denne gangen norsk. 
 
 ```{r}
-polyrmse1 <- round(tdStats(polypred1, ames_test$Sale_Price)[[7]], 3)
-polyrmse2 <- round(tdStats(polypred2, ames_test$Sale_Price)[[7]], 3)
-polyrmse3 <- round(tdStats(polypred3, ames_test$Sale_Price)[[7]], 3)
-polyrmse4 <- round(tdStats(polypred4, ames_test$Sale_Price)[[7]], 3)
-polyrmse5 <- round(tdStats(polypred5, ames_test$Sale_Price)[[7]], 3)
-polyrmse6 <- round(tdStats(polypred6, ames_test$Sale_Price)[[7]], 3)
-polyrmse7 <- round(tdStats(polypred7, ames_test$Sale_Price)[[7]], 3)
-polyrmse8 <- round(tdStats(polypred8, ames_test$Sale_Price)[[7]], 3)
-polyrmse9 <- round(tdStats(polypred9, ames_test$Sale_Price)[[7]], 3)
-polyrmse10 <- round(tdStats(polypred10, ames_test$Sale_Price)[[7]], 3)
-rmsesammenlikning2 <- as_tibble(c(polyrmse1, polyrmse2, polyrmse3, polyrmse4, polyrmse5, polyrmse6, polyrmse7, polyrmse8, polyrmse9, polyrmse10)) %>%
-    rename(RMSE = 1) %>%
-    add_column(Modell = c("Enkel linear", "Poly 2", "Poly 3", "Poly 4", "Poly 5", "Poly 6", "Poly 7", "Poly 8", "Poly 9","Poly 10"), .before = 1) %>%
-    arrange(RMSE)
-kable(rmsesammenlikning2, caption = "RMSE for testdata")
+norsk <- c(67, 68, 69, 66, 48, 46, 47, 50, 51, 49)
+karakterer <- karakterer %>%
+    mutate(norsk = norsk)
+kartabell3 <- flextable(karakterer)
+kartabell3 <- autofit(kartabell3)
+kartabell3
 ```
 
-Som sagt kan RMSE tolkes direkte, så en RMSE på `r min(rmsesammenlikning2$RMSE)` for beste modell innebærer at modellen i gjennomsnitt bommer med `r round(min(rmsesammenlikning2$RMSE),2)`dollar på boligprisen. Samtidig ser vi at forskjellene, som vi har sett tidligere, er små mellom modellene. Selv med den lineære er forskjellen mellom beste og dårligste modell i dette tilfellet `r max(rmsesammenlikning2$RMSE) - min(rmsesammenlikning2$RMSE)`.
+Med tre dimensjoner må vi ha tre akser i plottet: 
 
-Vår modell blir dermed (på hele datasettet):
-
-```{r fig.cap = "Beste polynomregresjon på AmesHousing data"}
-polykurver3 <- ggplot(ames_trening) +
-  geom_point(aes(Year_Built, Sale_Price), col = "grey") +
-    labs(x = "Bolig bygd", 
-         y = "Salgspris") +
-    scale_x_continuous(breaks = seq(min(ames$Year_Built), 
-                                    max(ames$Year_Built), 
-                                    by = 10)) +
-    scale_y_continuous(breaks = seq(min(0), 
-                                    max(ames$Sale_Price), 
-                                    by = 50000)) +
-    stat_smooth(method = "lm", 
-                formula = y~poly(x,9), 
-                aes(Year_Built, poly_reg9$fitted.values, col = "Poly 9"), 
-                se = TRUE) +
-    theme_bw()
-polykurver3
-```
-
-Oppsummert kan vi se på RMSE for de tre modellene vi så langt har sett på (som en oppsummering uten at man direkte kan sammenlikne):
-
-```{r}
-rmse3 <- as.data.frame(nrmse(polypred9, ames_test$Sale_Price))
-rmse3$Modell <- "Polynomial"
-rmse3$Uavhengig <- "Year_Built"
-colnames(rmse3) <- c("RMSE", "Modell", "Uavhengige variabler")
-rmse3 <- rmse3[, c(2,1,3)]
-rmsesammenlikning2 <- bind_rows(rmsesammenlikning, rmse3)
-kable(rmsesammenlikning2, caption = "Sammenlikning av RMSE for valgte modeller")
-```
-
-### Linear Support Vector Regression (SVR)
-
-Så kommer vi til den første nye teknikken vi knytter til maskinlæring.
-
-SVR skiller seg fra OLS regresjon ved at metoden ikke forsøker å finne en regresjonslinje som gir minste kvadraters sum for avstandene mellom observasjon og regresjonslinje (minimalisere feil), men i stedet lar oss definere hvilken feilmargin vi anser som formålstjenlig for vårt formål/i vår kontekst. Grafisk kan vi illustrere dette slik (datapunktene i hhv. venstre og høyre del av illustrasjonen er like):
-
-![Lineær regresjon vs. SVR-regresjon](SVR.png){width="90%"}
-
-I figuren over ser vi i den venstre delen en "tradisjonell" lineær regresjon, der vi altså forsøker å finne den linja som minimerer summen av kvadrerte avvik, der linja blir vår modell som vi vil predikere ut fra. I den høyre delen viser vi prinsippet med SVR. Vi tillater et feilnivå - målt ved $\epsilon$. Vi får et bånd - en slags "margin of error" - som vi tilater at vår modell predikerer innenfor (vi bryr oss ikke om "feilene" innenfor dette båndet). Der vi i linær regresjon bryr oss om hvert enkelt punkts avstand til regresjonslinja gjør vi ikke det i SVR for de punktene som ligger innenfor grensene på båndet vårt. Derimot bryr vi oss i SVR om de punktene som ligger utenfor båndet ("båndet" omtales gjerne på engelsk som $\epsilon\ insensitive\ tube$). For disse punktene måles avstanden fra det enkelte punkt til kanten på båndet. I figuren over ser vi disse som $\xi_1, \xi_2...osv$. Punktene utenfor båndet kalles "slack variables". Så teknikken i SVR går da ut på å minimere summen av avstandene fra hvert enkelt "slack variabel" til kanten av båndet (husk at vi selv definerer hvor bred/smal båndet skal være). Hensikten er at ulike praktiske analyser kan rettferdiggjøre ulike tilnærminger til hvor bred båndet skal være, og dermed hvor stor variasjon vi fanger opp innenfor båndet. Modellen vil derfor kunne variere med hvilken verdi vi setter på $\epsilon$.
-
-Hvorfor begrepet Support Vector Regression? Vel, alle datapunktene er vektorer (med en retning og avstand ut fra origo). Gitt at vi har definert båndet (gjennom $\epsilon$) vil punktene innenfor båndet ikke ha noen påvirkning på modellen, kun punktene utenfor. Derfor er det punktene utenfor som definerer modellen og dermed "støtter" ("supports") modellen.
-
-Vi bruker samme variabler som i den multiple regresjonen.
-
-```{r}
-svrreg2 <- svm(Sale_Price ~ 
-                   Gr_Liv_Area + 
-                   Year_Built + 
-                   Year_Remod_Add + 
-                   Mas_Vnr_Area + 
-                   Total_Bsmt_SF + 
-                   First_Flr_SF + 
-                   Full_Bath + 
-                   Garage_Cars + 
-                   Garage_Area, 
-               data = ames_trening, 
-               type = "eps-regression")
-svrreg2
-```
-
-Og predikerer på bakgrunn av treningssettet og sammenlikner med testdataene:
-
-```{r}
-svrpred <-  predict(svrreg2, newdata = ames_test)
-svrpred <- as.data.frame(svrpred)
-observert <- as.data.frame(ames_test$Sale_Price)
-df2 <- as.data.frame(c(svrpred, observert))
-df2$Differanse <- round(abs(df2$svrpred - df2$ames_test.Sale_Price),0)
-colnames(df2) <- c("Predikert", "Observert", "Abs differanse")
-kable(head(df1, n = 10), caption = "Første 10 differanser mellom predikert og observert verdi")
-msesvr <- mean((df2$Observert - df2$Predikert)^2)
-msesvr
-```
-
-Oppsummert kan vi se på NRMSE for de fire modellene vi så langt har sett på:
-
-```{r}
-rmse4 <- as.data.frame(nrmse(svrpred,  ames_test$Sale_Price))
-rmse4$Modell <- "SVR"
-rmse4$Uavhengig <- "Gr_Liv_Area + Year_Built + Year_Remod_Add + Mas_Vnr_Area + Total_Bsmt_SF + First_Flr_SF + Full_Bath + Garage_Cars + Garage_Area"
-colnames(rmse4) <- c("NRMSE", "Modell", "Uavhengige variabler")
-rmse4 <- rmse4[, c(2, 1, 3)]
-rmsesammenlikning3 <- bind_rows(rmsesammenlikning2, rmse4)
-kable(rmsesammenlikning3, caption = "Sammenlikning av RMSE for valgte modeller")
-```
-
-Siden vi vi har samme varaibler i multippel og SVR kan vi se at SVR-modellen gir betydelig lavere RMSE.
-
-#### SVR eksempel 2
-
-Vi kan illustrere SVR på en annen type datasett. Datasettet "Boston" ligger integrert i R-pakken "MASS" og ble opprinnelig publisert i 1978. Datasettet inneholder boligdata fra Boston (N = 506) og var en undersøkelse "to measure the willingness to pay for clean air" [@harrisonHedonicHousingPrices1978, s.81]. I dette eksempelet bruker vi variabelen "medv" som avhengig variabel (som er boligenens medianverdi målt i \$1000). Vi har tatt ut en variabel - "B-1000" - fra det opprinnelige datasettet.
-
-```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
-xfun::embed_file("bostondata.xlsx")
-```
-
-```{r warning = FALSE, echo = FALSE}
-bostondata <-  MASS::Boston
-bostondata <- subset(bostondata, select = -(black))
-dim(bostondata)
-```
-
-Vi kan se på variabelen "medv" grafisk:
-
-```{r fig.cap = "Boligens verdi"}
-medv <- ggplot() +
-    geom_point((aes(x=seq_along(bostondata$medv), y=bostondata$medv)), color = "red") + 
-    xlab("Bolig nr.") +
-    ylab("Verdi") +
-    theme_bw()
-medv
-```
-
-Vi lager SVR-modellen:
-
-```{r}
-set.seed(321)
-splitt3 <- sample.split(bostondata$medv, SplitRatio = .8)
-btreningssett <- subset(bostondata, splitt3 == TRUE)
-btestsett <- subset(bostondata, splitt3 == FALSE)
-svrreg <- svm(medv~., data=btreningssett)
-print(svrreg)
-```
-
-Og predikerer på bakgrunn av treningssettet og sammenlikner med testdataene:
-
-```{r fig.cap = "Prediksjon og observasjon"}
-pred4 <-  predict(svrreg, btestsett)
-x = 1:length(btestsett$medv)
-ggplot() +
-    geom_point(aes(x = x, y = btestsett$medv), 
-               color = "red") +
-    geom_line(aes(x = x, y = predict(svrreg, newdata = btestsett)),
-              color = "blue") +
-    xlab("Bolig nr.") + 
-    ylab("Medianverdi") +
-    theme_bw()
-```
-
-Vi kan til slutt sjekke hvor godt modellen predikerer:
-
-```{r warning = FALSE, message = FALSE}
-normrmse3 <- as.data.frame(tdStats(pred4, btestsett$medv))
-normrmseverdi3 <- normrmse3[12,]
-normrmseverdi4 <- normrmse3[7,]
-normrmse3
-```
-
-RMSE er `r round(normrmseverdi4, 2)`. La oss se på verdien i kontekst. Gitt at den avhengige variabelen "medv" er median boligpris målt i 1000, betyr det at RMSE på `r round(normrmseverdi4, 2)` \* 1000 betyr at modellen i gjennomsnitt bommer med `r round(normrmseverdi4, 2)*1000`. Er det bra eller dårlig? Vel, la oss se på variabelen:
-
-```{r warning = FALSE, message = FALSE}
-deskdata <- describe(btestsett$medv)
-deskdata
-```
-
-Vi kan se at boligprisen varierer mellom 5000 og 50000, med et standardavvik (= verdienes gjennomsnittlig avstand fra gjennomsnittet) på 9200 (9.2). I det perspektivet kan modellen se ut til å predikere rimelig bra.
-
-### Decision Tree Regression
-
-Vi illustrerer DTR gjennom et eksempel basert på @plotly3DScatterPlots2022. I pakken "plotly" ligger et kjent datasett - mtcars - som er brukt i mange lærebøker og eksempler.
-
-```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
-xfun::embed_file("mtcars.xlsx")
-```
-
-```{r}
-glimpse(mtcars)
-```
-
-Et tips i R for å se på innhold og hva de enkelte variabler er i datasett som følger pakker er:
-
-```{r message = FALSE, warning = FALSE}
-# ?mtcars
-```
-
-Hvor man får opp tekst om datasettet i hjelpevinduet (normalt nede til høyre i skjermen i RStudio). Vi kan se at variabelen "wt" er vekt, "hp" er hestekrefter og "qsec" er tid bilen bruker fra 0 til 1/4 mile. Vi kan se for oss at wt og hp er uavhengige variabler, og tid den avhengige variabelen.
-
-Vi kan plotte dataene. Vi kan først se på de to uavhengige variablene wt og hp.
-
-```{r fig.cap = "Scatterpplott 'wt' og 'hp'"}
-ggplot(mtcars, aes(x=wt, y=hp)) + 
-    geom_point(color = "red") +
-    scale_x_continuous(breaks = round(seq(min(mtcars$wt), max(mtcars$wt), by = 0.5),1)) +
-    theme_bw()
-```
-
-Siden vi har tre variabler kan vi framstille dette som et 3D-plott (vi kan ha flere variabler i regresjonen naturligvis, men det klarer vi ikke å plotte).
-
-```{r}
-mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
-mtcars$am[which(mtcars$am == 1)] <- 'Manual'
-mtcars$am <- as.factor(mtcars$am)
-fig <- plot_ly(mtcars, 
-               x = ~wt, 
-               y = ~hp, 
-               z = ~qsec, 
-               color = ~am, 
-               colors = c('#BF382A', '#0C4B8E'))
-fig <- fig %>% 
+```{r fig.cap = "Karakterer for variablene 'matte', 'engelsk' og 'norsk'"}
+fig <- plot_ly(karakterer, x = karakterer$matte, y = karakterer$norsk, z = karakterer$engelsk) %>%
     add_markers() %>%
-    layout(scene = list(xaxis = list(title = 'wt'),
-                     yaxis = list(title = 'hp'),
-                     zaxis = list(title = '1/4 mile tid')))
+    layout(scene = list(xaxis = list(title = "Matte"),
+                        yaxis = list(title = "Norsk"),
+                        zaxis = list(title = "Engelsk")))
 fig
 ```
 
-DTR starter med alle dataene (i treningssettet), noe som kalles rotnode. Deretter vil en algoritme splitte dataene (noden) i to eller flere sub-noder. Dersom en sub-node igjen splittes kalles denne sub-noden en beslutningsnode. Dersom den ikke splittes kalles sub-noden en leaf eller terminalnode.
+Hvis vi nå legger til fysikkarakterer i tillegg kan vi ikke lenger plotte dette siden det vil kreve fire dimensjoner. PCA stepper inn og lager et 2D plott av flere dimensjoner. PCA vil også kunne si oss noe om hvilken av karakterene (= hvilken av variablene) som er viktigst for å skape klyngene/grupperingene av studenter. 
 
-![Prinsippiell skisse beslutningstre](DTR1.png){width="90%"}
+#### Sentrering
 
-Hver node i treet utgjør en test for en case/et dilemma/et valg inntil det ikke kan tas flere valg i akkurat den respektive linjen. DTR bruker et antall algoritmer for å beslutte hvordan splitting foregår. Hver splitt søker å øke homogeniteten (hver subsett av data skal inneholder samme verdi for en eller annen attributt) i de resulterende sub-nodene sett opp mot den uavhengige variabelen.
+Vi går tilbake til datasettet med to karakterer (dimensjoner).
 
-Modellen begynner med hele datasettet og leter gjennom alle verdier for alle inputvariabler (uavhengige variabler) for å finne splittverdien som deler datasettet i to og samtidig gir lavest mulig "Sums of Squares Error". Deretter gjentas denne prosessen inntil en stoppverdi er nådd.
-
-La oss gå tilbake til eksempelet med mtcars og se på kun de to uavhengige variablene. Eksempelet under er kun illustsrerende:
-
-```{r fig.cap = "Eksempel på 4 x splitt av datasett"}
-dtrplott <- ggplot(mtcars, aes(x=wt, y=hp)) + geom_point(color = "red")
-dtrplott +
-    geom_segment(aes(x = 1.5, y = 170, xend = 3.6, yend = 170)) +
-    annotate(geom ="text", x = 1.5, y = 180, label = "Splitt 2",
-              color = "blue") +
-    geom_segment(aes(x = 3.6, y = 0, xend = 3.6, yend = 350)) +
-    annotate(geom ="text", x = 3.4, y = 350, label = "Splitt 1",
-              color = "blue") +   
-    geom_segment(aes(x = 1.3, y = 75, xend = 3.6, yend = 75)) +
-    annotate(geom ="text", x= 1.5, y = 85, label = "Splitt 3",
-              color = "blue") +
-    annotate(geom ="text", x= 2.3, y = 20, label = "Splitt 4",
-              color = "blue") +
-    geom_segment(aes(x = 2.5, y = 0, xend = 2.5, yend = 75)) +
-    annotate(geom = "text", x = 3.7, y = 350, label = "3.6") +
-    annotate(geom = "text", x = 1.5, y = 160, label = "170") +
-    annotate(geom = "text", x = 1.5, y = 65, label = "75")  +
-    annotate(geom = "text", x = 2.6, y = 20, label = "2.5") +
+```{r  fig.cap = "Karakterer for variablene 'matte' og 'engelsk'"}
+kartabell2
+ggplot(karakterer, aes(x = matte, y = engelsk)) + 
+    geom_point() +
     theme_bw()
 ```
 
-![Beslutningstre](DTR2.png){width="75%"}
+Vi regner så ut gjennomsnittet for de to variablene matte og engelsk: 
 
-I grafen over har vi visualisert beslutningstreet. Første splitt skjer ved wt = 3.6. Neste splitt skjer ved hp = 170, men bare for området under wt = 3.6. Deretter kommer splitt 3 ved hp = 75, men bare for området under wt = 3.6 og under hp = 170. Splitt 4 skjer ved wt = 2.5, men bare for området under wt = 3.6, under hp = 170 og under hp = 75.
+```{r echo = FALSE, eval = TRUE}
+colMeans(karakterer[2:3])
+```
 
-Vi har fått delt opp de to uavhengige variablene i bokser. Hvis vi nå får et nytt punkt (eller vil predikere verdien på den avhengige variabelen ut fra gitt verdier av de to uavhengige variablene) kan vi legge det nye punktet inn i riktig boks ut fra verdiene på hhv. wt og hp. Den predikerte Y-verdien - verdien på den avhengige variabelen - blir ganske enkelt gjennomsnittsverdien av alle y-verdiene i den respektive boksen (jfr $\hat{y}_n$ i figuren over). Inndeingen i boksene gjennom belsutningstreet har i realiteten tilført informasjon til våre data. Vi trenger altså predikere ut fra et mye snevrere utfallsområde enn en tradisjonell tilnærming som vil ta hensyn til alle datapunktene (ikke bare de i rette boks).
+Vi bruker disse gjennomsnittsverdiene til å kalkulere senterpunktet (x = 58.1, y = 63.1) som vi deretter - ved å beholde de innbyrdes avstandene i x- og y-planet mellom datapunktene - sentrerer alle observasjonene rundt. 
 
-#### Eksempel DTR på Ames Housing Data
+```{r fig.cap = "Plott for matte og engelsk sentrert på (0,0)"}
+center_scale <- function(x) {
+    scale(x, scale = FALSE)
+}
+sentrert <- as_tibble(center_scale(karakterer)) 
+sentrertplott <- ggplot(sentrert, aes(x = matte, y = engelsk)) + 
+    geom_point() +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    theme_bw()
+sentrertplott
+```
 
-I dette eksempelet skal vi bruke datasettet fra pakken "modeldata" som over.
+Vi ser at datapunktene ligger nøyaktig likt i forhold til hverandre, men senterpunktet er nå (0, 0). Neste steg er å lage en regresjonslinje som passer best mulig til dataene. Vi begynner med å legge på en hvilken som helst linje som går gjennom (0, 0) og deretter roterer vi linja med (0, 0) som pivoteringspunkt til man finner linja som passer best (i dette tilfellet den røde stiplede linja):
+
+```{r fig.cap = "Eksempler på mulige linjer som pivoterer i (0,0)"}
+sentrertplott2 <- sentrertplott +
+    geom_abline(intercept = 0, slope = 5.0, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 3.0, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 2.0, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 1.5, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 1.0, col = "blue", linetype = "dashed") +
+    geom_abline(intercept = 0, slope = 0.75, col = "blue", linetype = "dashed") +    
+    geom_abline(intercept = 0, slope = 0.5, col = "red", linetype = "dashed")
+sentrertplott2
+```
+
+Og hvordan vet PCA hvilken linje som passer best? For å se på det skal vi ta en liten omveg ut av eksempelet vårt. 
+
+#### Forskjell i utregning av avvik - OLS og PCA
+
+Med utgangspunkt i @longPrincipalComponentAnalysis2010 kan vi illustrere den prinsippielle forskjellen i hvordan hhv. OLS (lineær regresjon) og PCA kalkulerer beste tilpasning.
+
+I en OLS (jfr. teori i kapittel om regresjonsanalyse) vil man søke å finne beste tilpasning:
+
+```{r warning = FALSE, message = FALSE, fig.cap = "OLS x ~ y"}
+set.seed(2)
+x <- 1:100
+y <- 20 + 3 * x
+e <- rnorm(100, 0, 60)
+y <- 20 + 3 * x + e
+data <- tibble(x, y)
+ggplot(data, aes(x, y)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    geom_segment(aes(x = 61, y = 98, xend = 61, yend = 195),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    geom_segment(aes(x = 78, y = 298, xend = 78, yend = 247),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    theme_bw()
+```
+
+OLS forsøker å minimere feilleddet mellom den avhengige variabelen og modellen ved å regne på alle avstandene (og kvadrere dem) mellom datapunktene og modellen. I grafen over er dette illustrert med oransje strek for to av datapunktene. Dette er grundigere gjennomgått i kapittelet om regresjon. 
+
+Hvis vi bytter om på den avhengige og uavhengige variabelen ser det i OLS slik ut for to av datapunktene:
+
+```{r warning = FALSE, message = FALSE, fig.cap = "OLS y ~ x"}
+ggplot(data, aes(y, x)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE) +
+    geom_segment(aes(x = 190, y = 45, xend = 145, yend = 45),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    geom_segment(aes(x = 173, y = 57, xend = 200, yend = 57),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    theme_bw()
+```
+
+OLS forsøker alltid minimere y-avstanden (feilleddet = $y-\hat{y}$). PCA vil minimere feilleddet ortogonalt (90$^\circ$ på modellen):
+
+```{r warning = FALSE, message = FALSE, fig.cap = "Ortogonale avstander i PCA"}
+ggplot(data, aes(x, y)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = FALSE)  +
+    geom_segment(aes(x = 54, y = 255, xend = 58, yend = 190),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    geom_segment(aes(x = 42, y = 32, xend = 36, yend = 132),
+                 arrow = arrow(length = unit(0.5, "cm")), col = "orange", size = 1.5) +
+    theme_bw()
+```
+
+PCA vil rotere modellen ("regresjonslinja") rundt et senterpunkt og hele tiden kalkulere summen av de **ortogonale** feilleddene. Når du har en litt større mengde uavhengige variabler vil PCA gi deg hvilke lineære kombinasjoner som teller mest. Hvis vi går tilbake til denne:
+
+```{r warning = FALSE, message = FALSE, fig.cap = "OLS y ~ x"}
+sentrertplott2
+```
+
+Merk at alle linjene må gå gjennom pivoteringspunktet (0,0). Vi kan tenke oss alle punktene som ankere som har en fjør festet til den vilkårlige linja. Alle punktene vil forsøke å dra linja til seg slik at den snurrer rundt (0,0) og gir minst mulig lengde på fjæra. Det vil imidlertid føre til at andre punkters fjærer strekker seg, og disse fjærene vil forsøke å dra seg sammen slik fjærer gjør når de strekkes. Til slutt når man et slags ekvilibrium der alle fjærene til sammen er i optimal lengde (det er umulig å strekke en fjær uten at flere fjærer til sammen skaper "ubalanse"). Dette er i prinsippet hva PCA gjør for å finne beste linje. Litt lenger ned går vi igjennom dette litt mer i detalj.
+
+Å gå i dybden på den matematiske utregningen av *eigenvalues* og *eigenvectors* er på grensen av dybdekunnskap i et notat med tittel "Anvendt..." i seg, og trolig kan man leve godt uten denne dybdekunnskapen. En anbefalt kilde for å gå i dybden kan være @smithTutorialPrincipalComponents2002. Likevel vil vi skissere under hvordan dette gjøres i det enkle eksempelet.  
+
+### PCA gjennom et lite eksempel - del 2
+
+Vi tar utgangspunkt i eksempelet der vi hadde to variabler:
+
+```{r}
+kartabell2
+```
+
+Vi legger på en tilfeldig linje som går gjennom (0, 0) på de sentrerte dataene.
+
+```{r fig.cap = "Tilnærming til maksimering av 'c'"}
+sentrertplott3 <- sentrertplott +
+    geom_abline(intercept = 0, slope = 1, col = "blue", linetype = "dashed") +
+    geom_segment(aes(x = 0, y = 0, xend = 16.9, yend = 6.9), color = "orange") +
+    geom_segment(aes(x = 16.9, y = 6.9, xend = 12.4, yend = 12.3), color = "orange") +
+    geom_text(x = 10, y = 3, label = "a") +
+    geom_text(x = 16, y = 10, label = "b") +
+    geom_text(x = 8, y = 10, label = "c")
+sentrertplott3
+```
+
+Ettersom vi roterer linja vil avstanden $a$ ikke forandre seg. Lengden på både $b$ og $c$ vil imidlertid endre seg relativt til hverandre. Når $b$ blir lengre, blir $c$ kortere og motsatt. I samme tanke som OLS-regresjon (se ovenfor) ønsker vi at $b$ skal være så kort som mulig da det betyr at linja ligger så nærme datapunktet som mulig. For å få $b$ så kort som mulig jobber imidlertid PCA for å maksimere $c$ (det har samme effekt: når $c$ er på sitt maksimale er $b$ på sitt minimale). PCA finner altså den beste linja ved å maksimere den kvadrerte avstanden $c$ (kvadrert pga. Pythagoras... $a^2 + b^2 = c^2$). 
+
+PCA summerer da $c^2$ for alle de 10 punktene i dette eksempelet. Siden verdiene er kvadrerte slipper vi også problemet med at positive og negative verdier nuller hverandre ut (som for OLS - Ordinary Least *Squares* selv om vi her ikke regner squares men avstand). Summen = sum of squared distances  **SS(distances)**. 
+
+```{r warning = FALSE, message = FALSE, fig.cap = "SS(Distances)"}
+sentrertplott4 <- sentrertplott3 +
+    geom_text(x = 10, y = -8, label = TeX('$\\c_{1}^2$ ... $\\c_{10}^2$ = SS(distances)'))  
+sentrertplott4
+```
+
+#### Identifikasjon av Principal Component 1 (PC1), eigenvectors og loading scores
+
+PCA roterer som sagt på linja pivotert i (0, 0) og til slutt finner den linja som maksimaliserer SS(Distances). Denne linja kalles **Principal Component 1 (PC1)**. 
+
+```{r}
+lmkarakterer <- lm(engelsk ~ matte, data = sentrert)
+model_summary <- summary(lmkarakterer)
+stigningstall <- model_summary$coefficients[2,1]
+stigningstall
+```
+
+PC1 har et stigningstall på `r stigningstall`. Det betyr at en økning på 1 i x (matte) gir en økning på 0.46 i y (engelsk). Det betyr at matte har større innvirkning på grupperingen av studentene enn engelsk. 
+
+```{r warning = FALSE, message = FALSE, fig.cap = "Pythagoras på veg mot eigenvalue og eigenvector for PC1"}
+sentrertplott4 <- sentrertplott +
+    geom_smooth(method = "lm", se = FALSE) +
+    geom_segment(aes(x = 0, y = 0, xend = 17.9, yend = 4.9), color = "orange") +
+    geom_segment(aes(x = 17.9, y = 4.9, xend = 16.75, yend = 7.8), color = "orange") +
+    geom_text(x = 3, y = 3, label = "PC1", angle = 23, color = "blue") +
+    geom_text(x = 9.8, y = 2, label = "a") +
+    geom_text(x = 18.5, y = 7, label = "b") +
+    geom_text(x = 10, y = 6.5, label = "c") +
+    geom_text(x = 11, y = -1.5, label = "Pythagoras gir: a = 1, b = 0.46, c = 1.1", size = 5)
+sentrertplott4    
+```
+  
+I PCA skaleres $c$ alltid til 1. Matematisk gjør vi det ved å dele hver side av Pythagoras med $c$ (her 1.1). 
+
+```{r warning = FALSE, message = FALSE, fig.cap = "Eigenvalue og eigenvector for PC1"}
+sentrertplott5 <- sentrertplott4 +
+    geom_text(x = 11, y = -1.5, label = "Pythagoras gir: a = 1, b = 0.46, c = 1.1", size = 5) +
+    geom_text(x = 11, y = -4.0, label = "PCA-skalerte verdier: a = 0.91, b = 0.42, c = 1", size = 5) +
+    geom_text(x = 11, y = -6.5, label = "SS(Distances) = Eigenvalue for PC1", size = 5)  
+sentrertplott5
+```
+
+Disse verdiene (0.91 og 0.42) kalles sammen **Eigenvector** for PC1, og de to verdiene kalles gjerne **Loading Scores**. Som vist i grafen over er $SS(Distances) = Eigenvalue for PC1$. Eigenvalue er et begrep vi kommer tilbake til i PCA når vi skal velge ut hvor mange komponenter vi skal beholde. 
+
+Det neste vi kan se på da er Principal Component 2 (PC2). PC2 er linja som går vinkelrett på PC1 og gjennom (0, 0). PC2 er altså linja som reflekterer den nest største kilden til variasjon i dataene, men som er ortogonal (vinkelrett) på PC1. Dette betyr at eigenvectoren er "snudd" og blir -0.42 og -0.91 (som altså er loading scores for PC2).
+
+```{r warning = FALSE, message = FALSE, fig.cap = "Sentrert plott for PC1 og PC2"}
+sentrertplott6 <- sentrertplott +
+    geom_smooth(method = "lm", se = FALSE) +
+    geom_text(x = 3, y = 3, label = "PC1", angle = 23, color = "blue") +
+    geom_abline(intercept = 0, slope = -2.5, col = "red", size = 1.25) +
+    geom_text(x = -4, y = 5, label = "PC2", angle = 23, color = "red")
+sentrertplott6
+```
+
+For å få fram det endelige PCA-plottet roteres løsningen slik at PC1 utgjør x-aksen og PC2 y-aksen.
+
+```{r warning = FALSE, message = FALSE, fig.cap = "Rotert PCA-plott"}
+karaktererX2 <- within(karakterer, rm(studentnr, norsk))
+# Skalerer data
+standardize <- function(x) {(x - mean(x))}
+skalert_karaktererX2 <- apply(karaktererX2,2,function(x) (x-mean(x)))
+# Finner Eigenvalues fra kovariansematrisen
+my.cov <- cov(skalert_karaktererX2)
+my.eigen <- eigen(my.cov)
+rownames(my.eigen$vectors) <- c("matte","engelsk")
+colnames(my.eigen$vectors) <- c("PC1","PC")
+# Sum Eigenvalues = den totale variansen i dataene
+sum(my.eigen$values)
+var(skalert_karaktererX2[,1]) + var(skalert_karaktererX2[,2])
+# Finner Eigenvalues fra kovariansematrisen
+my.cov <- cov(skalert_karaktererX2)
+my.eigen <- eigen(my.cov)
+rownames(my.eigen$vectors) <- c("matte","engelsk")
+colnames(my.eigen$vectors) <- c("PC1","PC")
+# Sum Eigenvalues = den totale variansen i dataene
+sum(my.eigen$values)
+var(skalert_karaktererX2[,1]) + var(skalert_karaktererX2[,2])
+# Eigenvektorene er principal components.
+loadings <- my.eigen$vectors
+pc1.slope <- my.eigen$vectors[1,1]/my.eigen$vectors[2,1]
+pc2.slope <- my.eigen$vectors[1,2]/my.eigen$vectors[2,2]
+sentrert2 <- as_tibble(center_scale(skalert_karaktererX2)) 
+
+sentrertplott7 <- ggplot(sentrert2, aes(x = matte, y = engelsk)) + 
+    geom_point() +
+    geom_abline(intercept = 0, slope = pc1.slope, color = "blue") +
+    geom_abline(intercept = 0, slope = pc2.slope, color = "red") +  
+    geom_text(x = 8, y = 10, label = "(-0.710,-0.695)", color = "blue") +   
+    geom_text(x = -12, y = 10, label = "(0.695,-0.719)", color = "red") +       
+    theme_bw()
+sentrertplott7
+```
+
+```{r}
+# Hvor mye varians foklarer hver eigenvector
+pc1.var <- 100*round(my.eigen$values[1]/sum(my.eigen$values),digits=2)
+pc2.var <- 100*round(my.eigen$values[2]/sum(my.eigen$values),digits=2)
+pcvarians <- tibble(pc1.var, pc2.var)
+pcvarians
+```
+
+Vi kan se at PC1 forklarere `r pcvarians[1,1]`% og PC2 forklarer `r pcvarians[1,2]`%.
+
+Punktene plottes deretter på det roterte diagrammet. Til dette brukes trigonometri. La oss se på et enkelt eksempel for ett punkt - dette gjør vi selvsagt ikke manuelt. 
+
+![Utgangspunkt for plotting av datapunkter på det roterte diagrammet](rotasjon1.png){width=90%}
+
+Vi har det opprinnelige plottet i et koordinatsystem og har funnet PC1 og PC2, og snur først aksene. Så må datapunktene posisjoneres etter de roterte aksene. La oss vise med ett punkt (1,0) - altså punktet 1 på x-aksen, 0 på y-aksen.
+
+![Rotasjon av ett punkt (1,0)](rotasjon2.png){width=50%}
+
+Punkt (1,0) blir da - forutsatt $\alpha=30$:
+
+$y'= sin(\alpha) = 0.5$
+
+$x'= cos(\alpha) = 0.9$
+
+(1,0) blir da rotert (0.5, 0.9). Slik gjør man for alle datapunkter. 
+
+![Datapunktet (1,0) rotert](rotasjon3.png){width=50%}
+
+#### Litt mer i detalj om rotasjon
+
+Det vi har gjort ovenfor med et lite eksempel kjøres på hele datasettet i det verktøyet vi bruker (R, Stata, SPSS, osv.). Needless to say - det er greit å ha maskiner og programvare som gjør dette for oss...
+
+![Rotasjonsmatrise](rotasjonsmatrise.png){width=50%}
+
+Med utgangspunkt i en datamatrise roteres dataene i en gitt vinkel gjennom en rotasjonsmatrise til et ny datamatrise (PC1). Denne kan igjen roteres på samme måte til PC2. 
+
+Vi kan se på komponentene:
+
+```{r}
+ut1 <- princomp(karaktererX2, cor = T)
+summary(ut1)
+```
+
+Og matrisen etter en rotasjon som vi kan plotte (som vi kjenner igjen fra litt lenger oppe):
+
+```{r}
+utdata <- ut1$score
+utdata
+```
+
+#### Utvelgelse av antall komponenter
+
+Et sentralt element i PCA er valg av antall komponenter man vil beholde. Dette kan vi gjøre gjennom variansen for komponentnen (her: PC1 og PC2). Her kommer vi tilbake til begrepet *eigenvalues* som vi definerte lenger opp. Vi kan se på eigenvalue for en PC som hvor mange variabler som representeres av den respektive PC. Eigenvalues forholder seg til forklart varians slik: 
+
+$Forklart\ varians = \frac{Eigenvalue}{antall\ opprinnelige\ variabler}$
+
+Dette kan også uttrykkes slik:
+
+$\frac{SS(Distances for PC1)}{n - 1} = Varians for PC1$
+
+$\frac{SS(Distances for PC2)}{n - 1} = Varians for PC2$
+
+Et viktig poeng er at en PCA ikke reduserer antall variabler i seg selv. Hvis du opprinnelig har 13 variabler vil du få 13 PC, men spørsmålet er hvor mange du faktisk trenger å se på for å forklare variansen (hvilket du ønsker skal være færre enn det opprinnelige antall variabler). Og det er her vi kommer fram til hele poenget med PCA: Hvor mange komponenter skal vi beholde?
+
+For å vise ulike metoder for å vurdere antall komponenter som bør beholdes bruker vi et datasett med flere variabler enn vårt eksempel ovenfor, modifisert fra @datavizHowMakeScree2020) - vi går ikke inn på hva dataene er. 
+
+```{r}
+penguins_data <- penguins[,c("bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g", "year")]
+penguins_data <- na.omit(penguins_data)
+```
+
+##### Kaisers kriterium
+
+@kaiserApplicationElectronicComputers1960 kriterium baserer seg på å beholde alle komponenter med eigenvalue på over 1,0. Enhver komponent med eigenvalue over 1 forklarer mer varianse enn en enkeltvariabel. Med andre ord – ut fra denne måten å vurdere ønsker vi ikke å beholde komponenter som forklarer mindre varians enn enkeltvariabler. Det er generelt anbefalt at man ikke bruker Kaisers kriterium alene da metoden har en tendens til å overvurdere antallet komponenter. Samtidig hevdes det at det er umulig å tillegge en komponent med verdi 1,01 som viktig og en annen med verdi 0,99 som uviktig [@fabrigarEvaluatingUseExploratory1999].
+
+```{r}
+pca_obj <- prcomp(drop_na(penguins_data), scale. = TRUE)
+pca_obj_eigen <- ((pca_obj$sdev)^2)
+pca_obj_eigen
+```
+
+Ut fra dette bør vi beholde 1 komponent, men vi ser at komponent 2 er svært nærme 1. 
+
+##### Scree plott
+
+Et hjelpemiddel i dette er **scree plot** [@cattellScreeTestNumber1966]. Et Scree Plot er en grafisk framstilling av komponentene langs x-aksen og de korresponderende eigenvalues på y-aksen. Et scree plot viser hvor stor del av variansen variabelen forklarer rundt f.eks. PC1.
+
+Når vi vurderer Scree Plot ønsker vi å identifisere knekkpunktet (også kalt «albuen»). 
+
+La oss forutsette at variansen for PC1 = 13 og for PC2 = 4. Dvs. at den totale variansen = 17. Videre beytr det at PC1 forklarer $\frac{13}{17}=0.765$ - altså 76.5% av den totale variansen. PC2 forklarer på sin side $\frac{4}{17}=0.235$. Et scree plot er en grafisk framstilling av denne variansen. 
+
+I vårt eksempel kan vi dermed fremstille dette scree plottet:   
+
+```{r fig.cap = "Scree plott"}
+var_explained_df <- tibble(PC = paste0("PC",1:5), var_explained=(pca_obj$sdev)^2/sum((pca_obj$sdev)^2))
+var_explained_df %>%
+    ggplot(aes(x = PC, y = var_explained, group = 1))+
+    geom_point(size = 4)+
+    geom_line() +
+    theme_bw()
+summary(pca_obj)
+```
+
+@cattellScreeTestNumber1966 beskriver framgangsmåten som at man finner albuen og dropper alle komponenter etter komponenten som starter albuen (eller sagt på en annen måte: vi beholder alle komponentene over knekkpunktet). I vårt tilfelle indikerer det at vi beholder 1 komponent. I vårt scree plott er det et tydelig knekkpunkt, men i mange tilfeller er det ikke så tydelig, og det kan være vanskelig å identifisere «det rette» knekkpunktet. 
+
+En alternativ, og ofte brukt metode for å illlustrere et scree plot på, er å kombinere det med et histogram (eksempel fra @szczesnaPrincipalComponentAnalysis2022).
+
+```{r fig.cap = "Scree plott og histogram"}
+fviz_eig(pca_obj)
+```
+
+##### Parallell analyse
+
+Parallell anlayse (PA) [@hornRationaleTestNumber1965] sammenlikner korrelasjonsmatrisen fra våre data med tilfeldig genererte korrelasjonsmatriser med samme antall variabler og observasjoner, for å sammenlikne eigenvalues for de genererte med den observerte. I eksempelet under ber vi om 5000 tilfeldige korrelasjonsmatriser.  
+
+```{r}
+paran(penguins_data, iterations=5000)
+```
+
+### Eksempel PCA
+
+En anvendelse av PCA kan være at vi ønsker å se på den underliggende strukturen for en skalavariabel. Her skal vi bruke Pallants datasett som vi også brukte i deler av kapittelet om regresjonsanalyse som du finner [her](https://www.mheducation.co.uk/data-files). For PCA-eksempelet skal vi se på en av skalaene - PANAS - og har modifisert datasettet til å kun inneholde spørsmålene knyttet til denne skalaen.
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('Pallant_survey_PANAS.xlsx')
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('Pallant_survey_PANAS.sav')
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('Pallant_survey_PANAS.dta')
+```
+
+```{r}
+Pallant_survey_PANAS <- as_tibble(read_excel("Pallant_survey_PANAS.xlsx"))
+Pallant_survey_PANAS <- na.omit(Pallant_survey_PANAS)
+head(descr(Pallant_survey_PANAS))
+```
+
+Datasettet består av 20 spørsmål som utgjør PANAS skalaen ("the Positive and Negative Affect Schedule"). 
+
+```{r}
+resultat.pca <- prcomp(Pallant_survey_PANAS, scale = TRUE)
+summary(resultat.pca)
+```
+
+#### Valg av antall komponenter
+
+##### Kaisers kriterium og eigenvalues
+
+```{r}
+eig.val <- as_tibble(get_eigenvalue(resultat.pca))
+eig.val
+```
+
+Ut fra Kaisers kriterium beholder vi fire komponenter.
+
+##### Scree plott
+
+```{r fig.cap = "Scree plott og histogram #2"}
+fviz_eig(resultat.pca, addlabels = TRUE)
+```
+
+Dette skulle indikere at vi beholder to komponenter.
+
+##### Parallell analyse
+
+```{r}
+paran(Pallant_survey_PANAS, iterations=5000)
+```
+
+Dette peker også mot at vi bør beholde to komponenter. 
+
+#### PCA låst til to komponenter
+
+```{r}
+pca2 <- principal(Pallant_survey_PANAS, nfactors=2, scores = TRUE, rotate = "varimax")
+pca2
+```
+
+Vi ønsker å se på modellen med to komponenter på tre parametere. Først ønsker vi at mindre enn 50% av residualene skal ha absoluttverdi > 0.05.
+
+```{r}
+antall_over <- length(abs(pca2$residual[pca2$residual > 0.05]))
+antall_residualverdier <- nrow(pca2$residual)*ncol(pca2$residual)
+(antall_over/antall_residualverdier)*100
+```
+
+I vårt tilfelle er 12.5% av residualene > 0.05. 
+
+Den neste parameteren er model fit som bør være > 0.9.
+
+```{r}
+pca2$fit
+```
+
+Her er verdien `r pca2$fit`.
+
+Til slutt ser vi på "communalities". 
+
+```{r}
+sort(pca2$communality)
+```
+
+@pallantSPSSSurvivalManual2010 foreslår å se etter verdier på under 0.3. En lav verdi indikerer at den respektive variabelen ikke passer godt sammen med de andre variablene i sin respektive komponent. Man kan vurdere å se om modellen blir bedre ved å ta vekk variabler med lav verdi (f.eks. under 0.3). I vårt tilfelle er variabelen pn5 under terskelverdien på 0.3. Vi kan prøve å ta den bort. Fra før ser vi at modellen forklarer 48% (se "Cumulative Var" i tabellen).
+
+```{r}
+Pallant_survey_PANAS2 <- subset(Pallant_survey_PANAS, select = -(pn5))
+pca3 <- principal(Pallant_survey_PANAS2, nfactors=2, scores = TRUE, rotate = "varimax")
+pca3
+```
+
+Vi ser ingen forbedring i kumulativ varians forklart. 
+
+```{r}
+pca2$fit
+pca3$fit
+```
+
+Model fit er marginalt bedre. 
+
+#### Forutsetninger
+
+Så langt har vi ikke sett på hvilke forutsetninger som må ligge til grunn for å kunne kjøre en PCA. Det skal vi nå.
+
+##### Størrelse på datasettet/utvalgsstørrelse
+
+Antall cases (sample size) og forholdstallet mellom antall respondenter og antall variabler kan være av betydning for en faktoranalyse. I små utvalg er korrelasjonskoeffisientene mellom variablene mindre pålitelige/konsistente. 
+
+Det finnes ulike anbefalinger, og @hogartyQualityFactorSolutions2005 hevder at det ikke finnes et minimum hva angår $N$ og $\frac{N}{variabler}$ for å oppnå en god faktoranalyse. @arrindellEmpiricalTestUtility1985 fant at verken et bestemt forholdstall eller et minimumsantall observasjoner hadde påvirkning på faktorstabiliteten. @guadagnoliRelationSampleSize1988 viste at en faktor med fire eller flere faktorladninger på 0,6 eller høyere er stabil uavhengig av utvalgsstørrelsen. En faktor med 10 eller flere ladninger større enn 0,4 var stabil dersom utvalgsstørrelsen er minst 150. Antallet caser kan imidlertid ses opp mot hvor sterkt variablene lader på faktorene [@tabachnikUsingMultivariateStatistics2007] og korrelasjonene [@maccallumSampleSizeFactor1999] – høyere korrelasjoner (>.80) krever mindre sample size [@guadagnoliRelationSampleSize1988].
+
+```{r echo=FALSE}
+antobs <- nrow(Pallant_survey_PANAS2)
+antkol <- ncol(Pallant_survey_PANAS2)
+forholdstall <- (antobs / antkol)
+forholdstall <- round(forholdstall, 1)
+```
+
+I vårt datasett har vi `r nrow(Pallant_survey_PANAS2)` caser/observasjoner. Vi får da forholdstallet `r forholdstall`. Antallet og forholdstallet skulle i utgangspunktet ikke være til hinder for en PCA her. Både @hairjr.MultivariateDataAnalysis2010 og @nunallyPsychometricTheory1978 anbefaler et forholdstall på 10:1. 
+
+##### Sphericity - er datasettet "faktoriserbart"
+
+Vi gjennomfører to tester: Bartletts test for sfæritet og KMO. Først Bartletts:
+
+```{r}
+korrelasjonsmatrise <- cor(Pallant_survey_PANAS2)
+cortest.bartlett(korrelasjonsmatrise, n = nrow(Pallant_survey_PANAS2))
+```
+
+Her ser vi at p-verdien er under terskelverdi på 0.05, så vi får dermed indikert at dataene er egnet for PCA etter dette kriteriet.
+
+Deretter KMO. KMO er en utregning som indikerer andelen av varians i skalavariabelen som kan forklares av de underliggende faktorene. En høy verdi indikerer at en faktoranalyse er mulig.
+
+```{r}
+KMO(Pallant_survey_PANAS2)
+```
+
+@pallantSPSSSurvivalManual2010 anbefaler en grenseverdi på 0.60. 
+@kaiserIndexFactorialSimplicity1974 anbefaler følgende retningslinjer for KMO-verdier:
+
+```{r echo = FALSE}
+KMO <- data.frame(Verdi = c("0.00-0.50", "0.50-0.60", "0.60-0.70", "0.70-0.80", "0.80-0.90", "0.90-1.00"),
+                            Tolkning = c("Uakseptabel (unacceptable)", "Dårlig (miserable)", "Middels (mediocre)", "Middels (middling)", "Respektabel (meritorius)", "Fantastisk (marvelous)"))
+kbl(KMO) %>%
+  kable_classic(full_width = F, html_font = "Cambria", font_size = 12) %>%
+  column_spec(1, width = "8em") %>%
+  column_spec(2, width = "40em")
+```
+
+KMO er derfor "respektabel". 
+
+##### Anti-image korrelasjonsmatrise
+
+```{r}
+antiimage <- antiImage(Pallant_survey_PANAS2)$AIR
+antiimage2 <- as_tibble(diag(antiimage), row.names = FALSE)
+sort(antiimage2$value, decreasing = TRUE)
+```
+
+I resultatet over har vi kun hentet ut de diagonale verdiene i anti-image matrisen (som er de vi er interessert i) og sortert disse i synkende rekkefølge. Disse verdiene er KMO verdier for de individuelle variablene. Disse bør ifølge @fieldDiscoveringStatisticsUsing2009 være på over 0,5. Verdier under 0,5 kan bety at vi bør ta denne variabelen ut. 
+
+```{r}
+corPallant_survey_PANAS2 <- cor(Pallant_survey_PANAS2)
+corPallant_survey_PANAS2 <- round(corPallant_survey_PANAS2, 2)
+length(corPallant_survey_PANAS2[corPallant_survey_PANAS2 > 0.9 & corPallant_survey_PANAS2<1])
+```
+
+Siden denne matrisen blir stor har vi over kun hentet ut antall korrelasjonsverdier som er over 0.9 (og under 1.0 siden det i matrisen alltid vil være 1.0 i diagonalene - der variablene korrelerer med seg selv). @fieldDiscoveringStatisticsUsing2009 peker på at *ingen* korrelasjoner bør være over 0.9. Samtidig bør det være godt med korrelasjoner over 0.3. Det finnes ingen absolutte krav til hvor mange/hvor stor andel av korrelasjonene som bør være over 0.3, men hvis man har få over 0.3 indikerer det at dataene kanskje ikke egner seg for PCA.
+
+I tabellen under har vi fjernet alle korrelasjonsverdier under +/- 0.3 og 1 for å gjøre det litt lettere å se.
+
+```{r}
+under03<- as.data.frame(apply(corPallant_survey_PANAS2, 2, function(x) ifelse (abs(x) > 0.3 & (x) < 1,x,"")))
+under03
+```
+
+Det kan se ut som vi har et greit antall korrelasjoner over 0.3. 
+
+## Faktoranalyse
+
+Det er flere teknikker assosiert med begrepet faktoranalyse, men i hovedsak kan vi dele disse inn i to typer: *eksplorerende* og *konfirmerende* [@hoyleConfirmatoryFactorAnalysis2000; @hurleyExploratoryConfirmatoryFactor1997]. 
+
+* Eksplorerende faktoranalyse som søker å gruppere variabler i et datasett ut fra korrelasjon uten spesifikke hypoteser på forhånd om hvordan strukturen ser ut. Denne tilnærmingen er således induktiv og i mindre grad drevet av teori - "one can always subject a data set to an EFA but not necessarily a CFA" [Schriesheim i @hurleyExploratoryConfirmatoryFactor1997, s.672].
+* Konfirmerende faktoranalyse starter i andre enden - med forhåndshypoteser om dataene og strukturen. Her ønsker vi å bekrefte (konfirmere) en antatt datastruktur i vårt datasett, f.eks. ut fra teoretiske forventninger og tidligere undersøkelser.
+
+### Eksplorerende faktoranalyse (EFA)
+
+Hensikten med en ekspolerende faktoranalyse er altså å undersøke om vi har variabler som korrelerer med hverandre og se om disse kan grupperes på en meningsfull måte. Vi ser på graden av korrelasjon - variabler som er sterkt korrelerte grupperes og skilles fra andre som er mindre korrelerte (som igjen kan inneholde grupper av relativt sterkt korrelerte variabler). Målet er altså å få grupper av variabler som internt er sterkt korrelerte med hverandre, og lite korrelert med variabler utenfor gruppen. 
+
+#### Hva er en faktor?
+
+En faktor kan ses på som en skjult variabel - en variabel vi ikke kan observere eller måle direkte, men som påvirker flere andre synlige/målbare variabler.
+
+![Hva er en faktor?](faktoranalyse.png){width=90%}
+
+Variablene A, B, C osv er med andre ord observerbare/målbare fenomen for underliggende, skjulte faktorer. Når vi grupperer variabler som er høyt korrelerte antar vi at deres variasjon og korrelasjon skyldes den underliggende/skjulte variabelen. 
+
+Et typisk eksempel er den såkalte "five-factor model" [@mccraeIntroductionFiveFactorModel1992] som antar at personlighetstrekk kan grupperes i fem faktorer: Åpenhet, planmessighet, ekstroversjon, omgjengelighet og nevrotisisme (se f.eks. @kennairFemfaktormodellen2021 for en kort introduksjon til modellen på norsk). Man kan imidlertid ikke måle disse fem faktorene direkte, men man antar at de påvirker en rekke målbare fohold. Disse kan man spørre om/måle/observere. Faktoren planmessighet kan for eksempel påvirke spørsmål/atferd som "Jeg er alltid forberedt", "Jeg følger en plan" eller "Jeg utfører mine oppgaver med en gang de er gitt".
+
+La oss se på dette visuelt på en forenklet framstilling. Vi har en teoretisk modell, der vi sier at positive tilbakemeldinger på jobben predikerer jobbtilfredshet, økonomi predikerer tilfredshet i hjemmet, og tilsammen predikerer jobbtilfredshet og tilfredshet i hjemmet den totale personlige tilfredsheten:
+
+![Total personlig tilfredshet](faktoranalyse2.png){widt=90%}
+
+Dette er det vi teoretisk forventer og vår modell. Når vi samler data ser vi alltid at dataene (selvsagt) aldri passer perfekt inn i vår teoretiske modell. I figuren under er våre faktiske (empiriske) data fra vår undersøkelse representert gjennom de fargede sirklene som knyttes til sin respektive variabel. 
+
+![Total personlig tilfredshet - teori og empiri](faktoranalyse3.png){widt=90%}
+
+Så det vi faktisk ser - empirisk - er egentlig dette:
+
+![Vårt faktiske empiriske bilde](faktoranalyse4.png){width=90%}
+
+Ikke alle målte variabler måler sterkest på den underliggende faktoret, det er overlapping mellom variablene og hva de måler (og det kan se langt verre ut enn figuren under).
+
+![Vårt faktiske empiriske bilde - gruppering](faktoranalyse5.png){width=90%}
+
+Faktoranalysen vil hjelpe oss i å rydde litt opp i dette, ved å se på hvilke variabler som faktisk (ikker teoretisk) korrelerer sterkt med hvilke, og hvilke som korrelerer svakt, for så å hjelpe oss strukturere modellen vi tester.
+
+I figuren over kan vi se at vi nok har en struktur av sterkt korrelerte variabler som måler "sine" underliggende faktorer, men vi ser også at det er en gruppe som teoretisk burde ligge nærmere sine respektive faktorer, men som ser ut til å klumpe seg i midten. Kanskje dette er en bedre representasjon?
+
+![Hva faktoranalyse kan gjøre for oss](faktoranalyse6.png){width=90%}
+
+Her må vi trolig gå tilbake til vårt teoretiske utgangspunkt og spørreskjemate for å se på om vi har funnet en ny faktor, eller om vi skal utelate enkelte målinger/sørsmål for å få en bedre modell. 
+
+#### Eksempel
+
+Vi skal bruke et generert datasett for gjennomgang av eksplorerende faktoranalyse. 
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('fa_spm.xlsx')
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('fa_spm.sav')
+```
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('fa_spm.dta')
+```
+
+```{r}
+fa_spm <- as_tibble(read_excel("fa_spm.xlsx"))
+descr(fa_spm)
+```
+
+Vi kan se for oss at vi har stilt en rekke mennesker 9 spørsmål der de har svart på en skala fra 1-4. Det vi ønsker å se er om disse spørsmålene kan si noe om en eller flere latente variabler. De 9 spørsmålene er altså direkte målt, og vi vil se om vi kan si noe om latente variabler ut fra dette. 
+
+Inngangsverderdiene i en faktoranalyse er korrelasjonsmatrisen som "tygges" (i programvare) til en struktur/et mønster.
+
+#### Korrelasjonsmatrise
+
+Vi ser på korrelasjonsmatrisen. 
+
+```{r}
+korrelasjon <- tab_corr(fa_spm, triangle = "lower")
+korrelasjon
+```
+p < .0001**** , p < .001*** , p < .01**, p < .05*
+
+#### KMO og Bartletts
 
 ```{r warning = FALSE, message = FALSE}
-dim(ames)
+KMO(fa_spm)
+BARTLETT(fa_spm)
 ```
+
+Vi bruker KMO og Bartletts til å se på "faktoriserbarheten". @kaiserIndexFactorialSimplicity1974 anbefaler 0.60 som cut-off verdi for KMO. Bartletts test er signifikant. Bartletts test sammenligner våre faktiske korrelasjonsmatrise med en "identity matrix". "Identity matrix" er en konstruert korrelasjonsmatrise med verdi 1 i diagnoalen og 0 på alle andre korrelasjoner:
+
+```{r echo = FALSE}
+print("Identity Matrix")
+diag_mat <-diag(nrow=7)
+print(diag_mat)
+```
+
+Vi forventer selvsagt korrelasjon i vår korrelasjonsmatrise, og siden Bartletts test bruker nullhypotsene om at det ikke er korrelasjon, forteller en signifikant test at det er meningsfullt å gjennomføre en datareduksjonsteknikk. Hvis vår korrelasjonsmatrise ikke er signifikant forskjellig fra en matrise med null korrelasjon mellom variablene gir det ingen mening i å se etter strukturer av korrelasjoner.
+
+I tillegg kan vi se på "determinant":
+
+```{r}
+fa_spm_cor <- round(cor(fa_spm, use="complete.obs"),2)
+det(fa_spm_cor)
+```
+
+En positiv verdi indikerer også at datasettet egner seg for faktoranalyse.
+
+#### Antall faktorer
+
+#### Kaisers kriterium
+
+```{r}
+eigenComputes(fa_spm_cor)
+```
+
+Kaisers kriterium tilsier 3 faktorer.
+
+#### Scree plott
+
+```{r}
+SCREE(fa_spm_cor, eigen_type = "EFA")
+```
+
+Det kan se ut til at albuen/knekkpunktet tilsier 3 faktorer.
+
+#### Parallell analyse
+
+```{r}
+PARALLEL(fa_spm, eigen_type = "EFA")
+```
+
+Dette peker mot tre faktorer.
+
+#### Analyse
+
+Vi kjører en faktoranalyse med 3 faktorer uten rotasjon.
+
+```{r}
+urotasjon <- EFA(fa_spm, n_factors = 3, method = "ML")
+urotasjon
+```
+
+Vi kan se på **Unrotated loadings** hvordan de ulike spørsmålene lader på de tre faktorene. Det er ikke gitt at bildet er helt enkelt å tolke. For noen spørsmål - som 1, 2, og 3 - ser vi loadings på alle tre faktorene. For andre er det klarere loading på en faktor, eller positivt på en og negativt på en annen. Et hjelpemiddler for å tolke modellen er rotasjon. Rotasjon innebærer egnetlig brae å se på variablene og faktorene fra en annen vinkelt. Som @hartmannELearningProjectSOGA2018 påpeker: "The purpose of a rotation is to produce factors with a mix of high and low loadings and few moderate-sized loadings. The idea is to give meaning to the factors, which helps interpret them. From a mathematical viewpoint, there is no difference between a rotated and unrotated matrix. The fitted model is the same, the uniquenesses are the same, and the proportion of variance explained is the same".
+
+Det finnes to hovedgrupper rotasjoner: ortogonal og oblikk. Blant ortogonale rotasjonsteknikker finner vi varimax, quartimax og equimax. (Direct) oblimin og promax er vanlige oblikke rotasjoner. En hovedforskjell er at ved ortogonal rotasjon tillates ikke at faktorene er korrelerte, mens ved oblikk rotasjon kan faktorene korrelere. Her må vi altså gå tilbake til vår teoretiske forståelse av hva vi undersøker. Svært ofte i samfunnsvitenskapene (vil vi hevde) ønsker vi å tillate at faktorene kan korrelere ved rotasjon (vi antar at i veldig mange tilfeller vil dette være teoretisk fornuftig). I så fall bør vi bruke oblikk rotasjon. Hvis vi har teoretiske vurderinger som tilsier at faktorene ikke korrelerer velger vi ortogonalt. 
+
+Under kapittelet om PCA viste vi ortogonal rotasjon. Dette innebærer at aksene forblir ortogonale på hverandre, mens ved oblikk rotasjon kan aksenens vinkler på hverandre variere. 
+
+![Ortogonal vs. oblikk rotasjon](faktoranalyse7.png)
+
+Når vi kjører en ny faktoranalyse med 3 faktorer ser det slik ut:
+
+```{r}
+mrotasjon <- EFA(fa_spm, n_factors = 3, method = "ML", rotation = "promax")
+mrotasjon
+```
+
+Vi ser en klar struktur i hvilke spørsmål som lader på hvilke faktorer (dette eksempelet er konstruert for å vise en veldig klar faktorstruktur, ofte vil det være større rom for tolkning).
+
+#### Model fit
+
+Vi ser at vi presenteres for flere mål på model fit (se f.eks. @finchUsingFitStatistic2020). De ulike indeksene måler ulike aspekter av model fit. Vi skal gå inn på to av dem. Husk at dette datasettet er generert for å vise en utmerket modell - med andre data vil du sjeldent oppleve så gode verdier på model fit som her.
+
+CFI = Comparative Fit Index. Verdiene her kan være mellom 0 og 1, og verdier over 0.9 regnes som en god fit [@huCutoffCriteriaFit1999] (en mer konservativ terskel kan være 0.95). 
+
+RMSEA = Root Mean Square Error of Approximation. Her oppgis ofte verdiene 0.01, 0.05 og 0.08 som henhodsvis utmerket, god og middels. @finchUsingFitStatistic2020 viser til 0.05 som en cut-off verdi. 
+
+#### Sammenlikning uten rotasjon,  med ortogonal (varimax) og oblikk (promax) rotasjon
+
+```{r}
+fa_ingenrot <- factanal(fa_spm, factors = 3, rotation = "none")
+fa_ingenrot2 <- tibble(fa_ingenrot$loadings[,1], fa_ingenrot$loadings[,2])
+fa_varimax <- factanal(fa_spm, factors = 3, rotation = "varimax")
+fa_varimax2 <- tibble(fa_varimax$loadings[,1], fa_varimax$loadings[,2])
+fa_promax <- factanal(fa_spm, factors = 3, rotation = "promax")
+fa_promax2 <- tibble(fa_promax$loadings[,1], fa_promax$loadings[,2])
+
+plott1 <- ggplot(fa_ingenrot2, aes(x=fa_ingenrot$loadings[,1], y=fa_ingenrot$loadings[,2])) + 
+    geom_point() + 
+    xlim(-1, 1) + 
+    ylim(-1, 1) + 
+    geom_vline(xintercept = 0) + 
+    geom_hline(yintercept = 0) + 
+    labs(title="Uten rotasjon", x = "Faktor 1", y = "Faktor 2") +
+    theme_bw()
+plott2 <- ggplot(fa_varimax2, aes(x=fa_varimax$loadings[,1], y=fa_varimax$loadings[,2])) + 
+    geom_point() + 
+    xlim(-1, 1) + 
+    ylim(-1, 1) + 
+    geom_vline(xintercept = 0) + 
+    geom_hline(yintercept = 0) + 
+    labs(title="Varimax", x = "Faktor 1", y = "Faktor 2") +
+    theme_bw()
+plott3 <- ggplot(fa_promax2, aes(x=fa_promax$loadings[,1], y=fa_promax$loadings[,2])) + 
+    geom_point() + 
+    xlim(-1, 1) + 
+    ylim(-1, 1) + 
+    geom_vline(xintercept = 0) + 
+    geom_hline(yintercept = 0) + 
+    labs(title="Promax", x = "Faktor 1", y = "Faktor 2") +
+    theme_bw()
+ggarrange(plott1, plott2, plott3, ncol= 3, nrow = 1)
+```
+
+### Konfirmerende faktoranalyse (CFA)
+
+Gjennomgangen av Confirmatory Factor Analysis (CFA) er basert på @linConfirmatoryFactorAnalysis2021. Vi håper vår gjennomgang kan framstå som like god som Lins original. 
+
+I forrige del beskrev vi forskjellen på EFA og CFA på følgende måte:
+
+* Eksplorerende faktoranalyse som søker å gruppere variabler i et datasett ut fra korrelasjon uten spesifikke hypoteser på forhånd om hvordan strukturen ser ut. Denne tilnærmingen er således induktiv og i mindre grad drevet av teori - "one can always subject a data set to an EFA but not necessarily a CFA" [Schriesheim i @hurleyExploratoryConfirmatoryFactor1997, s.672].
+* Konfirmerende faktoranalyse starter i andre enden - med hypoteser om dataene og strukturen. Her ønsker vi å bekrefte (konfirmere) en antatt datastruktur i vårt datasett, f.eks. ut fra teoretiske forventninger og tidligere undersøkelser. 
+
+#### Gjennomgang av teori med eksempel
+
+Data i eksempelet er hentet fra @fieldDiscoveringStatisticsUsing2009 (dataene er konstruerte).
+
+Du kan laste ned datasettet i SPSS-format [her](http://www.discoveringstatistics.com/docs/ds_data_files/SPSS%20Data%20Files/) - fila heter SAQ.sav. Vi har også lagt inn fila her:
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file('SAQ.sav')
+```
+
+Vi har modifisert datasettet ved å ta vekk noen unødvendige variabler for vårt formål og gitt variablene nye navn, og kalt denne fila SAQ2.sav:
+
+```{r}
+SAQ <- read_sav("SAQ.sav")
+SAQ2 <- SAQ %>%
+    select(-c(Question_09:FAC4_2)) %>% 
+    rename(Spm1 = Question_01, 
+           Spm2 = Question_02, 
+           Spm3 = Question_03, 
+           Spm4 = Question_04, 
+           Spm5 = Question_05, 
+           Spm6 = Question_06, 
+           Spm7 = Question_07, 
+           Spm8 = Question_08)
+write_sav(SAQ, "SAQ2.sav")
+```
+
+Det grunnleggende ved faktoranalyse er at det ser på korrelasjoner mellom spørsmål/enheter. I vårt datasett - SAQ2 - har vi denne korrelasjonsmatrisen:
+
+```{r}
+SAQ2cor <- round(cor(SAQ2[,1:8]), 2)
+upper <- SAQ2cor
+upper[upper.tri(SAQ2cor)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+I CFA (og SEM) bruker vi imidlertid kovariansmatrise, ikke korrelasjonsmatrise. 
+
+```{r}
+SAQ2cov <- round(cov(SAQ2[,1:8]),2)
+upper <- SAQ2cov
+upper[upper.tri(SAQ2cov)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+Vi kan legge merke til at diagonalen i korrelasjonsmatrisen er 1 (en variabel korrelerer alltid perfekt (1) med seg selv). I en kovariansmatrise er diagnoalen ikke 1. Korrelasjon viser hvordan to variabler er relatert til hverandre, kovarians viser hvordan to variabler er ulike (korrelasjon er standardisert kovarians ved at kovariansen deles på standardavviket for hver variabel).
+
+#### Fra lineær regresjon til faktoranalyse
+
+Fra kapittelet om regresjonsanalyse kjenner vi til:
+
+$y=b_0 + b_1x + e$
+
+der
+
+$y=den\ avhengige\ variabelen$ 
+
+$b_0=intercept$
+
+$b_1=stigningstallet\ (slope)$
+
+$x=uavhengig\ observert\ variabel/prediktor$
+
+$e=feilledd/residual$
+
+I faktoranalyse har vi tilsvarende:
+
+$y_1 = \tau_1 + \lambda_1\eta_1 + e_1$
+
+der
+
+$y_1 = "enheten"/spørsmålet$
+
+$\tau_1 = intercept\ (= "tau")$
+
+$\lambda_1 = koeffisient\ (= lambda\, på\ en\ måte\ som\ slope\ i\ lineær\ regresjon,\ men\ som\ i\ CFA\ kalles\ "loading")$
+
+$\eta_1=faktoren\ (=eta\, uobservert/latent,\ i\ motsetning\ til\ en\ prediktor\ i\ lineær\ regresjon)$
+
+$e_1=feilleddet/residualen$
+
+En distinkt forskjell mellom OLS og CFA er dermed at i OLS er prediktoren observert, mens i CFA er faktoren uobservert.
+
+Vi har altså:
+$$y_1 = \tau_1 + \lambda_1\eta_1 + e_1$$
+
+$$y_2 = \tau_2 + \lambda_2\eta_1 + e_2$$
+
+$$y_3 = \tau_3 + \lambda_3\eta_1 + e_3$$
+
+Disse tre likningene (som kan være de tre første spørsmålene i vårt datasett) er dermed tre separate regresjonslikninger. 
+Som vi kan skrive slik på matriseform:
+
+$$\begin{pmatrix}y_1\\y_2\\y_3\end{pmatrix} = \begin{pmatrix}\tau_1\\\tau_2\\\tau_3\end{pmatrix} + \begin{pmatrix}\lambda_1\\\lambda_2\\\lambda_3\end{pmatrix}(\eta_1) + \begin{pmatrix}e_1\\e_2\\e_3\end{pmatrix}$$
+
+I motsetning til OLS, som er univariat, er CFA multivariat. For hver $y$ har vi en intercept ($\tau$), en loading ($\lambda$) og en residual ($e$). Det alle $y$ har felles er faktoren $\eta$. Og det vi egentlig sier er at den felles faktoren predikerer alle $y$. 
+
+#### Frihetsgrader
+
+La oss anta at vi ser på spm 3, 4 og 5, og sier at vårt teoretiske utgangspunkt er at (den uobserverte/latente) faktoren SPSS-angst beskriver de observerte skårene på de tre spørsmålene. Grafisk kan vi illustrere dette slik:
+
+![Faktoranalyse for tre spørsmål](SPSSangst.png){width=50%}
+
+Vi modifiserer datasettet til å kun inneholde disse tre spørsmålene.
+
+```{r}
+SAQ3 <- SAQ2 %>%
+    select(-c(Spm1, Spm2, Spm6:Spm8))
+tab_corr(SAQ3, triangle = "lower")
+```
+For å se på antall frihetsgrader begynner vi med å se på antallet kjente størrelser (= totalt antall parametere = "known values"). Dette finner vi ved:
+
+$p(p+1)/2$
+
+I vår tenkte modell har vi $p=3$, altså 6 parametere. Dette kan vi forsåvidt se i kovariansmatrisen også, men i en stor kovariansmatrise er det raskere å bruke utregningen.
+
+Imidlertid ser vår modell slik ut:
+
+$$\Sigma(\theta) = \begin{pmatrix}\lambda_{1} \\\lambda_{2} \\\lambda_{3}\end{pmatrix}\begin{pmatrix}\psi_{11}\end{pmatrix}\begin{pmatrix}\lambda_{1} & \lambda_{2} & \lambda_{3}\end{pmatrix} + \begin{pmatrix}\theta_{11} &  0 & 0 \\\theta_{21} & \theta_{22} & 0 \\\theta_{31} &  \theta_{32} & \theta_{33} \\\end{pmatrix}$$
+
+der
+
+$\lambda$ er kjent fra før
+
+$\psi$ er variansen i faktoren
+
+og siste ledd i likningen er kovariansmatrisen.
+
+I modellen vår må vi finne antall unike parametere, som i dette tilfellet er 10 (3 x $\lambda$, 1 x $\psi$ og 4 x $\theta$). Vi kan da finne antallet frie parametere som er $Antall\ unike\ parametere\ - antall\ faste\ parametere = 10 - 0 = 10$
+
+Antall frihetsgrader vil da være: $antall\ kjente\ parametere\ - antall\ frie\ parametere = 6 - 10 = -4$
+
+Dette er uheldig - vi kan ikke ha et større antall frie parametere enn antall kjente parametere, da får vi et negativt antall frihetsgrader og en umulig modell. Dette kalles "underdefined model", og kan sammenliknes med å skulle løse $x + y = 9$: Det finnes uendelig mange løsninger for den likningen. Der vi har 0 frihetsgrader er modellen "just-identified" (dette er tilfelle i regresjonsmodeller), og positivt antall frihetsgrader innebærer "over-identified model".
+
+Løsningen på en "underdefined model" er "fixed parameters" - altså at vi låser et antall parametere til en verdi slik at de ikke kan variere. Hvis vi f.eks. låser 3 x $\lambda$ og 1 x $\psi$ får vi 4 låste parametere som gir: 
+
+$Antall\ unike\ parametere\ - antall\ faste\ parametere = 10 - 4 = 6 (frie parrametere)$ 
+
+som gir
+
+$antall\ kjente\ parametere\ - antall\ frie\ parametere = 10 - 6 = 4$.
+
+Antall frihetsgrader blir da:
+
+$antall\ kjente\ parametere\ - antall\ frie\ parametere = 6 - 4 = 2$
+
+#### Kjøring av modell
+
+```{r}
+modell1 <- 'SPSSangst =~ Spm3 + Spm4 + Spm5'
+SPSS_3var <- cfa(modell1, data = SAQ3)
+summary(SPSS_3var)
+```
+I tabellen over ser vi resultatet av vår modell. Ladningene ("loadings") - $\lambda$ - er gitt under "Latent Variables" - "Estimates". "Estimates" under "Variances", f.eks. 0.815 for Spm3 er residualen for Spm3. 
+I R-pakken **lavaan** som er brukt her, låses ladning for første spørsmål til 1. Vi ser dette under "Latent Variables" der "Estimate" for Spm3 = 1, noe vi også kan se grafisk under. Siden ladningen til Spm3 er låst til 1 ("fixed parameter") betyr det at $\lambda$ for de to andre spørsmålene er vist i relasjon til/skalert til Spm3. Dette gjør tolkning vanskelig. 
+
+```{r fig.cap = "Plott av faktoranalyse for tre spørsmål"}
+nodenavnf <- c(
+    "Standard deviations excite me",
+    "I dream that Pearson is attacking me with correlation coefficients",
+    "I don't understand statistics",
+    "SPSS Anxiety Questionnaire"
+)
+semPaths(SPSS_3var,
+         what = "std",
+         whatLabels = "est",
+         style = "lisrel",
+         residScale = 10,
+         nodeNames = nodenavnf,
+         theme = "colorblind",
+         nCharNodes = 0,
+         reorder = FALSE,
+         legend.cex = 0.35,
+         rotation = 2,
+         sizeMan = 8,
+         sizeLat = 10
+)
+```
+
+I stedet for å låse første ladning kan vi låse variansen i faktoren:
+
+```{r}
+modell2 <- "SPSSangst =~ Spm3 + Spm4 + Spm5"
+SPSS_3var_2 <- cfa(modell2, data = SAQ3, std.lv = TRUE)
+summary(SPSS_3var_2)
+```
+
+Vi ser at $\lambda$ - ladningen - for Spm3 ikke lenger er 1. 
+```{r fig.cap = "Plott av faktoranalyse for tre spørsmål - låst varians i faktor"}
+nodenavn <- c(
+    "Standard deviations excite me",
+    "I dream that Pearson is attacking me with correlation coefficients",
+    "I don't understand statistics",
+    "SPSS Anxiety Questionnaire"
+)
+semPaths(SPSS_3var_2,
+         what = "std",
+         whatLabels = "est",
+         style = "lisrel",
+         residScale = 10,
+         nodeNames = nodenavn,
+         theme = "colorblind",
+         nCharNodes = 0,
+         reorder = FALSE,
+         legend.cex = 0.35,
+         rotation = 2,
+         sizeMan = 8,
+         sizeLat = 10
+)
+```
+
+#### Full modell på datasettet
+
+Vi ønsker å lage en CFA-modell for SPSSangst med alle åtte spørsmålene.
+
+```{r}
+modell3 <- "SPSSangst =~ Spm1 + Spm2 + Spm3 + Spm4 + Spm5 + Spm6 + Spm7 + Spm8"
+SPSS_8 <- cfa(modell3, data = SAQ2, std.lv = TRUE)
+summary(SPSS_8, fit.measure = TRUE, standardized = TRUE)
+```
+
+En noe mer oversiktlig tabell over parametrene, modifisert fra @dudekConfirmatoryFactorAnalysis2019:
+
+```{r}
+parameterEstimates(SPSS_8,standardized = FALSE) %>% 
+    filter(op=="=~") %>%
+    select(Indicator = rhs,B = est, SE = se, Z = z,'p-value' = pvalue) %>%
+    knitr::kable(digits = 3, booktabs = TRUE, format = "markdown", caption = "Faktorladninger")
+```
+
+
+```{r fig.cap = "Plott av faktoranalyse for alle åtte spørsmål"}
+nodenavn2 <- c(
+    "Statistics make me cry",
+    "My friends will think I'm stupid for not being able to cope with SPSS",
+    "Standard deviations excite me",
+    "I dream that Pearson is attacking me with correlation coefficients",
+    "I don't understand statistics",
+    "I have little experience of computers",
+    "All computers hate me",
+    "I have never been good at mathematics",
+    "SPSS Anxiety Questionnaire"
+)
+semPaths(SPSS_8,
+         what = "std",
+         whatLabels = "est",
+         style = "lisrel",
+         residScale = 8,
+         nodeNames = nodenavn2,
+         theme = "colorblind",
+         nCharNodes = 0,
+         manifests = paste0("Spm", 1:8),
+         reorder = FALSE,
+         legend.cex = 0.35,
+         rotation = 2,
+         sizeMan = 6,
+         sizeLat = 10
+)
+```
+
+Vi kan isolere/hente ut ladningene ($\lambda$ = lambda):
+```{r}
+round(semMatrixAlgebra(SPSS_8, LY), digits = 3)
+```
+
+Vi kan også se isolert på residualenes varians ($\theta$ = theta):
+```{r}
+thetaverdier <- semMatrixAlgebra(SPSS_8, TE)
+upper <- format(round(thetaverdier, digits = 3), nsmall = 3)
+upper[upper.tri(thetaverdier)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+Dere finner igjen lambda- og thetaverdiene i såvel tabellearisk som grafisk output ovenfor. 
+
+#### Tolkning av resultatene
+
+Det første vi kan se er at "Estimate" for SPSSangst er 1.000. Dette er fordi vi har låst denne parameteren, hvilket innebærer at variansen er standardisert. Så hvis vi har en enhets økning i SPSSangst, kan vi lese endringen for de åtte spørsmålene. F.eks. vil Spm1 øke med 0.485 i Spm1's skala (for Spm1:Spm8 er ikke standardisert, kun variansen) (se under "Latent Variables" - "Estimate"), og Spm2 vil gå ned med 0.198 ("Estimate" er -0.198). I den grafiske presentasjonen av modellen ser vi det samme, også illustrert med blå og rød farge i dette tilfellet for  positiv eller negativ "Estimate". 
+
+For å gjøre tolkningen lettere kan vi standardisere både variansen i faktoren (til 1) og enhetene/spørsmålene i seg selv:
+
+```{r}
+parameterEstimates(SPSS_8,standardized = TRUE) %>% 
+    filter(op=="=~") %>%
+    select(Indicator = rhs, B = est, SE = se,Z = z, 'p-value' = pvalue, Std.Beta = std.all) %>%
+    knitr::kable(digits = 3, booktabs = TRUE, format = "markdown", caption = "Faktorladninger")
+```
+
+Her ønsker vi å se på kolonnen "Std.all" i originaloutput (i vår forenkle tabell = "Std.Beta"), som vi kan sammenlikne med standardiserte betaverdier i lineær regresjon. Tolkningen nå blir: For ett standardavviks økning i SPSSangst øker Spm1 med 0.586 standardavvik, mens Spm går ned med 0.233 standardavvik (-0.233). Dette vil vi (som regel) kalle standardiserte ladninger ("standardized loadings"). En fordel med standardiserte ladninger er at vi kan lettere sammenlikne ladningen til hverandre fordi de er nettopp standardiserte.  
+
+```{r fig.cap = "Plott av faktoranalyse for alle åtte spørsmål - standardisert"}
+semPaths(SPSS_8,
+         what = "std",
+         whatLabels = "std",
+         style = "lisrel",
+         residScale = 8,
+         nodeNames = nodenavn,
+         theme = "colorblind",
+         nCharNodes = 0,
+         manifests = paste0("Spm", 1:8),
+         reorder = FALSE,
+         legend.cex = 0.35,
+         rotation = 2,
+         sizeMan = 6,
+         sizeLat = 10
+)
+```
+
+#### Hvor god er modellen vår ("Model Fit Statistics")?
+
+Et viktig poeng før vi gir oss i kast med vurdering av hvor god modellen er, er at for å kunne si noe om dette må modellen ha positivt antall frihetsgrader (jfr. delkapittel om frihetsgrader lenger opp). 
+
+#### Kjikvadrattest
+
+![](CFA_ModelFit1.png){width=70%}
+
+I en CFA ønsker vi at p-verdien for kjikvadratverdien er større enn 0.05 - vi ønsker altså ikke å forkaste nullhypotesen, men med en p-verdi < 0.001 må vi forkaste nullhypotesen (nullhypotsen her innebærer at det ikke er forskjell mellom vår modell og populasjonen, men det ønsker vi jo heller ikke - vi ønsker at vår modell representerer populasjonen). Tilsynelatende har vi derfor i forhold til kjikvadrattesten en dårlig modell. Her må vi imidlertid være klar over at store utvalgsstørrelser gir en stor risiko for at vi får en signifikant kjikvadrattest. I dette tilfellet har vi 2571 observasjoner, noe som er høyt.
+
+#### "Approximate Fit Index" - RMSEA, CFI og TLI
+
+Kjikvadrattest er en "Exact Fit"-test, hvilket innebærer at vi hypotetiserer at utvalget/modellen er lik populasjonen. Det finnes imidlertid andre tester som går under betegnelsen "Approximate Fit Index", hvilket innebærer at man tilnærmer seg dette med "nærme nok" (altså ikke absolutt). Vi skal ikke gå inn i detaljer på hvordan disse indeksene regnes ut, men begrense oss til å si at disse bygger på å sammenlikne en verst mulig modell (= ingen kovariasjoner er med, kun varianser for den enkelte enhet/spørsmål) med en best mulig modell (= alle varianser og kovarianser er med -> "just-identified" modell), og deretter plasserer vår modell inn i dette bildet. 
+
+CFI = "Confirmatory Factor Index" ønsker vi skal være over 0.95
+
+TLI = "Tucker Lewis Index" ønsker vi skal være over 0.90
+
+![](CFA_ModelFit2.png){width=70%}
+
+RMSEA = "Root Mean Square Error of Approximation" bør være under eller lik 0.05 for "close fit", og mellom 0.05 og 0.08 for "reasonable approximate fit". RMSEA over 0.08 er "poor fit".
+
+![](CFA_ModelFit3.png){width=70%}
+
+Alle disse tre målene på Model Fit er ikke særlig gode. Modellen vår er trolig ikke den beste modellen for SPSSangst. Et tiltak vi kan se på er hvor store de enkelte standardiserte ladningen er. Vi ser (f.eks. i det siste diagrammet) at Spm2 lader med -0.23, noe som er en god del lavere enn de fleste andre. Hva skjer om vi tar bort dette spørsmålet i en revidert modell?
+
+```{r}
+modell4 <- "SPSSangst =~ Spm1 + Spm3 + Spm4 + Spm5 + Spm6 + Spm7 + Spm8"
+SPSS_7 <- cfa(modell4, data = SAQ2, std.lv = TRUE)
+fitMeasures(SPSS_7, c("cfi","tli", "rmsea"))
+# summary(SPSS_7, fit.measure = TRUE, standardized = TRUE)
+```
+
+Vi ser at forbedringene ikke er store, og at modellen vår ikke ser kjempebra ut (den er ikke elendig, men under cut-off verdiene vi normalt opererer med).
+
+#### Kryssvalidering ("cross-validation")
+
+Dette er også omtalt under delkapittelet om multippel regresjonsanalyse så en litt mer utførlig beskrivelse gis der.
+
+Kryssvalidering innebærer at vi deler datasettet i to: en del vi utvikler modeller på, og en del vi tester vår utvalgte modell på. På den måten unngår vi at vi bruker hele datasettet på å grave fram (litt sjansepreget) en modell som er ok uten å vite om vi bare har hatt flaks. Hvis vår valgte modell har en god fit med den delen av dataene vi tester på kan vi si noe mer sikkert om vår modell.
+
+I R kan vi bruke pakken **kfa** som gjør dette ganske lett for oss. 
+
+For hvert utvalg kjøres en EFA på alle utvalg unntatt for et uvalg som er et valideringsutvalg. EFA-utvalgene og valideringsutvalget utgjør et "fold". Neste iterasjon kjøres EFA på alle utvalg i testdataene unntatt et nytt utvalg som blir valideringsutvalg. Dette utgjør et nytt "fold". Slik kjøres prosedyren til alle utvalg har vært valideringsutvalg for de andres EFA. 
 
 
 ```{r}
-dtregress <- rpart(
-    formula = Sale_Price ~ .,
-    data    = ames_trening,
-    method  = "anova")
-dtregress
+kfamodell <- kfa(
+    SAQ2,
+    k = 5,
+    m = 1,
+    seed = 1243)
+
+k_model_fit(kfamodell, index = "default", by.fold = FALSE)
 ```
 
-Output over beskriver stegene i byggingen av beslutningstreet (splittene). Vi ser at vi starter med 2477 salgsobjekter. Den første splitten skjer gjennom variabelen "Garage_Cars" (splitt på 2 og 3). Dette danner utgangspunkt for gren nr 2 ("Garage_Cars" < 2.5 og 3 ("Garage_Cars" > 2.5. Gren 2 omfatter 1904 boliger med gjennomsnittlig salgspris på 161403.4 og gren 3 omfatter 293 boliger med gjennomsnittlig salgspris på 306268.3. Grenene 2 og 3 splittes videre i hhv. 4 og 5, og 6 og 7. Osv. 
+Verdiene for hhv. CFI og RMSEA kan sammenliknes med foreslåtte cutoff-verider lenger opp for å bidra til vurderingen av modellen. Resultatene i dette tilfellet bekrefter på mange måter inntrykket vi har før cross-validation.
 
-Plottet kan fort se smått og uoversiktlig ut (for et mindre datasett med færre grener og splitter vil dette se mer oversiktlig ut), men med litt zooming vil man se beslutningstreet og f.eks. hvor mange prosent av observasjonene som ligger i de repsektive grenene.
-
-Hvis vi ser litt nøyere på beslutningstreet ser vi at vi ender opp med 10 terminalnoder ut av 2477 observasjoner for 82 variabler i treningssettet. Dette skjer fordi algoritmen i rpart-pakken foretar beregninger for å se hvor det ikke gir mer å inkludere flere (gjennom en kryssvalidering). Vi ser forsåvidt det samme i beslutningstreoversikten lenger opp.
-
-Vi kan se dette i følgende plott:
-
-```{r}
-plotcp(dtregress)
-```
-
-I grafen over ser vi på y-aksen relative feil gjennom kryssvalidering. Den nedre x-aksen er "cost complexity" verdi. Jo flere terminalnoder et belsutningstre har, jo mer kompleks blir treet (modellen). Cost complexity er en terskelverdi - algoritmen vil splitte noden kun hvis modellen forbedres med en verdi større enn terskelverdien. I vår modell/vårt tre skjer dette ved 12 terminalnoder. Den stiplede linjen viser en alternativ tilnærming som i dette tilfellet skulle tilsi 10 terminalnoder.
-
-Hvis vi tvinger modellen til å ikke ta hensyn til "cost complexity" lar vi modellen kjøre antall trær fullt ut:
-
-```{r}
-dtregress2 <- rpart(
-    formula = Sale_Price ~ .,
-    data    = ames_trening,
-    method  = "anova", 
-    control = list(cp = 0, xval = 10))
-
-plotcp(dtregress2)
-abline(v = 10, lty = "dashed", col = "red")
-```
-
-Vi kan også se på den relative innflytelsen for de ulike variablene:
-
-```{r}
-innflytelse <- as.data.frame(varImp(dtregress)) %>%
-    filter(Overall > 0) %>%
-    arrange(Overall)
-innflytelse <- as.matrix(innflytelse)
-dotchart(innflytelse, pch = 21, bg = "red",
-         cex = 0.85,
-         xlab="Innflytelse")
-```
-
-```{r warning = FALSE, message = FALSE}
-dtrprediksjon <- predict(dtregress)
-modelprediksjon <- sqrt(mean((ames_test$Sale_Price - dtrprediksjon)^2))
-```
-
-RMSE er `r round(modelprediksjon, 2)`. Dvs at i gjennomsnitt bommer modellens prediksjoner med \$`r round(modelprediksjon, 2)` dollar.
-
-Decision Tree Regression kan i seg selv være en noe lunefull og dårlig modell for prediksjon. Det er ikke sjeldent å finne en god fit til dataene, men ofte en overfit (altså at vi får en god fit til dataene, men lav prediksjonsnøyaktighet). Derimot er den grunnstammen (no pun intended) i "Random Forests" modellering som vi skal se på i neste delkapittel. Før vi går til Random Forest skal vi se på en metodikk for å redusere sårbarheten til et enkelt beslutningstre. Denne metodikken kalles "bagging" - fra "*b*ootstrap *agg*regating [@breimanBaggingPredictors1996].
-
-#### Bagging
-
-@boehmkeRegressionTrees2018 illustrerer bagging slik:
-
-![Bagging - fra @boehmkeRegressionTrees2018, fig.3: "The bagging process"](bagging.png){width = 90%}
-
-Konseptet kan minne om kryssvalidering. Man ender opp med samlet prediksjon fra x antall "bagger" fra treningssettet. Hver bag utvikler sin modell som til sammen altså utgjør en samlet prediksjon. På den måten søker man å redusere variasjonen fra enkelttrær, og sannsynligheten for overfitting reduseres. Som sagt minner dette om kryssvalidering. Forskjellen er at i bagging tar gjennomsnittet av ulike modeller, mens kryssvalidering evaluerer et antall surrogatmodeller som antas å være like. Kryssvalidering er med andre ord en teknikk for å vurdere påliteligheten ("reliability") for en modell. Bagging er ikke spesifikk for DTR, men kan brukes på enhver regresjonsmodell. Imidlertid har metodikken mest for seg der variasjonen er stor, slik tilfellet ofte er med DTR. 
-
-Vi ser på bagging i DTR-eksempelet.
-
-```{r}
-ames_bag1 <- bagging(
-  formula = Sale_Price ~ .,
-  data = ames_trening,
-  nbagg = 100,  
-  coob = TRUE,
-  control = rpart.control(minsplit = 2, cp = 0))
-ames_bag1
-```
-
-Vi kan se at RMSE er `r ames_bag1$err`.
-
-Inflytelse (viser de ti største):
-
-```{r}
-vip2 <- as.data.frame(varImp(ames_bag1), scale = TRUE) %>%
-    filter(Overall > 0) %>%
-    arrange(desc(Overall)) %>%
-    slice(1:10)
-vip2
-```
-
-### Random Forest regresjon
-
-Den enkleste (?) måten å beskrive hva hva Random Forest regresjon er er å tenke tenke tilbake på Decision Tree regresjon som ETT tre, og Random Forest som MANGE trær (= en skog). 
-Sagt på en annen måte: Vi lager mange decision trees og lager prediksjoner for hvert tre og ser på gjennomsnittet av alle prediksjonene. Vi vet at Decision Tree regresjon kan være en noe lunefull og dårlig modell for prediksjon, og hensikten med Random Forest er å mitigere dene lunefullheten gjennom å repetere prosessen (f.eks. minst 500 ganger) og deretter se på gjennomsnittet av prediksjonene. 
-
-Tenk deg at du blir bedt om å gjette hvor mange erter det er i glasset under:
-
-![Bilde: colourbox.com](Peas.jpg){width=85%}
-
-Ditt ene forsøk kan være temmelig nære, eller ganske langt unna. Hvis du derimot ber 1000 mennesker gjette og tar gjennomsnittet av alle gjetningene vil du med stor sannsynlighet i de fleste tilfeller treffe mye nærmere det riktige tallet enn om du gjetter en gang. Prinsippet med Random Forest vs. Decision Tree er i grunnen det samme. 
-
-
-```{r}
-rfregress500 <- randomForest(Sale_Price ~ ., 
-                          data = ames,
-                          ntree = 500)
-rf500 <- mean(predict(rfregress500, newdata = ames_test, predict.all = TRUE)$individual)
-rf500
-```
-
-Vi kan se at NRMSE er betydelig lavere enn for de andre regresjonsmodellene i dette kapittelet. 
-
-```{r}
-rfprediksjon <- predict(rfregress500, newdata = ames_test)
-rmse5 <- as.data.frame(nrmse(rfprediksjon,  ames_test$Sale_Price))
-rmse5
-```
-
-### Ridge regresjon
-
-I kapittelet om regresjonsanalyse (ikke medregnet logistisk regresjon) har vi brukt minste kvadratsums metode ("Ordinary Least Squares"). Dersom vi har mange forklaringsvariabler i forhold til antall observasjoner eller stor korrelasjon mellom forklaringsvariablene (multikolinearitet) kan det være aktuelt å bruke alternative metoder fordi minste kvadratsums metode vil medføre stor varians i estimatorene. En av disse er "ridge regression" [@hoerlRidgeRegressionApplications; @hoerlRidgeRegressionBiased]. Vi tenker det er i overkant teknisk å gå inn i utregning (se f.eks. [her](https://www.publichealth.columbia.edu/research/population-health-methods/ridge-regression) for en rimelig bra forklaring (på engelsk), men poenget er å få estimatorer som er mer "korrekt" under de betingelsene som er nevnt over. Ridge regresjon utvider lineær regresjon ved å ta hensyn til kompleksiteten i modellen ved å introdusere en "straffeparameter" ("penalty parameter") som utgjøres av den kvadrerte størrelsen av koeffisientene.   
-
-For å illustrere dette bruker vi et eksempel fra @zachLassoRegressionStepbyStep2020 og et innebygd og ofte brukt datasett i R ("mtcars"). Den avhengige variabelen er "hp" ("gross horsepower"), og "mpg" ("Miles pr gallon"), "wt" ("weight"), "drat" ("Rear axle ratio") og "qsec" ("1/4 mile time") som de uavhengige variablene. 
-Den avhengige variabelen er da:
-
-```{r}
-y <- data.matrix(mtcars[mtcars$hp],)
-y
-```
-
-Og de uavhengige variablene:
-
-```{r}
-x <- data.matrix(mtcars[, c('mpg', 'wt', 'drat', 'qsec')])
-x
-```
-
-Modellen blir da:
-
-```{r}
-ridgemodell <- glmnet(x, y, alpha = 0)
-summary(ridgemodell)
-```
-
-Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såkalt lambdaverdi ($\lambda$) som gir lavest MSE (Mean Square Error).
-
-```{r}
-cv_ridgemodell <- cv.glmnet(x, y, alpha = 0)
-beste_lambda <- cv_ridgemodell$lambda.min
-beste_lambda
-plot(cv_ridgemodell)
-```
-
-Vi kan da optimalisere modellen gjennom den identifiserte beste $\lambda$.
-
-```{r}
-beste_modell <- glmnet(x, y, alpha = 0, lambda = beste_lambda)
-coef(beste_modell)
-```
-
-Et interessant plott er et "trace-plott" som viser hgvordan koeffisientene endrer seg som følge av endret lamda-verdi:
-
-```{r}
-plot(ridgemodell, xvar = "lambda")
-```
-
-Til slutt kan vi se på $R^2$ for beste modell:
-
-```{r}
-y_predicted <- predict(ridgemodell, s = beste_lambda, newx = x)
-sst <- sum((y - mean(y))^2)
-sse <- sum((y_predicted - y)^2)
-rsq <- 1 - sse/sst
-rsq
-```
-
-Beste modell kan dermed forklare `r round(rsq, 3)*100` % av variansen i den avhengige variabelen.
-
-## Klassifisering
-
-
+ 

@@ -4,16 +4,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Kapittel 11 Polynomisk regresjon | Anvendt kvantitativ analyse</title>
+<title>Kapittel 12 Polynomisk regresjon | Anvendt kvantitativ analyse</title>
 <meta name="author" content="Nils Kvilvang">
-<meta name="generator" content="bookdown 0.27 with bs4_book()">
-<meta property="og:title" content="Kapittel 11 Polynomisk regresjon | Anvendt kvantitativ analyse">
+<meta name="generator" content="bookdown 0.28 with bs4_book()">
+<meta property="og:title" content="Kapittel 12 Polynomisk regresjon | Anvendt kvantitativ analyse">
 <meta property="og:type" content="book">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kapittel 11 Polynomisk regresjon | Anvendt kvantitativ analyse">
+<meta name="twitter:title" content="Kapittel 12 Polynomisk regresjon | Anvendt kvantitativ analyse">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.4.0/transition.js"></script><script src="libs/bs3compat-0.4.0/tabs.js"></script><script src="libs/bs3compat-0.4.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="libs/tabwid-1.0.0/tabwid.css" rel="stylesheet">
 <link href="libs/tabwid-1.0.0/scrool.css" rel="stylesheet">
@@ -73,7 +73,7 @@
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
         <ul class="book-toc list-unstyled">
 <li><a class="" href="index.html">Introduksjon</a></li>
-<li><a class="" href="hvorfor-dette-notatet.html"><span class="header-section-number">1</span> Hvorfor dette notatet?</a></li>
+<li><a class="" href="hvorfor-denne-boka.html"><span class="header-section-number">1</span> Hvorfor denne boka?</a></li>
 <li><a class="" href="grunnleggende-begreper-og-sammenhenger.html"><span class="header-section-number">2</span> Grunnleggende begreper og sammenhenger</a></li>
 <li><a class="" href="samvariasjon-og-korrelasjon.html"><span class="header-section-number">3</span> Samvariasjon og korrelasjon</a></li>
 <li><a class="" href="univariat-analyse.html"><span class="header-section-number">4</span> Univariat analyse</a></li>
@@ -83,12 +83,13 @@
 <li><a class="" href="variansanalyse---manova-multivariate-analysis-of-variance.html"><span class="header-section-number">8</span> Variansanalyse - MANOVA (“Multivariate Analysis of Variance”)</a></li>
 <li><a class="" href="regresjonsanalyse---ols.html"><span class="header-section-number">9</span> Regresjonsanalyse - OLS</a></li>
 <li><a class="" href="iv-regresjon.html"><span class="header-section-number">10</span> IV regresjon</a></li>
-<li><a class="active" href="polynomisk-regresjon.html"><span class="header-section-number">11</span> Polynomisk regresjon</a></li>
-<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">12</span> Logistisk regresjon</a></li>
-<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">13</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
-<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">14</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
-<li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li>
-<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">16</span> Maskinlæring gjennom “tidymodels”</a></li>
+<li><a class="" href="regularized-regression.html"><span class="header-section-number">11</span> Regularized regression</a></li>
+<li><a class="active" href="polynomisk-regresjon.html"><span class="header-section-number">12</span> Polynomisk regresjon</a></li>
+<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">13</span> Logistisk regresjon</a></li>
+<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">14</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">15</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">16</span> Maskinlæring (Machine Learning)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">17</span> Maskinlæring gjennom “tidymodels”</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-a---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-b---chebyshevs-teorem.html">Vedlegg B - Chebyshevs teorem</a></li>
@@ -99,25 +100,25 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="polynomisk-regresjon" class="section level1" number="11">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="polynomisk-regresjon" class="section level1" number="12">
 <h1>
-<span class="header-section-number">Kapittel 11</span> Polynomisk regresjon<a class="anchor" aria-label="anchor" href="#polynomisk-regresjon"><i class="fas fa-link"></i></a>
+<span class="header-section-number">Kapittel 12</span> Polynomisk regresjon<a class="anchor" aria-label="anchor" href="#polynomisk-regresjon"><i class="fas fa-link"></i></a>
 </h1>
 <p>R-pakker brukt i dette kapittelet:</p>
-<div class="sourceCode" id="cb373"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb392"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span><span class="va">tidyverse</span>, <span class="va">readxl</span>, <span class="va">ggpubr</span>, <span class="va">sjPlot</span><span class="op">)</span></span></code></pre></div>
 <p>Anta at vi har lønnsdata fra en bedrift som har regnet ut snittlønn for de 10 stillingskategoriene de har av ansatte.</p>
 <p><a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="polydata.xlsx">Download polydata.xlsx</a></p>
-<div class="sourceCode" id="cb374"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb393"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">polydata</span> <span class="op">&lt;-</span> <span class="fu">read_excel</span><span class="op">(</span><span class="st">"polydata.xlsx"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb375"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb394"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">glimpse</span><span class="op">(</span><span class="va">polydata</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 10</span></span>
 <span><span class="co">#&gt; Columns: 2</span></span>
 <span><span class="co">#&gt; $ Stillingskategori &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10</span></span>
 <span><span class="co">#&gt; $ Snittlonn         &lt;dbl&gt; 35000, 41000, 48000, 63000, 8800…</span></span></code></pre></div>
 <p>Vi kan se på disse dataene og se en klar ikke-lineær trend. Vi har i koden under vist en modifisert funksjon fra <span class="citation">S. Johnston (2012)</span> som trekker ut parametre fra regresjonslikningen og legger det inn på toppen av plottet. Vi inkluderer også kode til “vanlig plott” kommentert ut med # slik at man kan bruke dette hvis man foretrekker det.</p>
-<div class="sourceCode" id="cb376"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb395"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">enkelOLS</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Snittlonn</span> <span class="op">~</span> <span class="va">Stillingskategori</span>, data <span class="op">=</span> <span class="va">polydata</span><span class="op">)</span></span>
 <span><span class="co"># Kode modifisert fra Susan Johnstone (2012)</span></span>
 <span><span class="va">ggplotRegression</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">{</span></span>
@@ -134,11 +135,11 @@
 <span><span class="fu">ggplotRegression</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Snittlonn</span> <span class="op">~</span> <span class="va">Stillingskategori</span>, data <span class="op">=</span> <span class="va">polydata</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-6"></span>
-<img src="11_files/figure-html/unnamed-chunk-6-1.png" alt="Ikke-linear forhold mellom stillingskategori og snittlonn" width="672"><p class="caption">
+<img src="12_files/figure-html/unnamed-chunk-6-1.png" alt="Ikke-linear forhold mellom stillingskategori og snittlonn" width="672"><p class="caption">
 Figure 2.2: Ikke-linear forhold mellom stillingskategori og snittlonn
 </p>
 </div>
-<div class="sourceCode" id="cb377"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb396"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># "Vanlig kode for plott:</span></span>
 <span><span class="co"># ggplot(polydata, aes(x = Stillingskategori, y = Snittlonn), col = "red") +</span></span>
@@ -148,7 +149,7 @@ Figure 2.2: Ikke-linear forhold mellom stillingskategori og snittlonn
 <span><span class="co">#     ylab("Gjennomsnittslonn") +</span></span>
 <span><span class="co">#     theme_bw()</span></span></code></pre></div>
 <p>Siden vi er inne på modifisering av plott med data fra regresjonslikningen kan vi også vise et alternativ til funksjonen fra <span class="citation">S. Johnston (2012)</span>. Observante lesere vil se at koden nedenfor avrunder tall som legge i plottet, mens funksjonen i plottet over ikke gjøre det.</p>
-<div class="sourceCode" id="cb378"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb397"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">polydata</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Stillingskategori</span>, y <span class="op">=</span> <span class="va">Snittlonn</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">stat_smooth</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"lm"</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -158,7 +159,7 @@ Figure 2.2: Ikke-linear forhold mellom stillingskategori og snittlonn
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-7"></span>
-<img src="11_files/figure-html/unnamed-chunk-7-1.png" alt="Alternativt plott med parametere" width="672"><p class="caption">
+<img src="12_files/figure-html/unnamed-chunk-7-1.png" alt="Alternativt plott med parametere" width="672"><p class="caption">
 Figure 2.3: Alternativt plott med parametere
 </p>
 </div>
@@ -170,7 +171,7 @@ Figure 2.3: Alternativt plott med parametere
 <p>En polynomisk regresjonslikning likner, men her introduserer vi “i n-te ledd”:</p>
 <p><span class="math inline">\(y=\alpha + \beta_1x_1 + \beta_2x_1^2+\ ...\ +\beta_nx_1^n\)</span></p>
 <p>Selv om dette sikkert er kjent er det greit å illustrere ulike n’te-ledd grafisk:</p>
-<div class="sourceCode" id="cb379"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb398"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">funksjonsgrafer</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html">stat_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="va">x</span><span class="op">^</span><span class="fl">4</span><span class="op">}</span>, color<span class="op">=</span><span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>        </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html">stat_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="va">x</span><span class="op">^</span><span class="fl">3</span><span class="op">}</span>, color<span class="op">=</span><span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -187,12 +188,12 @@ Figure 2.3: Alternativt plott med parametere
 <span><span class="va">funksjonsgrafer</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-8"></span>
-<img src="11_files/figure-html/unnamed-chunk-8-1.png" alt="n'te leddsfunksjoner #1" width="672"><p class="caption">
+<img src="12_files/figure-html/unnamed-chunk-8-1.png" alt="n'te leddsfunksjoner #1" width="672"><p class="caption">
 Figure 2.4: n’te leddsfunksjoner #1
 </p>
 </div>
 <p>Imidlertid er vi sjeldent interessert i negative x-verdier i praktisk bruk (matematisk er det selvsagt interessant, men som sagt sjeldent i anvendt analyse som vi driver med).</p>
-<div class="sourceCode" id="cb380"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb399"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">funksjonsgrafer2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html">stat_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="va">x</span><span class="op">^</span><span class="fl">4</span><span class="op">}</span>, color<span class="op">=</span><span class="st">"red"</span>, lwd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>        </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_function.html">stat_function</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="va">x</span><span class="op">^</span><span class="fl">3</span><span class="op">}</span>, color<span class="op">=</span><span class="st">"blue"</span>, lwd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -210,17 +211,17 @@ Figure 2.4: n’te leddsfunksjoner #1
 <span><span class="va">funksjonsgrafer2</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-9"></span>
-<img src="11_files/figure-html/unnamed-chunk-9-1.png" alt="n'te leddsfunksjoner #2" width="672"><p class="caption">
+<img src="12_files/figure-html/unnamed-chunk-9-1.png" alt="n'te leddsfunksjoner #2" width="672"><p class="caption">
 Figure 2.5: n’te leddsfunksjoner #2
 </p>
 </div>
 <p>Vi skal nedenfor vise hvordan vi kan utvikle polynomisk regresjon, men det er på sin plass å komme med en liten advarsel. Vi kan, som nevnt, i prinsippet ha så mange med så mange ledd vi vil, og muligens vil vi få bedre og bedre “fit” til dataene jo flere vi legger til. Det betyr imidlertid ikke at modellen blir bedre og bedre til å predikere framtidige verdier. Vi kan få det vi kaller overtilpasning (“overfitting”), dvs at modellen vår passer helt utmerket til dataene våre, men at modellen ikke vil klare å predikere nye verdier med særlig god treffsikkerhet. Det er alltid en avveining mellom å få en modell som er godt tilpasset dataene, predikativ evne og modellens kompleksitet/enkelhet (alt annet likt foretrekker vi som regel enklere modeller framfor komplekse modeller). Vi skal altså alltid være bevisst på hva vi gjør i polynomisk regresjon (som med alt annet selvsagt…).</p>
 <p>Et annet punkt, som forsåvidt også gjelder andre modeller, er at vi skal være klar over i hvilket område - x-verdier - modellen kan sies å være gyldig. Som vi ser av grafene ovenfor er det tildels store forskjeller i hva modellene vil predikere, og valg av modell må ses i sammenheng med det området vi har observasjoner og hvilket område vi ønsker å predikere i. Vi skal være ekstra observante når vi tenker på å gjøre prediksjoner i områder vi ikke har modellert, eller i områder vi ikke har hatt data på når vi har modellert.</p>
-<div id="modellering-av-andregrads-quadratic-polynomisk-regresjon" class="section level2" number="11.1">
+<div id="modellering-av-andregrads-quadratic-polynomisk-regresjon" class="section level2" number="12.1">
 <h2>
-<span class="header-section-number">11.1</span> Modellering av andregrads (“quadratic”) polynomisk regresjon<a class="anchor" aria-label="anchor" href="#modellering-av-andregrads-quadratic-polynomisk-regresjon"><i class="fas fa-link"></i></a>
+<span class="header-section-number">12.1</span> Modellering av andregrads (“quadratic”) polynomisk regresjon<a class="anchor" aria-label="anchor" href="#modellering-av-andregrads-quadratic-polynomisk-regresjon"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb381"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb400"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori2</span> <span class="op">&lt;-</span> <span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori</span><span class="op">^</span><span class="fl">2</span></span>
 <span><span class="fu">glimpse</span><span class="op">(</span><span class="va">polydata</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 10</span></span>
@@ -229,7 +230,7 @@ Figure 2.5: n’te leddsfunksjoner #2
 <span><span class="co">#&gt; $ Snittlonn          &lt;dbl&gt; 35000, 41000, 48000, 63000, 880…</span></span>
 <span><span class="co">#&gt; $ Stillingskategori2 &lt;dbl&gt; 1, 4, 9, 16, 25, 36, 49, 64, 81…</span></span></code></pre></div>
 <p>Vi har altså laget en kvadrert variabel som heter Stillingskategori2. Lager så polynomial modell med ^2 ledd:</p>
-<div class="sourceCode" id="cb382"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb401"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poly_reg2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Snittlonn</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">polydata</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori</span>, y <span class="op">=</span> <span class="va">polydata</span><span class="op">$</span><span class="va">Snittlonn</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -239,16 +240,16 @@ Figure 2.5: n’te leddsfunksjoner #2
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-11"></span>
-<img src="11_files/figure-html/unnamed-chunk-11-1.png" alt="Polynomial regression ^2" width="672"><p class="caption">
+<img src="12_files/figure-html/unnamed-chunk-11-1.png" alt="Polynomial regression ^2" width="672"><p class="caption">
 Figure 4.2: Polynomial regression ^2
 </p>
 </div>
 </div>
-<div id="modellering-av-tredjegrads-cubic-polynomisk-regresjon" class="section level2" number="11.2">
+<div id="modellering-av-tredjegrads-cubic-polynomisk-regresjon" class="section level2" number="12.2">
 <h2>
-<span class="header-section-number">11.2</span> Modellering av tredjegrads (“cubic”) polynomisk regresjon<a class="anchor" aria-label="anchor" href="#modellering-av-tredjegrads-cubic-polynomisk-regresjon"><i class="fas fa-link"></i></a>
+<span class="header-section-number">12.2</span> Modellering av tredjegrads (“cubic”) polynomisk regresjon<a class="anchor" aria-label="anchor" href="#modellering-av-tredjegrads-cubic-polynomisk-regresjon"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb383"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb402"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori3</span> <span class="op">&lt;-</span> <span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori</span><span class="op">^</span><span class="fl">3</span></span>
 <span><span class="fu">glimpse</span><span class="op">(</span><span class="va">polydata</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 10</span></span>
@@ -257,7 +258,7 @@ Figure 4.2: Polynomial regression ^2
 <span><span class="co">#&gt; $ Snittlonn          &lt;dbl&gt; 35000, 41000, 48000, 63000, 880…</span></span>
 <span><span class="co">#&gt; $ Stillingskategori2 &lt;dbl&gt; 1, 4, 9, 16, 25, 36, 49, 64, 81…</span></span>
 <span><span class="co">#&gt; $ Stillingskategori3 &lt;dbl&gt; 1, 8, 27, 64, 125, 216, 343, 51…</span></span></code></pre></div>
-<div class="sourceCode" id="cb384"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb403"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori3</span> <span class="op">&lt;-</span> <span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori</span><span class="op">^</span><span class="fl">3</span></span>
 <span><span class="va">poly_reg3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Snittlonn</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">polydata</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -269,16 +270,16 @@ Figure 4.2: Polynomial regression ^2
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-13"></span>
-<img src="11_files/figure-html/unnamed-chunk-13-1.png" alt="Polynomial regression ^3" width="672"><p class="caption">
+<img src="12_files/figure-html/unnamed-chunk-13-1.png" alt="Polynomial regression ^3" width="672"><p class="caption">
 Figure 2.8: Polynomial regression ^3
 </p>
 </div>
 </div>
-<div id="modellering-av-fjerdegrads-quartic-polynomisk-regresjon" class="section level2" number="11.3">
+<div id="modellering-av-fjerdegrads-quartic-polynomisk-regresjon" class="section level2" number="12.3">
 <h2>
-<span class="header-section-number">11.3</span> Modellering av fjerdegrads (“quartic”) polynomisk regresjon<a class="anchor" aria-label="anchor" href="#modellering-av-fjerdegrads-quartic-polynomisk-regresjon"><i class="fas fa-link"></i></a>
+<span class="header-section-number">12.3</span> Modellering av fjerdegrads (“quartic”) polynomisk regresjon<a class="anchor" aria-label="anchor" href="#modellering-av-fjerdegrads-quartic-polynomisk-regresjon"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb385"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb404"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori4</span> <span class="op">&lt;-</span> <span class="va">polydata</span><span class="op">$</span><span class="va">Stillingskategori</span><span class="op">^</span><span class="fl">4</span></span>
 <span><span class="va">poly_reg4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Snittlonn</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">polydata</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -290,17 +291,17 @@ Figure 2.8: Polynomial regression ^3
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-14"></span>
-<img src="11_files/figure-html/unnamed-chunk-14-1.png" alt="Polynomial regression ^4" width="672"><p class="caption">
+<img src="12_files/figure-html/unnamed-chunk-14-1.png" alt="Polynomial regression ^4" width="672"><p class="caption">
 Figure 2.9: Polynomial regression ^4
 </p>
 </div>
 </div>
-<div id="tolkning" class="section level2" number="11.4">
+<div id="tolkning" class="section level2" number="12.4">
 <h2>
-<span class="header-section-number">11.4</span> Tolkning<a class="anchor" aria-label="anchor" href="#tolkning"><i class="fas fa-link"></i></a>
+<span class="header-section-number">12.4</span> Tolkning<a class="anchor" aria-label="anchor" href="#tolkning"><i class="fas fa-link"></i></a>
 </h2>
 <p>Av grafene over får vi en indikasjon på hvilken modell som ser ut til å passe våre data best. Vi kan også se på hvordan de ulike modellene predikerer ulikt. La oss f.eks. anta at man ønsker å innføre en stillingskategori 5.5. Hva er predikert snittlønn for denne kategorien? Vi viser kun for de to “ytterste” regresjonslikningene vi har vist over - enkel OLS og 4’grads polynomfunksjon.</p>
-<div class="sourceCode" id="cb386"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb405"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Enkel OLS</span></span>
 <span><span class="va">pred1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">enkelOLS</span>, <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Stillingskategori <span class="op">=</span> <span class="fl">5.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># ^4 polynomial</span></span>
@@ -315,15 +316,15 @@ Figure 2.9: Polynomial regression ^4
 <span><span class="co">#&gt; 2          110250</span></span></code></pre></div>
 <p>Vi kan se at det er en vesentlig forskjell i prediksjonene. Når vi ser på grafen for enkel OLS lenger opp ser vi også at regresjonslinja ligger godt over linja/punktene for dataene. Den siste av grafene - polynomial ^4 - ser ut til å treffe ganske bra.</p>
 </div>
-<div id="tilnæmring-gjennom-kryssvalidering---valg-av-antall-grader-i-polynomialfunksjonen" class="section level2" number="11.5">
+<div id="tilnæmring-gjennom-kryssvalidering---valg-av-antall-grader-i-polynomialfunksjonen" class="section level2" number="12.5">
 <h2>
-<span class="header-section-number">11.5</span> Tilnæmring gjennom kryssvalidering - valg av antall grader i polynomialfunksjonen<a class="anchor" aria-label="anchor" href="#tiln%C3%A6mring-gjennom-kryssvalidering---valg-av-antall-grader-i-polynomialfunksjonen"><i class="fas fa-link"></i></a>
+<span class="header-section-number">12.5</span> Tilnæmring gjennom kryssvalidering - valg av antall grader i polynomialfunksjonen<a class="anchor" aria-label="anchor" href="#tiln%C3%A6mring-gjennom-kryssvalidering---valg-av-antall-grader-i-polynomialfunksjonen"><i class="fas fa-link"></i></a>
 </h2>
 <p>Dette eksempelet er modifisert fra <span class="citation">Zach (2019a)</span>.</p>
 <p>Vi kan tilnærme oss valg av riktig polynomialfunksjon gjennom “Mean Squared Error” (MSE) som forteller oss hvor nærme en regresjonslinje er datapunktene. Jo lavere MSE, jo bedre kan vi anta prediksjonsevnen til modellen er. Vi skal ikke gå i dybden på dette, men vise hvordan dette kan se ut for eksempelet ovenfor. I eksempelet brukes det som kalles “k-fold cross-validation” som vi ikke går nærmere inn på (men som vi forklarte i kapittelet om Principal Component Analysis). Utregning av MSE følger av:</p>
 <p><span class="math inline">\(MSE = \frac{1}{n}*\sum(faktisk\ verdi - predikert\ verdi)\)</span></p>
 <p>I eksempelet har vi generert data som ser på timer studenter har brukt på et emne og respektive resultater.</p>
-<div class="sourceCode" id="cb387"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb406"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>timer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">5</span>, <span class="fl">15</span><span class="op">)</span>, resultat<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">resultat</span> <span class="op">&lt;-</span> <span class="va">df</span><span class="op">$</span><span class="va">resultat</span> <span class="op">+</span> <span class="va">df</span><span class="op">$</span><span class="va">timer</span><span class="op">^</span><span class="fl">3</span><span class="op">/</span><span class="fl">150</span> <span class="op">+</span> <span class="va">df</span><span class="op">$</span><span class="va">timer</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span>
@@ -333,7 +334,7 @@ Figure 2.9: Polynomial regression ^4
 <span><span class="co">#&gt; $ timer    &lt;dbl&gt; 7.655087, 8.721239, 10.728534, 14.082078,…</span></span>
 <span><span class="co">#&gt; $ resultat &lt;dbl&gt; 64.30191, 70.65430, 73.66114, 86.14630, 5…</span></span></code></pre></div>
 <p>Vi kan se på en enkel OLS på datasettet:</p>
-<div class="sourceCode" id="cb388"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb407"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">enkelOLS2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">resultat</span> <span class="op">~</span> <span class="va">timer</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">timer</span>, y <span class="op">=</span> <span class="va">df</span><span class="op">$</span><span class="va">resultat</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -342,9 +343,9 @@ Figure 2.9: Polynomial regression ^4
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">xlab</a></span><span class="op">(</span><span class="st">"timer"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"resultat"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="inline-figure"><img src="11_files/figure-html/unnamed-chunk-17-1.png" width="672"></div>
+<div class="inline-figure"><img src="12_files/figure-html/unnamed-chunk-17-1.png" width="672"></div>
 <p>Neste steg er å lage 5 modeller (kan selvsagt lage x antall modeller).</p>
-<div class="sourceCode" id="cb389"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb408"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Stokker om dataene tilfeldig</span></span>
 <span><span class="va">df.shuffled</span> <span class="op">&lt;-</span> <span class="va">df</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">)</span>,<span class="op">]</span></span>
 <span><span class="co"># Setter antall "folds" som skal brukes i "k-fold cross-validation"</span></span>
@@ -372,7 +373,7 @@ Figure 2.9: Polynomial regression ^4
 <span><span class="co">#&gt; [1]  9.886172  8.589655  9.439514 10.214915 12.745574</span></span></code></pre></div>
 <p>Modell 2 ser ut til å ha lavest MSE.</p>
 <p>Vi kan til slutt visualisere valgt modell og se på modellens parametere.</p>
-<div class="sourceCode" id="cb390"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb409"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">timer</span>, y<span class="op">=</span><span class="va">resultat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html">stat_smooth</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">'lm'</span>, formula <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">x</span>,<span class="fl">2</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -381,11 +382,11 @@ Figure 2.9: Polynomial regression ^4
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <span style="display:block;" id="fig:unnamed-chunk-19"></span>
-<img src="11_files/figure-html/unnamed-chunk-19-1.png" alt="Valgt modell - modell 2" width="672"><p class="caption">
+<img src="12_files/figure-html/unnamed-chunk-19-1.png" alt="Valgt modell - modell 2" width="672"><p class="caption">
 Figure 8.3: Valgt modell - modell 2
 </p>
 </div>
-<div class="sourceCode" id="cb391"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb410"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">bestemodell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">resultat</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/poly.html">poly</a></span><span class="op">(</span><span class="va">timer</span>, <span class="fl">2</span>, raw <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">bestemodell</span><span class="op">)</span></span>
@@ -499,23 +500,23 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="iv-regresjon.html"><span class="header-section-number">10</span> IV regresjon</a></div>
-<div class="next"><a href="logistisk-regresjon.html"><span class="header-section-number">12</span> Logistisk regresjon</a></div>
+<div class="prev"><a href="regularized-regression.html"><span class="header-section-number">11</span> Regularized regression</a></div>
+<div class="next"><a href="logistisk-regresjon.html"><span class="header-section-number">13</span> Logistisk regresjon</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#polynomisk-regresjon"><span class="header-section-number">11</span> Polynomisk regresjon</a></li>
-<li><a class="nav-link" href="#modellering-av-andregrads-quadratic-polynomisk-regresjon"><span class="header-section-number">11.1</span> Modellering av andregrads (“quadratic”) polynomisk regresjon</a></li>
-<li><a class="nav-link" href="#modellering-av-tredjegrads-cubic-polynomisk-regresjon"><span class="header-section-number">11.2</span> Modellering av tredjegrads (“cubic”) polynomisk regresjon</a></li>
-<li><a class="nav-link" href="#modellering-av-fjerdegrads-quartic-polynomisk-regresjon"><span class="header-section-number">11.3</span> Modellering av fjerdegrads (“quartic”) polynomisk regresjon</a></li>
-<li><a class="nav-link" href="#tolkning"><span class="header-section-number">11.4</span> Tolkning</a></li>
-<li><a class="nav-link" href="#tiln%C3%A6mring-gjennom-kryssvalidering---valg-av-antall-grader-i-polynomialfunksjonen"><span class="header-section-number">11.5</span> Tilnæmring gjennom kryssvalidering - valg av antall grader i polynomialfunksjonen</a></li>
+<li><a class="nav-link" href="#polynomisk-regresjon"><span class="header-section-number">12</span> Polynomisk regresjon</a></li>
+<li><a class="nav-link" href="#modellering-av-andregrads-quadratic-polynomisk-regresjon"><span class="header-section-number">12.1</span> Modellering av andregrads (“quadratic”) polynomisk regresjon</a></li>
+<li><a class="nav-link" href="#modellering-av-tredjegrads-cubic-polynomisk-regresjon"><span class="header-section-number">12.2</span> Modellering av tredjegrads (“cubic”) polynomisk regresjon</a></li>
+<li><a class="nav-link" href="#modellering-av-fjerdegrads-quartic-polynomisk-regresjon"><span class="header-section-number">12.3</span> Modellering av fjerdegrads (“quartic”) polynomisk regresjon</a></li>
+<li><a class="nav-link" href="#tolkning"><span class="header-section-number">12.4</span> Tolkning</a></li>
+<li><a class="nav-link" href="#tiln%C3%A6mring-gjennom-kryssvalidering---valg-av-antall-grader-i-polynomialfunksjonen"><span class="header-section-number">12.5</span> Tilnæmring gjennom kryssvalidering - valg av antall grader i polynomialfunksjonen</a></li>
 </ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/11.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/11.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/nilskvilvang/AKA3/blob/master/12.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/nilskvilvang/AKA3/edit/master/12.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -527,7 +528,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 24 august, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 29 august, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -540,7 +541,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

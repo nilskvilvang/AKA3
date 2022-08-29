@@ -120,7 +120,7 @@ tab:unnamed-chunk-54
 fig:unnamed-chunk-65
 fig:unnamed-chunk-1
 fig:unnamed-chunk-2
-hvorfor-dette-notatet
+hvorfor-denne-boka
 grunnleggende-begreper-og-sammenhenger
 populasjon-og-utvalg
 utvelgelse-fra-populasjonen
@@ -323,6 +323,11 @@ modell-2-iv-regresjon
 modell-3-ols-med-flere-prediktorer
 modell-4-iv-regresjon-med-flere-to-instrumenter
 test-av-relevansen-av-instrumentene
+regularized-regression
+ridge-regresjon
+lasso-regression
+elastic-net-regresjon
+ridge-vs-lasso-vs-elastic-net
 polynomisk-regresjon
 modellering-av-andregrads-quadratic-polynomisk-regresjon
 modellering-av-tredjegrads-cubic-polynomisk-regresjon
@@ -411,6 +416,5 @@ decision-tree-regression
 eksempel-dtr-på-ames-housing-data
 bagging
 random-forest-regresjon
-lasso-regresjon
 klassifisering
 maskinlæring-gjennom-tidymodels

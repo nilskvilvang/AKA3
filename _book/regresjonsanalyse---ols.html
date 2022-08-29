@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Kapittel 9 Regresjonsanalyse - OLS | Anvendt kvantitativ analyse</title>
 <meta name="author" content="Nils Kvilvang">
-<meta name="generator" content="bookdown 0.27 with bs4_book()">
+<meta name="generator" content="bookdown 0.28 with bs4_book()">
 <meta property="og:title" content="Kapittel 9 Regresjonsanalyse - OLS | Anvendt kvantitativ analyse">
 <meta property="og:type" content="book">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kapittel 9 Regresjonsanalyse - OLS | Anvendt kvantitativ analyse">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.4.0/transition.js"></script><script src="libs/bs3compat-0.4.0/tabs.js"></script><script src="libs/bs3compat-0.4.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="libs/tabwid-1.0.0/tabwid.css" rel="stylesheet">
 <link href="libs/tabwid-1.0.0/scrool.css" rel="stylesheet">
@@ -73,7 +73,7 @@
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
         <ul class="book-toc list-unstyled">
 <li><a class="" href="index.html">Introduksjon</a></li>
-<li><a class="" href="hvorfor-dette-notatet.html"><span class="header-section-number">1</span> Hvorfor dette notatet?</a></li>
+<li><a class="" href="hvorfor-denne-boka.html"><span class="header-section-number">1</span> Hvorfor denne boka?</a></li>
 <li><a class="" href="grunnleggende-begreper-og-sammenhenger.html"><span class="header-section-number">2</span> Grunnleggende begreper og sammenhenger</a></li>
 <li><a class="" href="samvariasjon-og-korrelasjon.html"><span class="header-section-number">3</span> Samvariasjon og korrelasjon</a></li>
 <li><a class="" href="univariat-analyse.html"><span class="header-section-number">4</span> Univariat analyse</a></li>
@@ -83,12 +83,13 @@
 <li><a class="" href="variansanalyse---manova-multivariate-analysis-of-variance.html"><span class="header-section-number">8</span> Variansanalyse - MANOVA (“Multivariate Analysis of Variance”)</a></li>
 <li><a class="active" href="regresjonsanalyse---ols.html"><span class="header-section-number">9</span> Regresjonsanalyse - OLS</a></li>
 <li><a class="" href="iv-regresjon.html"><span class="header-section-number">10</span> IV regresjon</a></li>
-<li><a class="" href="polynomisk-regresjon.html"><span class="header-section-number">11</span> Polynomisk regresjon</a></li>
-<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">12</span> Logistisk regresjon</a></li>
-<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">13</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
-<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">14</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
-<li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">15</span> Maskinlæring (Machine Learning)</a></li>
-<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">16</span> Maskinlæring gjennom “tidymodels”</a></li>
+<li><a class="" href="regularized-regression.html"><span class="header-section-number">11</span> Regularized regression</a></li>
+<li><a class="" href="polynomisk-regresjon.html"><span class="header-section-number">12</span> Polynomisk regresjon</a></li>
+<li><a class="" href="logistisk-regresjon.html"><span class="header-section-number">13</span> Logistisk regresjon</a></li>
+<li><a class="" href="structural-equation-modelling-sem---strukturelle-regresjonsmodeller.html"><span class="header-section-number">14</span> Structural Equation Modelling (SEM - Strukturelle Regresjonsmodeller)</a></li>
+<li><a class="" href="dimension-reduction-factor-analysis-fa-og-principal-component-analysis-pca.html"><span class="header-section-number">15</span> Dimension reduction: Factor Analysis (FA) og Principal Component Analysis (PCA)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-machine-learning.html"><span class="header-section-number">16</span> Maskinlæring (Machine Learning)</a></li>
+<li><a class="" href="maskinl%C3%A6ring-gjennom-tidymodels.html"><span class="header-section-number">17</span> Maskinlæring gjennom “tidymodels”</a></li>
 <li><a class="" href="referanser.html">Referanser</a></li>
 <li><a class="" href="vedlegg-a---sentralgrenseteoremet-central-limit-theorem.html">Vedlegg A - Sentralgrenseteoremet (Central Limit Theorem)</a></li>
 <li><a class="" href="vedlegg-b---chebyshevs-teorem.html">Vedlegg B - Chebyshevs teorem</a></li>
@@ -896,7 +897,7 @@ Vi kan sjekke F-verdien opp mot antall frihetsgrader (df) gjennom tabeller som o
 </h4>
 <p>Forholdstallet mellom respondenter/caser/observasjoner og uavhengig variabler er av stor betydning dersom man skal gjennomføre en multippel regresjon. Dette gjelder spesielt ved skjevdistribusjon av den avhengige variabelen, effektstørrelsen er forventet liten eller man kan mistenke vesentlige målefeil <span class="citation">(Tabachnik and Fidell 2007)</span>.</p>
 <p>Det finnes ulike anbefalte normer for vurdering av forholdstallet (vi tar her utgangspunkt i standard multippel regresjonsanalyse - stegvis multippel regresjonsanalyse kan gi andre vurderinger rundt forholdstallet). Under viser vi noen eksempler på hvordan man kan vurdere dette:</p>
-<template id="3c3b303d-c81c-42ad-a8d8-5fbe0a08ab13"><style>
+<template id="1cdbde14-16ff-46b3-a928-45dd2be28c04"><style>
 .tabwid table{
   border-spacing:0px !important;
   border-collapse:collapse;
@@ -930,48 +931,51 @@ Vi kan sjekke F-verdien opp mot antall frihetsgrader (df) gjennom tabeller som o
 .tabwid table tr {
 background-color: transparent;
 }
+.katex-display {
+    margin: 0 0 !important;
+}
 </style>
 <div class="tabwid">
-<style>.cl-68a0a394{}.cl-688d159a{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-688d15ae{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-688d5938{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-688dcb98{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-688dcba2{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-688dcbac{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-688dcbb6{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-688dcbb7{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-688dcbc0{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-688dcbc1{width:324pt;background-color:rgba(173, 223, 173, 1.00);vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-688dcbca{width:180pt;background-color:rgba(173, 223, 173, 1.00);vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<div class="inline-table"><table class="cl-68a0a394">
+<style>.cl-41fdd976{}.cl-41f251d2{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-41f251e6{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-41f273ec{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-41f2b1ea{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41f2b1f4{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41f2b1fe{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41f2b1ff{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41f2b208{width:324pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41f2b209{width:180pt;height:21.6pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41f2b212{width:324pt;background-color:rgba(173, 223, 173, 1.00);vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-41f2b21c{width:180pt;background-color:rgba(173, 223, 173, 1.00);vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<div class="inline-table"><table class="cl-41fdd976">
 <caption class="Table Caption">
 <p><span id="tab:unnamed-chunk-28">Table 9.1: </span>Forholdstall</p>
 </caption>
 <thead><tr style="overflow-wrap:break-word;">
-<td class="cl-688dcbca"><p class="cl-688d5938"><span class="cl-688d159a">Kilde</span></p></td>
-<td class="cl-688dcbc1"><p class="cl-688d5938"><span class="cl-688d159a">Antall</span></p></td>
+<td class="cl-41f2b21c"><p class="cl-41f273ec"><span class="cl-41f251d2">Kilde</span></p></td>
+<td class="cl-41f2b212"><p class="cl-41f273ec"><span class="cl-41f251d2">Antall</span></p></td>
 </tr></thead>
 <tbody>
 <tr>
-<td class="cl-688dcba2"><p class="cl-688d5938"><span class="cl-688d15ae">Marks (1966, i Harris (2013)</span></p></td>
-<td class="cl-688dcb98"><p class="cl-688d5938"><span class="cl-688d15ae">Minimum 200 uansett</span></p></td>
+<td class="cl-41f2b1f4"><p class="cl-41f273ec"><span class="cl-41f251e6">Marks (1966, i Harris (2013)</span></p></td>
+<td class="cl-41f2b1ea"><p class="cl-41f273ec"><span class="cl-41f251e6">Minimum 200 uansett</span></p></td>
 </tr>
 <tr>
-<td class="cl-688dcbb6"><p class="cl-688d5938"><span class="cl-688d15ae">Schmidt (1971)</span></p></td>
-<td class="cl-688dcbac"><p class="cl-688d5938"><span class="cl-688d15ae">15-1 til 25-1</span></p></td>
+<td class="cl-41f2b1ff"><p class="cl-41f273ec"><span class="cl-41f251e6">Schmidt (1971)</span></p></td>
+<td class="cl-41f2b1fe"><p class="cl-41f273ec"><span class="cl-41f251e6">15-1 til 25-1</span></p></td>
 </tr>
 <tr>
-<td class="cl-688dcbb6"><p class="cl-688d5938"><span class="cl-688d15ae">Nunally (1978)</span></p></td>
-<td class="cl-688dcbac"><p class="cl-688d5938"><span class="cl-688d15ae">2-3 IV = minst 100, 9-10 IV = 300-400</span></p></td>
+<td class="cl-41f2b1ff"><p class="cl-41f273ec"><span class="cl-41f251e6">Nunally (1978)</span></p></td>
+<td class="cl-41f2b1fe"><p class="cl-41f273ec"><span class="cl-41f251e6">2-3 IV = minst 100, 9-10 IV = 300-400</span></p></td>
 </tr>
 <tr>
-<td class="cl-688dcbb6"><p class="cl-688d5938"><span class="cl-688d15ae">Stevens (1996)</span></p></td>
-<td class="cl-688dcbac"><p class="cl-688d5938"><span class="cl-688d15ae">15 pr IV</span></p></td>
+<td class="cl-41f2b1ff"><p class="cl-41f273ec"><span class="cl-41f251e6">Stevens (1996)</span></p></td>
+<td class="cl-41f2b1fe"><p class="cl-41f273ec"><span class="cl-41f251e6">15 pr IV</span></p></td>
 </tr>
 <tr>
-<td class="cl-688dcbb6"><p class="cl-688d5938"><span class="cl-688d15ae">Green (1991)</span></p></td>
-<td class="cl-688dcbac"><p class="cl-688d5938"><span class="cl-688d15ae">N≥50+8m (m=antall uavhengige variabler) ved «medium-sized relationship between the IVs and the DV, α=.05 and β=.20</span></p></td>
+<td class="cl-41f2b1ff"><p class="cl-41f273ec"><span class="cl-41f251e6">Green (1991)</span></p></td>
+<td class="cl-41f2b1fe"><p class="cl-41f273ec"><span class="cl-41f251e6">N≥50+8m (m=antall uavhengige variabler) ved «medium-sized relationship between the IVs and the DV, α=.05 and β=.20</span></p></td>
 </tr>
 <tr>
-<td class="cl-688dcbc0"><p class="cl-688d5938"><span class="cl-688d15ae">Miles &amp; Shevlin (2001)</span></p></td>
-<td class="cl-688dcbb7"><p class="cl-688d5938"><span class="cl-688d15ae">Som Green (2001). Utvalgsstørrelse avhenger av størrelse på effekt og statistisk styrke (se Cohen, 1988 for effektstørrelser). Stor effekt: 80 respondenter er alltid nok for opptil 20 IVs. Middels effekt: 200 respondenter vil alltid være nok for opptil 20 IVs, 100 er nok for opptil 6 eller færre IVs. Lav effekt: Minst 600.</span></p></td>
+<td class="cl-41f2b209"><p class="cl-41f273ec"><span class="cl-41f251e6">Miles &amp; Shevlin (2001)</span></p></td>
+<td class="cl-41f2b208"><p class="cl-41f273ec"><span class="cl-41f251e6">Som Green (2001). Utvalgsstørrelse avhenger av størrelse på effekt og statistisk styrke (se Cohen, 1988 for effektstørrelser). Stor effekt: 80 respondenter er alltid nok for opptil 20 IVs. Middels effekt: 200 respondenter vil alltid være nok for opptil 20 IVs, 100 er nok for opptil 6 eller færre IVs. Lav effekt: Minst 600.</span></p></td>
 </tr>
 </tbody>
 </table></div>
-</div></template><div class="flextable-shadow-host" id="864fc805-feb7-4ef7-a1f0-a4b54fc59f68"></div>
+</div></template><div class="flextable-shadow-host" id="9c219da1-64a1-407e-b4ba-b60622228996"></div>
 <script>
-var dest = document.getElementById("864fc805-feb7-4ef7-a1f0-a4b54fc59f68");
-var template = document.getElementById("3c3b303d-c81c-42ad-a8d8-5fbe0a08ab13");
+var dest = document.getElementById("9c219da1-64a1-407e-b4ba-b60622228996");
+var template = document.getElementById("1cdbde14-16ff-46b3-a928-45dd2be28c04");
 var caption = template.content.querySelector("caption");
 if(caption) {
   caption.style.cssText = "display:block;text-align:center;";
@@ -1676,7 +1680,7 @@ Durbin-Watson testen er en test på autokorrelasjon i residualene, og vil ha en 
 <code class="sourceCode R"><span><span class="va">dwt</span> <span class="op">&lt;-</span> <span class="fu">durbinWatsonTest</span><span class="op">(</span><span class="va">FieldOLS_reg</span><span class="op">)</span></span>
 <span><span class="va">dwt</span></span>
 <span><span class="co">#&gt;  lag Autocorrelation D-W Statistic p-value</span></span>
-<span><span class="co">#&gt;    1     -0.04394305      2.032324   0.838</span></span>
+<span><span class="co">#&gt;    1     -0.04394305      2.032324   0.814</span></span>
 <span><span class="co">#&gt;  Alternative hypothesis: rho != 0</span></span></code></pre></div>
 <p>Her viser verdien 2.03 noe som ikke gir grunn til bekymring.</p>
 </div>
@@ -2249,20 +2253,21 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 <span><span class="co">#&gt;  functional form</span></span>
 <span><span class="co">#&gt; Summary:</span></span>
 <span><span class="co">#&gt; # A tibble: 11 × 8</span></span>
-<span><span class="co">#&gt;    assumption variable test  statistic p.value  crit problem</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt;  1 heteroske… global   stud…   6.19e+0  0.103   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  2 heteroske… global   Non-…   3.03e-1  0.582   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  3 multicoll… Adverts  Vari…   1.01e+0 NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  4 multicoll… Airplay  Vari…   1.04e+0 NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  5 multicoll… Image    Vari…   1.04e+0 NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  6 normality  global   Shap…   9.95e-1  0.725   0.01 No Pro…</span></span>
-<span><span class="co">#&gt;  7 model spe… global   Stat…  -6.99e-5  0.916   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  8 functiona… global   RESE…   3.72e+0  0.0261  0.05 Problem</span></span>
-<span><span class="co">#&gt;  9 outliers   global   Cook…   7.08e-2 NA       1    No Pro…</span></span>
-<span><span class="co">#&gt; 10 outliers   global   Bonf…   3.16e+0  0.362   0.05 No Pro…</span></span>
-<span><span class="co">#&gt; 11 autocorre… global   Durb…   2.70e-3  0.744   0.05 No Pro…</span></span>
-<span><span class="co">#&gt; # … with 1 more variable: decision &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;    assumption   varia…¹ test  statis…² p.value  crit problem</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt;  1 heteroskeda… global  stud…  6.19e+0  0.103   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  2 heteroskeda… global  Non-…  3.03e-1  0.582   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  3 multicollin… Adverts Vari…  1.01e+0 NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  4 multicollin… Airplay Vari…  1.04e+0 NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  5 multicollin… Image   Vari…  1.04e+0 NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  6 normality    global  Shap…  9.95e-1  0.725   0.01 No Pro…</span></span>
+<span><span class="co">#&gt;  7 model speci… global  Stat… -6.99e-5  0.916   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  8 functional … global  RESE…  3.72e+0  0.0261  0.05 Problem</span></span>
+<span><span class="co">#&gt;  9 outliers     global  Cook…  7.08e-2 NA       1    No Pro…</span></span>
+<span><span class="co">#&gt; 10 outliers     global  Bonf…  3.16e+0  0.362   0.05 No Pro…</span></span>
+<span><span class="co">#&gt; 11 autocorrela… global  Durb…  2.70e-3  0.722   0.05 No Pro…</span></span>
+<span><span class="co">#&gt; # … with 1 more variable: decision &lt;chr&gt;, and abbreviated</span></span>
+<span><span class="co">#&gt; #   variable names ¹​variable, ²​statistic</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Outliers:</span></span>
 <span><span class="co">#&gt; -----------</span></span>
@@ -3235,7 +3240,7 @@ Computed correlation used pearson-method with listwise-deletion.
 <code class="sourceCode R"><span><span class="va">dwtPallant</span> <span class="op">&lt;-</span> <span class="fu">durbinWatsonTest</span><span class="op">(</span><span class="va">PallantOLS_reg2</span><span class="op">)</span></span>
 <span><span class="va">dwtPallant</span></span>
 <span><span class="co">#&gt;  lag Autocorrelation D-W Statistic p-value</span></span>
-<span><span class="co">#&gt;    1      0.08185218      1.825972   0.056</span></span>
+<span><span class="co">#&gt;    1      0.08185218      1.825972   0.082</span></span>
 <span><span class="co">#&gt;  Alternative hypothesis: rho != 0</span></span></code></pre></div>
 <p>Her viser verdien 1.826 noe som ikke gir grunn til bekymring. Verdi rundt 2 indikerer ingen autokorrelasjon, verdier mellom 1.5 og 2.5 anses ofte som akseptable. Hvis verdien er under 1.5 indikerer det en positiv autkorrelasjon, noe som ikke er uvanlig. Verdier over 2.5 indikerer negativ autokorrelasjon, noe som ofte er mer uvanlig.</p>
 </div>
@@ -3314,19 +3319,20 @@ Figure 9.34: Cook’s distance
 <span><span class="co">#&gt; Identified problems: NONE</span></span>
 <span><span class="co">#&gt; Summary:</span></span>
 <span><span class="co">#&gt; # A tibble: 10 × 8</span></span>
-<span><span class="co">#&gt;    assumption variable test  statistic p.value  crit problem</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt;  1 heteroske… global   stud…   3.95     0.139   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  2 heteroske… global   Non-…   2.91     0.0881  0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  3 multicoll… tmast    Vari…   1.38    NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  4 multicoll… tpcoiss  Vari…   1.38    NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  5 normality  global   Shap…   0.991    0.0115  0.01 No Pro…</span></span>
-<span><span class="co">#&gt;  6 model spe… global   Stat…   0.00495  0.568   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  7 functiona… global   RESE…   0.419    0.658   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  8 outliers   global   Cook…   0.0956  NA       1    No Pro…</span></span>
-<span><span class="co">#&gt;  9 outliers   global   Bonf…   3.56     0.177   0.05 No Pro…</span></span>
-<span><span class="co">#&gt; 10 autocorre… global   Durb…   0.0819   0.0640  0.05 No Pro…</span></span>
-<span><span class="co">#&gt; # … with 1 more variable: decision &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;    assumption    varia…¹ test  stati…² p.value  crit problem</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt;  1 heteroskedas… global  stud… 3.95     0.139   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  2 heteroskedas… global  Non-… 2.91     0.0881  0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  3 multicolline… tmast   Vari… 1.38    NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  4 multicolline… tpcoiss Vari… 1.38    NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  5 normality     global  Shap… 0.991    0.0115  0.01 No Pro…</span></span>
+<span><span class="co">#&gt;  6 model specif… global  Stat… 0.00495  0.568   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  7 functional f… global  RESE… 0.419    0.658   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  8 outliers      global  Cook… 0.0956  NA       1    No Pro…</span></span>
+<span><span class="co">#&gt;  9 outliers      global  Bonf… 3.56     0.177   0.05 No Pro…</span></span>
+<span><span class="co">#&gt; 10 autocorrelat… global  Durb… 0.0819   0.0840  0.05 No Pro…</span></span>
+<span><span class="co">#&gt; # … with 1 more variable: decision &lt;chr&gt;, and abbreviated</span></span>
+<span><span class="co">#&gt; #   variable names ¹​variable, ²​statistic</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Outliers:</span></span>
 <span><span class="co">#&gt; -----------</span></span>
@@ -4395,21 +4401,22 @@ Figure 9.46: Cook’s distance
 <span><span class="co">#&gt; Identified problems: NONE</span></span>
 <span><span class="co">#&gt; Summary:</span></span>
 <span><span class="co">#&gt; # A tibble: 12 × 8</span></span>
-<span><span class="co">#&gt;    assumption variable test  statistic p.value  crit problem</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt;  1 heteroske… global   stud…   7.01     0.135   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  2 heteroske… global   Non-…   1.86     0.173   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  3 multicoll… age      Vari…   1.16    NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  4 multicoll… tmarlow  Vari…   1.15    NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  5 multicoll… tmast    Vari…   1.45    NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  6 multicoll… tpcoiss  Vari…   1.59    NA       5    No Pro…</span></span>
-<span><span class="co">#&gt;  7 normality  global   Shap…   0.993    0.0345  0.01 No Pro…</span></span>
-<span><span class="co">#&gt;  8 model spe… global   Stat…   0.00772  0.366   0.05 No Pro…</span></span>
-<span><span class="co">#&gt;  9 functiona… global   RESE…   0.897    0.409   0.05 No Pro…</span></span>
-<span><span class="co">#&gt; 10 outliers   global   Cook…   0.0588  NA       1    No Pro…</span></span>
-<span><span class="co">#&gt; 11 outliers   global   Bonf…   3.54     0.190   0.05 No Pro…</span></span>
-<span><span class="co">#&gt; 12 autocorre… global   Durb…   0.0863   0.0680  0.05 No Pro…</span></span>
-<span><span class="co">#&gt; # … with 1 more variable: decision &lt;chr&gt;</span></span>
+<span><span class="co">#&gt;    assumption    varia…¹ test  stati…² p.value  crit problem</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt;  1 heteroskedas… global  stud… 7.01     0.135   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  2 heteroskedas… global  Non-… 1.86     0.173   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  3 multicolline… age     Vari… 1.16    NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  4 multicolline… tmarlow Vari… 1.15    NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  5 multicolline… tmast   Vari… 1.45    NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  6 multicolline… tpcoiss Vari… 1.59    NA       5    No Pro…</span></span>
+<span><span class="co">#&gt;  7 normality     global  Shap… 0.993    0.0345  0.01 No Pro…</span></span>
+<span><span class="co">#&gt;  8 model specif… global  Stat… 0.00772  0.366   0.05 No Pro…</span></span>
+<span><span class="co">#&gt;  9 functional f… global  RESE… 0.897    0.409   0.05 No Pro…</span></span>
+<span><span class="co">#&gt; 10 outliers      global  Cook… 0.0588  NA       1    No Pro…</span></span>
+<span><span class="co">#&gt; 11 outliers      global  Bonf… 3.54     0.190   0.05 No Pro…</span></span>
+<span><span class="co">#&gt; 12 autocorrelat… global  Durb… 0.0863   0.0680  0.05 No Pro…</span></span>
+<span><span class="co">#&gt; # … with 1 more variable: decision &lt;chr&gt;, and abbreviated</span></span>
+<span><span class="co">#&gt; #   variable names ¹​variable, ²​statistic</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Outliers:</span></span>
 <span><span class="co">#&gt; -----------</span></span>
@@ -6086,7 +6093,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 24 august, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 29 august, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -6099,7 +6106,7 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');
