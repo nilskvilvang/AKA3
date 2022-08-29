@@ -74,7 +74,7 @@ Dette gjør at vi kan plotte verdier i spennet $(0,1)$ som $-\infty, \infty$.
 
 La oss se på et enkelt eksempel på hvordan logistisk regresjon kan brukes (basert på @starmerLogisticRegressionDetails2018).
 
-Vi vil klassifisere en person som enten smittet eller ikke smittet av en sykdom. Output er enten 1 (= smittet) eller 0 (ikke smittet) - basert på en eller annen test/kriterium. La oss si vi har 10 tilfeller:
+Vi vil klassifisere en person som enten smittet eller ikke smittet av en sykdom. Output er enten 1 (= smittet) eller 0 (= ikke smittet) - basert på en eller annen test/kriterium. La oss si vi har 10 tilfeller:
 
 ```{r warning=FALSE, message=FALSE, fig.cap = "Plott over smittetilfeller"}
 smitte <- data.frame(x1 = 1:10, x2 = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1))
@@ -98,7 +98,7 @@ Ved å trekke vertikale linjer fra hvert punkt til kandidatlinjen finner vi hver
 ```{r fig.cap = "Sigmoidplott med et datapunkt"}
 ggplot(data = data.frame(x = c(-4, 4)), aes(x)) +
     stat_function(fun = sigmoidkurve, n = 100, col = "blue") +
-    geom_point(aes(x=-3,y=0.045),colour="red", size = 3) +
+    geom_point(aes(x = -3, y = 0.045), colour = "red", size = 3) +
     theme_bw()
 ```
 
@@ -147,7 +147,7 @@ logitres <- summary(sovnlogit)
 Det første vi kan se på i output fra modellen er "Residual deviance". Dette forteller oss hvor godt responsvariabelen kan predikeres av modellen. jo lavere verdi, jo bedre prediksjonsevne. I den såkalte "Null deviance" har vi `r format(round(logitres$null.deviance, 2), nsmall = 2)`, mens "Residual deviance" er `r format(round(logitres$deviance, 2), nsmall = 2)`. Vi kan bruke disse to verdiene til å kjøre en $\chi^2$-test:
 
 ```{r}
-kjikvadratverdi <- logitres$null.deviance -logitres$deviance
+kjikvadratverdi <- logitres$null.deviance - logitres$deviance
 pkjikvadrat <- pchisq(q = kjikvadratverdi, df = 5, lower.tail = FALSE)
 pkjikvadrat
 ```
@@ -362,7 +362,7 @@ koeffisienter
 
 Her kan vi tolke:
 
-- For studenter med foreldre som har høyere utdannelse er oddsene for å søke dersom man tilhører kategoriene "very likely" eller "somewhat likely" `r koeffisienter[1]`ganger høyere enn om man har foreldre som ikke har høyere utdannelse, gitt at alle andre variabler holdes konstant. 
+- For studenter med foreldre som har høyere utdannelse er oddsene for å søke dersom man tilhører kategoriene "very likely" eller "somewhat likely" `r koeffisienter[1]` ganger høyere enn om man har foreldre som ikke har høyere utdannelse, gitt at alle andre variabler holdes konstant. 
 
 - For studenter som er i offentlig skole er oddsene for å være i kategorien "very likely" eller "somewhat likely" `r (1-koeffisienter[2])*100`7 høyere enn de som går på privat skole ((1-0.943)*100).
 
@@ -503,7 +503,8 @@ Vi kan visualisere det samme (ofte er tolkning lettere visuelt):
 longpred <- melt(pred_skrivetest, 
                  id.vars = c("ses", "skrivetest"), 
                  value.name = "sannsynlighet")
-ggplot(longpred, aes(x = skrivetest, y = sannsynlighet, colour = ses)) +     geom_line() + 
+ggplot(longpred, aes(x = skrivetest, y = sannsynlighet, colour = ses)) +     
+    geom_line() + 
     facet_grid(variable ~ ., scales = "free") +
     theme_bw()
 ```

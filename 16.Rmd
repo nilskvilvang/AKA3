@@ -23,6 +23,8 @@ Vi antar at avveiningen mellom forklaring og prediksjon er viktig og sentral for
 
 Berepet "maskinlæring" har blitt et mer og mer sentralt begrep i samfunnsvitenskapelig metode generelt og i dataanalyse spesielt. Selve begrepet ble "coinet" (først brukt) av @samuelStudiesMachineLearning1959. Endel av metodene i maskinlæring kjenner vi fra før. Regresjon er f.eks. et sentralt element i "pakken" av metoder som kan puttes inn i begrepet maskinlæring. Og regresjon er jo ikke noe nytt, så er maskinlæring kun et moteord? Et fancy ord på ting vi har gjort før? Tja, kanskje svaret er både ja og nei. Det er unektelig slik at vi har drevet med regresjonsanalyser lenge før begrepet maskinlæring i hvert fall ble allment kjent og popularisert. Samtidig er maskinlæring en distinkt gruppe av analytiske metoder hvis hensikt er å - nettopp - lære. Med dette mener vi modeller som bruker data til å forbedre analyseopgavene vi har foran oss.
 
+Maskinlæring kan defineres som en prosess der vi mater data inn i generiske algoritmer og vi (forhåpentligvis) får vite noe fornuftig om dataene uten å skrive spesifikk kode for å få denne innsikten.       
+
 ## Assosiasjon vs. prediksjon
 
 Et sentralt element i maskinlæring er prediksjon. Som nevnt ovenfor er f.eks. regresjonsanalyser et kjent begrep som vi har gått relativt grundig gjennom i tidligere kapitler. Vi skal imidlertid være klar over at all snakk om $R^2$ *ikke* sier noe om hvor godt en regresjonsmodell evner å predikere. $R^2$ forteller oss imidlertid noe om hvor godt den gitte regresjonsmodellen i snitt forklarer variansen i dataene vi har. Regresjonskoeffisientene beregnes for å maksimere $R^2$ (gjennom å minimere feilleddene). Av to modeller for samme data forklarer en modell med høyere $R^2$ mer av variansen i de foreliggende dataene enn en modell med lavere $R^2$. Men vi vet ikke noe om de to modellenes evne til å predikere. Derfor er maskinlæring fokusert på at modeller må trenes og testes. Dvs at dataene deles i uavhengige deler, der modellen utvikles og trenes på en del, og testes på en annen del. Merk: Dette er ikke det samme som å utvikle en regresjonsmodell på et datasett, og "teste" ved å replikere analysen på nye data. Dette er i realiteten to modeller - tradisjonell replikasjon - siden koeffisientene i modellen vil tilpasses to sett data (selv om de uavhengige variablene er de samme). Merk: Dette er ikke en kritikk av replikasjon, men en klargjøring av at i maskinlæring er prediksjon det sentrale. Den prediktive lakkmustesten for modeller ligger i hvor godt den klarer å predikere nye verdier ift observerte verdier den ikke har sett (altså hvor nærme observasjonene kommer prediksjonene). 
@@ -1546,5 +1548,23 @@ rmse5
 
 
 ## Klassifisering
+
+Så langt - gjennom regresjon - har vi forsøkt å predikere en kontinuerlig variabel. Dersom vi i stedet har kategorier bruker vi klassifisering som prediksjon. Klassifisering omfatter teknikker som:
+
+- K-nearest neighbors (K-NN)
+- Support Vector Machine (SVM)
+- Kernel SVM
+- Naive Bayes
+- Decision Tree Classification
+- Random Forest Classification
+- og (noe forvirrende begrepsmessig): Logistisk regresjon
+
+Vi kan tenke oss mange praktiske eksempler på klassifisering i maskinlæring fra vårt dagligliv. De fleste har sikkert et spamfilter i sitt e-postprogram (som f.eks. Outlook). En innkommende mail må defineres som spam eller ikke-spam. Dette er en klassisk klassifiseringsutfordring der vi søker å lære opp e-postprogrammet til å bestemme dette så nøyaktig som mulig ut fra gitte kriterer. I dag kan lånesøknader i en bank innvilges eller avslås på sekunder - dette er et klassifiseringsproblem der kunden må defineres som kredittverdig eller ikke. I mange applikasjoner er bildegjenkjenning sentralt - dette bygger på klassifisering. I medisinsk diagnose kan klassifisering være et element i tidlig oppdagelse av sykdom. Osv.
+
+Når vi trener en modell til å predikere en kvalitativ størrelse eller parameter har vi et klassifiseringstilfelle. 
+
+### Logistisk regresjon
+
+Vi starter med logistisk regresjon, som vi gikk gjennom i detalj i eget kapittel (13). Vi går derfor ikke inn på detaljer om *hva* logistisk regresjon er eller *hvordan* logistisk regresjon generelt utføres, men konsentrerer oss om et eksempel i maskinllæringsøyemed.
 
 

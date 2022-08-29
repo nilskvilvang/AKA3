@@ -23,6 +23,10 @@ Vi ønsker selvsagt at både varians og bias skal være så liten som mulig side
 
 Ettersom modellens kompleksitet øker reduseres bias (fordi vi antar at våre estimater vil ligge nærmere populasjonens sanne verdi med økt antall variabler). Regularisering er altså et forsøk på å finne det optimale punketet der bias og varians tilsammen gir lavest mulig total feil. 
 
+Som @boehmkeHandsOnMachineLearning2020 uttrykker det:
+
+"Regularization methods provide a means to constrain or regularize the estimated coefficients, which can reduce the variance and decrease out of sample error."
+
 Regularisering innebærer dermed at man legger begrensninger på ikke-betydningsfulle regresjonskoeffiseinter mot 0. Hensikten med dette er bl.a. lettere tolkbare resultater (for L2/lasso - L1/ridge gir ikke denne effekten). Hovedhensikten er også å gjøre modellen mer generaliserbar fordi effekten av ikke-betydningsfulle prediktorer reduseres (ved at koeffisientene til disse reduseres mot 0 eller fjernes). Det primære anvendelsesområdet kan derfor sies å være tilfeller der vi har komplekse modeller - modeller med mange variabler. En effekt - som vi ikke går nærmere inn på her - er også at metodene er raskere enn mange alternativer ved svært store datasett. Dette kan være spesielt interessant i maskinlæringstilfeller. En siste effekt vi kan nevne her er at disse metodene vil fungere også når antallet prediktorer er høyere enn antall observasjoner - noe som er problematisk i andre regresjonsmetoder.
 
 Ofte snakker man om tre metoder for såkalt "Regularized Regression":
@@ -99,7 +103,7 @@ Beste modell kan dermed forklare `r round(rsq, 3)*100` % av variansen i den avhe
 
 ## Lasso regression
 
-Vi fortsetter med eksempelet ovenfor, og som nevnt kan vi endre alpha-verdien fra 0 til 1 for å skifte fra ridge regresjon til lasso regresjon.
+Vi fortsetter med eksempelet ovenfor, og som nevnt kan vi endre alpha-verdien fra 0 til 1 for å skifte fra ridge regresjon til lasso regresjon [@tibshiraniRegressionShrinkageSelection1996].
 
 ```{r}
 lassomodell <- glmnet(x, y, alpha = 1)
@@ -140,6 +144,10 @@ rsq2
 Beste modell kan dermed forklare `r round(rsq2, 3)*100` % av variansen i den avhengige variabelen.
 
 ## Elastic-net regresjon
+
+Som vi har sett over vil lasso regresjon fungere som "variabel selection". En utfordring med denne metoden kan oppstå når man to sterkt korrelerte variabler "dyttes" mot null er at den ene kan falle ut av modellen mens den andre forblir i modellen (selv om de altså er sterkt korrelerte). Dette vil også kunne opptre usystematisk. Ridge regresjon kan i slike tilfeller fungere noe bedre, men denne vil altså *ikke* utelukke variabler helt. Kombinasjonen av de to - elastic-net [@zouRegularizationVariableSelection2005] - søker å kombinere egenskapene for de to.
+
+I modellen under setter vi en alpha-verdi mellom 0 og 1. Dersom vi setter den til 0.5 ber vi om at ridge og lasso vektes like tungt. Hvis alpha settes < 0.5 vil modellen lene seg tyngre mot ridge, og med alpha > 0.5 vil den lene seg tyngre mot lasso. 
 
 ```{r}
 en_modell <- glmnet(x, y, alpha = 0.3)
@@ -184,7 +192,10 @@ rownames(rsq4) <- c("Ridge regression", "Lasso regression", "Elastic-net")
 print(rsq4)
 ```
 
-De gir realtivt like $R^2$-verdier. Som tidligere nevnt kan man ikke si at den ene er generelt bedre enn de andre. De lar oss håndtere multikolinearitet, og lasso kan fungere som teknikk for å redusere antall variabler (ridge kan ikke det). 
+De gir realtivt like $R^2$-verdier. Som tidligere nevnt kan man ikke si at den ene er generelt bedre enn de andre. De lar oss håndtere multikolinearitet, og lasso kan fungere som teknikk for å redusere antall variabler (ridge kan ikke det). Elastic-net søker altså å kombinere de gode egenskapene for de to, men likevel kan man ikke si på generelt grunnlag at den alltid vil være bedre. 
+
+Det kan til slutt også være på sin plass å beskrive noen av de utfordringene med disse teknikkene som ofte nevnes.
+Slik teknikkene fungerer må alle variablene være numeriske. Mange pakker/program som kjører teknikkene håndterer manglende verdier dårlig/ikke, så det kan kreve endel bearbeiding av dataene før analyse (på den andre siden - deskriptiv statistikk og databearbeiding bør være et must uansett...). Uteliggere, f.eks., kan være en utfordring som for OLS og her viser vi til grundig diskusjon om tematikken uteliggere i OLS-kapittelet. Og - det er en lineær teknikk med de svakheter dette medfører generelt. 
 
 
 

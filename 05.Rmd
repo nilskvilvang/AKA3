@@ -20,11 +20,11 @@ Dette kapittelet tar for seg kjikvadrattester. Dersom vi har kategoriske variabl
 
 Vi skal vise tre tilfeller, det vil si tre måter å gjør kjikvadrattester:
 
-1. Vi har to kategoriske variabler og ønsker å se om det er en sammenheng mellom dem - ("Test of association").
-2. Vi har en kategorisk variabel og ønsker å se om den representerer en kjent populasjon eller forventning ("Goodness of fit").
-3. Vi har en kategorisk variabel for en gruppe mennesker / en gruppe observasjoner målt på f.eks. to ulike tidspunkt eller under to ulike forhold ("Paired samples - McNemars test").
+1. Vi har to kategoriske variabler og ønsker å se om det er en sammenheng mellom dem - "Test of association".
+2. Vi har en kategorisk variabel og ønsker å se om den representerer en kjent populasjon eller forventning - "Goodness of fit".
+3. Vi har en kategorisk variabel for en gruppe mennesker / en gruppe observasjoner målt på f.eks. to ulike tidspunkt eller under to ulike forhold - "Paired samples - McNemars test".
 
-## Test of association - sammenheng mellom to kategorisek variabler
+## Test of association - sammenheng mellom to kategoriske variabler
 
 Vi bruker et generert datasett:
 
@@ -36,7 +36,7 @@ xfun::embed_file('Modul 5_Krysstabell_Fargeblind2.xlsx')
 kji1 <- read_excel("Modul 5_Krysstabell_Fargeblind2.xlsx")
 ```
 
-Dette datasettet består av 1626 observasjoner av gutter og jenter der vi også har registrert fargeblindhet. Vi ønsker å se om det er en sammenheng mellom disse to variablene - altså om det er en statistisk signifikant sammenheng. 
+Dette datasettet består av `r nrow(kji1)` observasjoner av gutter og jenter der vi også har registrert fargeblindhet. Vi ønsker å se om det er en sammenheng mellom disse to variablene - altså om det er en statistisk signifikant sammenheng. 
 
 ```{r fig.caption = "Dimensjoner ved datasettet for kjikvadrattest"}
 dim(kji1)
@@ -66,14 +66,14 @@ kjitest1
 
 R gir oss som default test med en såkalt "Yates continuity correction" som gjør at verdien kan virke annerledes enn i programvare som ikke gjør denne korreksjonen. Yateskorreksjonen tar utgangspunkt i at det er en forutsetning om normalfordeling i dataene, noe som ikke kan forutsettes i binære data som vi har her. Dette skal ikke være et stort problem i større utvalg (mer enn 5-10 forventede i hver celle i krysstabellen) [@sageLearnUseYates2019]. 
 
-I vårt konkrete tilfelle ser vi at med korreksjon er p-verdien `r kjitest1$p.value`. Hvis vi kjører testen uten korreksjonen får vi: 
+I vårt konkrete tilfelle ser vi at med korreksjon er p-verdien `r round(kjitest1$p.value, 5)`. Hvis vi kjører testen uten korreksjonen får vi: 
 
 ```{r fig.caption = "Kjikvadrattest uten Yates korreksjon"}
 kjitest2 <- chisq.test(kji1$Kjonn, kji1$Fargeblind, correct = FALSE)
 kjitest2
 ```
 
-Her er altså p-verdien `r kjitest2$p.value`. I dette eksempelet er altså forskjellen mellom de to ikke ubetydelig, da uten korreksjon er under 0.05 og med korreksjon er over 0.05. En tommelfingerreglel for tolkning av p-verdien er:
+Her er altså p-verdien `r round(kjitest2$p.value, 5)`. I dette eksempelet er altså forskjellen mellom de to ikke ubetydelig, da uten korreksjon er under 0.05 og med korreksjon er over 0.05. En tommelfingerreglel for tolkning av p-verdien er:
 
 > If p is low, the null must go. If p is high, the null flies.
 
@@ -90,7 +90,7 @@ kritiskverdi <- qchisq(p=.05, df=1, lower.tail=FALSE)
 kritiskverdi
 ```
 
-Hvis kjikvadratverdien er større eller lik den kritiske verdien er resultatene våre statistisk signifikante. Den kritiske verdien i dette eksempelet er `r kritiskverdi`, mens kjikvadratverdien er hhv. `r kjitest1$p.value` og `r kjitest2$p.value`. 
+Hvis kjikvadratverdien er større eller lik den kritiske verdien er resultatene våre statistisk signifikante. Den kritiske verdien i dette eksempelet er `r round(kritiskverdi, 3)`, mens kjikvadratverdien er hhv. `r round(kjitest1$p.value, 3)` og `r round(kjitest2$p.value, 3)`. 
 
 Vi kan altså bruke både p-verdien og kjikvadratverdien til å vurdere om vi skal forkaste nullhypotesen eller ikke. Hvis vi tar fram igjen krysstabellen vår:
 
@@ -105,10 +105,6 @@ En mulighet er også å kjøre en såkalt "Fisher's exact test" dersom de forven
 ```{r fig.caption = "Forventede verdier ved kjikvadrattest"}
 forventet <- as_tibble(kjitest1$expected)
 forventet
-min(forventet)
-```
-
-```{r fig.caption = "Minimum forventede celleverdi ved kjikvadrattest"}
 min(forventet)
 ```
 
@@ -140,6 +136,7 @@ En siste vurdering vi kan gjøre er å se på den såkalte phi-koeffisienten.
 ```{r fig.caption = "Phi-koeffisient"}
 krysstab2 <- table(kji1$Kjonn, kji1$Fargeblind) 
 phikoeff <- phi(krysstab2, digits = 3)
+phikoeff
 ```
 
 Phi-koeffisienten kan tolkes som en korrelasjonskoeffisient (Pearson r). 
@@ -160,7 +157,7 @@ column_spec(phikoefftab, 2, width = "8cm")
 
 I dette eksempelet har vi verdien `r phikoeff`, altså ingen eller neglisjerbar sammenheng.
 
-Oppsummert for vårt eksempel: Når vi undersøker forventede verdier i hver celle ser vi at det minste forventede tallet er `r min(forventet)`. Det er godt over et minimum på 5 og en anbefalt grense på 10. Derfor kan vi gjennomføre en kjikvadrattest *uten* Yates korreksjon. I vårt tilfelle forkaster vi altså nullhypotesen. Selv om vi finner en statistisk sammengeng mellom kjønn og fargeblindhet er denne liten eller neglisjerbar. 
+Oppsummert for vårt eksempel: Når vi undersøker forventede verdier i hver celle ser vi at det minste forventede tallet er `r round(min(forventet), 2)`. Det er godt over et minimum på 5 og en anbefalt grense på 10. Derfor kan vi gjennomføre en kjikvadrattest *uten* Yates korreksjon. I vårt tilfelle forkaster vi altså nullhypotesen. Selv om vi finner en statistisk sammengeng mellom kjønn og fargeblindhet er denne liten eller neglisjerbar. 
 
 ### Utregning av kjikvadratverdi
 

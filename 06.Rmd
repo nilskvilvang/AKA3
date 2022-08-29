@@ -102,14 +102,14 @@ Vi ser også her at t-testverdien er større enn kritisk verdi `r ttest$statisti
 2. Variabelen må være kontinuerlig
 3. Populasjonen er normalfordelt
 
-Vi ser spesielt på nr 3. Det finnes flere måter å se på normalitetsforutsetningen, både grafisk og formelle statistiske tester. Vi skal vise en formell test - Shapiro-Wilks som ofte brukes. Andre eksempler er Kolmogorov-Smirnov og Anderson-Darling. @razaliPowerComparisonsShapiroWilk2011 finner i en sammenlinende studie at Shapiro-WIlks fungerer bra.
+Vi ser spesielt på nr 3. Det finnes flere måter å se på normalitetsforutsetningen, både grafisk og formelle statistiske tester. Vi skal vise en formell test - Shapiro-Wilks som ofte brukes. Andre eksempler er Kolmogorov-Smirnov og Anderson-Darling. @razaliPowerComparisonsShapiroWilk2011 finner i en sammenlinende studie at Shapiro-Wilks fungerer bra.
 
 ```{r fig.cap = "Shapiro-Wilks test"}
 shapirotest <- shapiro.test(ttestonesample$Score)
 shapirotest
 ```
 
-Vi sammenlikner testverdien med 0,05 (gitt at vi bruker 0,05 som signifikansnivå). Dersom testverdien er over 0,05 indikerer det at dataene er normalfordelte. Hvis testeverdien er under 0,05 indikerer det at dataene avviker fra normalfordelingen. Dette er ikke tilfelle her (`r shapirotest$p.value`).
+Vi sammenlikner testverdien med 0,05 (gitt at vi bruker 0,05 som signifikansnivå). Dersom testverdien er over 0,05 indikerer det at dataene er normalfordelte. Hvis testeverdien er under 0,05 indikerer det at dataene avviker fra normalfordelingen. Dette er ikke tilfelle her (`r round(shapirotest$p.value, 4)`).
 
 ## Paired samples t-test
 

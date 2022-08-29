@@ -52,8 +52,8 @@ Vi kan belyse det samme i et boksplott:
 ```{r}
 ggplot(data = ames, aes(x = "", y = Sale_Price)) + 
   geom_boxplot(fill = 'lightblue') +
-  labs(y = "Verdi",
-       caption = "Salgspris for boliger i Ames, Iowa i perioden 2006-2010")
+    labs(y = "Verdi", caption = "Salgspris for boliger i Ames, Iowa i perioden 2006-2010") +
+    theme_bw()
 ```
 
 I situasjoner som dette foreskrives det ofte at man ser på en transformasjon av variabelen. @fengLogtransformationItsImplications2014 finner imidlertid at
