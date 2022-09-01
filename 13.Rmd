@@ -58,7 +58,7 @@ P(Y|X) er estimert som en såkalt sigmoid-funksjon.
 
 $p=\frac{e^{log(odds)}}{1+e^{log(odds)}} = \frac{1}{e^{-log(odds)}} = \frac{1}{1+e^{-x}} (= Sigmoid\ funksjon)$ 
 
-Sigmoid-funksjon er (som del av logistisk regresjon) også et sentralt element i f.eks. maskinlæring. Vi kan visualisere en sigmoid-funksjon slik:
+Sigmoidfunksjoneen er (som del av logistisk regresjon) også et sentralt element i f.eks. maskinlæring. Vi kan visualisere en sigmoidfunksjonen slik:
 
 ```{r fig.cap = "Sigmoidkurve"}
 sigmoidkurve <- function(x){
@@ -72,9 +72,69 @@ ggplot(data = data.frame(x = c(-4, 4)), aes(x)) +
 
 Dette gjør at vi kan plotte verdier i spennet $(0,1)$ som $-\infty, \infty$. 
 
-La oss se på et enkelt eksempel på hvordan logistisk regresjon kan brukes (basert på @starmerLogisticRegressionDetails2018).
+Vi kan se litt nærmere på hvorfor sigmoidfunksjonen "gir mening" med et tenkt eksempel. La oss anta at vi har data som viser om 10 pasienter har en viss type smitte eller ikke - vi har altså 10 pasienter vi har testet, 5 av disse er smittet og 5 er ikke smittet:
 
-Vi vil klassifisere en person som enten smittet eller ikke smittet av en sykdom. Output er enten 1 (= smittet) eller 0 (= ikke smittet) - basert på en eller annen test/kriterium. La oss si vi har 10 tilfeller:
+```{r}
+smitte <- data.frame(Pasientnr = 1:10, Smitte = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1))
+smitte
+```
+
+Verdi 0 angir ikke-smittet, mens verdi 1 angir smittet.Vi kan vise dette visuelt:
+
+```{r warning = FALSE, message = FALSE}
+smitteplott <- ggplot(smitte, aes(Pasientnr, Smitte)) +
+    geom_point(col = ifelse(1:nrow(smitte) == 1:5, "red", "blue"))
+smitteplott <- smitteplott + 
+    scale_x_discrete(name ="Pasient", limits=c("1":"10")) + 
+    ylab("Smittet") +
+    theme_bw()
+smitteplott 
+```
+
+Hvis vi legger på en lineær regresjonslinje vil det kunne se slik ut:
+
+```{r message = FALSE, warning = FALSE}
+smittedata <- ggplot(smitte, aes(Pasientnr, Smitte)) +
+    geom_point(col = ifelse(1:nrow(smitte) == 1:5, "red", "blue")) +
+    geom_smooth(method ='lm', se = FALSE, size = 1.5, col = "darkgreen") +
+    theme_bw() +
+    scale_y_continuous(breaks=seq(-1, 1.2, 1)) +
+    scale_x_continuous(breaks=seq(0, 11, 1))
+smittedata
+```
+
+Intuitivt vil vi tenke at den lineære regresjonslinja ikke beskriver dataene spesielt godt. Vi kan videre se på smitte/ikke-smitte som en verdi av sannsynlighet. Sannsynligheten for smitte for de som er smittet er tilnærmet 1, mens sannsynligheten for ikke-smitte for de som er ikke-smittet er tilnærmet 0. Siden sannsynligheten aldri kan være mindre enn 0 eller høyere enn 1 (normalt vil vi si at det heller ikke vil være 0 eller 1, men tilnærmet 0 og 1) vil det være meningsløst å ha en regresjonslinje som strekker seg ut over y = 0 og 1. Vi kan derfor, intuitivt, modifisere regresjonslinja noe:
+
+```{r}
+ggplot(smitte, aes(Pasientnr, Smitte)) +
+    geom_point(col = ifelse(1:nrow(smitte) == 1:5, "red", "blue")) + 
+    theme_bw() +
+    geom_segment(x = 2.2, 
+                 y = 0.02, 
+                 xend = 8.7, 
+                 yend = 0.98, 
+                 col = "darkgreen", 
+                 size = 1.5) +
+    geom_segment(x = 0.5,
+                 y = 0.02,
+                 xend = 2.21,
+                 yend = 0.02,
+                 col = "darkgreen",
+                 size = 1.5) +
+    geom_segment(x = 8.69,
+                 y = 0.98,
+                 xend = 10,
+                 yend = 0.98,
+                 col = "darkgreen",
+                 size = 1.5) +
+    scale_x_continuous(breaks=seq(0, 11, 1))
+```
+
+Dette er selvsagt en slags intuitiv tilnærming, men vi kan se at overgangen til sigmoidfunksjonen som beskrevet ovenfor) gir mening.
+
+La oss se videre på det enkele eksempelet på hvordan logistisk regresjon kan brukes (basert på @starmerLogisticRegressionDetails2018).
+
+Vi vil klassifisere en person som enten smittet eller ikke smittet av en sykdom ut fra en verdi på en test. Output er enten 1 (= smittet) eller 0 (= ikke smittet) - basert på en eller annen test/kriterium (altså verdien på den relevante testen). 
 
 ```{r warning=FALSE, message=FALSE, fig.cap = "Plott over smittetilfeller"}
 smitte <- data.frame(x1 = 1:10, x2 = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1))

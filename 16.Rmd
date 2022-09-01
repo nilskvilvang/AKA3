@@ -14,14 +14,14 @@ options(scipen=999)
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets) 
+pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets, plotrix, ggforce) 
 ```
 
 Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (sav samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje.
 
 Vi antar at avveiningen mellom forklaring og prediksjon er viktig og sentral for alle felt innenfor samfunnsvitenskapene, og at avveiningen har ulikt fokus og innretting fra fagfelt til fagfelt. @yarkoniChoosingPredictionExplanation2017 påpker f.eks. at for psykologi som fagfelt at "an increased focus on prediction, rather than explanation, can ultimately lead us to greater understanding of behavior" (s.1100).
 
-Berepet "maskinlæring" har blitt et mer og mer sentralt begrep i samfunnsvitenskapelig metode generelt og i dataanalyse spesielt. Selve begrepet ble "coinet" (først brukt) av @samuelStudiesMachineLearning1959. Endel av metodene i maskinlæring kjenner vi fra før. Regresjon er f.eks. et sentralt element i "pakken" av metoder som kan puttes inn i begrepet maskinlæring. Og regresjon er jo ikke noe nytt, så er maskinlæring kun et moteord? Et fancy ord på ting vi har gjort før? Tja, kanskje svaret er både ja og nei. Det er unektelig slik at vi har drevet med regresjonsanalyser lenge før begrepet maskinlæring i hvert fall ble allment kjent og popularisert. Samtidig er maskinlæring en distinkt gruppe av analytiske metoder hvis hensikt er å - nettopp - lære. Med dette mener vi modeller som bruker data til å forbedre analyseopgavene vi har foran oss.
+Berepet "maskinlæring" har blitt et mer og mer sentralt begrep i samfunnsvitenskapelig metode generelt og i dataanalyse spesielt. Selve begrepet ble "coinet" (først brukt) av @samuelStudiesMachineLearning1959. Endel av metodene i maskinlæring kjenner vi fra før. Regresjon er f.eks. et sentralt element i "pakken" av metoder som kan puttes inn i begrepet maskinlæring. Og regresjon er jo ikke noe nytt, så er maskinlæring kun et moteord? Et fancy ord på ting vi har gjort før? Tja, kanskje svaret er både ja og nei. Det er unektelig slik at vi har drevet med regresjonsanalyser lenge før begrepet maskinlæring i hvert fall ble allment kjent og popularisert. Samtidig er maskinlæring en distinkt gruppe av analytiske metoder hvis hensikt er å - nettopp - lære. Med dette mener vi modeller som bruker data til å forbedre analyseoppgavene vi har foran oss.
 
 Maskinlæring kan defineres som en prosess der vi mater data inn i generiske algoritmer og vi (forhåpentligvis) får vite noe fornuftig om dataene uten å skrive spesifikk kode for å få denne innsikten.       
 
@@ -37,20 +37,75 @@ Maskinlæring knyttes tett til kunstig intelligens (Articifical Intelligence, el
 
 Det er videre vanlig å sele inn maskinlæring ut fra hvordan dataanalysen skjer:
 
--   Supervised learning: Modellering gjennom algoritmer som kjenner både input og ønsket output.
-    - Regresjon: F.eks. lineær, logistisk, polynomial, SVR. Regresjon predikerer en numerisk verdi.
-    - Klassifisering: F.eks. lineær, SVM, beslutningstre, k-nearest neighbor, random forest. Klassifisering predikerer et sett av ordnede eller uordnede kvalitative verdier.  
--   Unsupervised learning: Modellering gjennom algortimer som kjenner kun input, og forsøker finne mønstre og grupper i dataene gjennom sannsynligheter (for at noe tilhører den ene eller den andre gruppen eller kategorien).
+-   Supervised learning: Modellering gjennom algoritmer som kjenner både input og ønsket output. Her lager vi modeller som kan predikere gjennom å "se" på korrekte/virkelige data ("virkeligheten") for å finne matematiske sammenhenger i dataene som gir de resultatene som foreligger. Vi kan se på dette som å forberede seg til en eksamen gjennom å se på tidligere eksamensoppgaver og fasit for disse, lære hvordan de riktige resultatene (i fasiten) ble regnet ut, og bruke den lærdommen på nye oppgaver. Jo flere tidligere eksamener man har regnet gjennom og lært av - jo større sannsynlighet for at man kan bruke denne lærdommen som modell for å løse neste eksamensoppgave. De to vanligste teknikkene å bruke i supervised learning er:
+    - Regresjon: F.eks. lineær, logistisk, polynomial, SVR. Regresjon predikerer en numerisk verdi. En lønnsomhetsmodell kan f.eks. predikere lønnsomhet for en bedrift som en numerisk verdi (kroner). En meteorologisk modell kan predikere nedbør (mm). En salgsprismodell kan predikere salgspris for eiendommer (kroner).
+    - Klassifisering: F.eks. lineær, SVM, beslutningstre, k-nearest neighbor, random forest. Klassifisering predikerer et sett av ordnede eller uordnede kvalitative verdier. Generelt kan man si at en klassifiseringsmodell predikerer sannsynligheten for at et eller annet befinner seg i en spesifisert kategori. En klassifiseringsmodell kan f.eks. predikere om en gitt e-post er spam eller ikke. En klassifiseringsmodell kan predikere om en gitt ansatt vil bytte jobb eller ikke, eller om en gitt kunde vil kjøpe en vare eller ikke. 
+-   Unsupervised learning: Modellering gjennom algortimer som kjenner kun input, og forsøker finne mønstre og grupper i dataene gjennom sannsynligheter (for at noe tilhører den ene eller den andre gruppen eller kategorien). I motsetning til supervised learning kjenner vi ikke svarene. Hvis studenten som leser til en eksamen bruker tidligere eksamensoppgaver, men ikke har fasiten, er det vanskelig å se hvordan studenten kan lære (i hvert fall være sikker på at det er korrekt). I unsupervised learning har man en datamengde (ofte stor) der man forsøker å finne meningsfulle mønstre og sammenhenger i dataene. Her er ikke kategoriene definert på forhånd (som i supervised learning). 
     - Clustering: Gruppering av data basert på likhet eller forskjeller
     - Assosiering: Identifisering av sammenhenger mellom variabler
     - Dimensionality reduction: Komponentanalyse (PCA), SVD o.l.
 -   Semi-supervised learning: En form for mellomting mellom supervised og unsupervised, dvs. vi kan ha mindre deler av data med input og output som kan brukes på data uten kjent/ønsket output. F.eks. at supervised learning bruker unsupervised learning gjennom såkalt "feature engineering".
--   Reinforcement learning: Modellering gjennom algoritmer der henskten/målsetningen er å maksimere en oppfatning om kumulativ belønning/utkomme. Reinforcement learning brukes f.eks. til å lære maskiner å spille spill mot mennesker.
+-   Reinforcement learning: Modellering gjennom algoritmer der henskten/målsetningen er å maksimere en oppfatning om kumulativ utkomme gjennom belønning eller straff. Reinforcement learning brukes f.eks. til å lære maskiner å spille spill mot mennesker, eller til å generere policies/strategier for å maksimere kost/nytte-vurderinger i ulike sammenhenger. Andre eksempler kan være selvstyrende biler, trading i finans- og investeringsbeslutninger, "natural language processing - NLP" som innebærer automatisk behandling av tekst (f.eks. i oversettelser) og anvendelser i helsesektoren (som "dymanic treatment regimes - DTR") innenfir diagnose og behandling. Modellen utvikles gjennom å straffe "feil" beslutninger/tiltak og belønne "riktige". 
 
 I tillegg skal man ikke holde på lenge med maskinlæring før begrepene Neural networks, Natural Language Processing (NLP) og Deep learning dukker opp. Disse kan, slik vi ser det, alle assosieres med såvel supervised som unsupervised learning. Vi kommer ikke til å gå inn på disse begrepene i dette kapittelet, men heller ta for oss disse begrepene i eget kapittel.
 
+## Supervised Learning
 
-## Regresjon
+### Generisk forståelse av supervised learning
+
+Vi ønsker altså å lage modeller som kan predikere hvilke verdier vi kan forvente på en avhengig variabel ut fra gitte verdier på x antall uavhengige variabler. Før vi kan gjøre disse prediksjonene må vi trene opp modellen. Dette gjøres normalt gjennom å dele opp et datasett i en treningsdel og en testdel. 
+
+For å trene modellen må vi kjøre observasjoner gjennom algoritmen (modellen), gjøre prediksjoner, sjekke med "fasit", evaluere mdoellen, og gjenta prosessen:
+
+![Generisk modell for supervised learning](mlsup.png)
+
+Prosedyren som er vist for to observasjoner over gjentas for datasettet. Modellen oppdateres og lærer sammenhengen mellom de uavhengige og den avhengige variabelen ved hver iterasjon. Intuitivt kan vi se at mange iterasjoner (store datasett) gir flere muligheter for modellen å lære, og dermed vil man anta at læring fra store datasett gir bedre modeller enn for små datasett. Til slutt kan vi evaluere modellen ved å kjøre modellen på testdelen av datasettet og sammenlikne de predikerte verdiene for den avhengige variabelen fra modellen med de faktiske målingene i testdataene. Dette gjør oss i stand til å vurdere hvor god vår modell er.
+
+#### Tap og minimering av tap ("loss and reducing loss")
+
+Når vi trener modellen i supervised learning finner vi verdier i modellens parametere (tenk på f.eks. stigningstall og skjæringspunkt i en enkel lineær regresjon) som minimerer tap ("loss"). Tap innebærer en måling/verdi av hvor dårlig modellens prediksjon var for et enkelt tilfelle. Perfekt perdiksjon = 0 tap, og en god modell har lite tap i gjennomsnitt for alle tilfellene/observasjonene. For datasettet bruker vi ofte MSE - Mean Square Error som et mål på dette (se mer detaljer om MSE under f.eks. lineær regresjon lenger ned). 
+
+Vi kan illustrere prosedyren for algoritmens beregning av minimalisering av tap med det følgende:
+
+```{r echo = FALSE}
+
+quadratic_fun <- function(x){
+  x^2
+}
+
+ggplot(data.frame(x = c(-15,15)), aes(x = x)) +
+    stat_function(fun = quadratic_fun) +
+    xlim(c(-15, 15)) +
+    labs(x = "Verdi koeffisient", y = "Loss") +
+    theme_bw() +
+    theme(axis.text.x = element_blank(), 
+          axis.ticks.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank()) +
+    geom_point(aes(x = -13.4, y = 180), colour = "red", size = 3) +
+    geom_text(x = -15, y = 180, label = "Punkt 1", color = "red") +
+    geom_segment(aes(x = -13, y = 180, xend = -12, yend = 180),
+                  arrow = arrow(length = unit(0.3, "cm")), color = "red") +
+    geom_point(aes(x = -12, y = 143), colour = "red", size = 3) +
+    geom_text(x = -13.5, y = 143, label = "Punkt 2", color = "red") +
+    geom_segment(aes(x = -11.5, y = 143, xend = -10.5, yend = 143),
+                  arrow = arrow(length = unit(0.3, "cm")), color = "red") +
+    geom_point(aes(x = -8, y = 64), colour = "red", size = 3) +
+    geom_text(x = -9.5, y = 64, label = "Punkt 3", color = "red") +
+    geom_segment(aes(x = -7.5, y = 64, xend = -6.5, yend = 64),
+                  arrow = arrow(length = unit(0.3, "cm")), color = "red") +
+    geom_point(aes(x = 8, y = 64), colour = "red", size = 3) +
+    geom_text(x = 9.5, y = 64, label = "Punkt 4", color = "red") +
+    geom_segment(aes(x = 7.5, y = 64, xend = 6.5, yend = 64),
+                  arrow = arrow(length = unit(0.3, "cm")), color = "red") +
+    geom_point(aes(x = 0, y = 0), colour = "red", size = 3) +
+    geom_text(x = 0, y = -6, label = "Minimum loss", color = "red")
+
+```
+
+Algoritmen starter i punkt 1 og beregner gradienten for "loss courve" (som i eksempelet = den dervierte/stigningstallet til kurven i det relevante punktet). Ut fra dette kan algoritmen bevege seg mot minimum loss. I punkt 2, 3 og 4 skjer det samme (i ounkt 4 har vi åpenbart "gått for langt" (positiv gradient) og algoritmen beregner at man må tilbake for å nå minimum loss). I prinsippet kan man ta museskritt for hvert steg, men det vil kreve et stort antall forsøk. På samme måte kan stegene bli for store og man vil hoppe fra den ene siden av minimum loss til den andre og tilbake. Antall steg man må gjennom før minimum loss finnes kalles "learning rate". 
+
+### Regresjon
 
 Vi har i tidligere kapitler gått gjennom enkel og multippel OLS og polynomial regresjon. Disse er også teknikker under paraplyen maskinlæring. Selv om vi har vist regresjon i tidligere kapittel introduserer vi et element i maskinlæringskapittelet som viser splitting av datasett i treningsdata og testdata. Dette er karakteristisk for maskinlæring. Det innebærer at vi deler datasettet (tilfeldig) inn i to grupper: den første gruppa - treningsdata - bruker vi til å lage/trene en modell. Den andre gruppa - testdata - bruker vi for å se hvor god modellen vi lagde med treningsdataene klarer å predikere dataene som ligger i testdatasettet. Testdatasettet består jo av "virkelige" data, så hvis modellen vår er god og klarer å predikere disse dataene kan vi si noe sikrere om hvor godt vi kan anta modellen vil predikere nye, hittil ikke målte/observerte verdier.
 
@@ -71,7 +126,7 @@ Datasettet "AmesHousing" [@decockAmesIowaAlternative2011] inneholder salgsdata f
 
 Vi skal i dette kapittelet ta utgangspunkt i det opprinnelige datasettet. Det finnes mange versjoner av dette datasette på nett siden det er et populært datasett, også i konkurranser på nett innen maskinlæring. I neste kapittel - der vi også tar for oss maskinlæring - vil vi bruke en modifisert versjon av datasettet som ligger i R-pakken "tidymodels". Vi vil også velge en litt annen tilnærming i analysen, og leseren kan dermed se både litt mer av bredden i tilnærminger og kunne sammenlikne hva ulike valg gjør med analysene.
 
-### Manglende verdier i datasettet (NAs)
+#### Manglende verdier i datasettet (NAs)
 
 Det kan innledningsvis være verdt å se om vi har variabler med mange manglende verdier ("na"). Vi kan først se på hvilke kolonner (variabler) som har manglende verdier:
 
@@ -134,7 +189,7 @@ natabell3
 
 Som tidligere nevnt kan det være aktuelt å behandle også disse - og på ulike måter. Det avhenger mye av konteksten og hvor problematisk vi oppfatter de manglende verdiene å være (hvor stor andel utgjør de pr variabel i forhold til totalt antall observasjoner o.l.). Vi lar disse være for nå.
 
-### Uteligger
+#### Uteligger
 
 Den avhengige variabelen er salgspris ("SalePrice"). Hvis vi ser på distribusjonen av boligenes verdi ser vi indikasjoner på at det kan være enkeltboliger med unormalt høye salgsverdier.
 
@@ -793,7 +848,7 @@ ames %>%
     theme_bw()
 ```
 
-### Deling av datasettet i trenings- og testdatasett
+#### Deling av datasettet i trenings- og testdatasett
 
 Vi deler datasettet i trenings- og testsett siden vi vil trenge dette i regresjon som metodikk i maskinlæring.
 
@@ -813,7 +868,7 @@ colnames(dimensjoner) <- c("Treningssett", "Testsett")
 kable(dimensjoner, caption = "Splitting av datasettet Ames Housing fra pakken 'modeldata'")
 ```
 
-### Enkel lineær regresjon
+#### Enkel lineær regresjon
 
 I den enkle lineære regresjonen ser vi på forholdet mellom salgspris som avhengig variabel og "Gr.Liv.Area" som er boligareal (ikke inkludert kjeller). Det vil være rimelig å anta at det er en sammenheng mellom boligareal og salgspris.
 
@@ -928,7 +983,7 @@ Jaha...så hvilken metode skal man bruke siden det gir fire ulike normaliserte v
 
 Vi må rett og slett ta et valg ut fra de (få) retningslinjene som f.eks. @ottoHowNormalizeRMSE2019 gir, men vi bør i hvert fall være obs på dette hvis vi bruker normalisert RSME til å sammenlikne modeller slik at vi ikke sammenlikner epler og pærer.
 
-### Multippel regresjon
+#### Multippel regresjon
 
 Vi modifiserer datasettet noe mer, ved å velge ut de numeriske variablene for å se hvilke variabler som har korrelasjoner > 0.5 (absolutt verdi).
 
@@ -1007,7 +1062,7 @@ colnames(rmsesammenlikning) <- c("Modell", "RMSE", "Uavhengige variabler")
 kable(rmsesammenlikning)
 ```
 
-### Polynomisk regresjon
+#### Polynomisk regresjon
 
 La oss anta at vi ønsker å se på sammenhengen mellom byggeår og salgspris. Vi illustrerer dette gjennom en enkel lineær regresjon:
 
@@ -1207,7 +1262,7 @@ rmsesammenlikning2 <- bind_rows(rmsesammenlikning, rmse3)
 kable(rmsesammenlikning2, caption = "Sammenlikning av RMSE for valgte modeller")
 ```
 
-### Linear Support Vector Regression (SVR)
+#### Linear Support Vector Regression (SVR)
 
 Så kommer vi til den første nye teknikken vi knytter til maskinlæring.
 
@@ -1265,7 +1320,7 @@ kable(rmsesammenlikning3, caption = "Sammenlikning av RMSE for valgte modeller")
 
 Siden vi vi har samme varaibler i multippel og SVR kan vi se at SVR-modellen gir betydelig lavere RMSE.
 
-#### SVR eksempel 2
+##### SVR eksempel 2
 
 Vi kan illustrere SVR på en annen type datasett. Datasettet "Boston" ligger integrert i R-pakken "MASS" og ble opprinnelig publisert i 1978. Datasettet inneholder boligdata fra Boston (N = 506) og var en undersøkelse "to measure the willingness to pay for clean air" [@harrisonHedonicHousingPrices1978, s.81]. I dette eksempelet bruker vi variabelen "medv" som avhengig variabel (som er boligenens medianverdi målt i \$1000). Vi har tatt ut en variabel - "B-1000" - fra det opprinnelige datasettet.
 
@@ -1334,7 +1389,7 @@ deskdata
 
 Vi kan se at boligprisen varierer mellom 5000 og 50000, med et standardavvik (= verdienes gjennomsnittlig avstand fra gjennomsnittet) på 9200 (9.2). I det perspektivet kan modellen se ut til å predikere rimelig bra.
 
-### Decision Tree Regression
+#### Decision Tree Regression
 
 Vi illustrerer DTR gjennom et eksempel basert på @plotly3DScatterPlots2022. I pakken "plotly" ligger et kjent datasett - mtcars - som er brukt i mange lærebøker og eksempler.
 
@@ -1421,7 +1476,7 @@ I grafen over har vi visualisert beslutningstreet. Første splitt skjer ved wt =
 
 Vi har fått delt opp de to uavhengige variablene i bokser. Hvis vi nå får et nytt punkt (eller vil predikere verdien på den avhengige variabelen ut fra gitt verdier av de to uavhengige variablene) kan vi legge det nye punktet inn i riktig boks ut fra verdiene på hhv. wt og hp. Den predikerte Y-verdien - verdien på den avhengige variabelen - blir ganske enkelt gjennomsnittsverdien av alle y-verdiene i den respektive boksen (jfr $\hat{y}_n$ i figuren over). Inndeingen i boksene gjennom belsutningstreet har i realiteten tilført informasjon til våre data. Vi trenger altså predikere ut fra et mye snevrere utfallsområde enn en tradisjonell tilnærming som vil ta hensyn til alle datapunktene (ikke bare de i rette boks).
 
-#### Eksempel DTR på Ames Housing Data
+##### Eksempel DTR på Ames Housing Data
 
 I dette eksempelet skal vi bruke datasettet fra pakken "modeldata" som over.
 
@@ -1486,7 +1541,7 @@ RMSE er `r round(modelprediksjon, 2)`. Dvs at i gjennomsnitt bommer modellens pr
 
 Decision Tree Regression kan i seg selv være en noe lunefull og dårlig modell for prediksjon. Det er ikke sjeldent å finne en god fit til dataene, men ofte en overfit (altså at vi får en god fit til dataene, men lav prediksjonsnøyaktighet). Derimot er den grunnstammen (no pun intended) i "Random Forests" modellering som vi skal se på i neste delkapittel. Før vi går til Random Forest skal vi se på en metodikk for å redusere sårbarheten til et enkelt beslutningstre. Denne metodikken kalles "bagging" - fra "*b*ootstrap *agg*regating [@breimanBaggingPredictors1996].
 
-#### Bagging
+##### Bagging
 
 @boehmkeRegressionTrees2018 illustrerer bagging slik:
 
@@ -1518,7 +1573,7 @@ vip2 <- as.data.frame(varImp(ames_bag1), scale = TRUE) %>%
 vip2
 ```
 
-### Random Forest regresjon
+#### Random Forest regresjon
 
 Den enkleste (?) måten å beskrive hva hva Random Forest regresjon er er å tenke tenke tilbake på Decision Tree regresjon som ETT tre, og Random Forest som MANGE trær (= en skog). 
 Sagt på en annen måte: Vi lager mange decision trees og lager prediksjoner for hvert tre og ser på gjennomsnittet av alle prediksjonene. Vi vet at Decision Tree regresjon kan være en noe lunefull og dårlig modell for prediksjon, og hensikten med Random Forest er å mitigere dene lunefullheten gjennom å repetere prosessen (f.eks. minst 500 ganger) og deretter se på gjennomsnittet av prediksjonene. 
@@ -1547,7 +1602,7 @@ rmse5
 ```
 
 
-## Klassifisering
+### Klassifisering
 
 Så langt - gjennom regresjon - har vi forsøkt å predikere en kontinuerlig variabel. Dersom vi i stedet har kategorier bruker vi klassifisering som prediksjon. Klassifisering omfatter teknikker som:
 
@@ -1563,8 +1618,94 @@ Vi kan tenke oss mange praktiske eksempler på klassifisering i maskinlæring fr
 
 Når vi trener en modell til å predikere en kvalitativ størrelse eller parameter har vi et klassifiseringstilfelle. 
 
-### Logistisk regresjon
+#### Logistisk regresjon
 
-Vi starter med logistisk regresjon, som vi gikk gjennom i detalj i eget kapittel (13). Vi går derfor ikke inn på detaljer om *hva* logistisk regresjon er eller *hvordan* logistisk regresjon generelt utføres, men konsentrerer oss om et eksempel i maskinllæringsøyemed.
+Vi starter med logistisk regresjon, som vi gikk gjennom i detalj i eget kapittel (13). Vi går derfor ikke inn på detaljer om *hva* logistisk regresjon er eller *hvordan* logistisk regresjon generelt utføres, men konsentrerer oss om et eksempel i maskinlæringsøyemed.
+
+For dette eksempelet har vi et datasett der vi har registrert alder og inntekt på 250 personer (som uavhengige variabler) og en kjøpsbeslutning som den avhengige variabelen - altså om personen kjøpte eller ikke kjøpte en gitt vare (som i dette tilfellet f.eks. kan være en dyr feriereise). 
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("Klass_Log.xlsx")
+```
+
+```{r}
+klass_log <- read_excel("Klass_Log.xlsx")
+klass_log
+```
+
+Vi deler datasettet i trenings- og testsett:
+
+```{r}
+splitt <- sample.split(klass_log$Kjop, SplitRatio = 0.7)
+klass_log_trening <- subset(klass_log, splitt == TRUE)
+klass_log_test <- subset(klass_log, splitt == FALSE)
+dim(klass_log_trening)
+dim(klass_log_test)
+```
+
+I klassifisering trenger vi å gjøre en "feature scaling" (= normalisering) av de uavhengige variablene.
+
+```{r}
+klass_log_trening[, 1:2] = scale(klass_log_trening[, 1:2])
+klass_log_test[, 1:2] = scale(klass_log_test[, 1:2])
+```
+
+Hvis vi nå ser på trenings- og testsettene ser vi at de er normalisert:
+
+```{r}
+head(klass_log_trening)
+head(klass_log_test)
+```
+
+Vi kan da gå videre med å trene en logistisk regresjon på treningsdataene.
+
+```{r}
+klassifisering <- glm(Kjop ~ .,
+                      family = binomial,
+                      data = klass_log_trening)
+```
+
+Neste steg blir da å se på prediksjoner av testdataene.
+
+```{r}
+sanns_prediksjon <- predict(klassifisering, 
+                            klass_log_test, 
+                            type = "response")
+y_prediksjon3 <- ifelse(sanns_prediksjon > 0.5, 1, 0)
+y_prediksjon3
+```
+
+Variabelen "sans_prediksjon" inneholder sannysnligheten for at respektive person kjøper den dyre reisen. Men siden vi ønsker å klassifisere i kjøp/ikke-kjøp bruker vi 50% (0.5) som cut-off og sier at dersom sannsynligheten er over 50% predikerer vi kjøp, hvis ikke predikerer vi ikke-kjøp ("y_prediksjon3").
+
+Confusion matrix: Denne teller antallet riktige og antall feil prediksjoner:
+
+```{r}
+cm <- table(klass_log_test$Kjop, y_prediksjon3)
+cm
+```
+
+Denne tabellen kan vi lese som følger: Der verdiene er 0-0 og 1-1 (hhv. 57 og 9) predikerer modellen vår riktig. Og i motsatt diagonal - verdiene 3 og 6) har modellen vår predikert feil. Modellen vår har altså predikert 66 av 75 riktig, og følgelig 9 av 75 feil. Vi kan se på to mål på hvor bra dette er.
+
+Sensitivitet:
+```{r}
+sensitivity(cm)
+```
+
+Sensitivitet (= "True positive rate") er den prosentvise korrekt predikerte andelen av samsvar mellom predikerte 1-verdier og faktiske 1-verdier.
+
+Spesifitet:
+```{r}
+specificity(cm)
+```
+
+Spesifitet (= "True negative rate") er den prosentvise korrekt predikerte andelen av samsvar mellom predikerte 0-verdier og faktiske 0-verdier.
+
+Vi kan illustrere forholdet mellom ekte og falske positive/negative gjennom en av Æsops kjente fabler - om gjetergutten som ropte Ulv!Ulv!
+
+![Æsops fabler: Ulv! Ulv!](ulvulv.png){width=85%}
+
+En ekte positiv er altså tilfeller der modellen korrekt predikerer den positive klassifiseringen, mens en ekte negativ er de tilfellene der modellen korrekt predikerer den negative klassifiseringen (og motsatt for hhv falsk positiv og falsk negativ).
+
+Hva som er gode verdier og om det er viktigst med sensitivitet eller spesifitet avhenger av problemet vi står ovenfor. Ideelt sett ønsker vi å maksimere begge, men i mange tilfeller er det ikke mulig og vi må kanskje prioritere den ene foran den andre. I noen tilfeller, som f.eks. om en bank vil predikere om en kunde vil betale avdragene sine på tid er det viktig med høy sensitivitet før man gir lånet. Om man vil teste om en medisin virker eller er giftig vil høy spesifitet være viktig. 
 
 
