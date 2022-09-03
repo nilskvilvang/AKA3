@@ -423,4 +423,5 @@ bagging
 random-forest-regresjon
 klassifisering
 logistisk-regresjon-1
+eksempel-på-logistisk-regresjon
 maskinlæring-gjennom-tidymodels

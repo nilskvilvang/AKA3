@@ -14,7 +14,7 @@ options(scipen=999)
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets, plotrix, ggforce) 
+pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets, plotrix, ggforce, ROCit, car) 
 ```
 
 Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (sav samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje.
@@ -1636,6 +1636,7 @@ klass_log
 Vi deler datasettet i trenings- og testsett:
 
 ```{r}
+set.seed(321)
 splitt <- sample.split(klass_log$Kjop, SplitRatio = 0.7)
 klass_log_trening <- subset(klass_log, splitt == TRUE)
 klass_log_test <- subset(klass_log, splitt == FALSE)
@@ -1646,8 +1647,8 @@ dim(klass_log_test)
 I klassifisering trenger vi å gjøre en "feature scaling" (= normalisering) av de uavhengige variablene.
 
 ```{r}
-klass_log_trening[, 1:2] = scale(klass_log_trening[, 1:2])
-klass_log_test[, 1:2] = scale(klass_log_test[, 1:2])
+klass_log_trening[, 1:2] <- scale(klass_log_trening[, 1:2])
+klass_log_test[, 1:2] <- scale(klass_log_test[, 1:2])
 ```
 
 Hvis vi nå ser på trenings- og testsettene ser vi at de er normalisert:
@@ -1657,10 +1658,10 @@ head(klass_log_trening)
 head(klass_log_test)
 ```
 
-Vi kan da gå videre med å trene en logistisk regresjon på treningsdataene.
+Vi kan da gå videre med å trene en logistisk regresjon på treningsdataene. Vi skal her bare bruke inntekt som uavhengig variabel.
 
 ```{r}
-klassifisering <- glm(Kjop ~ .,
+klassifisering <- glm(Kjop ~ Inntekt,
                       family = binomial,
                       data = klass_log_trening)
 ```
@@ -1684,7 +1685,11 @@ cm <- table(klass_log_test$Kjop, y_prediksjon3)
 cm
 ```
 
-Denne tabellen kan vi lese som følger: Der verdiene er 0-0 og 1-1 (hhv. 57 og 9) predikerer modellen vår riktig. Og i motsatt diagonal - verdiene 3 og 6) har modellen vår predikert feil. Modellen vår har altså predikert 66 av 75 riktig, og følgelig 9 av 75 feil. Vi kan se på to mål på hvor bra dette er.
+```{r echo = FALSE}
+cm2 <- as.numeric(cm)
+```
+
+Denne tabellen kan vi lese som følger: Der verdiene er 0-0 og 1-1 (hhv. `r cm2[1]` og `r cm2[4]`) predikerer modellen vår riktig. Og i motsatt diagonal - verdiene `r cm2[2]` og `r cm2[3]`) har modellen vår predikert feil. Modellen vår har altså predikert `r cm2[1] + cm2[4]` av `r sum(cm2)` riktig, og følgelig `r cm2[2] + cm2[3]` av `r sum(cm2)` feil. Vi kan se på to mål på hvor bra dette er.
 
 Sensitivitet:
 ```{r}
@@ -1693,12 +1698,12 @@ sensitivity(cm)
 
 Sensitivitet (= "True positive rate") er den prosentvise korrekt predikerte andelen av samsvar mellom predikerte 1-verdier og faktiske 1-verdier.
 
-Spesifitet:
+Spesifsitet:
 ```{r}
 specificity(cm)
 ```
 
-Spesifitet (= "True negative rate") er den prosentvise korrekt predikerte andelen av samsvar mellom predikerte 0-verdier og faktiske 0-verdier.
+Spesifsitet (= "True negative rate") er den prosentvise korrekt predikerte andelen av samsvar mellom predikerte 0-verdier og faktiske 0-verdier.
 
 Vi kan illustrere forholdet mellom ekte og falske positive/negative gjennom en av Æsops kjente fabler - om gjetergutten som ropte Ulv!Ulv!
 
@@ -1708,4 +1713,170 @@ En ekte positiv er altså tilfeller der modellen korrekt predikerer den positive
 
 Hva som er gode verdier og om det er viktigst med sensitivitet eller spesifitet avhenger av problemet vi står ovenfor. Ideelt sett ønsker vi å maksimere begge, men i mange tilfeller er det ikke mulig og vi må kanskje prioritere den ene foran den andre. I noen tilfeller, som f.eks. om en bank vil predikere om en kunde vil betale avdragene sine på tid er det viktig med høy sensitivitet før man gir lånet. Om man vil teste om en medisin virker eller er giftig vil høy spesifitet være viktig. 
 
+En visuell måte å se på ekte/falske positive/negative er et diagram som plotter prediksjon og ekte verdi fargelagt (kode modifisert fra @superdatascienceMachineLearningAZ2022).
+
+```{r}
+set <- klass_log_trening
+X1 <- seq(min(set[, 1]) - 1, max(set[, 1]) + 1, by = 0.01)
+X2 <- seq(min(set[, 2]) - 1, max(set[, 2]) + 1, by = 0.01)
+grid_set <- expand.grid(X1, X2)
+colnames(grid_set) <- c("Inntekt", "Kjop")
+prob_set <- predict(klassifisering, type = 'response', newdata = grid_set)
+y_grid <- ifelse(prob_set > 0.5, 1, 0)
+plot(set[, -3],
+     main = "Logistisk regresjon (Treningssett)",
+     xlab = "Inntekt", ylab = "Kjop",
+     xlim = range(X1), ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
+points(grid_set, pch = '.', col = ifelse(y_grid == 1, 'springgreen3', 'tomato'))
+points(set, pch = 21, bg = ifelse(set[, 3] == 1, 'green4', 'red3'))
+```
+
+```{r}
+set <- klass_log_test
+X1 <- seq(min(set[, 1]) - 1, max(set[, 1]) + 1, by = 0.01)
+X2 <- seq(min(set[, 2]) - 1, max(set[, 2]) + 1, by = 0.01)
+grid_set <- expand.grid(X1, X2)
+colnames(grid_set) <- c("Inntekt", "Kjop")
+prob_set <- predict(klassifisering, type = 'response', newdata = grid_set)
+y_grid <- ifelse(prob_set > 0.5, 1, 0)
+plot(set[, -3],
+     main = "Logistisk regresjon (Testsett)",
+     xlab = "Inntekt", ylab = "Kjop",
+     xlim = range(X1), ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
+points(grid_set, pch = '.', col = ifelse(y_grid == 1, 'springgreen3', 'tomato'))
+points(set, pch = 21, bg = ifelse(set[, 3] == 1, 'green4', 'red3'))
+```
+
+Det som vises for hhv. trenings- og testsettet er alle observasjonene som punkter (røde og grønne) ut fra alder og om de foretok kjøp. De røde punktene er observasjoner som hadde verdi 0 (dvs ikke kjøp). Motsatt - de grønne punktene er observasjoner som hadde verdi 1 (dvs kjøp). Vi kan se at flertallet av ikke-kjøpene ble foretatt av unge potensielle kjøpere. De røde og grønne områdene på plottet er vårt (modellens) forsøk på klassifisering. Så det røde området er området der klassifiseringen sier alle som ikke kjøpte skal befinne seg, mens det grønne er det motsatte - klassifiseringen av alle de som man antar ville kjøpe (ut fra klassifiseringskriteriet). Punktene er altså virkeligehten (observajsonen) mens de fargede områdene er predikert klassifisering. Så et grønt punkt på det grønne området er en sann positiv, et rødt punkt på det røde området er en sann negativ, et grønt punkt på det røde området er en falsk negativ, og et rødt punkt på det grønne området er en falsk positiv.
+
+Vi kan også legge merke til at logistisk regresjon er en lineær klassifiseringsteknikk - vi ser det gjennom at linjen/grensen mellom grønt og rødt område er rett. 
+
+Til slutt skal vi se på den såkalt "ROC-kurven" (se f.eks. @hajjan-tilakiReceiverOperatingCharacteristic2013 for en framstilling av ROC) . ROC - "Receiver Operating Characteristic" - er en grafisk framstilling av balansen/trade-off mellom raten av falske positive og falske positive for enhver tenkelig cut-off. Nøyaktigheten for en test måles gjennom arealet under ROC-kurven. Normalt framstilles kurven med falske positive (1-spesfisitet) på x-aksen og sanne positive (sensitivitet, eller 1-falsk negativ rate) på y-aksen. Jo nærmere kurven følger venstre side og deretter toppen , jo mer nøyaktig er testen (fordi det betyr at raten for sanne positive er høy og raten for falske positive er lav). 
+
+```{r}
+ROC_kurve <- rocit(score=sanns_prediksjon,class=klass_log_test$Kjop)
+plot(ROC_kurve)
+```
+
+ROC-kurven over vises med indikasjon for det optimale punktet (der avstanden mellom ROC-kurven og den såkalte "chance line" er størst). Dette punktet kalles "Youden Index" [@youldenIndexRatingDiagnostic1950] som er et mål på den mest optimale balansen mellom sensitivitet og spesifisitet.
+
+##### Eksempel på logistisk regresjon 
+
+For dette eksempelet bruker vi et ekte datasett som går på diagnose på om en kreftsvulst er godartet (B = benign) eller ondartet (M = malignant). Datasettet finnes [her](https://archive.ics.uci.edu/ml/datasets/breast+cancer+wisconsin+(diagnostic)). 
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("Wisconsin.csv")
+```
+
+```{r warning = FALSE, message = FALSE}
+Wisconsin <- read.csv("Wisconsin.csv")
+dim(Wisconsin)
+```
+
+Datasettet består av 569 observasjoner (pasienter). Når vi ser på datasettet som er lastet inn ser vi at en variabel ("X") ikke inneholder data (alle er NA) så denne tar vi bort. Vi sjekker også om datasettet har mangelende verdeier (NAs).
+
+```{r}
+Wisconsin <- subset(Wisconsin, select=(-X))
+sum(is.na(Wisconsin))
+```
+
+Vi sitter da igjen med 569 observasjoner av 30 uavhengige variabler (målinger) og 1 avhengig variabel (antall kolonner er `r ncol(Wisconsin)`, men kolonne 1 er en ID-kolonne). Den avhengige variabelen er som nevnt en diagnose på om kreftsvulsten er godartet (B = benign) eller ondartet (M = malignant). Vår klassifisering er altså en dikotom klassifisering. Vi har ingen manglende verdier - om vi hadde det måtte vi ha vurdert omfanget og hvordan dette ville påvirke de analysene vi ønsker å gjøre på datasettet (dette er diskutert andre steder i boka).
+
+Den siste forberedelsen vi gjør er å omkode den uavhengige variabelen. Denne er i datasettet gitt verdiene M for ondartet og B for godartet. Vi koder om dette slik at M = 1, B = 0. 
+
+```{r message = FALSE, warning = FALSE}
+Wisconsin$diagnosis <- dplyr::recode(Wisconsin$diagnosis, M = 1, B = 0)
+```
+
+Vi deler først opp datasettet i trenings- og testsett.
+
+```{r}
+set.seed(123)
+splittWisc <- sample.split(Wisconsin$diagnosis, SplitRatio = 0.8)
+Wisc_trening <- subset(Wisconsin, splittWisc == TRUE)
+Wisc_trening$diagnosis <- as.factor(Wisc_trening$diagnosis)
+Wisc_test <- subset(Wisconsin, splittWisc == FALSE)
+Wisc_test$diagnosis <- as.factor(Wisc_test$diagnosis)
+dim(Wisc_trening)
+dim(Wisc_test)
+```
+
+Normaliserer:
+
+```{r}
+Wisc_trening[, 3:32] <- scale(Wisc_trening[, 3:32])
+Wisc_test[, 3:32] <- scale(Wisc_test[, 3:32])
+```
+
+Deretter kan vi trene modellen.
+
+```{r}
+Wisc_klass <- glm(diagnosis ~ . -id,
+                      family = binomial,
+                      data = Wisc_trening)
+```
+
+Her kan vi legge merke til to advarsler:
+
+1. "glm.fit: algorithm did not converge". Iflg. @zachHowHandleWarning2021 innebærer dette "This warning often occurs when you attempt to fit a logistic regression model in R and you experience perfect separation – that is, a predictor variable is able to perfectly separate the response variable into 0’s and 1’s." Vi kan mitigere dette gjennom å introdusere "penalized/regularized regression". 
+
+2. "glm.fit: fitted probabilities numerically 0 or 1 occurred". @zachHowHandleGlm2021 poengterer at dette ikke er en *feil*, men en advarsel, og modellen vil fortsatt kjøre: "This warning occurs when you fit a logistic regression model and the predicted probabilities of one or more observations in your data frame are indistinguishable from 0 or 1." Et alternativ som beskrives er simpelt hen å ignorere advarselen. En annen mulighet er å øke utvalgsstørrelsen. Et tredje tiltak kan være å se om det foreligger uteliggere i datasettet.
+
+La oss først se på den andre meldingen. Vi har i kapittelet om regresjonsanalyse gått relativt grundig gjennom fenomenet uteliggere så vi går ikke i detalj inn på dette her. 
+
+```{r}
+uteliggere <- cooks.distance(Wisc_klass)
+plot(uteliggere, pch = "*", cex = 2, main = "Innflytelsesrike observasjoner gjennom 'Cooks distance'")
+abline(h = 4*mean(uteliggere, na.rm=T), col="red")
+```
+
+Vi kan hente ut en liste og se på de identifiserte uteliggerne:
+
+```{r}
+innflytelsesrike <- as.numeric(names(uteliggere)[(uteliggere > 4*mean(uteliggere, na.rm=T))])
+innflytelsesrike
+```
+
+```{r}
+outlierTest(Wisc_klass)
+```
+
+Her kan vi gå videre og se hvordan modellen blir ved å behandle uteliggere på ulike måter, men i dette tilfellet velger vi kun å gå videre.
+
+Så til den første advarselen. Her kan vi vise tilbake til tidligere i kapittelet der vi beskrev LASSO-regresjon (eller Elastic-net for den sakens skyld). Vi går også her videre med modellen vi har.
+
+Prediksjoner av testdataene.
+
+```{r}
+Wisc_sanns_prediksjon <- predict(Wisc_klass, 
+                            Wisc_test, 
+                            type = "response")
+y_prediksjon4 <- ifelse(Wisc_sanns_prediksjon > 0.5, 1, 0)
+```
+
+Confusion matrix:
+```{r}
+cm3 <- table(Wisc_test$diagnosis, y_prediksjon4)
+cm3
+```
+
+```{r echo = FALSE}
+cm4 <- as.numeric(cm3)
+```
+
+Vi ser at 0-0 og 1-1 (hhv. `r cm4[1]` og `r cm4[4]`) predikerer modellen vår riktig. Og i motsatt diagonal - verdiene `r cm4[2]` og `r cm4[3]`) har modellen vår predikert feil. Modellen vår har altså predikert `r cm4[1] + cm4[4]` av `r sum(cm4)` riktig, og følgelig `r cm4[2] + cm4[3]` av `r sum(cm4)` feil. Vi kan se på to mål på hvor bra dette er
+
+
+Modellens nøyaktighet:
+```{r}
+sensitivity(cm3)
+specificity(cm3)
+```
+
+```{r}
+ROC_kurve2 <- rocit(score=Wisc_sanns_prediksjon,class=Wisc_test$diagnosis)
+plot(ROC_kurve2)
+```
 
