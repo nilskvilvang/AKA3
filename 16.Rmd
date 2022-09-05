@@ -14,7 +14,7 @@ options(scipen=999)
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets, plotrix, ggforce, ROCit, car) 
+pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets, plotrix, ggforce, ROCit, car, class) 
 ```
 
 Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (sav samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje.
@@ -57,7 +57,7 @@ Vi ønsker altså å lage modeller som kan predikere hvilke verdier vi kan forve
 
 For å trene modellen må vi kjøre observasjoner gjennom algoritmen (modellen), gjøre prediksjoner, sjekke med "fasit", evaluere mdoellen, og gjenta prosessen:
 
-![Generisk modell for supervised learning](mlsup.png)
+![Generisk modell for supervised learning](mlsup.png){width=75%}
 
 Prosedyren som er vist for to observasjoner over gjentas for datasettet. Modellen oppdateres og lærer sammenhengen mellom de uavhengige og den avhengige variabelen ved hver iterasjon. Intuitivt kan vi se at mange iterasjoner (store datasett) gir flere muligheter for modellen å lære, og dermed vil man anta at læring fra store datasett gir bedre modeller enn for små datasett. Til slutt kan vi evaluere modellen ved å kjøre modellen på testdelen av datasettet og sammenlikne de predikerte verdiene for den avhengige variabelen fra modellen med de faktiske målingene i testdataene. Dette gjør oss i stand til å vurdere hvor god vår modell er.
 
@@ -1622,7 +1622,12 @@ Når vi trener en modell til å predikere en kvalitativ størrelse eller paramet
 
 Vi starter med logistisk regresjon, som vi gikk gjennom i detalj i eget kapittel (13). Vi går derfor ikke inn på detaljer om *hva* logistisk regresjon er eller *hvordan* logistisk regresjon generelt utføres, men konsentrerer oss om et eksempel i maskinlæringsøyemed.
 
-For dette eksempelet har vi et datasett der vi har registrert alder og inntekt på 250 personer (som uavhengige variabler) og en kjøpsbeslutning som den avhengige variabelen - altså om personen kjøpte eller ikke kjøpte en gitt vare (som i dette tilfellet f.eks. kan være en dyr feriereise). 
+```{r echo = FALSE}
+klass_log <- read_excel("Klass_Log.xlsx")
+```
+
+
+For dette eksempelet har vi et datasett der vi har registrert alder og inntekt på `r nrow(klass_log)` personer (som uavhengige variabler) og en kjøpsbeslutning som den avhengige variabelen - altså om personen kjøpte eller ikke kjøpte en gitt vare (som i dette tilfellet f.eks. kan være en dyr feriereise). 
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
 xfun::embed_file("Klass_Log.xlsx")
@@ -1866,8 +1871,7 @@ cm3
 cm4 <- as.numeric(cm3)
 ```
 
-Vi ser at 0-0 og 1-1 (hhv. `r cm4[1]` og `r cm4[4]`) predikerer modellen vår riktig. Og i motsatt diagonal - verdiene `r cm4[2]` og `r cm4[3]`) har modellen vår predikert feil. Modellen vår har altså predikert `r cm4[1] + cm4[4]` av `r sum(cm4)` riktig, og følgelig `r cm4[2] + cm4[3]` av `r sum(cm4)` feil. Vi kan se på to mål på hvor bra dette er
-
+Vi ser at 0-0 og 1-1 (hhv. `r cm4[1]` og `r cm4[4]`) predikerer modellen vår riktig. Og i motsatt diagonal - verdiene `r cm4[2]` og `r cm4[3]`) har modellen vår predikert feil. Modellen vår har altså predikert `r cm4[1] + cm4[4]` av `r sum(cm4)` riktig, og følgelig `r cm4[2] + cm4[3]` av `r sum(cm4)` feil. Vi kan se på mål på hvor bra dette er.
 
 Modellens nøyaktighet:
 ```{r}
@@ -1879,4 +1883,155 @@ specificity(cm3)
 ROC_kurve2 <- rocit(score=Wisc_sanns_prediksjon,class=Wisc_test$diagnosis)
 plot(ROC_kurve2)
 ```
+
+For å ytterligere se på modellens nøyaktighet kan vi gjennomføre en k-Fold kryssvalidering. Kryssvalidering er beskrevet i detalj i kapittelet om OLS-regresjon så vi går ikke inn i teorien bak teknikken.
+
+```{r}
+kryssval <- trainControl(method = "cv", number = 10, savePredictions = "final")
+Wisc_klass2 <- train(diagnosis ~ . -id, data = Wisc_trening, method = "glm", family = binomial, trControl = kryssval)
+print(Wisc_klass2)
+```
+
+Resultatet av kryssvalideringen viser at nøyaktigheten er `r round(Wisc_klass2$results[2], 3)`. Dette innebærer at modellen vår predikerer `r round(Wisc_klass2$results[2], 3)*100` riktig. I tillegg får vi en kappaverdi, som i dette tilfellet er `r round(Wisc_klass2$results[3], 2)`. Hvis vi ser på standardavviket for nøyaktigheten finner vi:
+
+```{r}
+ Wisc_klass2$results[4]
+```
+
+Standardavviket er med andre ord svært lavt, noe som forteller oss at det er veldig lav spredning i nøyaktigheten.
+
+Kappaverdien sammenlikner den observerte nøyaktigheten med en forventet nøyaktighet ("random chance") etter denne utregningen:
+
+$Kappa = \frac{Observert\ nøyaktighet\ - Forventet\ nøyaktighet}{1 - Forventet\ nøyaktighet}$
+
+der
+
+- Observert nøyaktighet = Antallet tilfeller som ble korrekt klassifisert av modellen (altså alle tilfeller der modellen klassifiserte et tilfelle som ondartet eller godartet, og den klassifiseringen stemte med den faktiske/empiriske diagnosen)
+
+- Forventet nøyaktighet = Nøyaktigheten en tilfeldig klassifisering vil forventes å gi ut fra den foreliggende confusion matrix. I dette filfellet ville dette bli 
+
+$\frac{(64+2)*(64+7)}{64+2+7+40} = \frac{66*71}{113} = 41.47$
+$\frac{(7+40)*(40+2)}{64+2+7+40} = \frac{(47*42)}{113} = 17.47$
+$Forventet\ nøyaktighet = \frac{41.47+17.47}{113} = 0.522$
+
+Som gir:
+
+$Kappa = \frac{0.947 - 0.522}{1-0.522} = 0.889$
+
+Kappaverdien kan sammenliknes på tvers av modeller og er derfor et godt verktøy for å sammenlikne modeller. @landisMeasurementObserverAgreement1977 foreslår følgende tolkning av kappaverdien:
+
+- $\le 0 =\ "Poor"$
+- $.01 - .20 =\ "Slight"$
+- $.21 - .40 =\ "Fair"$
+- $.41 - .60 = \ "Moderate"$
+- $.61 - .80 =\ "Substantial"$
+- $.81 - 1.00 =\ "Almost\ perfect"$
+
+I vårt tilfelle innebærer våre resultater at modellen har hy nøyaktighet og tilnærmet perfekt kappaverdi.
+
+#### K-Nearest Neighbor
+
+La oss anta at vi har følgende scenario:
+
+```{r}
+x1 <- c(1, 1.2, 1.3, 1.4, 1.5, 1.4, 1.3, 1.25, 1.15, 1.2)
+x2 <- c(2, 2.2, 2.1, 2.3, 2.25, 2.1, 2, 1.9, 1.9, 2)
+sett1 <- tibble(x1, x2)
+
+x3 <- c(2.1, 1.9, 1.95, 2.1, 2.2, 2.1, 2, 1.9, 2.15, 2)
+x4 <- c(2.5, 2.7, 2.6, 2.8, 2.75, 2.6, 2.5, 2.4, 2.4, 2.5)
+sett2 <- tibble(x3, x4)
+
+knnplott <- ggplot() +
+    geom_point(data = sett1, aes(x = x1, y = x2), color = "blue") + 
+    geom_point(data = sett2, aes(x = x3, y = x4, color = "red")) +
+    theme_bw() +
+    annotate(geom = "text", x  =1.25, y = 2.4, label = "Kategori 1", color = "blue") +
+    annotate(geom = "text", x = 2, y = 2.3, label = "Kategori 2", color = "red") +
+    theme(legend.position = "none") 
+knnplott
+```
+
+Vi har altså en klassifisering i to kateogrier vist med hhv blå farge (kategori 1) og rød farge (kategori 2). La oss nå anta at vi får et nytt punkt - det magentafargede punktet under:
+
+```{r}
+knnplott +
+    geom_point(aes(x=1.55, y=2.4), colour="magenta") +
+    annotate(geom = "text", x = 1.55, y = 2.45, label = "Nytt punkt", color = "magenta")
+```
+
+Spørsmålet blir om det nye punktet skal kategoriseres i kategori 1 eller kategori 2. Som teknikken indikerer - "Nearest neighbor" - vil kategoriseringen av det nye punktet bestemmes av naboene (hvem er nærmest). I dette tenkte tilfellet vil det derfor se slik ut:
+
+```{r}
+knnplott +
+    geom_point(aes(x=1.55, y=2.4), colour="blue") +
+    annotate(geom = "text", x = 1.55, y = 2.45, label = "Nytt punkt", color = "blue")
+```
+
+Teknikken baserer seg altså på at man ser på de nærmeste nabopunktene for nye observasjoner og lar det bestemme hvilken kategori det nye punktet skal plasseres i. Som regel brukes ikke kun et nabopunkt, men **K** nabopunkter (K = Antall nabopunkter, derav navnet "K-Nearest neighbor"). Veldig ofte brukes K = 5 som default. Det vil si at algoritmen regner på den euklidiske avstanden fra det nye punktet til de 5 nærmeste punktene. Euklidisk avstand regnes ut slik:
+
+![Euklids avstand mellom to punkter i et plan](euklidavstand.png){width=75%}
+
+Avstanden mellom punktet A ($a_1, a_2$) og B ($b_1, b_2$) er gitt ved:
+
+$\sqrt{(a_1-b_1)^2 + (a_2-b_2)^2}$
+
+Kanskje de 5 punktene alle tilhører samme kateogri, i så fall er beslutningen åpenbar om å inkludere det nye punktet i denne kategorien. Dersom vi har punkter fra to eller flere kategorier blant de 5 som er nærmest teller vi bare opp antall punkter av de 5 for hver kategori og legger det nye punktet inn i kateogrien med flest punkter blant de 5.
+
+Vi fortsetter med samme datasett innledningsvis for logistisk regresjon der vi har 500 observasjoner på kjøp/ikke-kjøp med data for alder og inntekt. Vi har allerede forberedt dataene og delt i trenings- og testsett:
+
+```{r}
+head(klass_log_trening)
+head(klass_log_test)
+```
+
+Vi lager da en klassifisering basert på KNN for treningssettet og prediksjon for testsettet:
+
+```{r}
+cl <- klass_log_trening[3]
+y_prediksjon5 <- knn(train = klass_log_trening[,  -3],
+                     test = klass_log_test[, -3],
+                     cl = klass_log_trening$Kjop,
+                     k = 5)
+
+cm5 <- table(klass_log_test$Kjop, y_prediksjon5)
+cm5
+```
+
+```{r echo = FALSE}
+cm6 <- as.numeric(cm5)
+```
+
+Riktige prediksjoner blir da hhv `r cm6[1]` og `r cm6[4]`) = `r cm6[1] + cm6[4]` av `r sum(cm6)` korrekte prediksjoner og `r cm6[2] + cm6[3]` av `r sum(cm6)` feil.
+
+Modellens nøyaktighet:
+```{r}
+sensitivity(cm5)
+specificity(cm5)
+```
+
+Visualisering:
+
+```{r}
+set = klass_log_trening
+X1 = seq(min(set[, 1]) - 1, max(set[, 1]) + 1, by = 0.01)
+X2 = seq(min(set[, 2]) - 1, max(set[, 2]) + 1, by = 0.01)
+grid_set = expand.grid(X1, X2)
+colnames(grid_set) = c('Inntekt og alder', 'Kjop')
+y_grid = knn(train = klass_log_trening[,  -3],
+                     test = grid_set,
+                     cl = klass_log_trening$Kjop,
+                     k = 5)
+plot(set[, -3],
+     main = 'KNN (Testsett)',
+     xlab = 'Inntekt og alder', ylab = 'Kjop',
+     xlim = range(X1), ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
+points(grid_set, pch = '.', col = ifelse(y_grid == 1, 'springgreen3', 'tomato'))
+points(set, pch = 21, bg = ifelse(set[, 3] == 1, 'green4', 'red3'))
+```
+
+Vi kan se at dette er en ikke-lineær klassifisering (i motsetning til logistisk regresjon) ut fra at skillet mellom rødt og grønt område ikke er en rett linje. Vi kan også se at modellen gjør en veldig bra jobb i klassifiseringen da vi har få grønne punkter i rødt område og få røde punkter i det grønne området (eller, med andre ord, få falske negative og få falske positive).
+
+#### Support Vector Machine (SVM)
 

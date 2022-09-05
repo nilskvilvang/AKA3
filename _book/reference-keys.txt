@@ -424,4 +424,6 @@ random-forest-regresjon
 klassifisering
 logistisk-regresjon-1
 eksempel-på-logistisk-regresjon
+k-nearest-neighbor
+support-vector-machine-svm
 maskinlæring-gjennom-tidymodels
