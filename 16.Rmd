@@ -14,7 +14,7 @@ options(scipen=999)
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets, plotrix, ggforce, ROCit, car, class) 
+pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets, plotrix, ggforce, ROCit, car, class, e1071) 
 ```
 
 Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (sav samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje.
@@ -1678,10 +1678,11 @@ sanns_prediksjon <- predict(klassifisering,
                             klass_log_test, 
                             type = "response")
 y_prediksjon3 <- ifelse(sanns_prediksjon > 0.5, 1, 0)
-y_prediksjon3
+y_pred <- table(y_prediksjon3)
+y_pred
 ```
 
-Variabelen "sans_prediksjon" inneholder sannysnligheten for at respektive person kjøper den dyre reisen. Men siden vi ønsker å klassifisere i kjøp/ikke-kjøp bruker vi 50% (0.5) som cut-off og sier at dersom sannsynligheten er over 50% predikerer vi kjøp, hvis ikke predikerer vi ikke-kjøp ("y_prediksjon3").
+Variabelen "sans_prediksjon" inneholder sannysnligheten for at respektive person kjøper den dyre reisen. Men siden vi ønsker å klassifisere i kjøp/ikke-kjøp bruker vi 50% (0.5) som cut-off og sier at dersom sannsynligheten er over 50% predikerer vi kjøp, hvis ikke predikerer vi ikke-kjøp ("y_prediksjon3"). Vi ser av "y-prediksjon3" at verdien 0 predikeres `r y_pred[[1]]` ganger, mens verdien 1 predikeres `r y_pred[[2]]` ganger.
 
 Confusion matrix: Denne teller antallet riktige og antall feil prediksjoner:
 
@@ -1712,7 +1713,7 @@ Spesifsitet (= "True negative rate") er den prosentvise korrekt predikerte andel
 
 Vi kan illustrere forholdet mellom ekte og falske positive/negative gjennom en av Æsops kjente fabler - om gjetergutten som ropte Ulv!Ulv!
 
-![Æsops fabler: Ulv! Ulv!](ulvulv.png){width=85%}
+![Æsops fabler: Ulv! Ulv!](ulvulv.png){width=90%}
 
 En ekte positiv er altså tilfeller der modellen korrekt predikerer den positive klassifiseringen, mens en ekte negativ er de tilfellene der modellen korrekt predikerer den negative klassifiseringen (og motsatt for hhv falsk positiv og falsk negativ).
 
@@ -1834,7 +1835,7 @@ La oss først se på den andre meldingen. Vi har i kapittelet om regresjonsanaly
 ```{r}
 uteliggere <- cooks.distance(Wisc_klass)
 plot(uteliggere, pch = "*", cex = 2, main = "Innflytelsesrike observasjoner gjennom 'Cooks distance'")
-abline(h = 4*mean(uteliggere, na.rm=T), col="red")
+abline(h = 4*mean(uteliggere, na.rm = T), col ="red")
 ```
 
 Vi kan hente ut en liste og se på de identifiserte uteliggerne:
@@ -1886,7 +1887,7 @@ plot(ROC_kurve2)
 
 For å ytterligere se på modellens nøyaktighet kan vi gjennomføre en k-Fold kryssvalidering. Kryssvalidering er beskrevet i detalj i kapittelet om OLS-regresjon så vi går ikke inn i teorien bak teknikken.
 
-```{r}
+```{r warning = FALSE, message = FALSE}
 kryssval <- trainControl(method = "cv", number = 10, savePredictions = "final")
 Wisc_klass2 <- train(diagnosis ~ . -id, data = Wisc_trening, method = "glm", family = binomial, trControl = kryssval)
 print(Wisc_klass2)
@@ -1976,7 +1977,7 @@ Avstanden mellom punktet A ($a_1, a_2$) og B ($b_1, b_2$) er gitt ved:
 
 $\sqrt{(a_1-b_1)^2 + (a_2-b_2)^2}$
 
-Kanskje de 5 punktene alle tilhører samme kateogri, i så fall er beslutningen åpenbar om å inkludere det nye punktet i denne kategorien. Dersom vi har punkter fra to eller flere kategorier blant de 5 som er nærmest teller vi bare opp antall punkter av de 5 for hver kategori og legger det nye punktet inn i kateogrien med flest punkter blant de 5.
+Kanskje de 5 punktene alle tilhører samme kategori, i så fall er beslutningen åpenbar om å inkludere det nye punktet i denne kategorien. Dersom vi har punkter fra to eller flere kategorier blant de 5 som er nærmest teller vi bare opp antall punkter av de 5 for hver kategori og legger det nye punktet inn i kateogrien med flest punkter blant de 5.
 
 Vi fortsetter med samme datasett innledningsvis for logistisk regresjon der vi har 500 observasjoner på kjøp/ikke-kjøp med data for alder og inntekt. Vi har allerede forberedt dataene og delt i trenings- og testsett:
 
@@ -2002,7 +2003,7 @@ cm5
 cm6 <- as.numeric(cm5)
 ```
 
-Riktige prediksjoner blir da hhv `r cm6[1]` og `r cm6[4]`) = `r cm6[1] + cm6[4]` av `r sum(cm6)` korrekte prediksjoner og `r cm6[2] + cm6[3]` av `r sum(cm6)` feil.
+Riktige prediksjoner blir da hhv `r cm6[1]` og `r cm6[4]` = `r cm6[1] + cm6[4]` av `r sum(cm6)` korrekte prediksjoner, og følgelig  `r cm6[2] + cm6[3]` av `r sum(cm6)` feil.
 
 Modellens nøyaktighet:
 ```{r}
@@ -2034,4 +2035,165 @@ points(set, pch = 21, bg = ifelse(set[, 3] == 1, 'green4', 'red3'))
 Vi kan se at dette er en ikke-lineær klassifisering (i motsetning til logistisk regresjon) ut fra at skillet mellom rødt og grønt område ikke er en rett linje. Vi kan også se at modellen gjør en veldig bra jobb i klassifiseringen da vi har få grønne punkter i rødt område og få røde punkter i det grønne området (eller, med andre ord, få falske negative og få falske positive).
 
 #### Support Vector Machine (SVM)
+
+La oss anta at vi har disse dataene:
+
+```{r}
+x1 <- c(1, 1.2, 1.3, 1.4, 1.55, 1.4, 1.3, 1.25, 1.15, 1.2)
+x2 <- c(2, 2.2, 2.1, 2.3, 2.3, 2.1, 2, 1.9, 1.9, 2)
+sett1 <- tibble(x1, x2)
+
+x3 <- c(1.9, 1.7, 1.73, 1.9, 2, 1.9, 1.8, 1.65, 1.95, 1.8)
+x4 <- c(2.5, 2.7, 2.6, 2.8, 2.75, 2.6, 2.5, 2.4, 2.4, 2.5)
+sett2 <- tibble(x3, x4)
+
+svmplott <- ggplot() +
+    geom_point(data = sett1, aes(x = x1, y = x2), color = "blue") + 
+    geom_point(data = sett2, aes(x = x3, y = x4, color = "red")) +
+    theme_bw() +
+    theme(legend.position = "none") 
+svmplott
+```
+
+Vi har tilsynelatende to klare grupperinger (klassifiseringer). Hvordan lager vi en fornuftig grense mellom de to gruppene slik at vi vet hvilken gruppe nye observasjoner hører til? En måte er denne:
+
+```{r}
+svmplott + 
+    geom_vline(xintercept = 1.6, color = "magenta")
+```
+
+Men denne linjen kan kanskje like gjerne være slik:
+
+```{r}
+svmplott + 
+    geom_hline(yintercept = 2.35, color = "magenta")
+```
+
+Eller slik:
+
+```{r}
+df <- data.frame(x1 = 1, x2 = 2.1, y1 = 2.75, y2 = 1.9)
+svmplott + 
+    geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour = "magenta"), data = df)
+```
+
+Eller sågar noen av disse:
+
+```{r}
+df2 <- data.frame(x1 = 1, x2 = 2.1, y1 = 2.75, y2 = 1.9)
+df3 <- data.frame(x1 = 1, x2 = 2.1, y1 = 2.60, y2 = 2.0)
+df4 <- data.frame(x1 = 1, x2 = 2.1, y1 = 2.40, y2 = 2.2)
+svmplott + 
+    geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour = "magenta"), data = df2) +
+    geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour = "magenta"), data = df3) +
+    geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour = "magenta"), data = df4)  
+```
+
+Måten SVM-algoritmen gjør dette er gjennom "Maximum Margin" - maksimal avstand.
+
+```{r}
+df5 <- data.frame(x1 = 1.55, x2 = 1.6, y1 = 2.3, y2 = 2.352)
+df6 <- data.frame(x1 = 1.6, x2 = 1.65, y1 = 2.352, y2 = 2.4)
+
+svmplott +
+    geom_abline(intercept = 4.91, slope = -1.6) +
+    geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour = "magenta"), data = df5) +
+    geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour = "magenta"), data = df6) +
+    annotate(geom="text", x = 1.5, y = 2.4, label="Maksimal avstand", color = "red") +
+    annotate(geom="text", x = 1.52, y = 2.275, label="Support vector", color = "darkgreen") +
+    annotate(geom="text", x = 1.72, y = 2.38, label="Suport vector", color = "darkgreen") 
+```
+
+Den korrekte linja er den som deler dataene i to og som samtidig gir maksimal avstand ("maximal margin"). Linja skal gå like langt fra de to punktene som kalles "support vectors" og på en måte som maksimerer denne avstanden. En ting vi kan legge merke til er at SVM-algoritmen velger de to punktene (eller vektorene) som liger nærmest hverandre, men som fortsatt er klassifisert i ulike grupper og lar disse to danne support vectors som definerer hele klassifiseringen av kommende observasjoner. På en måte kan vi se på dette som de to mest ekstreme tilfellene av sine respektive klassifiseringer. Når disse to da danner utgangspunktet for linja som deler klassifiseringene kan man bruke denne linja for å klassifisere nye observasjoner. 
+
+La oss se på et praktisk eksempel der vi har et datasett (lastet ned fra "GeeksforGeeks" [@akashkumar17ClassifyingDataUsing2021].
+
+```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
+xfun::embed_file("social.csv")
+```
+
+```{r warning = FALSE, message = FALSE}
+social <- read.csv("social.csv")
+head(social)
+```
+
+```{r echo = FALSE}
+dimsocial <- dim(social)
+```
+
+Datasettet består av `r dimsocial[1]` observasjoner i `r dimsocial[2]` kolonner. Av disse skal vi i dette eksempelet bruke de uavhengige variablene "alder" og "lønn", og den avhengige variabelen "kjøp". Vi modifiserer derfor datasette slik at vi kun sitter igjen med disse. I tillegg lager vi kjøpsvariabelen til faktor.
+
+```{r}
+social2 <- social[3:5]
+social2$Purchased <- factor(social2$Purchased, levels = c(0, 1))
+```
+
+Deretter splitter vi datasettet i trenings- og testsett, og skalerer:
+
+```{r}
+set.seed(123)
+splitt <- sample.split(social2$Purchased, SplitRatio = 0.75)
+treningssett <- subset(social2, splitt == TRUE)
+testsett <- subset(social2, splitt == FALSE)
+treningssett[-3] <- scale(treningssett[-3])
+testsett[-3] <- scale(testsett[-3])
+dim(treningssett)
+dim(testsett)
+```
+
+Og setter opp modellen:
+
+```{r}
+svm_social2_klass <- svm(formula = Purchased ~ .,
+                 data = treningssett,
+                 type = "C-classification",
+                 kernel = "linear")
+```
+
+"svm" algoritmen kan kjøres på ulike måter - i modellen over har vi valgt "linear". Så lager vi prediksjoner på testsettet. 
+
+```{r}
+y_prediksjon <- predict(svm_social2_klass, newdata = testsett[-3])
+```
+
+Confusion matrix:
+
+```{r}
+cm7 <- table(testsett[, 3], y_prediksjon)
+cm7
+```
+
+Vi kan se at det er ganske mange feilklassifiseringer, noe vi også kan se gjennom en visualisering.
+
+```{r}
+X1 <- seq(min(treningssett[, 1]) - 1, max(treningssett[, 1]) + 1, by = 0.01)
+X2 <- seq(min(treningssett[, 2]) - 1, max(treningssett[, 2]) + 1, by = 0.01)
+grid_sett <- expand.grid(X1, X2)
+colnames(grid_sett) <- c('Age', 'EstimatedSalary')
+y_grid <- predict(svm_social2_klass, newdata = grid_sett)
+plot(treningssett[, -3],
+	main = "SVM (Treningssett)",
+	xlab = "Age", ylab = "Estimated Salary",
+	xlim = range(X1), ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
+points(grid_sett, pch = '.', col = ifelse(y_grid == 1, 'coral1', 'lightgreen'))
+points(treningssett, pch = 21, bg = ifelse(treningssett[, 3] == 1, 'green4', 'red3'))
+```
+
+Og samme type visualisering for testsettet:
+
+```{r}
+X1 <- seq(min(testsett[, 1]) - 1, max(testsett[, 1]) + 1, by = 0.01)
+X2 <- seq(min(testsett[, 2]) - 1, max(testsett[, 2]) + 1, by = 0.01)
+grid_sett <- expand.grid(X1, X2)
+colnames(grid_sett) <- c('Age', 'EstimatedSalary')
+y_grid <- predict(svm_social2_klass, newdata = grid_sett)
+plot(testsett[, -3],
+	main = "SVM (Testsett)",
+	xlab = "Age", ylab = "Estimated Salary",
+	xlim = range(X1), ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
+points(grid_sett, pch = '.', col = ifelse(y_grid == 1, 'coral1', 'lightgreen'))
+points(testsett, pch = 21, bg = ifelse(testsett[, 3] == 1, 'green4', 'red3'))
+```
 
