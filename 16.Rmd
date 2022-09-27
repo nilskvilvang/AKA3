@@ -2150,7 +2150,7 @@ svm_social2_klass <- svm(formula = Purchased ~ .,
                  kernel = "linear")
 ```
 
-"svm" algoritmen kan kjøres på ulike måter - i modellen over har vi valgt "linear". Så lager vi prediksjoner på testsettet. 
+"svm" algoritmen kan kjøres på ulike måter - i modellen over har vi valgt "linear". Så lager vi prediksjoner på testsettet. Lenger nede vil vi se på "kernel SVM" der vi vil endre akkurat dette parameteret ("kernel").
 
 ```{r}
 y_prediksjon <- predict(svm_social2_klass, newdata = testsett[-3])
@@ -2166,34 +2166,170 @@ cm7
 Vi kan se at det er ganske mange feilklassifiseringer, noe vi også kan se gjennom en visualisering.
 
 ```{r}
-X1 <- seq(min(treningssett[, 1]) - 1, max(treningssett[, 1]) + 1, by = 0.01)
-X2 <- seq(min(treningssett[, 2]) - 1, max(treningssett[, 2]) + 1, by = 0.01)
+X1 <- seq(min(treningssett[, 1]) - 1, 
+          max(treningssett[, 1]) + 1, 
+          by = 0.01)
+X2 <- seq(min(treningssett[, 2]) - 1, 
+          max(treningssett[, 2]) + 1, 
+          by = 0.01)
 grid_sett <- expand.grid(X1, X2)
 colnames(grid_sett) <- c('Age', 'EstimatedSalary')
 y_grid <- predict(svm_social2_klass, newdata = grid_sett)
 plot(treningssett[, -3],
 	main = "SVM (Treningssett)",
 	xlab = "Age", ylab = "Estimated Salary",
-	xlim = range(X1), ylim = range(X2))
-contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
-points(grid_sett, pch = '.', col = ifelse(y_grid == 1, 'coral1', 'lightgreen'))
-points(treningssett, pch = 21, bg = ifelse(treningssett[, 3] == 1, 'green4', 'red3'))
+	xlim = range(X1), 
+	ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), 
+                       length(X1), 
+                       length(X2)), 
+        add = TRUE)
+points(grid_sett, 
+       pch = '.', 
+       col = ifelse(y_grid == 1, 'lightgreen', 'coral1'))
+points(treningssett, 
+       pch = 21, 
+       bg = ifelse(treningssett[, 3] == 1, 'green4', 'red3'))
 ```
 
 Og samme type visualisering for testsettet:
 
 ```{r}
-X1 <- seq(min(testsett[, 1]) - 1, max(testsett[, 1]) + 1, by = 0.01)
-X2 <- seq(min(testsett[, 2]) - 1, max(testsett[, 2]) + 1, by = 0.01)
+X1 <- seq(min(testsett[, 1]) - 1, 
+          max(testsett[, 1]) + 1, 
+          by = 0.01)
+X2 <- seq(min(testsett[, 2]) - 1, 
+          max(testsett[, 2]) + 1, 
+          by = 0.01)
 grid_sett <- expand.grid(X1, X2)
 colnames(grid_sett) <- c('Age', 'EstimatedSalary')
 y_grid <- predict(svm_social2_klass, newdata = grid_sett)
 plot(testsett[, -3],
 	main = "SVM (Testsett)",
 	xlab = "Age", ylab = "Estimated Salary",
-	xlim = range(X1), ylim = range(X2))
-contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
-points(grid_sett, pch = '.', col = ifelse(y_grid == 1, 'coral1', 'lightgreen'))
-points(testsett, pch = 21, bg = ifelse(testsett[, 3] == 1, 'green4', 'red3'))
+	xlim = range(X1), 
+	ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), 
+                       length(X1), 
+                       length(X2)), 
+        add = TRUE)
+points(grid_sett, 
+       pch = '.', 
+       col = ifelse(y_grid == 1, 'lightgreen', 'coral1'))
+points(testsett, 
+       pch = 21, 
+       bg = ifelse(testsett[, 3] == 1, 'green4', 'red3'))
 ```
+
+#### SVM - ulike algoritmer ("kernels")
+
+I eksempelet ovenfor har vi i modellen brukt en lineær algoritme (i modellen "svm_social2_klass" har vi definert som "kernel = 'linear'" som et parameter i modellen). Dette peker på at vi ønsker en rett linje som skiller punktene / definerer klassifiseringen. Og i illustrasjonene ser vi jo også det. Men dataene kan selvsagt være at en slik karakter at det ikke er mulig å separere dem på noen meningsfull måte. Dataene kan jo i verste fall se slik ut, hvilket umuliggjør en lineær avgrensning mellom klassifiseringen:
+
+```{r echo = FALSE}
+x1 <- c(2.04, 2.03, 2.02, 2.02, 2.05, 2.03, 2.04, 2.04, 2.03, 2.03, 2.04, 2.03, 2.02, 2.02, 2.05, 2.03, 2.02, 2.02, 2.05, 2.03, 2.03, 2.02, 2.02, 2.05, 2.03)
+x2 <- c(2, 2.17, 2.1, 2.14, 2.15, 2.1, 2, 2.1, 2.05, 2, 2.08, 2.1, 2, 2.1, 2.05, 2, 2, 2.17, 2.1, 2.14, 2.1, 2.14, 2.15, 2.1, 2)
+sett1 <- tibble(x1, x2)
+
+x3 <- c(1.95, 1.96, 1.98, 1.94, 1.96, 2.01, 1.93, 1.95, 1.95, 1.97, 2.05, 2.06, 2.08, 2.05, 2.06, 2.05, 2.09, 2.06, 2.055, 2.07, 1.95, 1.96, 1.98, 1.94, 1.96, 2.01, 1.93, 1.95, 1.95, 1.97, 2.05, 2.06, 2.08, 2.05, 2.06, 2.05, 2.09, 2.06, 2.055, 2.07, 1.95, 1.96, 1.98, 1.94, 1.96, 2.01, 1.93, 1.95, 1.95, 1.97, 1.93, 1.95, 1.95, 1.97, 2.05, 2.05, 2.09, 2.06, 2.055, 2.07)
+x4 <- c(2.3, 2.25, 2.29, 2.21, 2.19, 2.18, 2.13, 2.21, 2.24, 2.32, 2.3, 2.25, 2.29, 2.21, 2.19, 2.18, 2.13, 2.21, 2.24, 2.32, 1.98, 1.97, 1.96, 1.95, 1.94, 1.95, 1.97, 1.95, 1.96, 1.98, 1.96, 1.95, 1.98, 1.93, 1.94, 1.98, 1.97, 1.96, 1.94, 1.97, 2.05, 2.055, 2.088, 2.03, 2.04, 2.08, 2.07, 2.06, 2.04, 2.07, 2.21, 2.19, 2.18, 2.13, 2.21, 1.95, 1.96, 1.98, 1.96, 1.95)
+sett2 <- tibble(x3, x4)
+
+svmplott <- ggplot() +
+    geom_point(data = sett1, aes(x = x1, y = x2), color = "blue") + 
+    geom_point(data = sett2, aes(x = x3, y = x4, color = "red")) +
+    theme_bw() +
+    theme(legend.position = "none") 
+svmplott
+```
+
+Det er ganske åpenbart at en lineær tilnærming i SVM vil være temmelig tåpelig fordi dataene ikke er mulig å separere lineært.
+
+[En kort og visuell måte](https://www.youtube.com/watch?v=_YPScrckx28&ab_channel=VisuallyExplained) å se på dette problemet er gitt av @elkhadirSupportVectorMachine2021. Vi går ikke inn i detaljer om hvordan algoritmene fungerer, men begrenser oss til å fastslå et en anvendt måte å gå videre dersom man har et noe mer komplekst tilfelle av data som ikke enkelt lar seg separere lineært (som dataene over) er det såkalte "kernel trick" (igjen kan vi vise til en instruktiv kort [video](https://www.youtube.com/watch?v=Q7vT0--5VII) fra @elkhadirKernelTrickSupport2022. Vi går derfor inn i et eksempel på Kernel SVM klassifisering.
+
+Vi bruker samme datasett som ovenfor:
+
+```{r}
+head(social2)
+```
+
+Og modellen vil (i kode) se ganske lik ut som over.
+
+```{r}
+svm_social2_kernel <- svm(formula = Purchased ~ .,
+                 data = treningssett,
+                 type = "C-classification",
+                 kernel = "radial")
+```
+
+Vi kan gjenta prosedyren fra den lineære SVM med å lage prediksjoner på testsettet, se på confusion matrix og visualisere.
+
+
+```{r}
+y_prediksjon_kernel <- predict(svm_social2_kernel, newdata = testsett[-3])
+```
+
+```{r}
+cm8 <- table(testsett[, 3], y_prediksjon_kernel)
+cm8
+```
+
+```{r}
+X1 <- seq(min(treningssett[, 1]) - 1, 
+          max(treningssett[, 1]) + 1, 
+          by = 0.01)
+X2 <- seq(min(treningssett[, 2]) - 1, 
+          max(treningssett[, 2]) + 1, 
+          by = 0.01)
+grid_sett <- expand.grid(X1, X2)
+colnames(grid_sett) <- c('Age', 'EstimatedSalary')
+y_grid <- predict(svm_social2_kernel, newdata = grid_sett)
+plot(treningssett[, -3],
+	main = "Kernel SVM (Treningssett)",
+	xlab = "Age", ylab = "Estimated Salary",
+	xlim = range(X1), 
+	ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), 
+                       length(X1), 
+                       length(X2)), 
+        add = TRUE)
+points(grid_sett, 
+       pch = '.', 
+       col = ifelse(y_grid == 1, 'lightgreen', 'coral1'))
+points(treningssett, 
+       pch = 21, 
+       bg = ifelse(treningssett[, 3] == 1, 'green4', 'red3'))
+```
+
+Og samme type visualisering for testsettet:
+
+```{r}
+X1 <- seq(min(testsett[, 1]) - 1, 
+          max(testsett[, 1]) + 1, 
+          by = 0.01)
+X2 <- seq(min(testsett[, 2]) - 1, 
+          max(testsett[, 2]) + 1, 
+          by = 0.01)
+grid_sett <- expand.grid(X1, X2)
+colnames(grid_sett) <- c('Age', 'EstimatedSalary')
+y_grid <- predict(svm_social2_kernel, newdata = grid_sett)
+plot(testsett[, -3],
+	main = "Kernel SVM (Testsett)",
+	xlab = "Age", ylab = "Estimated Salary",
+	xlim = range(X1), 
+	ylim = range(X2))
+contour(X1, X2, matrix(as.numeric(y_grid), 
+                       length(X1), 
+                       length(X2)), 
+        add = TRUE)
+points(grid_sett, 
+       pch = '.', 
+       col = ifelse(y_grid == 1, 'lightgreen', 'coral1'))
+points(testsett, 
+       pch = 21, 
+       bg = ifelse(testsett[, 3] == 1, 'green4', 'red3'))
+```
+
+Ut fra visualiseringene av såvel treningssettet som testsettet gjør den Gaussiske algoritmen ("radial" i koden) en langt bedre jobb i klassifiseringen enn den lineære. Teknisk sett har algortimen "løftet" dataene til 3D, lagd en hyperplane som gjorde klassifieringen lettere, for til slutt å projisere resultatet (klassifiseringen) ned til 2D igjen (som altså er visualiseringen over). 
+
+#### Decision Tree Classification
 

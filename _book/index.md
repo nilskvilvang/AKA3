@@ -1,7 +1,7 @@
 --- 
 title: "Anvendt kvantitativ analyse"
 author: "Nils Kvilvang"
-date: "12 september, 2022"
+date: "27 september, 2022"
 site: bookdown::bookdown_site
 bibliography: bibliografi.bib
 csl: chicago-author-date.csl
@@ -184,6 +184,10 @@ Innholdet er under utvikling og oppdateres jevnlig om enn noe uregelmessig. Tilb
   <tr>
    <td style="text-align:left;width: 8em; "> 12.sep 2022 </td>
    <td style="text-align:left;width: 40em; "> SVM i kap 16 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 8em; "> 27.sep 2022 </td>
+   <td style="text-align:left;width: 40em; "> Kernel SVM i kap 16 </td>
   </tr>
 </tbody>
 </table>

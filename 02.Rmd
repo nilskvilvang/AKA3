@@ -251,7 +251,7 @@ Før vi ser nærmere på egenskaper ved normalfordelingskurven kan det være nø
 
 ## Varians og standardavvik
 
-Variansen i en variabel representerer det gjennomsnittlige avviket fra gjennomsnittsverdien [@Field2012] og er et mål på spredningen i dataene (som navnet antyder: hvor mye dataene variere ut fra den sentrale tendensen). Under vises et eksempel basert på @Field2009.
+Variansen i en variabel representerer det gjennomsnittlige avviket fra gjennomsnittsverdien [@fieldDiscoveringStatisticsUsing2012] og er et mål på spredningen i dataene (som navnet antyder: hvor mye dataene variere ut fra den sentrale tendensen). Under vises et eksempel basert på @fieldDiscoveringStatisticsUsing2009.
 
 La oss anta at vi har spurt 5 studenter på høgskolen hvor mange kjæledyr de har. Svarene kan settes opp i en enkel tabell. I gjennomsnitt har de 2,6 kjæledyr. Vi ønsker imidlertid å se hvor mye avviket er for den enkelte fra snittet (siden vi har regnet ut snittet kan vi se på gjennomsnittsverdien som en modell på forholdet mellom studenter og antall kjæledyr). Vi registrerer svarene vi fikk i et skjema:
 
@@ -269,7 +269,7 @@ sdvar <- flextable(sdvar)
 set_table_properties(sdvar, width = 1, layout = "autofit")
 ```
 
-Når vi regner ut avviket (sum of deviances) summerer vi avvikene. Siden denne er 0 skulle det innebære at det totalt sett i "modellen" ikke er avvik mellom modellen og våre virkelige observasjoner. Problemet her er at det er både positive og negative avvik som nuller hverandre ut. Man må derfor kvadrere avvikene for å omgå problemet med fortegn. Imidlertid får vi et nytt problem. La oss anta at vi i stedet for 5 studenter har spurt 500. Da får vi et svært høyt kvadrert avvik fra snitt. Altså – vi må ta høyde for for antallet observasjoner. Vi deler derfor sum kvadrert avvik fra snitt på antall observasjoner (5,20/5). MEN: vi må foreta et litt teknisk og komplisert tillegg i utregningen. Vi må dele på antall observasjoner MINUS 1 (som er antallet frihetsgrader – degrees of freedom). Dette vil ikke bli nærmere forklart her, men for de som ønsker å lese mer om frihetsgrader kan prøve noen andre kilder, f.eks. @Walker1940, @Good1973 eller @Pandey2008. Vi ender altså opp med regnestykket 5,20/(5-1) = 1,3. Dette er variansen. *Variansen er altså det gjennomsnittlige avviket mellom gjennomsnittsverdien av de observerte dataene og verdiene til de enkelte observasjonene.*
+Når vi regner ut avviket (sum of deviances) summerer vi avvikene. Siden denne er 0 skulle det innebære at det totalt sett i "modellen" ikke er avvik mellom modellen og våre virkelige observasjoner. Problemet her er at det er både positive og negative avvik som nuller hverandre ut. Man må derfor kvadrere avvikene for å omgå problemet med fortegn. Imidlertid får vi et nytt problem. La oss anta at vi i stedet for 5 studenter har spurt 500. Da får vi et svært høyt kvadrert avvik fra snitt. Altså – vi må ta høyde for for antallet observasjoner. Vi deler derfor sum kvadrert avvik fra snitt på antall observasjoner (5,20/5). MEN: vi må foreta et litt teknisk og komplisert tillegg i utregningen. Vi må dele på antall observasjoner MINUS 1 (som er antallet frihetsgrader – degrees of freedom). Dette vil ikke bli nærmere forklart her, men for de som ønsker å lese mer om frihetsgrader kan prøve noen andre kilder, f.eks. @walkerDegreesFreedom1940, @goodWhatAreDegrees eller @pandeyWhatAreDegrees. Vi ender altså opp med regnestykket 5,20/(5-1) = 1,3. Dette er variansen. *Variansen er altså det gjennomsnittlige avviket mellom gjennomsnittsverdien av de observerte dataene og verdiene til de enkelte observasjonene.*
 
 Som regel snakker vi imidlertid om standardavviket. Dette finner vi ved å ta kvadratroten av variansen (som vi jo har funnet ved å kvadrere avvikene for å unngå fortegnsproblemer). Vi får da i vårt tilfelle et standardavvik på 1,14. Variansen og standardavviket forteller oss altså noe om spredningen i dataene. Liten varians betyr at spredningen er liten (om vi har gjennomført en spørreundersøkelse betyr det at respondentene har svart ganske likt). Stor varians betyr stor spredning (respondentene har svart ganske ulikt).
 
@@ -342,7 +342,7 @@ text(0, 0.2, "99.7 %", col = "black")
 
 Tre standardavvik "over og under" 0 (= det skraverte området i grafen over) innebærer at i et normalfordelt datasett vil 99.7 % av tilfeldig valgte x-verdier befinner seg i dette intervallet. Vi kan finne arealet mellom x=-3 og x=3, som er `r pnorm(3,mean=0,sd=1)-pnorm(-3,mean=0,sd=1)`^[pnorm(3,mean=0,sd=1)-pnorm(-3,mean=0,sd=1)]. Dette utgjør et kjernepunkt i statistisk prosesskontroll som vi vil komme mye tilbake til.
 
-Oppsummert kan vi framstille normalfodeling og standardavvik slik [@hartmannVarianceStandardDeviation2018]:
+Oppsummert kan vi framstille normalfodeling og standardavvik slik [@hartmannELearningProjectSOGA2018]:
 
 ```{r message = FALSE, warning=FALSE, fig.cap = "Normalfordeling med standardavvik"}
 y.norm <- rnorm(n = 100000, mean = 0, sd = 1)
@@ -874,12 +874,8 @@ Poissonfordelinger finnes i situasjoner der hendelser skjer vilkårlig i tid (og
 
 Poissonfordeling uttrykker sannsynligheten for at et gitt antall hendelser inntreffer i et gitt tidsintervall (eller et gitt geografisk domene) *og* at vi kjenner gjennomsnittlig hvor ofte hendelsen inntreffer. Denne sannsynligheten uttrykkes som en lambdaverdi ($\lambda$).
 
-Eksempelet under er hentet fra @soagePoissonDistribution2020:
-
 ```{r message = FALSE, warning=FALSE, fig.cap = "Poissonfordelinger"}
-# Grid of X-axis values
 x <- 0:50
-# lambda: 5
 lambda <- 5
 plot(dpois(x, lambda), 
      type = "h", 
@@ -887,19 +883,16 @@ plot(dpois(x, lambda),
      main = "Poisson sannsynlighetsfordeling",
      ylab = "P(X = x)", 
      xlab = "Antall hendelser")
-# lambda: 10
 lambda <- 10
 lines(dpois(x, lambda), 
       type = "h", 
       lwd = 2, 
       col = rgb(1, 0, 0, 0.7))
-# lambda: 20
 lambda <- 20
 lines(dpois(x, lambda), 
       type = "h", 
       lwd = 2, 
       col = rgb(0, 1, 0, 0.7))
-# Legend
 legend("topright", 
        legend = c("5", "10", "20"),
        title = expression(lambda), title.adj = 0.75,
@@ -911,7 +904,7 @@ legend("topright",
 
 Ut fra hvilken $\lambda$-verdi vi setter kan vi si noe om sannsynligheten for at et antall hendelser inntreffer. 
 
-@ugarteProbabilityStatistics2016 eksemplifiserer Poissonfordeling ved å vise til at det i gjennomsnitt skåres 2,5 mål i en VM-kamp i fotball. Denne situasjonen tilfredsstiller forutsetningene for å bruke Possionfordeling.Vi kan grafisk framstille sannsynlighetsfordeingen slik:
+@ugarteProbabilityStatistics2016b eksemplifiserer Poissonfordeling ved å vise til at det i gjennomsnitt skåres 2,5 mål i en VM-kamp i fotball. Denne situasjonen tilfredsstiller forutsetningene for å bruke Possionfordeling.Vi kan grafisk framstille sannsynlighetsfordeingen slik:
 
 ```{r message = FALSE, warning=FALSE, fig.cap = "Poissonfordeling mål i VM-kamp fotball"}
 maal <- 0:10
@@ -1064,7 +1057,7 @@ Vi kan med andre ord treffe riktig konklusjon i to av de fire mulighetene, men o
 Cohen postulerer at de fleste forskere vil anse type I som langt verre enn type II, faktisk 4 ganger så ille. Dersom man velger $\alpha=0.05$ (95% konfindensnivå) må da $\beta = 0.05*4=0.2$. Vi får da:
 
 $Power = 1 - \beta$
-$Power = 1 . 0.2 = 0.8$
+$Power = 1 - 0.2 = 0.8$
 
 En annen måte å si dette på er at med statistisk styrke = 0,8 har man 80 % sjanse for å detektere en effekt hvis det virkelig er en effekt. Lav statistisk styrke fører altså til ikke-signifikante resultater. Et ikke-signifikant resultat betyr et uavklart resultat: Det kan være en effekt der og det kan hende det ikke er et resultat der. Et ikke-signifikant resultat betyr IKKE at det ikke kan være en effekt. Derimot vil et ikke-signifikant resultat oftest føre til at man tolker resultatet som at det ikke er noen effekt, og det vil være en type II feil hvis det faktisk er en effekt der som vi ikke ser pga lav statistisk styrke. 
 
