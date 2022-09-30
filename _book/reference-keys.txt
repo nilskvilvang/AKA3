@@ -430,4 +430,6 @@ k-nearest-neighbor
 support-vector-machine-svm
 svm---ulike-algoritmer-kernels
 decision-tree-classification
+random-forest-classification
+naiv-bayes
 tidsserieanalyser
