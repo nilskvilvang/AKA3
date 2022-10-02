@@ -13,7 +13,7 @@ options(scipen = 999)
 R-pakker brukt i dette kapittelet:
 
 ```{r}
-pacman::p_load(xfun, flextable, tidyverse, officer, readxl, knitr, kableExtra, writexl, car, readxl, effects, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, flextable, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, sjPlot, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, summarytools, caret, ggfortify)
+pacman::p_load(xfun, flextable, officer, readxl, knitr, kableExtra, writexl, car, readxl, effects, writexl, ggpubr, tidyverse, gridExtra, nortest, knitr, kableExtra, tseries, normtest, magrittr, ISLR, olsrr, lmtest, rnorsk, qwraps2, sjPlot, sjmisc, sjlabelled, xtable, Hmisc, gt, gtsummary, modelsummary, table1, jtools, interactions, outliers, EnvStats, qqplotr, summarytools, caret, ggfortify)
 ```
 
 Vi skal i dette kapittelet gå gjennom en rekke begreper og forhold som vi vil komme tilbake til gjennom flere ulike analyser senere, i større eller mindre grad, men de er alle det vi vil kalle grunnleggende begreper vi bør ha en grad av kjennskap til. 
@@ -946,7 +946,7 @@ Det kan være verdt å merke seg at binomial og geometrisk fordeling skiller seg
 
 ## Eksponensiell fordeling
 
-En tilfeldig kontinuerlig variabel kan sies å være analog til den geometriske distribusjonen, men for kontinuerlige data. Den eksponensielle distribusjonen brukes ofte for å modellere tid mellom to hendelser. I statistisk prosesskontroll vil vi typisk bruke denne distribusjonen hvis vi måler tid mellom to sjeldne hendelser. Hvis vi f.eks. måler tiden mellom uventet dødsfall som følge av en type rutineoperasjon på et sykehus vil den ha en eksponensiell distribusjon hvis sannsynligheten for at hendelsen inntreffer innenfor t gitt tidsintervall er omtrentlig proporsjonal med lengde på tidsintervallet [@Taboga2017]. Eksponensielle fordelinger har samme grunnform, men kan ha ulik bratthet avhengig av den såkalte lamdaverdien (= en parameter for raten av hendelser). Lambdaverdi er en parameter for hvor ofte hendelsene forventes å skje. 
+En tilfeldig kontinuerlig variabel kan sies å være analog til den geometriske distribusjonen, men for kontinuerlige data. Den eksponensielle distribusjonen brukes ofte for å modellere tid mellom to hendelser. I statistisk prosesskontroll vil vi typisk bruke denne distribusjonen hvis vi måler tid mellom to sjeldne hendelser. Hvis vi f.eks. måler tiden mellom uventet dødsfall som følge av en type rutineoperasjon på et sykehus vil den ha en eksponensiell distribusjon hvis sannsynligheten for at hendelsen inntreffer innenfor t gitt tidsintervall er omtrentlig proporsjonal med lengde på tidsintervallet. Eksponensielle fordelinger har samme grunnform, men kan ha ulik bratthet avhengig av den såkalte lamdaverdien (= en parameter for raten av hendelser). Lambdaverdi er en parameter for hvor ofte hendelsene forventes å skje. 
 
 ```{r message = FALSE, warning=FALSE, fig.cap = "Eksponensiell fordeling"}
 eksford <- seq(0, 20, length.out=1000)
@@ -1057,16 +1057,189 @@ Vi kan med andre ord treffe riktig konklusjon i to av de fire mulighetene, men o
 Cohen postulerer at de fleste forskere vil anse type I som langt verre enn type II, faktisk 4 ganger så ille. Dersom man velger $\alpha=0.05$ (95% konfindensnivå) må da $\beta = 0.05*4=0.2$. Vi får da:
 
 $Power = 1 - \beta$
+
 $Power = 1 - 0.2 = 0.8$
 
 En annen måte å si dette på er at med statistisk styrke = 0,8 har man 80 % sjanse for å detektere en effekt hvis det virkelig er en effekt. Lav statistisk styrke fører altså til ikke-signifikante resultater. Et ikke-signifikant resultat betyr et uavklart resultat: Det kan være en effekt der og det kan hende det ikke er et resultat der. Et ikke-signifikant resultat betyr IKKE at det ikke kan være en effekt. Derimot vil et ikke-signifikant resultat oftest føre til at man tolker resultatet som at det ikke er noen effekt, og det vil være en type II feil hvis det faktisk er en effekt der som vi ikke ser pga lav statistisk styrke. 
 
-Vi skal ikke gå nærmere inn på type I og type II feil her. I design av undersøkelser og analyser kan man gjøre valg som reduserer sannsynligheten for å gjøre en av feilene, men de to typene feil henger sammen så hvis man reduserer sannsynligheten for den ene øker man samtidig sannsynligheten for den andre feilen (og motsatt). Her må den som foretar undersøkelsen ta noen valg ut fra situasjonen og hvilken feil som vil være mest alvorlig å gjøre, men det er vanlig å regne type I feil som mer alvorlig enn type II (vitenskapsteoretisk sett). Grunnen til dette er at man anser det som verre å gå glipp av noe som har en faktisk effekt, enn å hevde at noe har en effekt når det ikke har det (men for eksempel innen medisinsk forskning kan dette være stikk motsatt – det vil for eksempel kunne være svært uheldig om man feilaktig konkluderer med at en ny medisin eller behandling ikke har negative bivirkninger hvis den faktisk har det). 
+Vi skal gå litt nærmere inn på type I og type II feil her gjennom et eksempel basert på @halvorsenAnswerStatsRelationship2021. I design av undersøkelser og analyser kan man gjøre valg som reduserer sannsynligheten for å gjøre en av feilene, men de to typene feil henger sammen så hvis man reduserer sannsynligheten for den ene øker man samtidig sannsynligheten for den andre feilen (og motsatt). Her må den som foretar undersøkelsen ta noen valg ut fra situasjonen og hvilken feil som vil være mest alvorlig å gjøre, men det er vanlig å regne type I feil som mer alvorlig enn type II (vitenskapsteoretisk sett). Grunnen til dette er at man anser det som verre å gå glipp av noe som har en faktisk effekt, enn å hevde at noe har en effekt når det ikke har det (men for eksempel innen medisinsk forskning kan dette være stikk motsatt – det vil for eksempel kunne være svært uheldig om man feilaktig konkluderer med at en ny medisin eller behandling ikke har negative bivirkninger hvis den faktisk har det). 
+
+I eksempelet ser vi for oss en diagnostisk test som måler nivået av en spesifikk markør i blod som kan si oss noe om en gitt pasient har en spesifikk sykdom. Folk som har denne sykdommen har en høyere verdi på denne testen enn de som ikke har sykdommen. Dersom vi skal bruke denne testen til å diagnostisere må vi sette en eller annen verdi som en cut-off - altså en grenseverdi som "bestemmer" om diagnosen er syk eller frisk. Vi vet imidlertid fra diskusjonen over at vi kan gjøre både riktige og gale konklusjoner - vi vet at de som faktisk er syke kan ha varierende nivåer av verdiene på testen, på lik linje med at også friske har variasjon i verdiene. Vi kan altså få alle fire mulige utfall av en test:
+
+1. Korrekt positiv - diagnose er syk, personen er syk
+2. Falsk positiv - diagnose er syk, personen er frisk
+3. Korrekt negativ - diagnose er frisk, personen er frisk
+4. Falsk negativ - diagnose er frisk, personen er syk
+
+Hvis vi først i eksempelet konstruerer dataene slik at forskjellen i gjennomsnittsverdi for målingene for hhv friske og syke er stor kan vi se at det er ganske trivielt å finne en fornuftig grenseverdi for diagnostisering.
+
+```{r echo = FALSE}
+
+alphabeta <- function(mean.sick=100, sd.sick=10, 
+                      mean.healthy=130, sd.healthy=10, cutoff=120, n=10000, 
+                      side="below", do.plot=TRUE) {
+    
+    popsick <- rnorm(n, mean=mean.sick, sd=sd.sick)
+    pophealthy <- rnorm(n, mean=mean.healthy, sd=sd.healthy)
+    
+    if ( side == "below" ) {
+        
+        truepos <- length(popsick[popsick <= cutoff])
+        falsepos <- length(pophealthy[pophealthy <= cutoff])
+        trueneg <- length(pophealthy[pophealthy > cutoff])
+        falseneg <- length(popsick[popsick > cutoff])
+        
+    } else if ( side == "above" ) {
+        
+        truepos <- length(popsick[popsick >= cutoff])
+        falsepos <- length(pophealthy[pophealthy >= cutoff])
+        trueneg <- length(pophealthy[pophealthy < cutoff])
+        falseneg <- length(popsick[popsick < cutoff])
+        
+    }
+    
+    twotable <- matrix(c(truepos, falsepos, falseneg, trueneg), 
+                       2, 2, byrow=T)
+    rownames(twotable) <- c("Test positive", "Test negative")
+    colnames(twotable) <- c("Sick", "Healthy")
+    
+    spec <- twotable[2, 2]/(twotable[2, 2] + twotable[1, 2])
+    alpha <- 1 - spec
+    sens <- pow <- twotable[1, 1]/(twotable[1, 1] + 
+                                       twotable[2, 1])
+    beta <- 1 - sens
+    
+    pos.pred <- twotable[1,1]/(twotable[1,1] + twotable[1,2])
+    neg.pred <- twotable[2,2]/(twotable[2,2] + twotable[2,1])
+    
+    if ( do.plot == TRUE ) {        
+        dsick <- density(popsick)
+        dhealthy <- density(pophealthy)
+        
+        par(mar=c(5.5, 4, 0.5, 0.5))
+        plot(range(c(dsick$x, dhealthy$x)), range(c(c(dsick$y, 
+                                                      dhealthy$y))), type = "n", xlab="", ylab="", 
+             axes=FALSE)
+        box()
+        axis(1, at=mean(pophealthy), 
+             lab=substitute(mu[H[0]]~paste("=", m, sep=""), 
+                            list(m=mean.healthy)), cex.axis=1.5, tck=0.02)
+        axis(1, at=mean(popsick), 
+             lab=substitute(mu[H[1]] ~ paste("=", m, sep=""), 
+                            list(m=mean.sick)), cex.axis=1.5, tck=0.02)                                        
+        axis(1, at=cutoff, lab=substitute(italic(paste("Cutoff=", 
+                                                       coff, sep="")), list(coff=cutoff)), pos=-0.004, 
+             tick=FALSE, cex.axis=1.25)
+        lines(dhealthy, col = "steelblue", lwd=2)
+        
+        if ( side == "below" ) {
+            polygon(c(cutoff, dhealthy$x[dhealthy$x<=cutoff], 
+                      cutoff), c(0, dhealthy$y[dhealthy$x<=cutoff],0), 
+                    col = "grey65")
+        } else if ( side == "above" ) {
+            polygon(c(cutoff, dhealthy$x[dhealthy$x>=cutoff], 
+                      cutoff), c(0, dhealthy$y[dhealthy$x>=cutoff],0), 
+                    col = "grey65")
+        }
+        
+        lines(dsick, col = "red", lwd=2)
+        
+        if ( side == "below" ) {
+            polygon(c(cutoff, dsick$x[dsick$x>cutoff], cutoff), 
+                    c(0, dsick$y[dsick$x>cutoff], 0) , col="grey90")
+        } else if ( side == "above" ) {
+            polygon(c(cutoff, dsick$x[dsick$x<=cutoff], cutoff), 
+                    c(0, dsick$y[dsick$x<=cutoff],0) , col="grey90")
+        }
+        
+        legend("topleft",
+               legend= 
+                   (c(as.expression(substitute(alpha~paste("=", a), 
+                                               list(a=round(alpha,3)))), 
+                      as.expression(substitute(beta~paste("=", b), 
+                                               list(b=round(beta,3)))))), fill=c("grey65", 
+                                                                                 "grey90"), cex=1.2, bty="n")
+        abline(v=mean(popsick), lty=3)
+        abline(v=mean(pophealthy), lty=3)
+        abline(v=cutoff, lty=1, lwd=1.5)
+        abline(h=0)
+        
+    }
+    
+    #list(specificity=spec, sensitivity=sens, alpha=alpha, beta=beta, power=pow, positiv.predictive=pos.pred, negative.predictive=neg.pred)
+    
+    c(alpha, beta)
+    
+}
+```
+
+```{r echo = FALSE}
+
+alfabeta1 <- alphabeta(mean.sick=100, sd.sick=10, mean.healthy=250, 
+         sd.healthy=15, cutoff=160, n=100000, do.plot=TRUE, 
+         side="below")
+alfabeta1
+
+```
+
+Her ser vi at dersom vi f.eks. setter en cut-off på 160 vil vi ikke ha noen problemer med å diagnostisere alle tilfellene korrekt fordi forskjelle mellom verdiene for syke og friske er store. Imidlertid vil dette ofte ikke være tilfelle. Hvis vi i stedet antar følgende:
+
+- Gjennomsnittlig verdi for syke er 100 med standardavvik på 10
+- Gjennomsnittlig verdi for friske er 140 med standardavvik på 15
+- Eksperter mener grenseverdien skal være 120
+
+Vi kan da illustrere dette slik:
+
+```{r echo = FALSE}
+
+alfabeta2 <- alphabeta(mean.sick=100, sd.sick=10, mean.healthy=140, 
+         sd.healthy=15, cutoff=120, n=100000, do.plot=TRUE, 
+         side="below")
+alfabeta2
+```
+
+I dette tilfellet er $\alpha$ = `r alfabeta2[1]` og $\beta$ = `r alfabeta2[2]`. Vi kan se i illustrasjonen at de skraverte områdene utgjør visualiseringen av hhv $\alpha$ og $\beta$ der det mørkeste grå området representerer $\alpha$ og det lysere grå $\beta$. 
+
+Hvis nå ekspertene i stedet setter grenseverdien til 105, hva kan vi forvente ift nivåer på $\alpha$ og $\beta$? Siden grenseverdien blir lavere burde vi forvente at $\alpha$ blir lavere fordi færre friske vil bli diagnostisert som syke (altså færre falske positive). Samtidig vil vi fovente større $\beta$ siden vi vil få flere falske negative. 
+
+```{r echo = FALSE}
+
+alfabeta3 <- alphabeta(mean.sick=100, sd.sick=10, mean.healthy=140, 
+         sd.healthy=15, cutoff=105, n=100000, do.plot=TRUE, 
+         side="below")
+alfabeta3
+
+```
+
+Det er altså klart at valg vi tar i design av forsøk og tester - som en cut-off verdi på en test som i dette eksempelet - vil påvirke både $\alpha$ og $\beta$ i forskjellige retninger. 
+
+@halvorsenAnswerStatsRelationship2021 viser videre i eksempelet hvordan $\alpha$ og $\beta$ endres som følge av hvordan grenseverdien endres:
+
+```{r echo = FALSE}
+
+cutoffs <- seq(0, 200, by=0.1)
+cutoff.grid <- expand.grid(cutoffs)
+    
+plot.frame <- apply(cutoff.grid, MARGIN=1, FUN=alphabeta, 
+    mean.sick=100, sd.sick=10, mean.healthy=140, 
+    sd.healthy=15, n=100000, do.plot=FALSE, side="below")
+    
+plot(plot.frame[1,] ~ cutoffs, type="l", las=1, 
+     xlab="Cut-off verdi", ylab="Alfa/Beta", lwd=2, 
+     cex.axis=1.5, cex.lab=1.2)
+lines(plot.frame[2,]~cutoffs, col="steelblue", lty=2, lwd=2)
+legend("topleft", legend=c(expression(alpha), 
+      expression(beta)), lwd=c(2,2),lty=c(1,2), col=c("black", 
+      "steelblue"), bty="n", cex=1.2)
+
+```
+
+Forholdet mellom alfa og beta er åpenbart ikke konstant. Det vil endre seg som følge av hvilke valg vi tar mht cut-off verdi (i dette tilfellet). Så hva er "det riktige valget" i denne balansen mellom type I og type II? Det beste svaret her er nok "det spørs"... Altså - konteksten vil kunne drive oss mot å minimere enten type I eller type II feil, og dette vil kunne variere fra fagfelt til fagfelt og hva som undersøkes/hva hensikten er. Noen ganger vil man definitivt minimere type I feil, andre ganger minimere type II feil, mens man ofte forsøker finne en fornuftig balansen. Som tidligere nevnt mener bl.a. Cohen at det er langt verre med type I feil enn type II (men igjen: kontekstavhengig). Men tenk om vi tester for et nytt og svært dødelig virus - hva er da verst: Falsk negativ eller falsk positiv? Jeg vil tro de fleste vil mene at det vil være verre med falske negative enn falske positive.  @millerQuestOptimalAlpha2019 peker på at det er et økende antall fagfelt hvor det er stigende bekymring for falske positive, og at man derfor burde sette strengere $\alpha$-nivå (f.eks. 0.01, 0.005 eller 0.001). I veldig mange tilfeller aksepterer vi imidlertid (kanskje litt blindt) en $\alpha$ på 0.05. @millerQuestOptimalAlpha2019 viser at optimalt $\alpha$-nivå godt kan være 0.05, men at det også kan være substansielt høyere eller lavere. De viser videre til at problemer med å replikere tidligere studier og funn kan skyldes en relativt stor forekomst av falske positiver. @benjaminRedefineStatisticalSignificance2018 - i en artikkel med 72 forfattere...- argumenterer nettopp derfor for en $\alpha$ på 0.005. Denne diskusjonen løser vi ikke her, men bevissthet rundt problematikken er definitivt på sin plass!
 
 ## Statistisk styrke - litt mer
 
 Statistisk styrke kan enten brukes a priori eller post hoc – før eller etter. 
-For å ta det siste først (post hoc). Dette innebærer at vi kalkulerer statistisk styrke etter at undersøkelsen og analysene er gjort (eller som regel ser på hva f.eks. SPSS forteller oss). Det finnes sterke advarsler mot å gjøre dette [@cummingUnderstandingNewStatistics2012]. @hoenigAbusePowerPervasive2001 anser dette som fundamentalt feil. Det er likevel rimelig å si at dette er vanlig. Man skal i hvert fall være klar over at informasjonen vi får ut av post hoc statistisk styrketester er begrenset og, hevdes det, brukes til dels villedende. 
+For å ta det siste først (post hoc). Dette innebærer at vi kalkulerer statistisk styrke etter at undersøkelsen og analysene er gjort. Det finnes sterke advarsler mot å gjøre dette [@cummingUnderstandingNewStatistics2012]. @hoenigAbusePowerPervasive2001 anser dette som fundamentalt feil. Det er likevel rimelig å si at dette er vanlig. Man skal i hvert fall være klar over at informasjonen vi får ut av post hoc statistisk styrketester er begrenset og, hevdes det, brukes til dels villedende. 
 
 Imidlertid er "alle" enige om at a priori kan statistisk styrke være en viktig del av design av en undersøkelse. Mer spesifikt kan vi bruke "power calculations" for å regne ut hvor stort utvalg vi trenger for å tilfredsstille et gitt konfidensnivå og antall variabler. 
 

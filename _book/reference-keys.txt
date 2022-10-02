@@ -29,9 +29,9 @@ fig:unnamed-chunk-67
 fig:unnamed-chunk-68
 fig:unnamed-chunk-69
 fig:unnamed-chunk-70
-tab:unnamed-chunk-75
-tab:unnamed-chunk-76
-tab:unnamed-chunk-77
+tab:unnamed-chunk-80
+tab:unnamed-chunk-81
+tab:unnamed-chunk-82
 tab:unnamed-chunk-2
 tab:unnamed-chunk-3
 fig:unnamed-chunk-20
@@ -102,7 +102,6 @@ fig:unnamed-chunk-31
 fig:unnamed-chunk-74
 fig:unnamed-chunk-76
 tab:unnamed-chunk-78
-tab:unnamed-chunk-82
 fig:unnamed-chunk-83
 tab:unnamed-chunk-17
 tab:unnamed-chunk-24
