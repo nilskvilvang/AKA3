@@ -431,4 +431,5 @@ svm---ulike-algoritmer-kernels
 decision-tree-classification
 random-forest-classification
 naiv-bayes
+presisjonsparadokset
 tidsserieanalyser

@@ -1697,6 +1697,10 @@ cm2 <- as.numeric(cm)
 
 Denne tabellen kan vi lese som følger: Der verdiene er 0-0 og 1-1 (hhv. `r cm2[1]` og `r cm2[4]`) predikerer modellen vår riktig. Og i motsatt diagonal - verdiene `r cm2[2]` og `r cm2[3]`) har modellen vår predikert feil. Modellen vår har altså predikert `r cm2[1] + cm2[4]` av `r sum(cm2)` riktig, og følgelig `r cm2[2] + cm2[3]` av `r sum(cm2)` feil. Vi kan se på to mål på hvor bra dette er.
 
+Et annet forhold vi kan legge merke til er at confusion matrix gir oss type I og type II feil (jfr diskusjon i kapittel 2 om disse feiltypene). Antallet type I feil (som da er type I feil) er `r cm2[3]` og antall type II feil er `r cm2[4]`. Modellen vår har i dette tilfellet en presisjon på `r round((cm2[1] + cm2[2])/(cm2[1] + cm2[2] + cm2[3] + cm2[4]), 2)` og en feilrate på `r round((cm2[3] + cm2[4])/(cm2[1] + cm2[2] + cm2[3] + cm2[4]), 2)`.
+
+Vi kan legge til at man bør utvise forsiktighet med å kun se på presisjonen til en modell da den i gitte tilfeller kan lure oss ved at presisjonen fkatisk kan være høyere ved å bare anta en verdi i alle tilfeller (altså - ingen modell i det hele tatt). Vi tar for oss dette litt mer i detalj i et delkapittel etter de ulike klassifiseringsalgoritmene.
+
 Sensitivitet:
 ```{r}
 sensitivity(cm)
@@ -2518,7 +2522,7 @@ points(testsett,
 
 Den siste klassifiseringsalgoritmen vi skal se på har et annet utgangspunkt og bygger på såkalt Bayesiansk statistikk. Vi går gjennom Bayesiansk statistikk mer detaljert i et senere kapittel, men vil her gå gjennom dette relativt kortfattet og heller vise til det kommende kapittelet for mer detaljert forståelse av hva Bayes teorem og Bayesiansk statistikk er. 
 
-Bayesiansk statistikk, i motsetning til "vanlig" frekventistisk statistikk (som vi har drevet med til nå) baserer seg på sannsynligheter, mens frekventistisk statistikk ikke baserer seg på sannsynligheter. Hva mener vi med det? @k.hackenbergerBayesNotBayes2019 beskriver dette slik:
+Bayesiansk statistikk, i motsetning til "vanlig" frekventistisk statistikk (som vi har drevet med til nå) baserer seg på sannsynligheter, mens frekventistisk statistikk ikke baserer seg på sannsynligheter. Bayesiansk statistikk kalles derfor også probabilistisk statistikk. Hva mener vi med det? @k.hackenbergerBayesNotBayes2019 beskriver dette slik:
 
 > The basis of Bayesian statistics is Bayes’ theorem, which describes the probability of an event occurrence based on previous knowledge of the conditions associated with this event. ... In contrast to frequentist statistics, in Bayesian statistics all relevant information necessary to make an inference is contained in the observed data rather than in other unobserved quantities (s.50-51).
 
@@ -2528,18 +2532,90 @@ En fordel med naiv Bayes klassifisering er at algoritmen krever et mindre antall
 
 Algoritmen forsøker altså å minimalisere **sannsynligheten** for feilklassifiseringer. La oss se på hvordan den gjør det.
 
+Vi antar at vi har observasjoner som vi kan dele i to kategorier - de som tar buss og de som tar tog til jobben (her er datapunktene generert for eksempelet og variablene x1 og x2 er registreringer vi har gjort av to ulike karakteristikker ved disse variablene som gjør at vi kan klassifisere et antall pendlere som brukere av enten buss eller tog):
 
+```{r echo = FALSE}
+x1 <- c(1, 1.2, 1.3, 1.4, 1.5, 1.4, 1.3, 1.25, 1.15, 1.2, 1.6, 1.7, 1.72, 1.6, 1.7)
+x2 <- c(2, 2.2, 2.1, 2.3, 2.25, 2.1, 2, 1.9, 1.9, 2, 2.3, 2.3, 2.4, 2.35, 2.38)
+sett1 <- tibble(x1, x2)
 
+x3 <- c(2.1, 1.9, 1.95, 2.1, 2.2, 2.1, 2, 1.9, 2.15, 2)
+x4 <- c(2.5, 2.7, 2.6, 2.8, 2.75, 2.6, 2.5, 2.4, 2.4, 2.5)
+sett2 <- tibble(x3, x4)
 
+knnplott <- ggplot() +
+    geom_point(data = sett1, aes(x = x1, y = x2), color = "blue") + 
+    geom_point(data = sett2, aes(x = x3, y = x4, color = "red")) +
+    theme_bw() +
+    annotate(geom = "text", x  =1.25, y = 2.4, label = "Tar buss", color = "blue") +
+    annotate(geom = "text", x = 1.75, y = 2.6, label = "Tar tog", color = "red") +
+    theme(legend.position = "none") 
+knnplott
+```
 
+Vi får en ny observasjon:
 
+```{r echo = FALSE}
 
+knnplott +
+    geom_point(aes(x=1.8, y=2.35), colour="magenta") +
+    annotate(geom = "text", x = 1.85, y = 2.3, label = "Nytt punkt", color = "magenta")
+```
 
+Bayes teorem gjør at vi kan uttrykke følgende:
 
+$p(buss|x) = \frac{p(x|buss)*p(buss)}{p(x)}$
 
+der
 
+$p(buss|x)$ = Sannsynligheten for at en person tar buss gitt egenskap x (x = datapunktet som utgjøres av x1 og x2) (dette tallet kalles "posterior probability)
 
+$p(x|buss)$ = Sannsynligheten for at en person har egenskap x gitt at de tar bussen (dette tallet kalles "likelihood")
 
+$p(buss)$ = Sannsynligheten for at en person tar buss (dette tallet kalles "prior probability")
+
+$p(x)$ = Sannsynligheten for at en person har egenskap x (dette tallet "marginal likelihood)
+
+I ord kan vi derfor uttrykke dette slik:
+
+$Posterior\ probability = \frac{likelihood\ *\ prior\ probability}{marginal\ likelihood}$
+
+Vi kan uttrykke det samme for "tog":
+
+$p(tog|x) = \frac{p(x|tog)*p(tog)}{p(x)}$
+
+Disse sannsynlighetene kan vi regne ut og til slutt sammenlikne sannsynlighetene - hva er sannsynligheten for at en person tar buss gitt egenskap x vs. sannsynligheten for at personen tar tog gitt egenskap x:
+
+$p(buss|x)$ vs. $p(tog|x)$
+
+Forholdet mellom sannsynlighetene avgjør hvilken kategori vi putter det nye datapunktet i. I eksempelet har vi totalt 25 personer som er klassifisert (før det nye punktet legges til). Det gjør at
+
+$p(buss) = \frac{antall\ som\ tar\ buss}{totalt\ antall} = \frac{15}{25} = 0.6$
+
+Dette er med andre ord ganske rett fram. Det blir litt mer kludrete når vi skal regne ut "marginal likelihood". Her vil vi gå tilbake til plottet og legge til en sirkel med en radius vi selv setter rundt det nye punktet:
+
+```{r echo = FALSE}
+
+knnplott +
+    geom_point(aes(x=1.8, y=2.35), colour="magenta") +
+    geom_circle(aes(x0 = 1.8, y0 = 2.35, r = 0.15), inherit.aes = FALSE)
+```
+
+I denne sirkelen - vi skal igjen se bort fra det nye punktet, det er kun der for å definere origo for sirkelen - teller vi opp alle punkter (totalt). Punktene som ligger inne i sirkelen kan sies å ha ganske like egenskaper (x1, x2) som det nye punktet. Vi får da:
+
+$p(x) = \frac{antall\ observasjoner\ i\ sirkelen}{totalt\ antall\ observasjoner} = \frac{4}{25} = 0.16$
+
+Fortsatt litt kludrete når vi skal regne ut "likelihood". Dette er altså sannsynligheten for at en person som tar bussen har egenskap x. Men her bruker vi bare samme plott som ovenfor og finner hvor mange innenfor sirkelen som tar buss og ser det i forhold til hvor mange som tar buss totalt, og får:
+
+$p(x|buss) = \frac{antall\ observasjoner\ i\ sirkelen\ som\ tar\ buss}{totalt\ antall\ som\ tar\ buss} = \frac{3}{15} = 0.2$
+
+Vi kan da sette alt dette sammen: 
+
+$p(buss|x) = \frac{0.2 * 0.6}{0.16} = 0.75$
+
+Det er altså 75 % sannsynlighet for at en person med egenskap x tar bussen. Neste steg er å gjøre akkurat de samme beregningene for $p(tog|x)$ - altså sannsynligheten for at en person med egenskap x (som altså er samme egenskap x som ga 75% sannsynlighet for at personen brukte buss). Dette er 0.25. Siden 0.75 er større enn 0.25 vil vi klassifisere det nye punktet som blått - altså at personen tar buss. 
+
+Vi går videre med eksempelet fra de andre algoritmene.
 
 
 ```{r warning = FALSE, message = FALSE, echo = FALSE}
@@ -2632,3 +2708,39 @@ points(testsett,
        pch = 21, 
        bg = ifelse(testsett[, 3] == 1, 'green4', 'red3'))
 ```
+
+#### Presisjonsparadokset 
+
+La oss anta at vi har brukt en klassifiseringsalgoritme og fått dette resultatet:
+
+```{r}
+Nei <- c(8400, 160)
+Ja <- c(180, 20)
+cm_acc <- data.frame(Nei, Ja)
+rownames(cm_acc) <- c("Nei", "Ja")
+cm_acc
+```
+
+Her vil vi ha en falsk positiv rate på `r cm_acc[1,2]` og en falsk negativ rate på `r cm_acc[2, 1]`. I dette eksempelet ville vi kunne regne ut presisjonen på modellen vår slik:
+
+$\frac{Antall\ korrekte}{Antall\ totalt} = \frac{8420}{8760} = 0.96$
+
+Dette er jo ganske høy presisjon, men la oss si at vi i stedet for modellen bare predikerte 0 på alle. Da ville confusion matrix sett slik ut:
+
+```{r}
+Nei <- c(8560, 200)
+Ja <- c(0, 0)
+cm_acc2 <- data.frame(Nei, Ja)
+rownames(cm_acc2) <- c("Nei", "Ja")
+cm_acc2
+```
+
+Nå ville preisjonen bli:
+
+$\frac{8560}{8760} = 0.98$
+
+Presisjonen på vår "tilfeldige" modell - der vi bare sier "nei" på alle prediksjoner er altså høyere enn modellen fra klassifiseringsalgoritmen vi brukte. Men intuitivt virker vel dette rart. Og det er det. Vi vil nok helt klart si at modellen fra algoritmen har en høyere prediktiv evne selv om den har lavere presisjon enn den andre fordi den "tilfeldige" modellen rett og slett er for enkel (og "dum"). Typisk vil dette paradokset kunne inntreffe når man har veldig ubalanserte matriser - "class imbalance" - eller skjeve fordelinger mellom klassifiseringene (som f.eks. typisk kan skje om enten 0 eller 1/ja eller nei er sjeldne hendelser). 
+
+
+
+
