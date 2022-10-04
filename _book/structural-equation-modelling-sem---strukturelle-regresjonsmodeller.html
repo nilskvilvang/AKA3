@@ -14,9 +14,9 @@
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.4.0/transition.js"></script><script src="libs/bs3compat-0.4.0/tabs.js"></script><script src="libs/bs3compat-0.4.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><link href="libs/tabwid-1.1.0/tabwid.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/tabwid-1.1.0/tabwid.css" rel="stylesheet">
 <link href="libs/tabwid-1.1.0/scrool.css" rel="stylesheet">
-<script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet">
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="libs/viz-1.8.2/viz.js"></script><link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
 <script src="libs/grViz-binding-1.0.9/grViz.js"></script><script src="libs/plotly-binding-4.10.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
@@ -938,8 +938,8 @@ Vi går ikke videre med revidert modell, og det er verdt å poengtere <span clas
 <code class="sourceCode R"><span><span class="fu">lavaanPlot</span><span class="op">(</span>model <span class="op">=</span> <span class="va">fitstrukregrsem</span>, </span>
 <span>           node_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="st">"box"</span>, fontname <span class="op">=</span> <span class="st">"Helvetica"</span><span class="op">)</span>, </span>
 <span>           edge_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>, coefs <span class="op">=</span> <span class="cn">TRUE</span>, sig <span class="op">=</span> <span class="fl">.05</span><span class="op">)</span></span></code></pre></div>
-<div id="htmlwidget-03026427da5ae809a075" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-03026427da5ae809a075">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n motiv; harm; stabi; verbal; ppsych; ses; read; arith; spell \n node [shape = oval] \n adjust; risk; achieve \n \n edge [ color = grey ] \n adjust->achieve [label = \"0.37\"] risk->achieve [label = \"0.72\"] adjust->motiv [label = \"1\"] adjust->harm [label = \"0.88\"] adjust->stabi [label = \"0.69\"] risk->verbal [label = \"1\"] risk->ppsych [label = \"-0.77\"] risk->ses [label = \"0.81\"] achieve->read [label = \"1\"] achieve->arith [label = \"0.84\"] achieve->spell [label = \"0.98\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-be1055eec0fe3e513701" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-be1055eec0fe3e513701">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n motiv; harm; stabi; verbal; ppsych; ses; read; arith; spell \n node [shape = oval] \n adjust; risk; achieve \n \n edge [ color = grey ] \n adjust->achieve [label = \"0.37\"] risk->achieve [label = \"0.72\"] adjust->motiv [label = \"1\"] adjust->harm [label = \"0.88\"] adjust->stabi [label = \"0.69\"] risk->verbal [label = \"1\"] risk->ppsych [label = \"-0.77\"] risk->ses [label = \"0.81\"] achieve->read [label = \"1\"] achieve->arith [label = \"0.84\"] achieve->spell [label = \"0.98\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="to-endogene-variabler" class="section level3" number="14.4.2">
 <h3>
@@ -1084,8 +1084,8 @@ Vi går ikke videre med revidert modell, og det er verdt å poengtere <span clas
 <code class="sourceCode R"><span><span class="fu">lavaanPlot</span><span class="op">(</span>model <span class="op">=</span> <span class="va">fitstrukregrsem2</span>, </span>
 <span>           node_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="st">"box"</span>, fontname <span class="op">=</span> <span class="st">"Helvetica"</span><span class="op">)</span>, </span>
 <span>           edge_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"grey"</span><span class="op">)</span>, coefs <span class="op">=</span> <span class="cn">TRUE</span>, sig <span class="op">=</span> <span class="fl">.05</span><span class="op">)</span></span></code></pre></div>
-<div id="htmlwidget-d2eb802b71dcd3bfddbe" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d2eb802b71dcd3bfddbe">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n motiv; harm; stabi; verbal; ses; ppsych; read; arith; spell \n node [shape = oval] \n adjust; risk; achieve \n \n edge [ color = grey ] \n risk->adjust [label = \"0.6\"] adjust->achieve [label = \"0.37\"] risk->achieve [label = \"0.72\"] adjust->motiv [label = \"1\"] adjust->harm [label = \"0.88\"] adjust->stabi [label = \"0.69\"] risk->verbal [label = \"1\"] risk->ses [label = \"0.81\"] risk->ppsych [label = \"-0.77\"] achieve->read [label = \"1\"] achieve->arith [label = \"0.84\"] achieve->spell [label = \"0.98\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-95e17e88116c9039b416" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-95e17e88116c9039b416">{"x":{"diagram":" digraph plot { \n graph [ overlap = true, fontsize = 10 ] \n node [ shape = box, fontname = Helvetica ] \n node [shape = box] \n motiv; harm; stabi; verbal; ses; ppsych; read; arith; spell \n node [shape = oval] \n adjust; risk; achieve \n \n edge [ color = grey ] \n risk->adjust [label = \"0.6\"] adjust->achieve [label = \"0.37\"] risk->achieve [label = \"0.72\"] adjust->motiv [label = \"1\"] adjust->harm [label = \"0.88\"] adjust->stabi [label = \"0.69\"] risk->verbal [label = \"1\"] risk->ses [label = \"0.81\"] risk->ppsych [label = \"-0.77\"] achieve->read [label = \"1\"] achieve->arith [label = \"0.84\"] achieve->spell [label = \"0.98\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div>
@@ -1123,7 +1123,7 @@ Vi går ikke videre med revidert modell, og det er verdt å poengtere <span clas
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 02 oktober, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 04 oktober, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

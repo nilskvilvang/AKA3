@@ -2518,6 +2518,30 @@ points(testsett,
 
 Den siste klassifiseringsalgoritmen vi skal se på har et annet utgangspunkt og bygger på såkalt Bayesiansk statistikk. Vi går gjennom Bayesiansk statistikk mer detaljert i et senere kapittel, men vil her gå gjennom dette relativt kortfattet og heller vise til det kommende kapittelet for mer detaljert forståelse av hva Bayes teorem og Bayesiansk statistikk er. 
 
+Bayesiansk statistikk, i motsetning til "vanlig" frekventistisk statistikk (som vi har drevet med til nå) baserer seg på sannsynligheter, mens frekventistisk statistikk ikke baserer seg på sannsynligheter. Hva mener vi med det? @k.hackenbergerBayesNotBayes2019 beskriver dette slik:
+
+> The basis of Bayesian statistics is Bayes’ theorem, which describes the probability of an event occurrence based on previous knowledge of the conditions associated with this event. ... In contrast to frequentist statistics, in Bayesian statistics all relevant information necessary to make an inference is contained in the observed data rather than in other unobserved quantities (s.50-51).
+
+Naiv Byaes kalles også ofte for "simple Bayes" eller "independence Bayes" fordi modellen forutsetter uavhengighet mellom egenskapene ved enheten som måles. Hvis vi f.eks. ser på frukt vil egenskaper som måles kunne være farge, størrelse og form - en enhet som er orange, ca 8-10 cm i diameter og oransje vil klassifiseres som appelsin. Begrepet "naiv" kommer fra forutsetningen om at farge, størrelse og form er uavhengige av hverandre. Hver av disse tre egenskapene bidrar uavhengig av de andre to til å foreta klassifiseringen av enheten som en appelsin. 
+
+En fordel med naiv Bayes klassifisering er at algoritmen krever et mindre antall i et treningssett enn andre algoritmer, og det er vist at klassifiseringen har godt teoretisk fundament. Imidlertid viser f.eks. @caruanaEmpiricalComparisonSupervised2006 at andre klassifiseringsalgoritmer (som Random Forest) ofte gir bedre resultat enn naiv Bayes.
+
+Algoritmen forsøker altså å minimalisere **sannsynligheten** for feilklassifiseringer. La oss se på hvordan den gjør det.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```{r warning = FALSE, message = FALSE, echo = FALSE}
 social <- read.csv("social.csv")
 ```

@@ -14,9 +14,9 @@
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.4.0/transition.js"></script><script src="libs/bs3compat-0.4.0/tabs.js"></script><script src="libs/bs3compat-0.4.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><link href="libs/tabwid-1.1.0/tabwid.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link href="libs/tabwid-1.1.0/tabwid.css" rel="stylesheet">
 <link href="libs/tabwid-1.1.0/scrool.css" rel="stylesheet">
-<script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 <link href="libs/table1-1.0/table1_defaults.css" rel="stylesheet">
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script><script src="libs/viz-1.8.2/viz.js"></script><link href="libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
 <script src="libs/grViz-binding-1.0.9/grViz.js"></script><script src="libs/plotly-binding-4.10.0/plotly.js"></script><script src="libs/typedarray-0.1/typedarray.min.js"></script><link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
@@ -202,7 +202,7 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <code class="sourceCode R"><span><span class="va">cv_ridgemodell</span> <span class="op">&lt;-</span> <span class="fu">cv.glmnet</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">beste_lambda_ridge</span> <span class="op">&lt;-</span> <span class="va">cv_ridgemodell</span><span class="op">$</span><span class="va">lambda.min</span></span>
 <span><span class="va">beste_lambda_ridge</span></span>
-<span><span class="co">#&gt; [1] 11.02511</span></span>
+<span><span class="co">#&gt; [1] 7.599184</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cv_ridgemodell</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="11_files/figure-html/unnamed-chunk-5-1.png" width="672"></div>
 <p>Vi kan da optimalisere modellen gjennom den identifiserte beste <span class="math inline">\(\lambda\)</span>.</p>
@@ -210,12 +210,12 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <code class="sourceCode R"><span><span class="va">beste_modell</span> <span class="op">&lt;-</span> <span class="fu">glmnet</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, alpha <span class="op">=</span> <span class="fl">0</span>, lambda <span class="op">=</span> <span class="va">beste_lambda_ridge</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">beste_modell</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 5 x 1 sparse Matrix of class "dgCMatrix"</span></span>
-<span><span class="co">#&gt;                     s0</span></span>
-<span><span class="co">#&gt; (Intercept) 473.959381</span></span>
-<span><span class="co">#&gt; mpg          -3.296526</span></span>
-<span><span class="co">#&gt; wt           19.125705</span></span>
-<span><span class="co">#&gt; drat         -1.624337</span></span>
-<span><span class="co">#&gt; qsec        -17.745374</span></span></code></pre></div>
+<span><span class="co">#&gt;                       s0</span></span>
+<span><span class="co">#&gt; (Intercept) 477.88658049</span></span>
+<span><span class="co">#&gt; mpg          -3.29585113</span></span>
+<span><span class="co">#&gt; wt           20.32422537</span></span>
+<span><span class="co">#&gt; drat         -0.09481675</span></span>
+<span><span class="co">#&gt; qsec        -18.49039687</span></span></code></pre></div>
 <p>Et interessant plott er et “trace-plott” som viser hvordan koeffisientene endrer seg som følge av endret lamda-verdi:</p>
 <div class="sourceCode" id="cb381"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ridgemodell</span>, xvar <span class="op">=</span> <span class="st">"lambda"</span><span class="op">)</span></span>
@@ -228,8 +228,8 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <span><span class="va">sse</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_prediksjon</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">rsq</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">sse</span><span class="op">/</span><span class="va">sst</span></span>
 <span><span class="va">rsq</span></span>
-<span><span class="co">#&gt; [1] 0.7987884</span></span></code></pre></div>
-<p>Beste modell kan dermed forklare 79.9 % av variansen i den avhengige variabelen.</p>
+<span><span class="co">#&gt; [1] 0.8025972</span></span></code></pre></div>
+<p>Beste modell kan dermed forklare 80.3 % av variansen i den avhengige variabelen.</p>
 </div>
 <div id="lasso-regression" class="section level2" number="11.2">
 <h2>
@@ -257,7 +257,7 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <code class="sourceCode R"><span><span class="va">cv_lassomodell</span> <span class="op">&lt;-</span> <span class="fu">cv.glmnet</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">beste_lambda_lasso</span> <span class="op">&lt;-</span> <span class="va">cv_lassomodell</span><span class="op">$</span><span class="va">lambda.min</span></span>
 <span><span class="va">beste_lambda_lasso</span></span>
-<span><span class="co">#&gt; [1] 1.8391</span></span>
+<span><span class="co">#&gt; [1] 2.431182</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cv_lassomodell</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="11_files/figure-html/unnamed-chunk-10-1.png" width="672"></div>
 <div class="sourceCode" id="cb385"><pre class="downlit sourceCode r">
@@ -269,11 +269,11 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">beste_lassomodell</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 5 x 1 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">#&gt;                     s0</span></span>
-<span><span class="co">#&gt; (Intercept) 487.513780</span></span>
-<span><span class="co">#&gt; mpg          -2.882078</span></span>
-<span><span class="co">#&gt; wt           22.495828</span></span>
+<span><span class="co">#&gt; (Intercept) 485.152675</span></span>
+<span><span class="co">#&gt; mpg          -2.936266</span></span>
+<span><span class="co">#&gt; wt           21.698919</span></span>
 <span><span class="co">#&gt; drat          .       </span></span>
-<span><span class="co">#&gt; qsec        -19.906056</span></span></code></pre></div>
+<span><span class="co">#&gt; qsec        -19.569135</span></span></code></pre></div>
 <p>Her kan vi se at lassoregresjonen har redusert koeffisienten til “drat” til 0 (variabelen er dermed ikke i beste modell). Lassoregresjon kan altså redusere variablers koeffisienter <strong>til</strong> 0, mens ridgeregresjon reduserer kan redusere koeffisientene <strong>mot</strong> 0.</p>
 <p>Vi kan til slutt se på <span class="math inline">\(R^2\)</span> for beste modell:</p>
 <div class="sourceCode" id="cb387"><pre class="downlit sourceCode r">
@@ -282,8 +282,8 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <span><span class="va">sse2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_prediksjon2</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">rsq2</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">sse2</span><span class="op">/</span><span class="va">sst2</span></span>
 <span><span class="va">rsq2</span></span>
-<span><span class="co">#&gt; [1] 0.8052956</span></span></code></pre></div>
-<p>Beste modell kan dermed forklare 80.5 % av variansen i den avhengige variabelen.</p>
+<span><span class="co">#&gt; [1] 0.8043195</span></span></code></pre></div>
+<p>Beste modell kan dermed forklare 80.4 % av variansen i den avhengige variabelen.</p>
 </div>
 <div id="elastic-net-regresjon" class="section level2" number="11.3">
 <h2>
@@ -312,7 +312,7 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <code class="sourceCode R"><span><span class="va">cv_en_modell</span> <span class="op">&lt;-</span> <span class="fu">cv.glmnet</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span><span class="va">beste_lambda_en</span> <span class="op">&lt;-</span> <span class="va">cv_en_modell</span><span class="op">$</span><span class="va">lambda.min</span></span>
 <span><span class="va">beste_lambda_en</span></span>
-<span><span class="co">#&gt; [1] 7.384008</span></span>
+<span><span class="co">#&gt; [1] 5.08951</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">cv_en_modell</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-figure"><img src="11_files/figure-html/unnamed-chunk-15-1.png" width="672"></div>
 <div class="sourceCode" id="cb390"><pre class="downlit sourceCode r">
@@ -324,19 +324,19 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">beste_en_modell</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 5 x 1 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">#&gt;                     s0</span></span>
-<span><span class="co">#&gt; (Intercept) 473.212476</span></span>
-<span><span class="co">#&gt; mpg          -3.256039</span></span>
-<span><span class="co">#&gt; wt           19.214041</span></span>
+<span><span class="co">#&gt; (Intercept) 481.323552</span></span>
+<span><span class="co">#&gt; mpg          -3.180651</span></span>
+<span><span class="co">#&gt; wt           20.477663</span></span>
 <span><span class="co">#&gt; drat          .       </span></span>
-<span><span class="co">#&gt; qsec        -18.092331</span></span></code></pre></div>
+<span><span class="co">#&gt; qsec        -18.859391</span></span></code></pre></div>
 <div class="sourceCode" id="cb392"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y_prediksjon3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">en_modell</span>, s <span class="op">=</span> <span class="va">beste_lambda_en</span>, newx <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">sst3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">sse3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">y_prediksjon3</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">rsq3</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">sse3</span><span class="op">/</span><span class="va">sst3</span></span>
 <span><span class="va">rsq3</span></span>
-<span><span class="co">#&gt; [1] 0.7996352</span></span></code></pre></div>
-<p>Beste modell kan dermed forklare 80 % av variansen i den avhengige variabelen.</p>
+<span><span class="co">#&gt; [1] 0.8030335</span></span></code></pre></div>
+<p>Beste modell kan dermed forklare 80.3 % av variansen i den avhengige variabelen.</p>
 </div>
 <div id="ridge-vs-lasso-vs-elastic-net" class="section level2" number="11.4">
 <h2>
@@ -348,9 +348,9 @@ Vi kommenterer ikke modellen på dette stadiet. Neste steg blir å velge en såk
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">rsq4</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Ridge regression"</span>, <span class="st">"Lasso regression"</span>, <span class="st">"Elastic-net"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">rsq4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                  R-squared</span></span>
-<span><span class="co">#&gt; Ridge regression 0.7987884</span></span>
-<span><span class="co">#&gt; Lasso regression 0.8052956</span></span>
-<span><span class="co">#&gt; Elastic-net      0.7996352</span></span></code></pre></div>
+<span><span class="co">#&gt; Ridge regression 0.8025972</span></span>
+<span><span class="co">#&gt; Lasso regression 0.8043195</span></span>
+<span><span class="co">#&gt; Elastic-net      0.8030335</span></span></code></pre></div>
 <p>De gir realtivt like <span class="math inline">\(R^2\)</span>-verdier. Som tidligere nevnt kan man ikke si at den ene er generelt bedre enn de andre. De lar oss håndtere multikolinearitet, og lasso kan fungere som teknikk for å redusere antall variabler (ridge kan ikke det). Elastic-net søker altså å kombinere de gode egenskapene for de to, men likevel kan man ikke si på generelt grunnlag at den alltid vil være bedre.</p>
 <p>Det kan til slutt også være på sin plass å beskrive noen av de utfordringene med disse teknikkene som ofte nevnes.
 Slik teknikkene fungerer må alle variablene være numeriske. Mange pakker/program som kjører teknikkene håndterer manglende verdier dårlig/ikke, så det kan kreve endel bearbeiding av dataene før analyse (på den andre siden - deskriptiv statistikk og databearbeiding bør være et must uansett…). Uteliggere, f.eks., kan være en utfordring som for OLS og her viser vi til grundig diskusjon om tematikken uteliggere i OLS-kapittelet. Og - det er en lineær teknikk med de svakheter dette medfører generelt.</p>
@@ -385,7 +385,7 @@ Slik teknikkene fungerer må alle variablene være numeriske. Mange pakker/progr
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 02 oktober, 2022.</p>
+    <p>"<strong>Anvendt kvantitativ analyse</strong>" was written by Nils Kvilvang. It was last built on 04 oktober, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
