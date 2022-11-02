@@ -857,12 +857,12 @@ minterning <- sample(1:6, 6000000, replace = TRUE)
 table(minterning)
 ```
 
-Hvis vi setter resultatet fra 6 000 000 terningkast inn i et histogram ser vi at resultatet er svært nærme hva vi teoretisk vil forvente:
+Hvis vi setter resultatet fra 6 000 000 terningkast inn i et søylediagram ser vi at resultatet er svært nærme hva vi teoretisk vil forvente:
 
 ```{r echo = FALSE, message = FALSE, warning=FALSE, fig.cap = "6 000 000 terningkast"}
 
 hist(minterning,
-     main="Histogram for 6 000 000 terningkast",
+     main="Søylediagram for 6 000 000 terningkast",
      ylab="Antall",
      xlab = "Verdi på terning",
      col = "lightblue")

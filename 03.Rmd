@@ -61,7 +61,7 @@ Resultatet 0,88 er det som betegnes Pearsons korrelasjonskoeffisient ($r$). For 
 
 ## Tolkning av korrelasjon og korrelasjonskoeffisenter
 
-Korrelasjonskoeffisienten har alltid en verdi mellom -1 og 1, der 0 betyr ingen korrelasjon. Det er vanlig å bruke følgende retningslinjer for vurdering av koeffisienten:
+Korrelasjonskoeffisienten har alltid en verdi mellom -1 og 1. Det er vanlig å bruke følgende retningslinjer for vurdering av koeffisienten:
 
 - Nær x/- 1: Perfekt eller tilnærmet perfekt korrelasjon
 - Mellom +/- 0.5 og +/- 1: Sterk korrelasjon
@@ -118,7 +118,7 @@ Alle 16 eksemplene viser altså mønstre av korrelasjon mellom to variabler som 
 
 ### Anscombes kvartett ("Anscombe's Quartet")
 
-Et kjent eksempel som viser betydningen av grafisk framstilling av data er "Anscombes kvartett" [@anscombeGraphsStatisticalAnalysis1973]. Anscombe konstruerte fire datasett (x1-y1, x2-y2, x3-y3 og x4-y4) som tilsynelatende er svært like:
+Et kjent eksempel som viser betydningen av grafisk framstilling av data er "Anscombes kvartett" ^[Takk til Christer Thrane for å lede oppmerksomheten til Anscombes kvartett] [@anscombeGraphsStatisticalAnalysis1973]. Anscombe konstruerte fire datasett (x1-y1, x2-y2, x3-y3 og x4-y4) som tilsynelatende er svært like:
 
 ```{r}
 data <- datasets::anscombe

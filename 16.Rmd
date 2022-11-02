@@ -17,7 +17,7 @@ R-pakker brukt i dette kapittelet:
 pacman::p_load(tidyverse, AmesHousing, outliers, EnvStats, caTools, Metrics, psych, tdr, readxl, e1071, caret, plotly, rpart, rpart.plot, knitr, hydroGOF, ggridges, tidymodels, sf, patchwork, RColorBrewer, grid, ragg, ipred, rattle, randomForest, glmnet, datasets, plotrix, ggforce, ROCit, car, class, e1071) 
 ```
 
-Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (sav samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje.
+Hensikten med å analysere samfunnet rundt oss er å forstå verden. I dette ligger at vi ønsker å kunne forklare hva som skjer og hvorfor (faktuelt og kaulsalt) *og* predikere hva vi tror kommer til å skje. Forklaring og prediksjon kan ofte stå i litt i motsetning til hverandre. Som vi har nevnt et sted tidligere - alle modeller (av samfunnet) er feil. Men noen modeller er mindre feil enn andre, og noen er også nyttige for oss (selv om vi vet de inneholder feil). En modell som inneholder "alt" er ingen modell, men virkeligheten selv. Altså må vi hele tiden foreta valg når vi lager modeller. En modell som inneholder et svært høyt antall variabler kan være mer nøyaktig, men samtidig veldig vanskelig å forstå. Og en modell som forklarer hva som har skjedd godt trenger ikke å være en modell som predikerer godt hva som kommer til å skje. En modell som passer perfekt til de dataene vi har kan være det vi kaller "overfitted" - altså at modellen er utviklet for å forklare dataene våre for nøyaktig slik at den også forklarer tilfeldige avvik og kanskje også regelrette feil. Et aspekt ved maskinglæringsmodeller er at vi forsøker kontrollere for dette ved at vi først trener en modell på deler av datasettet før vi tester modellens evne til å predikere riktig på en annen del av datasettet. 
 
 Vi antar at avveiningen mellom forklaring og prediksjon er viktig og sentral for alle felt innenfor samfunnsvitenskapene, og at avveiningen har ulikt fokus og innretting fra fagfelt til fagfelt. @yarkoniChoosingPredictionExplanation2017 påpker f.eks. at for psykologi som fagfelt at "an increased focus on prediction, rather than explanation, can ultimately lead us to greater understanding of behavior" (s.1100).
 
@@ -44,10 +44,10 @@ Det er videre vanlig å sele inn maskinlæring ut fra hvordan dataanalysen skjer
     - Clustering: Gruppering av data basert på likhet eller forskjeller
     - Assosiering: Identifisering av sammenhenger mellom variabler
     - Dimensionality reduction: Komponentanalyse (PCA), SVD o.l.
--   Semi-supervised learning: En form for mellomting mellom supervised og unsupervised, dvs. vi kan ha mindre deler av data med input og output som kan brukes på data uten kjent/ønsket output. F.eks. at supervised learning bruker unsupervised learning gjennom såkalt "feature engineering".
--   Reinforcement learning: Modellering gjennom algoritmer der henskten/målsetningen er å maksimere en oppfatning om kumulativ utkomme gjennom belønning eller straff. Reinforcement learning brukes f.eks. til å lære maskiner å spille spill mot mennesker, eller til å generere policies/strategier for å maksimere kost/nytte-vurderinger i ulike sammenhenger. Andre eksempler kan være selvstyrende biler, trading i finans- og investeringsbeslutninger, "natural language processing - NLP" som innebærer automatisk behandling av tekst (f.eks. i oversettelser) og anvendelser i helsesektoren (som "dymanic treatment regimes - DTR") innenfir diagnose og behandling. Modellen utvikles gjennom å straffe "feil" beslutninger/tiltak og belønne "riktige". 
+-   Semi-supervised learning: En form for mellomting mellom supervised og unsupervised, dvs. vi kan ha mindre deler av data med input og output som kan brukes på en større datamengde uten kjent/ønsket output. F.eks. at supervised learning bruker unsupervised learning gjennom såkalt "feature engineering", altså et slags ekteskap mellom supervised og unsupervised learning. En bank kan f.eks. ha flere millioner kunder og hundrevis av millioner av transaksjoner. Banken kan analysere en liten prosent av datasettet (transaksjonene) for å klassifisere dem som bedrageri eller ikke (altså man finner ut om et antall transaksjoner er bedrageri eller ikke, klassifiserer dem, og lager en modell som man deretter kan kjøre på alle andre transaksjoner). Hensikten er å slippe å "manuelt" klassifisere hundrevis av transaksjoner som bedrageri eller ikke. 
+-   Reinforcement learning: Modellering gjennom algoritmer der henskten/målsetningen er å maksimere en oppfatning om kumulativ utkomme gjennom belønning eller straff. Reinforcement learning brukes f.eks. til å lære maskiner å spille spill mot mennesker, eller til å generere policies/strategier for å maksimere kost/nytte-vurderinger i ulike sammenhenger. Andre eksempler kan være selvstyrende biler, trading i finans- og investeringsbeslutninger, "natural language processing - NLP" som innebærer automatisk behandling av tekst (f.eks. i oversettelser) og anvendelser i helsesektoren (som "dymanic treatment regimes - DTR") innenfor diagnose og behandling. Modellen utvikles gjennom å straffe "feil" beslutninger/tiltak og belønne "riktige". 
 
-I tillegg skal man ikke holde på lenge med maskinlæring før begrepene Neural networks, Natural Language Processing (NLP) og Deep learning dukker opp. Disse kan, slik vi ser det, alle assosieres med såvel supervised som unsupervised learning. Vi kommer ikke til å gå inn på disse begrepene i dette kapittelet, men heller ta for oss disse begrepene i eget kapittel.
+I tillegg skal man ikke holde på lenge med maskinlæring før begrepene Neural networks, Natural Language Processing (NLP) og Deep learning dukker opp. Disse kan, slik vi ser det, alle assosieres med såvel supervised som unsupervised learning. Vi kommer ikke til å gå inn på disse begrepene i dette kapittelet. 
 
 ## Supervised Learning
 
@@ -55,7 +55,7 @@ I tillegg skal man ikke holde på lenge med maskinlæring før begrepene Neural 
 
 Vi ønsker altså å lage modeller som kan predikere hvilke verdier vi kan forvente på en avhengig variabel ut fra gitte verdier på x antall uavhengige variabler. Før vi kan gjøre disse prediksjonene må vi trene opp modellen. Dette gjøres normalt gjennom å dele opp et datasett i en treningsdel og en testdel. 
 
-For å trene modellen må vi kjøre observasjoner gjennom algoritmen (modellen), gjøre prediksjoner, sjekke med "fasit", evaluere mdoellen, og gjenta prosessen:
+For å trene modellen må vi kjøre observasjoner gjennom algoritmen (modellen), gjøre prediksjoner, sjekke med "fasit", evaluere modellen, og gjenta prosessen:
 
 ![Generisk modell for supervised learning](mlsup.png){width=75%}
 
@@ -63,7 +63,7 @@ Prosedyren som er vist for to observasjoner over gjentas for datasettet. Modelle
 
 #### Tap og minimering av tap ("loss and reducing loss")
 
-Når vi trener modellen i supervised learning finner vi verdier i modellens parametere (tenk på f.eks. stigningstall og skjæringspunkt i en enkel lineær regresjon) som minimerer tap ("loss"). Tap innebærer en måling/verdi av hvor dårlig modellens prediksjon var for et enkelt tilfelle. Perfekt perdiksjon = 0 tap, og en god modell har lite tap i gjennomsnitt for alle tilfellene/observasjonene. For datasettet bruker vi ofte MSE - Mean Square Error som et mål på dette (se mer detaljer om MSE under f.eks. lineær regresjon lenger ned). 
+Når vi trener modellen i supervised learning finner vi verdier i modellens parametere (tenk på f.eks. stigningstall og skjæringspunkt i en enkel lineær regresjon) som minimerer tap ("loss"). Tap innebærer en måling/verdi av hvor dårlig modellens prediksjon var for et enkelt tilfelle. Perfekt prediksjon = 0 tap, og en god modell har lite tap i gjennomsnitt for alle tilfellene/observasjonene. For datasettet bruker vi ofte MSE - Mean Square Error som et mål på dette (se mer detaljer om MSE under f.eks. lineær regresjon lenger ned). 
 
 Vi kan illustrere prosedyren for algoritmens beregning av minimalisering av tap med det følgende:
 
@@ -103,7 +103,7 @@ ggplot(data.frame(x = c(-15,15)), aes(x = x)) +
 
 ```
 
-Algoritmen starter i punkt 1 og beregner gradienten for "loss courve" (som i eksempelet = den dervierte/stigningstallet til kurven i det relevante punktet). Ut fra dette kan algoritmen bevege seg mot minimum loss. I punkt 2, 3 og 4 skjer det samme (i ounkt 4 har vi åpenbart "gått for langt" (positiv gradient) og algoritmen beregner at man må tilbake for å nå minimum loss). I prinsippet kan man ta museskritt for hvert steg, men det vil kreve et stort antall forsøk. På samme måte kan stegene bli for store og man vil hoppe fra den ene siden av minimum loss til den andre og tilbake. Antall steg man må gjennom før minimum loss finnes kalles "learning rate". 
+Algoritmen starter i punkt 1 og beregner gradienten for "loss courve" (som i eksempelet = den dervierte/stigningstallet til kurven i det relevante punktet). Ut fra dette kan algoritmen bevege seg mot minimum loss. I punkt 2, 3 og 4 skjer det samme (i punkt 4 har vi åpenbart "gått for langt" (positiv gradient) og algoritmen beregner at man må tilbake for å nå minimum loss). I prinsippet kan man ta museskritt for hvert steg, men det vil kreve et stort antall forsøk. På samme måte kan stegene bli for store og man vil hoppe fra den ene siden av minimum loss til den andre og tilbake. Antall steg man må gjennom før minimum loss finnes kalles "learning rate". 
 
 ### Regresjon
 
@@ -124,7 +124,7 @@ Amesdim
 
 Datasettet "AmesHousing" [@decockAmesIowaAlternative2011] inneholder salgsdata for `r Amesdim[1,1]` boliger i Ames, Iowa i tidsrommet 2006 til 2010 med tilhørende `r Amesdim[2,1]` variabler (nominelle, ordinale, diskrete og kontinuerlige). Den uavhengige variabelen er salgspris. En oversikt over variablene finnes flere stedet på nett, f.eks. [her](https://rdrr.io/cran/AmesHousing/man/ames_raw.html) og mer detaljert [her](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
 
-Vi skal i dette kapittelet ta utgangspunkt i det opprinnelige datasettet. Det finnes mange versjoner av dette datasette på nett siden det er et populært datasett, også i konkurranser på nett innen maskinlæring. I neste kapittel - der vi også tar for oss maskinlæring - vil vi bruke en modifisert versjon av datasettet som ligger i R-pakken "tidymodels". Vi vil også velge en litt annen tilnærming i analysen, og leseren kan dermed se både litt mer av bredden i tilnærminger og kunne sammenlikne hva ulike valg gjør med analysene.
+Vi skal i dette kapittelet ta utgangspunkt i det opprinnelige datasettet. Det finnes mange versjoner av dette datasettet på nett siden det er et populært datasett, også i konkurranser på nett innen maskinlæring. I enkelte R-pakker - som "tidymodels" - ligger en modifisert versjon av datasettet integrert så man slipper å laste ned datasettet om man bruker denne pakken. 
 
 #### Manglende verdier i datasettet (NAs)
 
@@ -148,7 +148,7 @@ Ames2 <- subset(Ames, select = -c(Pool.QC, Misc.Feature, Alley, Fence, Fireplace
 dim(Ames2)
 ```
 
-Vi kan følge samme prosedyre som ovenfor for å få fram revidert liste over NAs (viser ikke kdoen for dette).
+Vi kan følge samme prosedyre som ovenfor for å få fram revidert liste over NAs (viser ikke koden for dette).
 
 ```{r echo = FALSE}
 nas2 <- as_tibble(colSums(is.na(Ames2))) %>%
@@ -165,7 +165,8 @@ Det er flere måter å håndtere manglende verdier på. Vi velger her å erstatt
 
 ```{r}
 Ames2 <- Ames2 %>% 
-  mutate(Lot.Frontage = ifelse(is.na(Lot.Frontage), mean(Lot.Frontage, na.rm = TRUE), Lot.Frontage))
+  mutate(Lot.Frontage = ifelse(is.na(Lot.Frontage),
+                               mean(Lot.Frontage, na.rm = TRUE), Lot.Frontage))
 ```
 
 Vi kan sjekke at vi ikke har na i Lot.Frontage.
@@ -865,7 +866,7 @@ dim2 <- as.data.frame(dim(ames_test))
 dimensjoner <- data.frame(dim1, dim2)
 rownames(dimensjoner) <- c("Observasjoner", "Variabler")
 colnames(dimensjoner) <- c("Treningssett", "Testsett")
-kable(dimensjoner, caption = "Splitting av datasettet Ames Housing fra pakken 'modeldata'")
+kable(dimensjoner, caption = "Splitting av datasettet Ames Housing")
 ```
 
 #### Enkel lineær regresjon
@@ -1446,7 +1447,7 @@ Hver node i treet utgjør en test for en case/et dilemma/et valg inntil det ikke
 
 Modellen begynner med hele datasettet og leter gjennom alle verdier for alle inputvariabler (uavhengige variabler) for å finne splittverdien som deler datasettet i to og samtidig gir lavest mulig "Sums of Squares Error". Deretter gjentas denne prosessen inntil en stoppverdi er nådd.
 
-La oss gå tilbake til eksempelet med mtcars og se på kun de to uavhengige variablene. Eksempelet under er kun illustsrerende:
+La oss gå tilbake til eksempelet med mtcars og se på kun de to uavhengige variablene. Eksempelet under er kun illustrerende:
 
 ```{r fig.cap = "Eksempel på 4 x splitt av datasett"}
 dtrplott <- ggplot(mtcars, aes(x=wt, y=hp)) + geom_point(color = "red")
@@ -1477,8 +1478,6 @@ I grafen over har vi visualisert beslutningstreet. Første splitt skjer ved wt =
 Vi har fått delt opp de to uavhengige variablene i bokser. Hvis vi nå får et nytt punkt (eller vil predikere verdien på den avhengige variabelen ut fra gitt verdier av de to uavhengige variablene) kan vi legge det nye punktet inn i riktig boks ut fra verdiene på hhv. wt og hp. Den predikerte Y-verdien - verdien på den avhengige variabelen - blir ganske enkelt gjennomsnittsverdien av alle y-verdiene i den respektive boksen (jfr $\hat{y}_n$ i figuren over). Inndeingen i boksene gjennom belsutningstreet har i realiteten tilført informasjon til våre data. Vi trenger altså predikere ut fra et mye snevrere utfallsområde enn en tradisjonell tilnærming som vil ta hensyn til alle datapunktene (ikke bare de i rette boks).
 
 ##### Eksempel DTR på Ames Housing Data
-
-I dette eksempelet skal vi bruke datasettet fra pakken "modeldata" som over.
 
 ```{r warning = FALSE, message = FALSE}
 dim(ames)
@@ -1537,7 +1536,7 @@ dtrprediksjon <- predict(dtregress)
 modelprediksjon <- sqrt(mean((ames_test$Sale_Price - dtrprediksjon)^2))
 ```
 
-RMSE er `r round(modelprediksjon, 2)`. Dvs at i gjennomsnitt bommer modellens prediksjoner med \$`r round(modelprediksjon, 2)` dollar.
+RMSE er `r round(modelprediksjon, 2)`. Dvs at i gjennomsnitt bommer modellens prediksjoner med \$`r round(modelprediksjon, 2)`.
 
 Decision Tree Regression kan i seg selv være en noe lunefull og dårlig modell for prediksjon. Det er ikke sjeldent å finne en god fit til dataene, men ofte en overfit (altså at vi får en god fit til dataene, men lav prediksjonsnøyaktighet). Derimot er den grunnstammen (no pun intended) i "Random Forests" modellering som vi skal se på i neste delkapittel. Før vi går til Random Forest skal vi se på en metodikk for å redusere sårbarheten til et enkelt beslutningstre. Denne metodikken kalles "bagging" - fra "*b*ootstrap *agg*regating [@breimanBaggingPredictors1996].
 
@@ -1561,7 +1560,7 @@ ames_bag1 <- bagging(
 ames_bag1
 ```
 
-Vi kan se at RMSE er `r ames_bag1$err`.
+Vi kan se at RMSE er `r round(ames_bag1$err, 2)`.
 
 Inflytelse (viser de ti største):
 
@@ -1609,9 +1608,9 @@ Så langt - gjennom regresjon - har vi forsøkt å predikere en kontinuerlig var
 - K-nearest neighbors (K-NN)
 - Support Vector Machine (SVM)
 - Kernel SVM
-- Naive Bayes
 - Decision Tree Classification
 - Random Forest Classification
+- Naiv Bayes
 - og (noe forvirrende begrepsmessig): Logistisk regresjon
 
 Vi kan tenke oss mange praktiske eksempler på klassifisering i maskinlæring fra vårt dagligliv. De fleste har sikkert et spamfilter i sitt e-postprogram (som f.eks. Outlook). En innkommende mail må defineres som spam eller ikke-spam. Dette er en klassisk klassifiseringsutfordring der vi søker å lære opp e-postprogrammet til å bestemme dette så nøyaktig som mulig ut fra gitte kriterer. I dag kan lånesøknader i en bank innvilges eller avslås på sekunder - dette er et klassifiseringsproblem der kunden må defineres som kredittverdig eller ikke. I mange applikasjoner er bildegjenkjenning sentralt - dette bygger på klassifisering. I medisinsk diagnose kan klassifisering være et element i tidlig oppdagelse av sykdom. Osv.
@@ -1697,10 +1696,6 @@ cm2 <- as.numeric(cm)
 
 Denne tabellen kan vi lese som følger: Der verdiene er 0-0 og 1-1 (hhv. `r cm2[1]` og `r cm2[4]`) predikerer modellen vår riktig. Og i motsatt diagonal - verdiene `r cm2[2]` og `r cm2[3]`) har modellen vår predikert feil. Modellen vår har altså predikert `r cm2[1] + cm2[4]` av `r sum(cm2)` riktig, og følgelig `r cm2[2] + cm2[3]` av `r sum(cm2)` feil. Vi kan se på to mål på hvor bra dette er.
 
-Et annet forhold vi kan legge merke til er at confusion matrix gir oss type I og type II feil (jfr diskusjon i kapittel 2 om disse feiltypene). Antallet type I feil (som da er type I feil) er `r cm2[3]` og antall type II feil er `r cm2[4]`. Modellen vår har i dette tilfellet en presisjon på `r round((cm2[1] + cm2[2])/(cm2[1] + cm2[2] + cm2[3] + cm2[4]), 2)` og en feilrate på `r round((cm2[3] + cm2[4])/(cm2[1] + cm2[2] + cm2[3] + cm2[4]), 2)`.
-
-Vi kan legge til at man bør utvise forsiktighet med å kun se på presisjonen til en modell da den i gitte tilfeller kan lure oss ved at presisjonen fkatisk kan være høyere ved å bare anta en verdi i alle tilfeller (altså - ingen modell i det hele tatt). Vi tar for oss dette litt mer i detalj i et delkapittel etter de ulike klassifiseringsalgoritmene.
-
 Sensitivitet:
 ```{r}
 sensitivity(cm)
@@ -1715,13 +1710,17 @@ specificity(cm)
 
 Spesifsitet (= "True negative rate") er den prosentvise korrekt predikerte andelen av samsvar mellom predikerte 0-verdier og faktiske 0-verdier.
 
-Vi kan illustrere forholdet mellom ekte og falske positive/negative gjennom en av Æsops kjente fabler - om gjetergutten som ropte Ulv!Ulv!
+Hva som er gode verdier og om det er viktigst med sensitivitet eller spesifitet avhenger av problemet vi står ovenfor. Ideelt sett ønsker vi å maksimere begge, men i mange tilfeller er det ikke mulig og vi må kanskje prioritere den ene foran den andre. I noen tilfeller, som f.eks. om en bank vil predikere om en kunde vil betale avdragene sine på tid er det viktig med høy sensitivitet før man gir lånet. Om man vil teste om en medisin virker eller er giftig vil høy spesifitet være viktig. 
+
+Et annet forhold vi kan legge merke til er at confusion matrix gir oss type I og type II feil (jfr diskusjon i kapittel 2 om disse feiltypene). Vi kan illustrere forholdet mellom ekte og falske positive/negative gjennom en av Æsops kjente fabler - om gjetergutten som ropte Ulv!Ulv!
 
 ![Æsops fabler: Ulv! Ulv!](ulvulv.png){width=90%}
 
 En ekte positiv er altså tilfeller der modellen korrekt predikerer den positive klassifiseringen, mens en ekte negativ er de tilfellene der modellen korrekt predikerer den negative klassifiseringen (og motsatt for hhv falsk positiv og falsk negativ).
 
-Hva som er gode verdier og om det er viktigst med sensitivitet eller spesifitet avhenger av problemet vi står ovenfor. Ideelt sett ønsker vi å maksimere begge, men i mange tilfeller er det ikke mulig og vi må kanskje prioritere den ene foran den andre. I noen tilfeller, som f.eks. om en bank vil predikere om en kunde vil betale avdragene sine på tid er det viktig med høy sensitivitet før man gir lånet. Om man vil teste om en medisin virker eller er giftig vil høy spesifitet være viktig. 
+Antallet type I feil (som da er type I feil) er `r cm2[3]` og antall type II feil er `r cm2[4]`. Modellen vår har i dette tilfellet en presisjon på `r round((cm2[1] + cm2[2])/(cm2[1] + cm2[2] + cm2[3] + cm2[4]), 2)` og en feilrate på `r round((cm2[3] + cm2[4])/(cm2[1] + cm2[2] + cm2[3] + cm2[4]), 2)`.
+
+Vi kan legge til at man bør utvise forsiktighet med å kun se på presisjonen til en modell da den i gitte tilfeller kan lure oss ved at presisjonen fkatisk kan være høyere ved å bare anta en verdi i alle tilfeller (altså - ingen modell i det hele tatt). Vi tar for oss dette litt mer i detalj i et delkapittel etter de ulike klassifiseringsalgoritmene.
 
 En visuell måte å se på ekte/falske positive/negative er et diagram som plotter prediksjon og ekte verdi fargelagt (kode modifisert fra @superdatascienceMachineLearningAZ2022).
 
@@ -1770,7 +1769,7 @@ ROC_kurve <- rocit(score=sanns_prediksjon,class=klass_log_test$Kjop)
 plot(ROC_kurve)
 ```
 
-ROC-kurven over vises med indikasjon for det optimale punktet (der avstanden mellom ROC-kurven og den såkalte "chance line" er størst). Dette punktet kalles "Youden Index" [@youldenIndexRatingDiagnostic1950] som er et mål på den mest optimale balansen mellom sensitivitet og spesifisitet.
+ROC-kurven over vises med indikasjon for det optimale punktet (der avstanden mellom ROC-kurven og den såkalte "chance line" er størst). Dette punktet kalles "Youden Index" [@youdenIndexRatingDiagnostic1950] som er et mål på den mest optimale balansen mellom sensitivitet og spesifisitet.
 
 ##### Eksempel på logistisk regresjon 
 
@@ -1785,7 +1784,7 @@ Wisconsin <- read.csv("Wisconsin.csv")
 dim(Wisconsin)
 ```
 
-Datasettet består av 569 observasjoner (pasienter). Når vi ser på datasettet som er lastet inn ser vi at en variabel ("X") ikke inneholder data (alle er NA) så denne tar vi bort. Vi sjekker også om datasettet har mangelende verdeier (NAs).
+Datasettet består av 569 observasjoner (pasienter). Når vi ser på datasettet som er lastet inn ser vi at en variabel ("X") ikke inneholder data (alle er NA) så denne tar vi bort. Vi sjekker også om datasettet har mangelende verdier (NAs).
 
 ```{r}
 Wisconsin <- subset(Wisconsin, select=(-X))
@@ -1916,7 +1915,9 @@ der
 - Forventet nøyaktighet = Nøyaktigheten en tilfeldig klassifisering vil forventes å gi ut fra den foreliggende confusion matrix. I dette filfellet ville dette bli 
 
 $\frac{(64+2)*(64+7)}{64+2+7+40} = \frac{66*71}{113} = 41.47$
+
 $\frac{(7+40)*(40+2)}{64+2+7+40} = \frac{(47*42)}{113} = 17.47$
+
 $Forventet\ nøyaktighet = \frac{41.47+17.47}{113} = 0.522$
 
 Som gir:
@@ -1932,7 +1933,7 @@ Kappaverdien kan sammenliknes på tvers av modeller og er derfor et godt verktø
 - $.61 - .80 =\ "Substantial"$
 - $.81 - 1.00 =\ "Almost\ perfect"$
 
-I vårt tilfelle innebærer våre resultater at modellen har hy nøyaktighet og tilnærmet perfekt kappaverdi.
+I vårt tilfelle innebærer våre resultater at modellen har høy nøyaktighet og tilnærmet perfekt kappaverdi.
 
 #### K-Nearest Neighbor
 
@@ -2105,10 +2106,10 @@ svmplott +
     geom_segment(aes(x = x1, y = y1, xend = x2, yend = y2, colour = "magenta"), data = df6) +
     annotate(geom="text", x = 1.5, y = 2.4, label="Maksimal avstand", color = "red") +
     annotate(geom="text", x = 1.52, y = 2.275, label="Support vector", color = "darkgreen") +
-    annotate(geom="text", x = 1.72, y = 2.38, label="Suport vector", color = "darkgreen") 
+    annotate(geom="text", x = 1.72, y = 2.38, label="Support vector", color = "darkgreen") 
 ```
 
-Den korrekte linja er den som deler dataene i to og som samtidig gir maksimal avstand ("maximal margin"). Linja skal gå like langt fra de to punktene som kalles "support vectors" og på en måte som maksimerer denne avstanden. En ting vi kan legge merke til er at SVM-algoritmen velger de to punktene (eller vektorene) som liger nærmest hverandre, men som fortsatt er klassifisert i ulike grupper og lar disse to danne support vectors som definerer hele klassifiseringen av kommende observasjoner. På en måte kan vi se på dette som de to mest ekstreme tilfellene av sine respektive klassifiseringer. Når disse to da danner utgangspunktet for linja som deler klassifiseringene kan man bruke denne linja for å klassifisere nye observasjoner. 
+Den korrekte linja er den som deler dataene i to og som samtidig gir maksimal avstand ("maximal margin"). Linja skal gå like langt fra de to punktene som kalles "support vectors" og på en måte som maksimerer denne avstanden. En ting vi kan legge merke til er at SVM-algoritmen velger de to punktene (eller vektorene) som ligger nærmest hverandre, men som fortsatt er klassifisert i ulike grupper og lar disse to danne support vectors som definerer hele klassifiseringen av kommende observasjoner. På en måte kan vi se på dette som de to mest ekstreme tilfellene av sine respektive klassifiseringer. Når disse to da danner utgangspunktet for linja som deler klassifiseringene kan man bruke denne linja for å klassifisere nye observasjoner. 
 
 La oss se på et praktisk eksempel der vi har et datasett (lastet ned fra "GeeksforGeeks" [@akashkumar17ClassifyingDataUsing2021].
 
@@ -2518,6 +2519,8 @@ points(testsett,
        bg = ifelse(testsett[, 3] == 1, 'green4', 'red3'))
 ```
 
+Her vil vi henvise til det første avsnittet i dette kapittelet der vi kort nevnte begrepet "overfitting". Hvis vi ser på de røde feltene i det grønne området i treningssettet over ser vi flere små røde felt som fanger opp noen røde punkter inne på det grønne området. Modellen forsøker altså å forklare så mange observasjoner som mulig og det er tilsynelatende bra fordi vi ønsker jo en modell som er bra. Men når vi ser på neste graf (testsettet) ser vi at vi har disse røde områdene inne på det grønne, men de treffer ikke noen røde punkter. Modellen vi har trent (på treningssettet) ønsker altså å predikere at det bør være noen røde punkter i det grønne området og viser dette med de små røde områdene, men når vi kjører modellen på testsettet er ikke de røde punktene der. Dette er et tegn på "overfitting" - modellen har kanskje i for stor grad forsøkt å tilpasse seg de faktiske dataene i treningssettet. Så vi får en presis modell, men som kanskje predikerer dårligere på nye data enn en litt mindre presis modell. Igjen: dette er grunnen til at vi i maskinlæring først trener en modell og så tester den på nye data som ikke har vært involvert i treningen av modellen. Dataene for trening- og testsett kan (og vil ofte) komme fra samme datasett, men vi deler det altså opp i to før vi starter trening av modellen slik vi har sett gjennom dette kapittelet.
+
 #### Naiv Bayes
 
 Den siste klassifiseringsalgoritmen vi skal se på har et annet utgangspunkt og bygger på såkalt Bayesiansk statistikk. Vi går gjennom Bayesiansk statistikk mer detaljert i et senere kapittel, men vil her gå gjennom dette relativt kortfattet og heller vise til det kommende kapittelet for mer detaljert forståelse av hva Bayes teorem og Bayesiansk statistikk er. 
@@ -2530,7 +2533,7 @@ Naiv Byaes kalles også ofte for "simple Bayes" eller "independence Bayes" fordi
 
 En fordel med naiv Bayes klassifisering er at algoritmen krever et mindre antall i et treningssett enn andre algoritmer, og det er vist at klassifiseringen har godt teoretisk fundament. Imidlertid viser f.eks. @caruanaEmpiricalComparisonSupervised2006 at andre klassifiseringsalgoritmer (som Random Forest) ofte gir bedre resultat enn naiv Bayes.
 
-Algoritmen forsøker altså å minimalisere **sannsynligheten** for feilklassifiseringer. La oss se på hvordan den gjør det.
+Algoritmen forsøker altså å minimalisere *sannsynligheten* for feilklassifiseringer. La oss se på hvordan den gjør det.
 
 Vi antar at vi har observasjoner som vi kan dele i to kategorier - de som tar buss og de som tar tog til jobben (her er datapunktene generert for eksempelet og variablene x1 og x2 er registreringer vi har gjort av to ulike karakteristikker ved disse variablene som gjør at vi kan klassifisere et antall pendlere som brukere av enten buss eller tog):
 
@@ -2564,7 +2567,7 @@ knnplott +
 
 Bayes teorem gjør at vi kan uttrykke følgende:
 
-$p(buss|x) = \frac{p(x|buss)*p(buss)}{p(x)}$
+$p(buss|x) = \frac{p(x|buss)\ *\ p(buss)}{p(x)}$
 
 der
 
@@ -2574,7 +2577,7 @@ $p(x|buss)$ = Sannsynligheten for at en person har egenskap x gitt at de tar bus
 
 $p(buss)$ = Sannsynligheten for at en person tar buss (dette tallet kalles "prior probability")
 
-$p(x)$ = Sannsynligheten for at en person har egenskap x (dette tallet "marginal likelihood)
+$p(x)$ = Sannsynligheten for at en person har egenskap x (dette tallet "marginal likelihood")
 
 I ord kan vi derfor uttrykke dette slik:
 
@@ -2582,7 +2585,7 @@ $Posterior\ probability = \frac{likelihood\ *\ prior\ probability}{marginal\ lik
 
 Vi kan uttrykke det samme for "tog":
 
-$p(tog|x) = \frac{p(x|tog)*p(tog)}{p(x)}$
+$p(tog|x) = \frac{p(x|tog)\ *\ p(tog)}{p(x)}$
 
 Disse sannsynlighetene kan vi regne ut og til slutt sammenlikne sannsynlighetene - hva er sannsynligheten for at en person tar buss gitt egenskap x vs. sannsynligheten for at personen tar tog gitt egenskap x:
 
@@ -2605,7 +2608,7 @@ I denne sirkelen - vi skal igjen se bort fra det nye punktet, det er kun der for
 
 $p(x) = \frac{antall\ observasjoner\ i\ sirkelen}{totalt\ antall\ observasjoner} = \frac{4}{25} = 0.16$
 
-Fortsatt litt kludrete når vi skal regne ut "likelihood". Dette er altså sannsynligheten for at en person som tar bussen har egenskap x. Men her bruker vi bare samme plott som ovenfor og finner hvor mange innenfor sirkelen som tar buss og ser det i forhold til hvor mange som tar buss totalt, og får:
+Vi kan fortsette med å regne ut "likelihood". Dette er altså sannsynligheten for at en person som tar bussen har egenskap x. Men her bruker vi bare samme plott som ovenfor og finner hvor mange innenfor sirkelen som tar buss og ser det i forhold til hvor mange som tar buss totalt, og får:
 
 $p(x|buss) = \frac{antall\ observasjoner\ i\ sirkelen\ som\ tar\ buss}{totalt\ antall\ som\ tar\ buss} = \frac{3}{15} = 0.2$
 

@@ -52,7 +52,7 @@ En frekvenstabell teller enkelt opp hvor mange forekomster vi har av ulike verdi
 
 Det er en rekke diagrammer / plott vi kan lage som gir oss informasjon om en enkelt variabel. 
 
-### Stolpediagram ("bar chart")
+### Søylediagram/stolpediagram ("bar chart")
 
 ```{r fig.cap = "Stolpediagram ensfarget"}
 liksomdata <- tibble(
@@ -72,7 +72,7 @@ stolpe2 <- ggplot(liksomdata, aes(x=Karakter, y=Antall, fill=Karakter)) +
 stolpe2
 ```
 
-En alternativ måte å framstille i det samme som i et stolpediagram:
+En alternativ måte å framstille det samme:
 
 ```{r fig.cap = "Alternativ til stolpediagram"}
 ggplot(liksomdata, aes(Karakter, Antall)) +
@@ -85,6 +85,7 @@ ggplot(liksomdata, aes(Karakter, Antall)) +
   theme_bw()
 ```
 
+Det kan være lett å blande sammen søyle-/stolpediagram og histogram. En visuell huskeregel kan være at et søyle-/stolpediagram har luft (mellomrom) mellom søylene, mens et histogram ikke har det. Dette er en "sannhet" med visse modifikasjoner - man kan få histogrammer med noe mellomrom mellom enkelte søyler, men forskjellen er at i et søyle-/stolpediagram er det mellomrom mellom *alle* søylene. I histogram ligger det store flertallet alltid inntil hverandre uten mellomrom (se eksempler på histogram lenger ned).
 
 ### Kakediagram ("pie chart")
 
@@ -97,6 +98,12 @@ ggplot(liksomdata, aes(x = "", y = Antall, fill = Karakter)) +
   scale_fill_brewer() +
   theme_void()
 ```
+
+Kakediagram er generelt ikke anbefalt av mange fordi det oppfattes som vanskelig å se nyanser (det er hevdet at "ekte statistikere bruker ikke kakediagram"...). Se f.eks. på dette eksempelet [@wikipediaPieChart2022]
+
+![Bilde fra Wikipedia](Kakediagram.png){width=75%}
+
+Når man ser på kakene er det ikke umiddelbart lett å se forskjellene mellom de tre, noe vi langt lettere får fram gjennom de tilhørende søylediagrammene.
 
 ### Histogram:
 

@@ -134,7 +134,7 @@ Vi kan tolke dette på samme måte som første modell.
 
 ## Stianalyse
 
-Vi skal bygge videre på den første multivariate regresjonsmodellen over, men nå tenke oss at de endogende variablene påvirker hverandre $\beta_\{21}$. Dette kan vi illustrere slik:
+Vi skal bygge videre på den første multivariate regresjonsmodellen over, men nå tenke oss at de endogende variablene påvirker hverandre $\beta_{21}$. Dette kan vi illustrere slik:
 
 ![SEM-modell for stianalyse](SEMmod4A.png){width=90%}
 

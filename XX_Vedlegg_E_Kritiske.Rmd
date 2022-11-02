@@ -1,0 +1,78 @@
+---
+bibliography: bibliografi.bib  
+csl: chicago-author-date.csl
+always_allow_html: true
+---
+
+# Vedlegg E - Kritiske t-verdier - tohalet test ("two-tailed test") {.unnumbered}
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(kableExtra)
+
+conf_levels <- c(0.001, 0.005, 0.01, 0.025, 0.05, 0.10, 0.15, 0.20, 0.25)  
+
+data_t <- round(data.frame(df1 = abs(qt(p = conf_levels/2, df = 1)),  
+                           df2 = abs(qt(p = conf_levels/2, df = 2)),
+                           df3 = abs(qt(p = conf_levels/2, df = 3)),
+                           df4 = abs(qt(p = conf_levels/2, df = 4)),
+                           df5 = abs(qt(p = conf_levels/2, df = 5)),
+                           df6 = abs(qt(p = conf_levels/2, df = 6)),
+                           df7 = abs(qt(p = conf_levels/2, df = 7)),
+                           df8 = abs(qt(p = conf_levels/2, df = 8)),
+                           df9 = abs(qt(p = conf_levels/2, df = 9)),
+                           df10 = abs(qt(p = conf_levels/2, df = 10)),
+                           df11 = abs(qt(p = conf_levels/2, df = 11)),
+                           df12 = abs(qt(p = conf_levels/2, df = 12)),
+                           df13 = abs(qt(p = conf_levels/2, df = 13)),
+                           df14 = abs(qt(p = conf_levels/2, df = 14)),
+                           df15 = abs(qt(p = conf_levels/2, df = 15)),
+                           df16 = abs(qt(p = conf_levels/2, df = 16)),
+                           df17 = abs(qt(p = conf_levels/2, df = 17)),
+                           df18 = abs(qt(p = conf_levels/2, df = 18)),
+                           df19 = abs(qt(p = conf_levels/2, df = 19)),
+                           df20 = abs(qt(p = conf_levels/2, df = 20)),
+                           df21 = abs(qt(p = conf_levels/2, df = 21)),
+                           df22 = abs(qt(p = conf_levels/2, df = 22)),
+                           df23 = abs(qt(p = conf_levels/2, df = 23)),
+                           df24 = abs(qt(p = conf_levels/2, df = 24)),
+                           df25 = abs(qt(p = conf_levels/2, df = 25)),
+                           df26 = abs(qt(p = conf_levels/2, df = 26)),
+                           df27 = abs(qt(p = conf_levels/2, df = 27)),
+                           df28 = abs(qt(p = conf_levels/2, df = 28)),
+                           df29 = abs(qt(p = conf_levels/2, df = 29)),
+                           df30 = abs(qt(p = conf_levels/2, df = 30)),
+                           df35 = abs(qt(p = conf_levels/2, df = 35)),
+                           df40 = abs(qt(p = conf_levels/2, df = 40)),
+                           df45 = abs(qt(p = conf_levels/2, df = 45)),
+                           df50 = abs(qt(p = conf_levels/2, df = 50)),
+                           df55 = abs(qt(p = conf_levels/2, df = 55)),
+                           df60 = abs(qt(p = conf_levels/2, df = 60)),
+                           df65 = abs(qt(p = conf_levels/2, df = 65)),
+                           df70 = abs(qt(p = conf_levels/2, df = 70)),
+                           df75 = abs(qt(p = conf_levels/2, df = 75)),
+                           df80 = abs(qt(p = conf_levels/2, df = 80)),
+                           df85 = abs(qt(p = conf_levels/2, df = 85)),
+                           df90 = abs(qt(p = conf_levels/2, df = 90)),
+                           df95 = abs(qt(p = conf_levels/2, df = 95)),
+                           df100 = abs(qt(p = conf_levels/2, df = 100)),
+                           df150 = abs(qt(p = conf_levels/2, df = 150)),
+                           df200 = abs(qt(p = conf_levels/2, df = 200)),
+                           df250 = abs(qt(p = conf_levels/2, df = 250)),
+                           df300 = abs(qt(p = conf_levels/2, df = 300)),
+                           df350 = abs(qt(p = conf_levels/2, df = 350)),
+                           df400 = abs(qt(p = conf_levels/2, df = 400)),
+                           df450 = abs(qt(p = conf_levels/2, df = 450)),
+                           df500 = abs(qt(p = conf_levels/2, df = 500)),
+                           df750 = abs(qt(p = conf_levels/2, df = 750)),
+                           df1000 = abs(qt(p = conf_levels/2, df = 1000))), 3)
+
+rownames(data_t) <- conf_levels
+
+data_t <- t(data_t)
+
+data_t %>%
+    kbl() %>%
+    kable_paper("hover", full_width = F) %>%
+    kable_styling(fixed_thead = T)
+```

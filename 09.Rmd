@@ -164,6 +164,7 @@ dataplott5 <- ggplot(data, aes(x = hk, y = forbruk)) +
     theme_bw() +
     ylab("Drivstofforbruk (l/mil)") +
     xlab("Motorytelse (hk)")
+dataplott5
 ```
 
 Det grå området utgjør konfidensgrensene for 95 % konfidensintervall. Vi kan gå litt dypere inn i hvordan konfidensgrensene framkommer i en regresjonsanalyse.
@@ -175,7 +176,7 @@ La oss fortsette eksempelet. Vi har altså plottet verdiene for motorytelse og d
 data %>%
   ggplot(aes(x = hk,y = forbruk)) +
   geom_point() +
-  labs(x = "x", y ="y") +
+  labs(x = "Motorytelse (hk)", y ="Drivstofforbruk (l/mil)") +
   geom_smooth(method = lm, se = FALSE) +
   theme_bw() +
   geom_point(aes(x = 125, y = 1.005), colour = "red", size = 3) +
@@ -443,13 +444,13 @@ regresjonslikning3 <- extract_eq(lmregresjon, use_coefs = TRUE)
 
 eller med våre verdier
 
-<div align="center">Vi kan da lage følgende likning: `r regresjonslikning3`.</div>
+<div align="center"> `r regresjonslikning3`.</div>
 
 #### Hvor god er modellen vår (goodness of fit)?
 
 Vi ønsker å ha en formening om hvor god modellen er («goodness of fit»). Altså, er regresjonsmodellen vår bedre enn en modell der vi ikke vet noe om forholdet mellom reklame og platesalg? Vi kan bruke gjennomsnitt av salgstallene som en modell for ingen sammenheng mellom reklame og platesalg, og deretter sammenlikne regresjonsmodellen med gjennomsnittsmodellen. Sammenlikningen mellom modellene skjer gjennom å se på forskjellene mellom de observerte målingene (salgstall) og verdier predikert at de to ulike modellene. Dersom regresjonsmodellen signifikant predikerer bedre er det en bedre modell enn alternativet.
 
-Analysen vår har gitt oss F verdien `r f_verdi` med `r p_verdi2`. Vi ser at verdien er statistisk signifikant. F verdien er et mål på forbedring i prediksjonen sett opp mot unøyaktigheter i modellen (alle modeller er unøyaktige (eller "feil")).
+Analysen vår har gitt oss F verdien `r round(f_verdi, 3)` med `r p_verdi2`. Vi ser at verdien er statistisk signifikant. F verdien er et mål på forbedring i prediksjonen sett opp mot unøyaktigheter i modellen (alle modeller er unøyaktige (eller "feil")).
 Vi kan sjekke F-verdien opp mot antall frihetsgrader (df) gjennom tabeller som ofte finnes i statistikkbøker, eller bruke onlineressurser som [her](http://www.stat.purdue.edu/~jtroisi/STAT350Spring2015/tables/FTable.pdf).
 
 Vi ser av resultatene fra analysen at antall df i teller er `r dfd` og antall df i nevner er `r dfn`. Hvis vi leser av tabellen ser vi at for df 1/df 200 er kritisk verdi 3,89 for α = 0,05 og 11,15 for α = 0,001. Vår F er med andre ord langt over kritisk verdi. Vi kan derfor si at vår regresjonsmodell gir en signifikant bedre prediksjon av platesalg enn alternativet. Reklame er med andre ord en god prediktor for platesalg.
@@ -522,7 +523,7 @@ forholdstall %>%
 
 ---
 nocite: |
-  @harrisPrimerMultivariateStatistics2013, @schmidtRelativeEfficiencyRegression1971, @nunallyPsychometricTheory1978, @stevensAppliedMultivariateStatistics1996, @greenHowManySubjects1991, @milesApplyingRegressionCorrelation2001
+@harrisPrimerMultivariateStatistics2013, @schmidtRelativeEfficiencyRegression1971, @nunallyPsychometricTheory1978, @stevensAppliedMultivariateStatistics1996, @greenHowManySubjects1991, @milesApplyingRegressionCorrelation2001
 ---
 Det er også verdt å merke seg at det ikke er ønskelig med for mange respondenter, da et svært stort antall respondenter vil gi statistisk signifikans for nesten enhver multippel korrelasjon  – "For both statistical and practical reasons, then, one wants to measure the smallest number of cases that has a decent chance of revealing a relationship of a specified size" [@tabachnikUsingMultivariateStatistics2007, s.123]. Dette har med andre ord mye å si for hvordan man planlegger en studie. @milesApplyingRegressionCorrelation2001, som angitt i siste rad i tabellen over, ser på sammenhengen mellom effektstørrelse, statistisk styrke og utvalgsstørrelse. Field [-@fieldDiscoveringStatisticsUsing2009, s.223, figur 7.10] har modifisert grafisk denne sammenhengen:
 
@@ -630,8 +631,7 @@ plott3
 Vi kan også se på et QQ plott og hente ut testverdier for ulike normalitetstester:
 
 ```{r fig.cap = "QQ plott for regresjonsanalyse"}
-ols_plot_resid_qq(FieldOLS_reg) +
-    theme_bw()
+ols_plot_resid_qq(FieldOLS_reg)
     
 ols_test_normality(FieldOLS_reg)
 ```
@@ -723,7 +723,7 @@ heteroskedtest <- bptest(FieldOLS_mult2, ~ Adverts*Airplay*Image + I(Adverts^2) 
 heteroskedtest
 ```
 
-Her ser vi at p-verdien er `r round(heteroskedtest$p.value, 3)` $0.4027$, dvs. vi kan ikke forkaste nullhypotesen = vi har ikke grunn til å konkludere med at vi har heteroskedasisitet i regresjonsmodellen.
+Her ser vi at p-verdien er `r round(heteroskedtest$p.value, 3)`, dvs. vi kan ikke forkaste nullhypotesen = vi har ikke grunn til å konkludere med at vi har heteroskedasisitet i regresjonsmodellen.
 
 #### Fravær av autokorrelasjon
 
@@ -755,8 +755,7 @@ Vi så under punktet "Analyse av dataene" (se for eksempel Boxplottet av Adverts
 
 
 ```{r}
-ols_plot_resid_stand(FieldOLS_reg) +
-    theme_bw()
+ols_plot_resid_stand(FieldOLS_reg)
 ```
 
 En utfordring med "standardized residuals" er at uteliggere kan være så innflytelsesrike på regresjonsmodellen at estimatene fra modellen "trekkes" mot uteliggerne. Ideen i "studentized residuals" er å fjerne observasjoner en etter en, og rekalkulere regresjonsmodellen etter hver observasjon som fjernes. Dette produserer "deleted residuals". Når disse standardiseres (ved å dele på estiamtet for standardavviket for resodualene) blir dette "studentized residuals".
@@ -786,19 +785,18 @@ ggarrange(plott1, plott2, ncol = 2, nrow = 2)
 
 ```
 
-I venstre regresjonsplott over har vi en klar uteligger. Den røde regresjonslinja "trekkes" mot uteliggeren. Dette påvirker åpenbart residualene. I den venstre er uteliggeren fjernet og regresjonslinja rekalkulert etter fjerningen. Dette påvirker (like åpenbart) residualene. "Studentied residuals" kalles også ofte "Deleted t residuals". Matematisk brukes "Mean Square Error" (MSE) for alle obervasjonene i modellen til å standardisere, mens "studentized" bruker MSE for observasjonene i modellen **fratrukket fjernede obervasjoner** (MSE jsuteres med andre ord for hver fjerning).
+I venstre regresjonsplott over har vi en klar uteligger. Den røde regresjonslinja "trekkes" mot uteliggeren. Dette påvirker åpenbart residualene. I den venstre er uteliggeren fjernet og regresjonslinja rekalkulert etter fjerningen. Dette påvirker (like åpenbart) residualene. "Studentied residuals" kalles også ofte "Deleted t residuals". Matematisk brukes "Mean Square Error" (MSE) for alle obervasjonene i modellen til å standardisere, mens "studentized" bruker MSE for observasjonene i modellen *fratrukket fjernede obervasjoner* (MSE justeres med andre ord for hver fjerning).
 
 
 ```{r fig.cap = "Studentized Residual Plot"}
-ols_plot_resid_stud(FieldOLS_reg) +
-    theme_bw()
+ols_plot_resid_stud(FieldOLS_reg)
 ```
 
 Dette plottet viser residualene delt på deres estimerte standardavvik. Dersom en studentized residual er større enn +/- 3 vil denne testen definere observasjonen som en uteligger. Ut fra dette har vi ikke indikasjoner på utfordringer med uteliggere.
 
 ##### Hampel filter
 
-Hampel filter, se feks. @pearsonGeneralizedHampelFilters2016 innebærer at man ser alle observasjoner som ligger utenfor intervallet $median +/- 3 median\ absolute\ deviation\ (MAD)$.
+Hampel filter, se feks. @pearsonGeneralizedHampelFilters2016 innebærer at man ser alle observasjoner som ligger utenfor intervallet $median +/- 3\ median\ absolute\ deviation\ (MAD)$.
 
 ```{r}
 nedregrense <- median(Field_OLS_data$Adverts) - 3*(mad(Field_OLS_data$Adverts, constant = 1))
@@ -825,8 +823,7 @@ Rosners test anslår at ingen at observasjoenne vi fant gjennom Hampelfilteret e
 Det siste målet vi ønsker å se på (og trolig den mest brukte) er "Cook's distance", som gir et mål på observasjonens totale innflytelse på regresjonsmodellen. 
 
 ```{r fig.cap = "Cook's distance"}
-ols_plot_cooksd_bar(FieldOLS_reg) +
-    theme_bw()
+ols_plot_cooksd_bar(FieldOLS_reg)
 ```
 
 I grafen over vises Cook's distance - et mål på vektet kvadratsum for forskjellene mellom de individuelle elementene til koeffisienten. Sagt på en annen måte: Vi bruker Cook's distance til å se hvilke observasjoner/caser som kan påvirke modellen vår uforholdsmessig mye (totalt sett). Dersom vi har mange caser med høy verdi på Cook's distance kan det være en indikasjon på at lineær regresjon kanskje ikke er en egnet analyse for det foreliggende datasettet. 
@@ -848,8 +845,7 @@ Her kjenner vi igjen observasjonene 1, 169 og 42 som de med høyest verdi på Co
 En annen grafisk mulighet er å bruke "Studentized Residuals vs Leverage Plot". 
 
 ```{r}
-ols_plot_resid_lev(FieldOLS_reg) +
-    theme_bw()
+ols_plot_resid_lev(FieldOLS_reg)
 ```
 
 "Leverage" referer til hvor mye koeffisientene i regresjonslikningen vil endres dersom respektive obaservasjon ble fjernet. Observasjoner med høy påvirkning påvirker naturlig nok regresjonskoeffisientene i større grad enn observasjoner med lav påvirkning.
@@ -931,8 +927,7 @@ influenceIndexPlot(FieldOLS_man, vars = c("Cook"), id = list(n=3))
 Vi kan gjenta f.eks. Hadi's:
 
 ```{r fig.cap = "Hadi' Influence Measure #2"}
-ols_plot_hadi(FieldOLS_man) +
-    theme_bw()
+ols_plot_hadi(FieldOLS_man)
 ```
 
 Og et "added variable plot" for å illustrere:
@@ -999,7 +994,7 @@ En enkel lineær regresjon ble gjennomført for å predikere salgstall per uke b
 
 ### Til slutt for R-brukere...
 
-@mehmetogluInnforingStatistiskeDataanalyser2020 har skrevet en veldig god bok om på norsk: "Innføring i R for statistiske analyser" som vi varmt kan anbefale. Den kommer med en pakke ("rnorsk") som kan lastes ned gjennom kommandoen **devtools::install_github("ihrke/rnorsk")** (forutsetter at pakken "devtools" er på plass, hvis ikke så kjør "package.install("devtools")). 
+@mehmetogluInnforingStatistiskeDataanalyser2020 har skrevet en veldig god bok om på norsk: "Innføring i R for statistiske analyser" som vi varmt kan anbefale. Den kommer med en pakke ("rnorsk") som kan lastes ned gjennom kommandoen *devtools::install_github("ihrke/rnorsk")* (forutsetter at pakken "devtools" er på plass, hvis ikke så kjør "package.install("devtools")"). 
 
 Forfatterne har laget en samling av regresjonsdiagnostikk som vi viser her på Fields data der vi laget en multippel regresjonsmodell:
 
@@ -1041,9 +1036,11 @@ Vi skal bruke et datasett fra @pallantSPSSSurvivalManual2010 som du kan finne [h
 xfun::embed_file('Pallant_survey.xlsx')
 ```
 
+
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
 xfun::embed_file('Pallant_survey.sav')
 ```
+
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, eval = TRUE}
 xfun::embed_file('Pallant_survey.dta')
@@ -1862,8 +1859,7 @@ ggplot(data, aes(x=PallantOLS2$residuals)) +
 Vi kan også se på et Q-Q plott og hente ut testverdier for ulike normalitetstester:
 
 ```{r fig.cap = "QQ plott for residualer"}
-ols_plot_resid_qq(PallantOLS2) +
-    theme_bw()
+ols_plot_resid_qq(PallantOLS2)
 ols_test_normality(PallantOLS2)
 ```
 
@@ -1872,8 +1868,7 @@ Q-Q plottet viser noe avvik (jfr. )
 En hendig graf er også et plott av residualene på y-aksen og "fitted values" på x-aksen:
 
 ```{r fig.cap = "Residual plott"}
-ols_plot_resid_fit(PallantOLS2) +
-    theme_bw()
+ols_plot_resid_fit(PallantOLS2)
 ```
 
 I forhold til forutsetningen om normalfordelte residualer skal disse være spredd tilfeldig rundt 0. 
@@ -1958,8 +1953,7 @@ ols_plot_dfbetas(PallantOLS2)
 Cook's distance:
 
 ```{r fig.cap = "Cook's distance"}
-ols_plot_cooksd_chart(PallantOLS2) +
-    theme_bw()
+ols_plot_cooksd_chart(PallantOLS2)
 ```
 
 ```{r}

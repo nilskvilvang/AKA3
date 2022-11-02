@@ -42,7 +42,7 @@ legend(-4, .3, legend = c("df=2", "df=10", "df=20", "Normal"),
        col = c("blue", "brown", "black", "red"), lty = 1, cex = 1.2)
 ```
 
-Så hvorfor behovet for en t-distribusjon? William Sealy Gosset, a.k.a. "Student", fant ut at hvis man ikke er helt sikker på hva standardavviket er må man bruke et estimat på standardavviket som gjør at fordelingen endrer seg litt fra normalfordelingen. Det vi omtaler som t-test er en test av en statistisk hypotese som baserer seg på Students t-distribusjon.
+Så hvorfor behovet for en t-distribusjon? William Sealy Gosset, a.k.a. "Student", fant ut at hvis man ikke er helt sikker på hva standardavviket for populasjonen er må man bruke et estimat på standardavviket som gjør at fordelingen endrer seg litt fra normalfordelingen. Det vi omtaler som t-test er en test av en statistisk hypotese som baserer seg på Students t-distribusjon.
 
 ## One sample t-test
 

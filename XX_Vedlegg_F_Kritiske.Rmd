@@ -1,0 +1,78 @@
+---
+bibliography: bibliografi.bib  
+csl: chicago-author-date.csl
+always_allow_html: true
+---
+
+# Vedlegg F - Kritiske kjikvadratverdier - enhalet test - "upper tail" {.unnumbered}
+
+```{r echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(kableExtra)
+
+conf_levels <- c(0.001, 0.005, 0.01, 0.025, 0.05, 0.10, 0.15, 0.20, 0.25)  
+
+data_t <- round(data.frame(df1 = abs(qchisq(p = conf_levels, df = 1, lower.tail=FALSE)),  
+                           df2 = abs(qchisq(p = conf_levels, df = 2, lower.tail=FALSE)),
+                           df3 = abs(qchisq(p = conf_levels, df = 3, lower.tail=FALSE)),
+                           df4 = abs(qchisq(p = conf_levels, df = 4, lower.tail=FALSE)),
+                           df5 = abs(qchisq(p = conf_levels, df = 5, lower.tail=FALSE)),
+                           df6 = abs(qchisq(p = conf_levels, df = 6, lower.tail=FALSE)),
+                           df7 = abs(qchisq(p = conf_levels, df = 7, lower.tail=FALSE)),
+                           df8 = abs(qchisq(p = conf_levels, df = 8, lower.tail=FALSE)),
+                           df9 = abs(qchisq(p = conf_levels, df = 9, lower.tail=FALSE)),
+                           df10 = abs(qchisq(p = conf_levels, df = 10, lower.tail=FALSE)),
+                           df11 = abs(qchisq(p = conf_levels, df = 11, lower.tail=FALSE)),
+                           df12 = abs(qchisq(p = conf_levels, df = 12, lower.tail=FALSE)),
+                           df13 = abs(qchisq(p = conf_levels, df = 13, lower.tail=FALSE)),
+                           df14 = abs(qchisq(p = conf_levels, df = 14, lower.tail=FALSE)),
+                           df15 = abs(qchisq(p = conf_levels, df = 15, lower.tail=FALSE)),
+                           df16 = abs(qchisq(p = conf_levels, df = 16, lower.tail=FALSE)),
+                           df17 = abs(qchisq(p = conf_levels, df = 17, lower.tail=FALSE)),
+                           df18 = abs(qchisq(p = conf_levels, df = 18, lower.tail=FALSE)),
+                           df19 = abs(qchisq(p = conf_levels, df = 19, lower.tail=FALSE)),
+                           df20 = abs(qchisq(p = conf_levels, df = 20, lower.tail=FALSE)),
+                           df21 = abs(qchisq(p = conf_levels, df = 21, lower.tail=FALSE)),
+                           df22 = abs(qchisq(p = conf_levels, df = 22, lower.tail=FALSE)),
+                           df23 = abs(qchisq(p = conf_levels, df = 23, lower.tail=FALSE)),
+                           df24 = abs(qchisq(p = conf_levels, df = 24, lower.tail=FALSE)),
+                           df25 = abs(qchisq(p = conf_levels, df = 25, lower.tail=FALSE)),
+                           df26 = abs(qchisq(p = conf_levels, df = 26, lower.tail=FALSE)),
+                           df27 = abs(qchisq(p = conf_levels, df = 27, lower.tail=FALSE)),
+                           df28 = abs(qchisq(p = conf_levels, df = 28, lower.tail=FALSE)),
+                           df29 = abs(qchisq(p = conf_levels, df = 29, lower.tail=FALSE)),
+                           df30 = abs(qchisq(p = conf_levels, df = 30, lower.tail=FALSE)),
+                           df35 = abs(qchisq(p = conf_levels, df = 35, lower.tail=FALSE)),
+                           df40 = abs(qchisq(p = conf_levels, df = 40, lower.tail=FALSE)),
+                           df45 = abs(qchisq(p = conf_levels, df = 45, lower.tail=FALSE)),
+                           df50 = abs(qchisq(p = conf_levels, df = 50, lower.tail=FALSE)),
+                           df55 = abs(qchisq(p = conf_levels, df = 55, lower.tail=FALSE)),
+                           df60 = abs(qchisq(p = conf_levels, df = 60, lower.tail=FALSE)),
+                           df65 = abs(qchisq(p = conf_levels, df = 65, lower.tail=FALSE)),
+                           df70 = abs(qchisq(p = conf_levels, df = 70, lower.tail=FALSE)),
+                           df75 = abs(qchisq(p = conf_levels, df = 75, lower.tail=FALSE)),
+                           df80 = abs(qchisq(p = conf_levels, df = 80, lower.tail=FALSE)),
+                           df85 = abs(qchisq(p = conf_levels, df = 85, lower.tail=FALSE)),
+                           df90 = abs(qchisq(p = conf_levels, df = 90, lower.tail=FALSE)),
+                           df95 = abs(qchisq(p = conf_levels, df = 95, lower.tail=FALSE)),
+                           df100 = abs(qchisq(p = conf_levels, df = 100, lower.tail=FALSE)),
+                           df150 = abs(qchisq(p = conf_levels, df = 150, lower.tail=FALSE)),
+                           df200 = abs(qchisq(p = conf_levels, df = 200, lower.tail=FALSE)),
+                           df250 = abs(qchisq(p = conf_levels, df = 250, lower.tail=FALSE)),
+                           df300 = abs(qchisq(p = conf_levels, df = 300, lower.tail=FALSE)),
+                           df350 = abs(qchisq(p = conf_levels, df = 350, lower.tail=FALSE)),
+                           df400 = abs(qchisq(p = conf_levels, df = 400, lower.tail=FALSE)),
+                           df450 = abs(qchisq(p = conf_levels, df = 450, lower.tail=FALSE)),
+                           df500 = abs(qchisq(p = conf_levels, df = 500, lower.tail=FALSE)),
+                           df750 = abs(qchisq(p = conf_levels, df = 750, lower.tail=FALSE)),
+                           df1000 = abs(qchisq(p = conf_levels, df = 1000, lower.tail=FALSE))), 3)
+
+rownames(data_t) <- conf_levels
+
+data_t <- t(data_t)
+
+data_t %>%
+    kbl() %>%
+    kable_paper("hover", full_width = F) %>%
+    kable_styling(fixed_thead = T)
+```
